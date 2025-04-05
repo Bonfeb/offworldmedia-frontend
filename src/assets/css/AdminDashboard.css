@@ -1,0 +1,67 @@
+.admin-dashboard {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #2c3e50;
+    padding: 20px;
+    color: white;
+  }
+  
+  .sidebar .nav-link {
+    color: white;
+    font-size: 1.1rem;
+    padding: 10px;
+  }
+  
+  .sidebar .nav-link:hover {
+    background: #34495e;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .stat-card {
+    text-align: center;
+    padding: 20px;
+    background: #94b2d3;
+    border-radius: 10px;
+  }
+  
+  .stat-card h4 {
+    margin-top: 10px;
+  }
+
+  .bookings {
+    background: #94b2d3;
+    color: white;
+  }
+  
+  .pending {
+    background: #9e7e28;
+    color: white;
+  }
+  
+  .completed {
+    background: #45ac5d;
+    color: white;
+  }
+  
+  .cancelled {
+    background: #a33c46;
+    color: white;
+  }
+  
+  .services {
+    background: #7f6288;
+    color: white;
+  }
+
+  .users {
+    background: #6b3a4d;
+    color: white;
+  }
