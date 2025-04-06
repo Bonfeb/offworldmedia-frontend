@@ -31,7 +31,6 @@ import API from "../../api";
 import { AuthContext } from "../../context/AuthContext";
 import { Card, Box, Typography, CircularProgress, Badge } from "@mui/material";
 import NewService from "./services/NewService";
-import NewBooking from "./bookings/NewBooking";
 import BookingModals from "./bookings/BookingModals";
 
 const AdminDashboard = () => {

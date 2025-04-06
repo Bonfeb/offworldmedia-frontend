@@ -129,7 +129,7 @@ function Reviews({ reviews }) {
                           <Card.Body>
                             <div className="user-info d-flex align-items-center">
                               <img
-                                src={`http://127.0.0.1:8000${review.user?.profile_pic}`}
+                                src={`https://offworldmedia-backend.onrender.com${review.user?.profile_pic}`}
                                 alt={review.user?.username}
                                 className="user-image me-2"
                                 style={{

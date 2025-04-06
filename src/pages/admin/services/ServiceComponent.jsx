@@ -25,7 +25,7 @@ const ServiceComponent = ({ category, title }) => {
     price: "",
     image: null,
   });
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
   const [updateError, setUpdateError] = useState("");
   const [deleteError, setDeleteError] = useState("");
 
@@ -122,7 +122,7 @@ const ServiceComponent = ({ category, title }) => {
       fetchServices();
 
       setTimeout(() => {
-        setSuccessMessage('');
+        setSuccessMessage("");
         handleCloseModal();
       }, 2000);
     } catch (err) {
@@ -142,7 +142,7 @@ const ServiceComponent = ({ category, title }) => {
         fetchServices();
 
         setTimeout(() => {
-          setSuccessMessage('');
+          setSuccessMessage("");
           handleCloseDeleteModal();
         }, 5000);
       } catch (err) {
@@ -185,7 +185,7 @@ const ServiceComponent = ({ category, title }) => {
               <Row className="align-items-center">
                 <Col md={5} className="text-center">
                   <Card.Img
-                    src={`http://127.0.0.1:8000/api${service.image}`}
+                    src={`https://offworldmedia-backend.onrender.com/api${service.image}`}
                     alt={service.name}
                     style={{ maxHeight: "250px", objectFit: "cover" }}
                   />
@@ -235,9 +235,7 @@ const ServiceComponent = ({ category, title }) => {
               {updateError}
             </Alert>
           )}
-          {successMessage && (
-            <Alert variant="success">{successMessage}</Alert>
-          )}
+          {successMessage && <Alert variant="success">{successMessage}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Service Name</Form.Label>
@@ -311,9 +309,7 @@ const ServiceComponent = ({ category, title }) => {
               {deleteError}
             </Alert>
           )}
-          {successMessage && (
-            <Alert variant="success">{successMessage}</Alert>
-          )}
+          {successMessage && <Alert variant="success">{successMessage}</Alert>}
           Are you sure you want to delete "{selectedService?.name}"? This action
           cannot be undone.
         </Modal.Body>

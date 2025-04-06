@@ -201,7 +201,7 @@ function Home() {
                 </div>
                 <div className="icon mb-3">
                   <Image
-                    src={`http://127.0.0.1:8000${service.image}`}
+                    src={`https://offworldmedia-backend.onrender.com${service.image}`}
                     className="rounded-circle"
                     style={{ width: "220px", height: "200px" }}
                   />

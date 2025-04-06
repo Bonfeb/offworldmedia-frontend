@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebook,
+  faTwitter,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 import { Container, Row, Card, Col, Image } from "react-bootstrap";
 import "../assets/css/Team.css";
 
-
 function Team() {
-  const api_url = "http://127.0.0.1:8000/api";
+  const api_url = "https://offworldmedia-backend.onrender.com/api";
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -46,7 +49,7 @@ function Team() {
               <Card className="text-center shadow-lg">
                 <Card.Img
                   variant="top"
-                  src={`http://127.0.0.1:8000/${member.profile_pic}`}
+                  src={`https://offworldmedia-backend.onrender.com/${member.profile_pic}`}
                   className="rounded-circle mx-auto mt-3"
                   style={{ width: "120px", height: "120px" }}
                 />
@@ -60,13 +63,13 @@ function Team() {
                 <Card.Footer>
                   <div className="d-flex justify-content-center gap-3">
                     <Link to="#">
-                      <FontAwesomeIcon icon={faFacebook} size="2x"/>
+                      <FontAwesomeIcon icon={faFacebook} size="2x" />
                     </Link>
                     <Link to="#">
-                      <FontAwesomeIcon icon={faTwitter} size="2x"/>
+                      <FontAwesomeIcon icon={faTwitter} size="2x" />
                     </Link>
                     <Link to="#">
-                      <FontAwesomeIcon icon={faInstagram} size="2x"/>
+                      <FontAwesomeIcon icon={faInstagram} size="2x" />
                     </Link>
                   </div>
                 </Card.Footer>
