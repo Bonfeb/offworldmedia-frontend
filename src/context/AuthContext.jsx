@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
   // Login function
   const login = async (credentials) => {
     try {
-      const response = await API.post("login/", credentials, {
+      const response = await API.post("/login/", credentials, {
         withCredentials: true,
       });
 

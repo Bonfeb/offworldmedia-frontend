@@ -34,9 +34,11 @@ function Home() {
     const fetchServices = async () => {
       try {
         console.log("Fetching services...");
+        console.log("Using baseURL:", import.meta.env.VITE_BASE_URL);
         const response = await API.get("/services/", {
           withCredentials: true,
         });
+       
         console.log("API Response:", response.data);
         setServices(response.data);
       } catch (error) {

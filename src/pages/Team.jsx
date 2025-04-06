@@ -12,7 +12,7 @@ import { Container, Row, Card, Col, Image } from "react-bootstrap";
 import "../assets/css/Team.css";
 
 function Team() {
-  const api_url = "https://offworldmedia-backend.onrender.com/api";
+  const api_url = "https://offworldmedia-backend.onrender.com/";
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
