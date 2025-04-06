@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import API from "../api";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,20 +12,18 @@ import { Container, Row, Card, Col, Image } from "react-bootstrap";
 import "../assets/css/Team.css";
 
 function Team() {
-  const api_url = "https://offworldmedia-backend.onrender.com/";
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [teamMember, setTeamMember] = useState([]);
   useEffect(() => {
-    axios
-      .get(`${api_url}/team`)
+    API
+      .get("/team/")
       .then((response) => {
         setTeamMember(response.data);
         setLoading(false);
       })
       .catch(() => {
-        setError("Failed to load services");
+        setError("Failed to load OffWorldMedia Team");
         setLoading(false);
       });
   }, []);
