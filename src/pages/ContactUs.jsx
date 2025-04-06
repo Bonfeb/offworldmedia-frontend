@@ -34,7 +34,7 @@ const ContactUs = () => {
     setIsAuthenticated(!!accessToken);
 
     if (accessToken) {
-      API.get("profile/", { withCredentials: true })
+      API.get("/profile/", { withCredentials: true })
         .then((response) => {
           setFormData((prevState) => ({
             ...prevState,
@@ -58,7 +58,7 @@ const ContactUs = () => {
       return;
     }
     try {
-      const response = await API.post("contact/", formData, {
+      const response = await API.post("/contact/", formData, {
         withCredentials: true,
       });
       setResponseMessage(response.data.message);

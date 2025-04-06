@@ -185,7 +185,7 @@ const ServiceComponent = ({ category, title }) => {
               <Row className="align-items-center">
                 <Col md={5} className="text-center">
                   <Card.Img
-                    src={`https://offworldmedia-backend.onrender.com/api${service.image}`}
+                    src={`https://offworldmedia-backend.onrender.com/${service.image}`}
                     alt={service.name}
                     style={{ maxHeight: "250px", objectFit: "cover" }}
                   />

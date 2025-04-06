@@ -16,7 +16,7 @@ function Profile() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await API.get("profile/");
+        const response = await API.get("/profile/");
         setUser(response.data);
         setUserProfilePic(response.data.profile_pic);
       } catch (error) {
@@ -58,7 +58,7 @@ function Profile() {
     }
 
     try {
-      const response = await API.put("profile/", formData, {
+      const response = await API.put("/profile/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

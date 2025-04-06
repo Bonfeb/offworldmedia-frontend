@@ -8,7 +8,7 @@ function AdminServices() {
     const [serviceData, setServicesData] = useState()
 
     useEffect(() => {
-        API.get("admin-dashboard/", {
+        API.get("/admin-dashboard/", {
             withCredentials: true
         })
           .then(response => setServicesData(response.data))

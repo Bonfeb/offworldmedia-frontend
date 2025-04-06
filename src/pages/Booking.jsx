@@ -61,7 +61,7 @@ const Booking = () => {
 
     try {
       await API.post(
-        "bookings/",
+        "/bookings/",
         {
           service: serviceId,
           event_date: eventDate,

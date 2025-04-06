@@ -52,20 +52,20 @@ const AdminDashboard = () => {
       try {
         setIsLoading(true);
         // Fetch dashboard stats
-        const response = await API.get("admin-dashboard/", {
+        const response = await API.get("/admin-dashboard/", {
           withCredentials: true,
         });
         setDashboardData(response.data);
 
         // Fetch recent bookings from the new endpoint
-        const bookingsResponse = await API.get("admin-dashboard/", {
+        const bookingsResponse = await API.get("/admin-dashboard/", {
           params: { action: "bookings" },
           withCredentials: true,
         });
         setRecentBookings(bookingsResponse.data.slice(0, 2)); // Get only 5 most recent
 
         // Fetch recent reviews from the new endpoint
-        const reviewsResponse = await API.get("reviews/", {
+        const reviewsResponse = await API.get("/reviews/", {
           withCredentials: true,
         });
         setRecentReviews(reviewsResponse.data.slice(0, 2));

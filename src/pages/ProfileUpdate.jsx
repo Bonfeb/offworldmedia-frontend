@@ -21,7 +21,7 @@ function ProfileUpdate() {
 
   const fetchUserData = async () => {
     try {
-      const response = await API.get("profile/");
+      const response = await API.get("/profile/");
       setUser(response.data);
       setPreview(response.data.profile_pic);
     } catch (error) {
@@ -50,7 +50,7 @@ function ProfileUpdate() {
     }
 
     try {
-      await API.put("profile/edit/", formData, {
+      await API.put("/profile/edit/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       navigate("/dashboard");

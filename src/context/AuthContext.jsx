@@ -89,7 +89,7 @@ export function AuthProvider({ children }) {
   // Logout function
   const logout = async () => {
     try {
-      await API.post("logout/");
+      await API.post("/logout/");
       setIsAuthenticated(false);
       setUserProfilePic("");
       setAuthTokens(null);

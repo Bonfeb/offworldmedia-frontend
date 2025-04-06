@@ -98,7 +98,7 @@ export const formatBookings = (bookings) => {
   
   export const handleServiceUpdate = async (serviceId, updatedService, onSuccess, onError) => {
     try {
-      const response = await axios.put(`/api/service/${serviceId}/`, updatedService);
+      const response = await axios.put(`/service/${serviceId}/`, updatedService);
       if (onSuccess) onSuccess(response.data);
       return response.data;
     } catch (error) {
@@ -110,7 +110,7 @@ export const formatBookings = (bookings) => {
   
   export const handleServiceDelete = async (serviceId, onSuccess, onError) => {
     try {
-      await axios.delete(`/api/service/${serviceId}/`);
+      await axios.delete(`/service/${serviceId}/`);
       if (onSuccess) onSuccess();
       return true;
     } catch (error) {

@@ -34,7 +34,7 @@ function Home() {
     const fetchServices = async () => {
       try {
         console.log("Fetching services...");
-        const response = await API.get("services/", {
+        const response = await API.get("/services/", {
           withCredentials: true,
         });
         console.log("API Response:", response.data);

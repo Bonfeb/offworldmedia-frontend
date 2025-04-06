@@ -37,7 +37,7 @@ function Reviews({ reviews }) {
   const [comment, setComment] = useState("");
 
   useEffect(() => {
-    API.get("reviews/")
+    API.get("/reviews/")
       .then((response) => {
         console.log("Fetched Reviews:", response.data);
         setReviewList(response.data);
@@ -46,7 +46,7 @@ function Reviews({ reviews }) {
   }, []);
 
   useEffect(() => {
-    API.get("services/")
+    API.get("/services/")
       .then((response) => {
         console.log("Fetched services:", response.data); // Debugging
         setServices(response.data);
@@ -69,7 +69,7 @@ function Reviews({ reviews }) {
 
     try {
       await API.post(
-        `review/${serviceId}`,
+        `/review/${serviceId}`,
         { rating, comment, service: parseInt(serviceId) },
         { withCredentials: true }
       );
@@ -81,7 +81,7 @@ function Reviews({ reviews }) {
       setComment("");
 
       // Refresh the reviews
-      API.get("reviews/").then((response) => setReviewList(response.data));
+      API.get("/reviews/").then((response) => setReviewList(response.data));
     } catch (error) {
       setMessage("Error submitting review. Please try again.");
       setMessageType("error");

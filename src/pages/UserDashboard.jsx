@@ -43,7 +43,7 @@ const UserDashboard = () => {
 
   const fetchUserDashboard = async () => {
     try {
-      const response = await API.get("userdashboard/", {
+      const response = await API.get("/userdashboard/", {
         withCredentials: true,
       });
       //console.log("Full API Response:", JSON.stringify(response.data, null, 2)); // Debugging
@@ -92,7 +92,7 @@ const UserDashboard = () => {
     try {
       const serviceId = modalData.service.id;
       console.log(`Attempting to remove service ID: ${serviceId}`);
-      const response = await API.delete(`userdashboard/${serviceId}/`);
+      const response = await API.delete(`/userdashboard/${serviceId}/`);
       setCart(response.data.cart);
       fetchUserDashboard();
       console.log("🚀 Updated Cart Data in State:", cart);
@@ -120,7 +120,7 @@ const UserDashboard = () => {
       console.log(`Attempting to cancel booking ID: ${bookingId}`);
 
       // Make a DELETE request to the backend to cancel the booking
-      const response = await API.delete(`booking/${bookingId}/`, {
+      const response = await API.delete(`/booking/${bookingId}/`, {
         withCredentials: true,
       });
       console.log("🚀 API Response after deletion:", response.data);
