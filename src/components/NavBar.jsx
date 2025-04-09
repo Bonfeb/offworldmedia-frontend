@@ -9,6 +9,7 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { media_url } from "../utils/constants";
 
 function NavBar() {
   const { isAuthenticated, userProfilePic, userGroups, logout } = useContext(AuthContext);
@@ -78,7 +79,7 @@ function NavBar() {
                     className="d-flex align-items-center"
                   >
                     <Image
-                      src={userProfilePic}
+                      src={`${media_url}/${userProfilePic}`}
                       roundedCircle
                       width="45"
                       height="45"
