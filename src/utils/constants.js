@@ -1,6 +1,6 @@
 import API from "../api";
 
-export const media_url = "https://offworldmedia-backend.onrender.com/media"
+export const media_url = "https://offworldmedia-backend.onrender.com"
 
 export const formatBookings = (bookings) => {
     return bookings.map((booking, index) => ({

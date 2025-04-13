@@ -17,8 +17,7 @@ function Team() {
   const [loading, setLoading] = useState(true);
   const [teamMember, setTeamMember] = useState([]);
   useEffect(() => {
-    API
-      .get("/team/")
+    API.get("/team/")
       .then((response) => {
         setTeamMember(response.data);
         setLoading(false);
