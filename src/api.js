@@ -44,7 +44,9 @@ API.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await API.post("token/refresh/"); // ✅ No need to send refresh token manually
+        const response = await API.post("token/refresh/", null, {
+          withCredentials: true
+        }); // ✅ No need to send refresh token manually
         const newAccessToken = response.data.access_token;
         sessionStorage.setItem("accessToken", newAccessToken); // ✅ Store access token temporarily
         API.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;

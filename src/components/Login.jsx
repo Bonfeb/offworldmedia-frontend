@@ -93,13 +93,13 @@ const Login = () => {
       </Card>
 
       {/* Success Modal */}
-      <Modal show={showSuccessModal} onHide={() => navigate(user?.groups?.includes("admin") ? "/admin-dashboard" : "/userdashboard")} centered>
+      <Modal show={showSuccessModal} onHide={() => navigate(userGroups?.includes("admin") ? "/admin-dashboard" : "/userdashboard")} centered>
         <Modal.Header closeButton>
           <Modal.Title>Login Successful</Modal.Title>
         </Modal.Header>
         <Modal.Body>You have successful logged in!</Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => navigate("/userdashboard")}>
+          <Button variant="primary" onClick={() => navigate(userGroups?.includes("admin") ? "/admin-dashboard" : "/userdashboard")}>
             Continue
           </Button>
         </Modal.Footer>
