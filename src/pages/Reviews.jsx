@@ -130,7 +130,7 @@ function Reviews({ reviews }) {
                           <Card.Body>
                             <div className="user-info d-flex align-items-center">
                               <img
-                                src={`${media_url}${review.user?.profile_pic}`}
+                                src={review.user?.profile_pic}
                                 alt={review.user?.username}
                                 className="user-image me-2"
                                 style={{

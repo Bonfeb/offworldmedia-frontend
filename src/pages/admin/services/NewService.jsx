@@ -34,7 +34,7 @@ const NewService = ({ show, handleClose, refreshServices }) => {
         formDataToSend.append(key, formData[key]);
       });
 
-      await API.post('/services/', formDataToSend, {
+      await API.post('/service/', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true
       });

@@ -89,7 +89,7 @@ function Service() {
               </div>
               <div className="icon mb-3">
                 <Image
-                  src={`${media_url}${service.image}`}
+                  src={service.image}
                   className="rounded-circle"
                   style={{ width: "220px", height: "200px" }}
                 />

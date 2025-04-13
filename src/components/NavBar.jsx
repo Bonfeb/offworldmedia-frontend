@@ -79,7 +79,7 @@ function NavBar() {
                     className="d-flex align-items-center"
                   >
                     <Image
-                      src={`${media_url}${userProfilePic}`}
+                      src={userProfilePic}
                       roundedCircle
                       width="45"
                       height="45"
