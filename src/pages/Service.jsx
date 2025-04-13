@@ -5,6 +5,7 @@ import { Container, Row, Col, Image, Button, Alert } from "react-bootstrap";
 import "../assets/css/Service.css";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
+import { media_url } from "../utils/constants";
 function Service() {
   const navigate = useNavigate();
 
@@ -88,7 +89,7 @@ function Service() {
               </div>
               <div className="icon mb-3">
                 <Image
-                  src={`https://offworldmedia-backend.onrender.com${service.image}`}
+                  src={`${media_url}/${service.image}`}
                   className="rounded-circle"
                   style={{ width: "220px", height: "200px" }}
                 />

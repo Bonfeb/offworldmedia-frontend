@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { Container, Row, Card, Col, Image } from "react-bootstrap";
 import "../assets/css/Team.css";
+import { media_url } from "../utils/constants";
 
 function Team() {
   const [error, setError] = useState("");
@@ -47,7 +48,7 @@ function Team() {
               <Card className="text-center shadow-lg">
                 <Card.Img
                   variant="top"
-                  src={`https://offworldmedia-backend.onrender.com/${member.profile_pic}`}
+                  src={`${media_url}${member.profile_pic}`}
                   className="rounded-circle mx-auto mt-3"
                   style={{ width: "120px", height: "120px" }}
                 />

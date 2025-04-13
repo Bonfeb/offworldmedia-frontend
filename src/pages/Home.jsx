@@ -15,6 +15,7 @@ import {
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 import Footer from "../components/Footer";
+import { media_url } from "../utils/constants";
 
 function Home() {
   const navigate = useNavigate();
@@ -203,7 +204,7 @@ function Home() {
                 </div>
                 <div className="icon mb-3">
                   <Image
-                    src={`https://offworldmedia-backend.onrender.com${service.image}`}
+                    src={`${media_url}/${service.image}`}
                     className="rounded-circle"
                     style={{ width: "220px", height: "200px" }}
                   />

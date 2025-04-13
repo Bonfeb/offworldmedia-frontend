@@ -14,6 +14,7 @@ import { AuthContext } from "../context/AuthContext"; // Import your auth contex
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
+import { media_url } from "../utils/constants";
 
 // Function to chunk reviews into groups of 3
 const chunkReviews = (reviews, chunkSize) => {
@@ -129,7 +130,7 @@ function Reviews({ reviews }) {
                           <Card.Body>
                             <div className="user-info d-flex align-items-center">
                               <img
-                                src={`https://offworldmedia-backend.onrender.com${review.user?.profile_pic}`}
+                                src={`${media_url}/${review.user?.profile_pic}`}
                                 alt={review.user?.username}
                                 className="user-image me-2"
                                 style={{

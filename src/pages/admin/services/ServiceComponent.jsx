@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-bootstrap";
 import API from "../../../api";
+import { media_url } from "../../../utils/constants";
 
 const ServiceComponent = ({ category, title }) => {
   const [serviceDetails, setServiceDetails] = useState([]);
@@ -185,7 +186,7 @@ const ServiceComponent = ({ category, title }) => {
               <Row className="align-items-center">
                 <Col md={5} className="text-center">
                   <Card.Img
-                    src={`https://offworldmedia-backend.onrender.com/${service.image}`}
+                    src={`${media_url}/${service.image}`}
                     alt={service.name}
                     style={{ maxHeight: "250px", objectFit: "cover" }}
                   />
