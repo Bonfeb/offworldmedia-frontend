@@ -186,7 +186,7 @@ const ServiceComponent = ({ category, title }) => {
               <Row className="align-items-center">
                 <Col md={5} className="text-center">
                   <Card.Img
-                    src={`${media_url}/${service.image}`}
+                    src={`${media_url}${service.image}`}
                     alt={service.name}
                     style={{ maxHeight: "250px", objectFit: "cover" }}
                   />
