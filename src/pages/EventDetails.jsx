@@ -25,7 +25,7 @@ const EventDetails = () => {
 
   const fetchServiceDetails = async () => {
     try {
-      const response = await API.get(`/service-details/${serviceId}/`);
+      const response = await API.get(`/service/${serviceId}/`);
       setServiceData(response.data);
       setFormData(prevState => ({
         ...prevState,

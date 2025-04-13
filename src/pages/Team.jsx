@@ -47,7 +47,7 @@ function Team() {
               <Card className="text-center shadow-lg">
                 <Card.Img
                   variant="top"
-                  src={`https://offworldmedia-backend.onrender.com/media${member.profile_pic}`}
+                  src={`https://offworldmedia-backend.onrender.com/${member.profile_pic}`}
                   className="rounded-circle mx-auto mt-3"
                   style={{ width: "120px", height: "120px" }}
                 />
