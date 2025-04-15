@@ -36,12 +36,11 @@ const NewService = ({ show, handleClose, refreshServices }) => {
 
       await API.post('/service/', formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Content-Type': 'multipart/form-data'
         },
         withCredentials: true
       });
-
+      
       setSuccess('Service added successfully!');
       refreshServices();
       setTimeout(() => {

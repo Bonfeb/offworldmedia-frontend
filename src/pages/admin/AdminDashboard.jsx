@@ -51,23 +51,39 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-        // Fetch dashboard stats
-        const response = await API.get("/admin-dashboard/", {
-          withCredentials: true,
+
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => {
+            reject(new Error("Request timed out after 10 seconds"));
+          }, 10000); // 10 second timeout
         });
+
+        // Fetch dashboard stats
+        const response = await Promise.race([
+        API.get("/admin-dashboard/", {
+          withCredentials: true,
+        }),
+        timeoutPromise
+      ]);
         setDashboardData(response.data);
 
         // Fetch recent bookings from the new endpoint
-        const bookingsResponse = await API.get("/admin-dashboard/", {
-          params: { action: "bookings" },
-          withCredentials: true,
-        });
+        const bookingsResponse = await Promise.race([
+          API.get("/admin-dashboard/", {
+            params: { action: "bookings" },
+            withCredentials: true,
+          }),
+          timeoutPromise
+        ]);
         setRecentBookings(bookingsResponse.data.slice(0, 2)); // Get only 5 most recent
 
         // Fetch recent reviews from the new endpoint
-        const reviewsResponse = await API.get("/reviews/", {
-          withCredentials: true,
-        });
+        const reviewsResponse = await Promise.race([
+          API.get("/reviews/", {
+            withCredentials: true,
+          }),
+          timeoutPromise
+        ]);
         setRecentReviews(reviewsResponse.data.slice(0, 2));
 
         setError(null);
