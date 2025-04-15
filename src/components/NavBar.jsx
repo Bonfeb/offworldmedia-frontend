@@ -9,11 +9,12 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { media_url } from "../utils/constants";
+import { AppBar, Box, Toolbar } from "@mui/material";
 
 function NavBar() {
   const { isAuthenticated, userProfilePic, userGroups, logout } = useContext(AuthContext);
   const [showNavbar, setShowNavbar] = useState(true);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,85 +38,159 @@ function NavBar() {
     navigate("/login");
   };
 
+  // Function to close the offcanvas when clicking a menu item
+  const handleNavItemClick = (path) => {
+    setShowOffcanvas(false);
+    navigate(path);
+  };
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary mb-3" data-bs-theme="dark">
+    <AppBar position="static" color="primary" className="mb-3">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/">
-          OffWorldMedia
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="offcanvasNavbar-expand-lg" />
-        <Navbar.Offcanvas id="offcanvasNavbar-expand-lg" placement="end">
+        <Navbar expand="lg" variant="dark" className="p-0 w-100">
+          <Toolbar className="w-100 p-0">
+            <Navbar.Brand as={Link} to="/">
+              OffWorldMedia
+            </Navbar.Brand>
+            <Box sx={{ flexGrow: 1 }} />
+            
+            {/* Desktop Navigation */}
+            <Box sx={{ display: { xs: 'none', lg: 'flex' } }}>
+              <Nav className="align-items-center me-3">
+                <Nav.Link as={Link} to="/" onClick={() => handleNavItemClick("/")}>
+                  Home
+                </Nav.Link>
+                <Nav.Link as={Link} to="/team" onClick={() => handleNavItemClick("/team")}>
+                  Team
+                </Nav.Link>
+                <Nav.Link as={Link} to="/contactus" onClick={() => handleNavItemClick("/contactus")}>
+                  Contact Us
+                </Nav.Link>
+                <Nav.Link as={Link} to="/reviews" onClick={() => handleNavItemClick("/reviews")}>
+                  Reviews
+                </Nav.Link>
+              </Nav>
+
+              <Nav className="d-flex align-items-center">
+                {!isAuthenticated ? (
+                  <>
+                    <Nav.Link as={Link} to="/register" onClick={() => handleNavItemClick("/register")}>
+                      Register
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/login" onClick={() => handleNavItemClick("/login")}>
+                      Login
+                    </Nav.Link>
+                  </>
+                ) : (
+                  <Dropdown align="end">
+                    <Dropdown.Toggle
+                      as="div"
+                      className="d-flex align-items-center"
+                    >
+                      <Image
+                        src={userProfilePic}
+                        roundedCircle
+                        width="45"
+                        height="45"
+                        className="me-2"
+                        style={{ cursor: "pointer" }}
+                      />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item as={Link} to="/profile" onClick={() => handleNavItemClick("/profile")}>
+                        My Profile
+                      </Dropdown.Item>
+                      <Dropdown.Divider />
+                      {userGroups && userGroups.includes("admin") ? (
+                        <Dropdown.Item as={Link} to="/admin-dashboard" onClick={() => handleNavItemClick("/admin-dashboard")}>
+                          Admin Dashboard
+                        </Dropdown.Item>
+                      ) : (
+                        <Dropdown.Item as={Link} to="/userdashboard" onClick={() => handleNavItemClick("/userdashboard")}>
+                          My Dashboard
+                        </Dropdown.Item>
+                      )}
+                      <Dropdown.Divider />
+                      <Dropdown.Item
+                        onClick={handleLogout}
+                        className="text-danger"
+                      >
+                        Logout
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )}
+              </Nav>
+            </Box>
+            
+            {/* Mobile Navigation Toggle */}
+            <Navbar.Toggle 
+              aria-controls="offcanvasNavbar" 
+              onClick={() => setShowOffcanvas(!showOffcanvas)}
+              className="d-lg-none"
+            />
+          </Toolbar>
+        </Navbar>
+        
+        {/* Offcanvas Menu */}
+        <Navbar.Offcanvas 
+          id="offcanvasNavbar" 
+          placement="end" 
+          show={showOffcanvas} 
+          onHide={() => setShowOffcanvas(false)}
+        >
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className="mx-auto">OffWorldMedia</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Nav className="mx-auto align-items-center">
-              <Nav.Link as={Link} to="/">
+            <Nav className="flex-column">
+              <Nav.Link onClick={() => handleNavItemClick("/")}>
                 Home
               </Nav.Link>
-
-              <Nav.Link as={Link} to="/team">
+              <Nav.Link onClick={() => handleNavItemClick("/team")}>
                 Team
               </Nav.Link>
-              <Nav.Link as={Link} to="/contactus">
+              <Nav.Link onClick={() => handleNavItemClick("/contactus")}>
                 Contact Us
               </Nav.Link>
-              <Nav.Link as={Link} to="/reviews">Reviews</Nav.Link>
-            </Nav>
-            <Nav className="ms-auto d-flex align-items-center">
+              <Nav.Link onClick={() => handleNavItemClick("/reviews")}>
+                Reviews
+              </Nav.Link>
+              
               {!isAuthenticated ? (
                 <>
-                  <Nav.Link as={Link} to="/register">
+                  <Nav.Link onClick={() => handleNavItemClick("/register")}>
                     Register
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/login">
+                  <Nav.Link onClick={() => handleNavItemClick("/login")}>
                     Login
                   </Nav.Link>
                 </>
               ) : (
-                <Dropdown align="end">
-                  <Dropdown.Toggle
-                    as="div"
-                    className="d-flex align-items-center"
-                  >
-                    <Image
-                      src={userProfilePic}
-                      roundedCircle
-                      width="45"
-                      height="45"
-                      className="me-2"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Link} to="/profile">
-                      My Profile
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    {userGroups && userGroups.includes("admin") ? (
-                      <Dropdown.Item as={Link} to="/admin-dashboard">
-                        Admin Dashboard
-                      </Dropdown.Item>
-                    ) : (
-                      <Dropdown.Item as={Link} to="/userdashboard">
-                        My Dashboard
-                      </Dropdown.Item>
-                    )}
-                    <Dropdown.Divider />
-                    <Dropdown.Item
-                      onClick={handleLogout}
-                      className="text-danger"
-                    >
-                      Logout
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                <>
+                  <Nav.Link onClick={() => handleNavItemClick("/profile")}>
+                    My Profile
+                  </Nav.Link>
+                  {userGroups && userGroups.includes("admin") ? (
+                    <Nav
+                      .Link onClick={() => handleNavItemClick("/admin-dashboard")}>
+                      Admin Dashboard
+                    </Nav.Link>
+                  ) : (
+                    <Nav.Link onClick={() => handleNavItemClick("/userdashboard")}>
+                      My Dashboard
+                    </Nav.Link>
+                  )}
+                  <Nav.Link onClick={handleLogout} className="text-danger">
+                    Logout
+                  </Nav.Link>
+                </>
               )}
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>
-    </Navbar>
+    </AppBar>
   );
 }
 
