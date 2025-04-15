@@ -1,50 +1,85 @@
 import { Container, Row, Col } from "react-bootstrap";
+import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook, faTwitter, faLinkedin, faGithub, faInstagram, faTiktok, faYoutube } from "@fortawesome/free-brands-svg-icons";
+import { 
+  faFacebook, 
+  faTwitter, 
+  faLinkedin, 
+  faGithub, 
+  faInstagram, 
+  faTiktok, 
+  faYoutube 
+} from "@fortawesome/free-brands-svg-icons";
 
 const Footer = () => {
   const twitter = import.meta.env.VITE_TWITTER;
   const facebook = import.meta.env.VITE_FACEBOOK;
   const instagram = import.meta.env.VITE_INSTAGRAM;
   const tiktok = import.meta.env.VITE_TIKTOK;
-  const youtube = import.meta.env.VITE_YOUTUBE
+  const youtube = import.meta.env.VITE_YOUTUBE;
+
+  const socialLinks = [
+    { icon: faFacebook, url: facebook },
+    { icon: faTwitter, url: twitter },
+    { icon: faInstagram, url: instagram },
+    { icon: faTiktok, url: tiktok },
+    { icon: faYoutube, url: youtube },
+  ];
 
   return (
-    <footer
-      className="py-4 mt-5 text-white"
-      style={{
+    <Paper 
+      square 
+      elevation={3} 
+      sx={{ 
+        marginTop: 0,
+        padding: 0,
         background: "linear-gradient(180deg, rgb(63, 77, 60), rgb(25, 52, 32))",
-        color: "orange",
+        color: "#fff",
+        borderRadius: 0
       }}
     >
-      <Container>
-        <Row className="align-items-center text-center text-md-start">
-          <Col md={6}>
-            <p className="mb-0">
-              &copy; {new Date().getFullYear()} <span className="text-uppercase">Off World Media Africa.</span> All Rights Reserved.
-            </p>
-          </Col>
-          <Col md={6} className="d-flex justify-content-center justify-content-md-end gap-3">
-            <Link to={facebook} target="_blank" rel="noopener noreferrer" className="text-white">
-              <FontAwesomeIcon icon={faFacebook} size="lg" />
-            </Link>
-            <Link to={twitter} target="_blank" rel="noopener noreferrer" className="text-white">
-              <FontAwesomeIcon icon={faTwitter} size="lg" />
-            </Link>
-            <Link to={tiktok} target="_blank" rel="noopener noreferrer" className="text-white">
-              <FontAwesomeIcon icon={faTiktok} size="lg" />
-            </Link>
-            <Link to={instagram} target="_blank" rel="noopener noreferrer" className="text-white">
-              <FontAwesomeIcon icon={faInstagram} size="lg" />
-            </Link>
-            <Link to={youtube} target="_blank" rel="noopener noreferrer" className="text-white">
-              <FontAwesomeIcon icon={faYoutube} size="lg" />
-            </Link>
-          </Col>
-        </Row>
-      </Container>
-    </footer>
+      <Box py={3}>
+        <Container>
+          <Row className="align-items-center text-center text-md-start">
+            <Col md={6}>
+              <Typography variant="body1" fontWeight="medium">
+                &copy; {new Date().getFullYear()}{" "}
+                <Box component="span" sx={{ textTransform: "uppercase", color: "orange" }}>
+                  Off World Media Africa.
+                </Box>{" "}
+                All Rights Reserved.
+              </Typography>
+            </Col>
+            
+            <Col md={6} className="d-flex justify-content-center justify-content-md-end mt-3 mt-md-0">
+              <Box sx={{ display: "flex", gap: 1 }}>
+                {socialLinks.map((social, index) => (
+                  <IconButton 
+                    key={index}
+                    component={Link} 
+                    to={social.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    sx={{ 
+                      color: "white",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        color: "orange",
+                        transform: "translateY(-3px)"
+                      }
+                    }}
+                    size="medium"
+                  >
+                    <FontAwesomeIcon icon={social.icon} size="lg" />
+                  </IconButton>
+                ))}
+              </Box>
+            </Col>
+          </Row>
+        </Container>
+      </Box>
+    </Paper>
   );
 };
 
