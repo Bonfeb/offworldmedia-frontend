@@ -142,7 +142,7 @@ function NavBar() {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className="mx-auto">OffWorldMedia</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body className="d-flex flex-column justify-content-center">
+          <Offcanvas.Body className="d-flex flex-column">
             <Nav className="flex-column text-center">
               <Nav.Link onClick={() => handleNavItemClick("/")}>
                 Home
