@@ -142,46 +142,45 @@ function NavBar() {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className="mx-auto">OffWorldMedia</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body className="d-flex flex-column">
-            <Nav className="flex-column text-center">
-              <Nav.Link onClick={() => handleNavItemClick("/")}>
+          <Offcanvas.Body className="d-flex flex-column justify-content-start">
+            <Nav className="flex-column text-center mt-3">
+              <Nav.Link onClick={() => handleNavItemClick("/")} className="py-2">
                 Home
               </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/team")}>
+              <Nav.Link onClick={() => handleNavItemClick("/team")} className="py-2">
                 Team
               </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/contactus")}>
+              <Nav.Link onClick={() => handleNavItemClick("/contactus")} className="py-2">
                 Contact Us
               </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/reviews")}>
+              <Nav.Link onClick={() => handleNavItemClick("/reviews")} className="py-2">
                 Reviews
               </Nav.Link>
               
               {!isAuthenticated ? (
                 <>
-                  <Nav.Link onClick={() => handleNavItemClick("/register")}>
+                  <Nav.Link onClick={() => handleNavItemClick("/register")} className="py-2">
                     Register
                   </Nav.Link>
-                  <Nav.Link onClick={() => handleNavItemClick("/login")}>
+                  <Nav.Link onClick={() => handleNavItemClick("/login")} className="py-2">
                     Login
                   </Nav.Link>
                 </>
               ) : (
                 <>
-                  <Nav.Link onClick={() => handleNavItemClick("/profile")}>
+                  <Nav.Link onClick={() => handleNavItemClick("/profile")} className="py-2">
                     My Profile
                   </Nav.Link>
                   {userGroups && userGroups.includes("admin") ? (
-                    <Nav
-                      .Link onClick={() => handleNavItemClick("/admin-dashboard")}>
+                    <Nav.Link onClick={() => handleNavItemClick("/admin-dashboard")} className="py-2">
                       Admin Dashboard
                     </Nav.Link>
                   ) : (
-                    <Nav.Link onClick={() => handleNavItemClick("/userdashboard")}>
+                    <Nav.Link onClick={() => handleNavItemClick("/userdashboard")} className="py-2">
                       My Dashboard
                     </Nav.Link>
                   )}
-                  <Nav.Link onClick={handleLogout} className="text-danger">
+                  <Nav.Link onClick={handleLogout} className="text-danger py-2">
                     Logout
                   </Nav.Link>
                 </>
