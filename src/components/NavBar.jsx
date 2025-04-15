@@ -18,17 +18,12 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Determine whether to show navbar based on auth status and user groups
   useEffect(() => {
-    // Check if user is authenticated and is an admin
     const isAdmin = isAuthenticated && userGroups && userGroups.includes("admin");
-    
-    // Hide navbar if user is an admin and on an admin page
     const isAdminPage = location.pathname.startsWith("/admin-dashboard");
     setShowNavbar(!(isAdmin && isAdminPage));
   }, [isAuthenticated, userGroups, location.pathname]);
 
-  // If navbar should be hidden, return null
   if (!showNavbar) {
     return null;
   }
@@ -38,10 +33,15 @@ function NavBar() {
     navigate("/login");
   };
 
-  // Function to close the offcanvas when clicking a menu item
   const handleNavItemClick = (path) => {
     setShowOffcanvas(false);
     navigate(path);
+  };
+
+  // Gradient style for the offcanvas
+  const offcanvasStyle = {
+    background: "linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460, #533483)",
+    color: "white"
   };
 
   return (
@@ -123,7 +123,6 @@ function NavBar() {
               </Nav>
             </Box>
             
-            {/* Mobile Navigation Toggle */}
             <Navbar.Toggle 
               aria-controls="offcanvasNavbar" 
               onClick={() => setShowOffcanvas(!showOffcanvas)}
@@ -132,51 +131,52 @@ function NavBar() {
           </Toolbar>
         </Navbar>
         
-        {/* Offcanvas Menu */}
+        {/* Offcanvas Menu with Gradient Background */}
         <Navbar.Offcanvas 
           id="offcanvasNavbar" 
           placement="end" 
           show={showOffcanvas} 
           onHide={() => setShowOffcanvas(false)}
+          style={offcanvasStyle}
         >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title className="mx-auto">OffWorldMedia</Offcanvas.Title>
+          <Offcanvas.Header closeButton closeVariant="white">
+            <Offcanvas.Title className="mx-auto text-white">OffWorldMedia</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body className="d-flex flex-column justify-content-start">
             <Nav className="flex-column text-center mt-3">
-              <Nav.Link onClick={() => handleNavItemClick("/")} className="py-2">
+              <Nav.Link onClick={() => handleNavItemClick("/")} className="py-2 text-white">
                 Home
               </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/team")} className="py-2">
+              <Nav.Link onClick={() => handleNavItemClick("/team")} className="py-2 text-white">
                 Team
               </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/contactus")} className="py-2">
+              <Nav.Link onClick={() => handleNavItemClick("/contactus")} className="py-2 text-white">
                 Contact Us
               </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/reviews")} className="py-2">
+              <Nav.Link onClick={() => handleNavItemClick("/reviews")} className="py-2 text-white">
                 Reviews
               </Nav.Link>
               
               {!isAuthenticated ? (
                 <>
-                  <Nav.Link onClick={() => handleNavItemClick("/register")} className="py-2">
+                  <Nav.Link onClick={() => handleNavItemClick("/register")} className="py-2 text-white">
                     Register
                   </Nav.Link>
-                  <Nav.Link onClick={() => handleNavItemClick("/login")} className="py-2">
+                  <Nav.Link onClick={() => handleNavItemClick("/login")} className="py-2 text-white">
                     Login
                   </Nav.Link>
                 </>
               ) : (
                 <>
-                  <Nav.Link onClick={() => handleNavItemClick("/profile")} className="py-2">
+                  <Nav.Link onClick={() => handleNavItemClick("/profile")} className="py-2 text-white">
                     My Profile
                   </Nav.Link>
                   {userGroups && userGroups.includes("admin") ? (
-                    <Nav.Link onClick={() => handleNavItemClick("/admin-dashboard")} className="py-2">
+                    <Nav.Link onClick={() => handleNavItemClick("/admin-dashboard")} className="py-2 text-white">
                       Admin Dashboard
                     </Nav.Link>
                   ) : (
-                    <Nav.Link onClick={() => handleNavItemClick("/userdashboard")} className="py-2">
+                    <Nav.Link onClick={() => handleNavItemClick("/userdashboard")} className="py-2 text-white">
                       My Dashboard
                     </Nav.Link>
                   )}
