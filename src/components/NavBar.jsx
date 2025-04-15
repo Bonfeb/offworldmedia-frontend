@@ -45,7 +45,7 @@ function NavBar() {
   };
 
   return (
-    <AppBar position="static" color="primary" className="mb-3">
+    <AppBar position="static" color="primary" className="m-0 p-0">
       <Container fluid>
         <Navbar expand="lg" variant="dark" className="p-0 w-100">
           <Toolbar className="w-100 p-0">
@@ -142,8 +142,8 @@ function NavBar() {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className="mx-auto">OffWorldMedia</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Nav className="flex-column">
+          <Offcanvas.Body className="d-flex flex-column justify-content-center">
+            <Nav className="flex-column text-center">
               <Nav.Link onClick={() => handleNavItemClick("/")}>
                 Home
               </Nav.Link>

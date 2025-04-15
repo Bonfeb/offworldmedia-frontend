@@ -90,10 +90,9 @@ function Home() {
 
   // Render services
   return (
-    <Container fluid className="p-0">
+    <Container fluid className="p-0 m-0">
       {/* Part 1: Hero Section */}
-
-      <Container fluid className="hero-section py-5">
+      <Container fluid className="hero-section py-5 m-0">
         <h1>Relate to Our Creative Designs Beyond Expectations</h1>
         <p>
           Leading digital agency with solid design and development expertise.
@@ -101,8 +100,7 @@ function Home() {
       </Container>
 
       {/* Part 2: About Section */}
-
-      <Container fluid className="about-section py-5">
+      <Container fluid className="about-section py-5 m-0">
         <Row className="text-center">
           <h2>About Us</h2>
           <hr style={{ color: "red" }} />
@@ -115,7 +113,7 @@ function Home() {
       </Container>
 
       {/* Part 3: Studio Work Showcase */}
-      <section className="showcase-section py-5">
+      <section className="showcase-section py-5 m-0">
         <Container>
           <Row>
             {/* Left Column - Image Carousel */}
@@ -161,8 +159,7 @@ function Home() {
       </section>
 
       {/* Part 4: Services Offered */}
-
-      <Container fluid className="services text-center py-4">
+      <Container fluid className="services text-center py-4 m-0">
         <h2 style={{ color: "#75aadb" }}>
           We Offer Awesome{" "}
           <span style={{ color: "#d12d33" }}>
