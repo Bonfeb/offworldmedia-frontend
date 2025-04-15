@@ -10,11 +10,12 @@ import {
   Carousel,
 } from "react-bootstrap";
 import API from "../api";
-import { AuthContext } from "../context/AuthContext"; // Import your auth context
+import { AuthContext } from "../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 import { media_url } from "../utils/constants";
+import "../assets/css/Reviews.css"; // Make sure to import your CSS file
 
 // Function to chunk reviews into groups of 3
 const chunkReviews = (reviews, chunkSize) => {
@@ -49,7 +50,7 @@ function Reviews({ reviews }) {
   useEffect(() => {
     API.get("/services/")
       .then((response) => {
-        console.log("Fetched services:", response.data); // Debugging
+        console.log("Fetched services:", response.data);
         setServices(response.data);
       })
       .catch((error) => console.error("Error fetching services:", error));
@@ -91,10 +92,10 @@ function Reviews({ reviews }) {
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="reviews-container p-0">
       {/* Reviews Section */}
       <Row
-        className="py-5"
+        className="py-5 m-0"
         style={{
           background:
             "linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.5)), url('/review.jpg') no-repeat center center fixed",
@@ -115,15 +116,12 @@ function Reviews({ reviews }) {
             all our reviews!
           </a>
         </p>
-        <Row>
+        <Row className="m-0">
           <Carousel interval={5000} pause="hover">
             {chunkReviews(reviewList, 3).map(
-              (
-                chunk,
-                chunkIndex // Use reviewList instead of reviews
-              ) => (
+              (chunk, chunkIndex) => (
                 <Carousel.Item key={chunkIndex}>
-                  <Row className="justify-content-center">
+                  <Row className="justify-content-center m-0">
                     {chunk.map((review, index) => (
                       <Col key={index} md={4} className="mb-4">
                         <Card className="review-card">
@@ -164,7 +162,7 @@ function Reviews({ reviews }) {
                               {review.comment}
                             </Card.Text>
 
-                            <p className="text-muted">
+                            <p className="text-muted mb-0">
                               <strong>Reviewed At:</strong>{" "}
                               <i>
                                 {new Date(review.created_at).toDateString()}
@@ -183,18 +181,19 @@ function Reviews({ reviews }) {
       </Row>
       {/* Add Review Section */}
       <fieldset
-        className="mt-2 text-white rounded"
+        className="m-0 text-white rounded-0"
         style={{
           background:
             "linear-gradient(to right, rgb(54, 61, 73), rgb(32, 2, 65))",
           border: "1px solid rgba(255, 255, 255, 0.3)",
+          paddingBottom: "20px"
         }}
       >
         <legend className="text-center fw-bold text-light px-3">
           Add a Review
         </legend>
 
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="pb-0">
           <Form.Group>
             {/* Service Selection */}
             <Form.Group className="mb-3">
@@ -254,8 +253,8 @@ function Reviews({ reviews }) {
             />
           </Form.Group>
 
-          <Row className="justify-content-center">
-            <Button variant="success" type="submit" className="mt-3 w-50">
+          <Row className="justify-content-center m-0">
+            <Button variant="success" type="submit" className="mt-3 w-50 mb-0">
               Submit Review
             </Button>
           </Row>
