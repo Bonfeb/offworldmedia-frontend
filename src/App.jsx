@@ -35,10 +35,14 @@ import PhotoShooting from "./pages/admin/services/PhotoShooting";
 
 function App() {
   return (
-    <>
-      <Router>
+    <Router>
+      <div style={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        minHeight: "100vh" // Ensures the app container takes at least the full viewport height
+      }}>
         <NavBar />
-        <div>
+        <div style={{ flex: "1 0 auto" }}> {/* This makes content area expand to push footer down */}
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -81,8 +85,8 @@ function App() {
           </Routes>
         </div>
         <Footer />
-      </Router>
-    </>
+      </div>
+    </Router>
   );
 }
 

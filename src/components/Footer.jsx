@@ -32,11 +32,11 @@ const Footer = () => {
       square 
       elevation={3} 
       sx={{ 
-        marginTop: 0,
-        padding: 0,
+        width: "100%",
         background: "linear-gradient(180deg, rgb(63, 77, 60), rgb(25, 52, 32))",
         color: "#fff",
-        borderRadius: 0
+        borderRadius: 0,
+        flexShrink: 0 // Prevents the footer from shrinking
       }}
     >
       <Box py={3}>
