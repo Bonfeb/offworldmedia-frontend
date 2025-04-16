@@ -14,17 +14,17 @@ export function AuthProvider({ children }) {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [authTokens, setAuthTokens] = useState(() => {
-    const storedTokens = localStorage.getItem("authTokens");
+    const storedTokens = sessionStorage.getItem("authTokens");
     return storedTokens ? JSON.parse(storedTokens) : null;
   });
 
   const [user, setUser] = useState(() => {
-    const storedTokens = localStorage.getItem("authTokens");
+    const storedTokens = sessionStorage.getItem("authTokens");
     if (storedTokens) {
       try {
         const parsedTokens = JSON.parse(storedTokens);
-        if (parsedTokens?.access && typeof parsedTokens.access === "string") {
-          return jwtDecode(parsedTokens.access);
+        if (parsedTokens?.access_token && typeof parsedTokens.access_token === "string") {
+          return jwtDecode(parsedTokens.access_token);
         }
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -74,7 +74,11 @@ export function AuthProvider({ children }) {
       
       setUser(jwtDecode(response.data.access_token));
 
-      localStorage.setItem("authTokens", JSON.stringify(response.data));
+      // Store authTokens in sessionStorage
+      sessionStorage.setItem("authTokens", JSON.stringify(response.data));
+      
+      // Store access token separately for API interceptor
+      sessionStorage.setItem("accessToken", response.data.access_token);
 
       const groups = response.data.groups ||  [];
       setUserGroups(groups);
@@ -94,7 +98,10 @@ export function AuthProvider({ children }) {
       setUserProfilePic("");
       setAuthTokens(null);
       setUser(null);
-      localStorage.removeItem("authTokens");
+      
+      // Remove tokens from sessionStorage
+      sessionStorage.removeItem("authTokens");
+      sessionStorage.removeItem("accessToken");
     } catch (error) {
       console.error("Logout failed:", error);
     }
