@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 
@@ -97,8 +98,8 @@ const Register = () => {
     });
 
     try {
-      
-      const response = await API.post("/register/", formData, {
+
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       
