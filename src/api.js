@@ -22,10 +22,9 @@ API.interceptors.request.use((config) => {
     const accessToken = sessionStorage.getItem("accessToken"); // ✅ Store in sessionStorage (not localStorage)
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
+    } 
   }
-  
+  return config;
 });
 
 API.interceptors.response.use(

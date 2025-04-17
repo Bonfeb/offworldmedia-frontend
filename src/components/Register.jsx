@@ -99,7 +99,7 @@ const Register = () => {
 
     try {
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register/`, formData, {
+      const response = await API.post("/register/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       
