@@ -33,6 +33,7 @@ import VideoRecording from "./pages/admin/services/VideoRecording";
 import AudioRecording from "./pages/admin/services/AudioRecording";
 import PhotoShooting from "./pages/admin/services/PhotoShooting";
 import ResetPassword from "./components/auth/ResetPassword";
+import ForgotPassword from "./components/auth/ForgotPassword";
 
 function App() {
   return (
@@ -66,7 +67,7 @@ function App() {
               element={<FillEventDetails />}
             />
             <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
-            <Route path="/reset-password/" element={<ResetPassword />} />
+            <Route path="/forgot-password/" element={<ForgotPassword />} />
 
 
             {/*Admin Dashboard with Nested Routes*/}

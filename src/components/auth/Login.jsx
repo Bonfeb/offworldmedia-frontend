@@ -91,7 +91,7 @@ const Login = () => {
           </p>
           <p className="text-center mt-3">
             Forgot Password? {" "}
-            <span className="register-link" onClick={() => navigate("/reset-password")}>
+            <span className="register-link" onClick={() => navigate("/forgot-password")}>
                 Reset
             </span>
           </p>
