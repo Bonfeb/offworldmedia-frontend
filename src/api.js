@@ -3,8 +3,6 @@ import axios from "axios";
 const API = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true, // ✅ Automatically send cookies
-  xsrfCookieName: 'csrftoken',
-  xsrfHeaderName: 'X-CSRFToken',
   //headers: {"Content-Type": "application/json",},
 });
 

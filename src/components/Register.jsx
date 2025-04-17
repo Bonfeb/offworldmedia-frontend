@@ -43,7 +43,7 @@ const VisuallyHiddenInput = styled('input')({
 
 // Styled Card with gradient background
 const GradientCard = styled(Card)({
-  background: 'linear-gradient(90deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+  background: 'linear-gradient(90deg,rgb(129, 177, 199) 0%,rgb(172, 108, 145) 50%, #90caf9 100%)',
   borderRadius: '12px',
   boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)'
 });
@@ -112,6 +112,7 @@ const Register = () => {
                     "Registration failed. Please try again.");
       
       console.error("Registration failed:", error.response?.data || error.message);
+      console.error("Error Response:", error.response);
       setErrorMessage(errMsg);
       setShowErrorAlert(true);
     }
