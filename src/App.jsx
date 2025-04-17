@@ -66,6 +66,8 @@ function App() {
               element={<FillEventDetails />}
             />
             <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+            <Route path="/reset-password/" element={<ResetPassword />} />
+
 
             {/*Admin Dashboard with Nested Routes*/}
             <Route path="/admin-dashboard" element={<AdminDashboard />}>
