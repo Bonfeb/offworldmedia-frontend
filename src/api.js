@@ -5,9 +5,7 @@ const API = axios.create({
   withCredentials: true, // ✅ Automatically send cookies
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
-  headers: {
-    "Content-Type": "application/json",
-  },
+  //headers: {"Content-Type": "application/json",},
 });
 
 let isRefreshing = false;

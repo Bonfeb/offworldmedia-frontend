@@ -97,6 +97,7 @@ const Register = () => {
     });
 
     try {
+      
       const response = await API.post("/register/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
