@@ -40,6 +40,13 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
+// Styled Card with gradient background
+const GradientCard = styled(Card)({
+  background: 'linear-gradient(90deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+  borderRadius: '12px',
+  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)'
+});
+
 const Register = () => {
   const navigate = useNavigate();
 
@@ -75,35 +82,42 @@ const Register = () => {
     e.preventDefault();
 
     if (userData.password !== userData.confirmPassword) {
-      setErrorMessage("Passwords do not match!");
+      const errMsg = "Passwords do not match!";
+      console.error("Registration failed:", errMsg);
+      setErrorMessage(errMsg);
       setShowErrorAlert(true);
       return;
     }
 
     const formData = new FormData();
     Object.keys(userData).forEach((key) => {
-      if (userData[key] !== null) {
+      if (userData[key] !== null && key !== 'confirmPassword') {
         formData.append(key, userData[key]);
       }
     });
 
     try {
-      await API.post("/register/", formData, {
+      const response = await API.post("/register/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      
+      console.log("Registration successful:", response.data);
       setShowSuccessDialog(true);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 
-                     (typeof error.response?.data === 'object' ? 
-                      Object.values(error.response.data).flat().join(", ") : 
-                      "Registration failed. Please try again."));
+      const errMsg = error.response?.data?.message || 
+                   (typeof error.response?.data === 'object' ? 
+                    Object.values(error.response.data).flat().join(", ") : 
+                    "Registration failed. Please try again.");
+      
+      console.error("Registration failed:", error.response?.data || error.message);
+      setErrorMessage(errMsg);
       setShowErrorAlert(true);
     }
   };
 
   return (
     <Container component="main" maxWidth="md" sx={{ mt: 8, mb: 8 }}>
-      <Card className="shadow-lg border-0">
+      <GradientCard className="shadow-lg border-0">
         <Card.Body className="p-5">
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
             <Avatar sx={{ m: 1, bgcolor: 'primary.main', width: 56, height: 56 }}>
@@ -269,7 +283,7 @@ const Register = () => {
             </Typography>
           </Box>
         </Card.Body>
-      </Card>
+      </GradientCard>
 
       {/* Success Dialog */}
       <Dialog
