@@ -38,6 +38,7 @@ const NewService = ({ show, handleClose, refreshServices }) => {
       console.log("Access Token being sent:", accessToken); // ✅ Confirm token is present
       console.log("Form Data being sent:", formData); // Optional debug info
 
+
       await API.post("/service/", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",

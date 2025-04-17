@@ -3,6 +3,8 @@ import axios from "axios";
 const API = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true, // ✅ Automatically send cookies
+  xsrfCookieName: 'csrftoken',
+  xsrfHeaderName: 'X-CSRFToken',
   headers: {
     "Content-Type": "application/json",
   },
@@ -17,11 +19,17 @@ const onRefreshed = (token) => {
 };
 
 API.interceptors.request.use((config) => {
-  const accessToken = sessionStorage.getItem("accessToken"); // ✅ Store in sessionStorage (not localStorage)
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+  const publicEndpoints = ['/register/', '/login/', '/token/refresh/', '/services/', '/team/', '/contactus/', '/reviews/'];
+  const isPublicEndpoint = publicEndpoints.some(endpoint => 
+    config.url.includes(endpoint));
+  if (!isPublicEndpoint){
+    const accessToken = sessionStorage.getItem("accessToken"); // ✅ Store in sessionStorage (not localStorage)
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
   }
-  return config;
+  
 });
 
 API.interceptors.response.use(

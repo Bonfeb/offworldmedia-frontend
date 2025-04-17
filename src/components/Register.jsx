@@ -1,7 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
-import { Container, Card, Form, Row, Col, Button, Modal } from "react-bootstrap";
+
+// Material UI imports
+import { 
+  TextField, 
+  Button, 
+  Typography, 
+  Box, 
+  Grid, 
+  Paper, 
+  Avatar, 
+  Container,
+  Alert,
+  Snackbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+// React Bootstrap components for layout
+import { Card, Row, Col } from "react-bootstrap";
+
+// Styled component for file input
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,19 +52,23 @@ const Register = () => {
     confirmPassword: "",
     phone: "",
     address: "",
-    profile_pic: null, // Now handling file uploads correctly
+    profile_pic: null,
   });
 
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showFailureModal, setShowFailureModal] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [fileSelected, setFileSelected] = useState(false);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e) => {
-    setUserData({ ...userData, profile_pic: e.target.files[0] }); // Properly handling file selection
+    if (e.target.files[0]) {
+      setUserData({ ...userData, profile_pic: e.target.files[0] });
+      setFileSelected(true);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -35,183 +76,235 @@ const Register = () => {
 
     if (userData.password !== userData.confirmPassword) {
       setErrorMessage("Passwords do not match!");
-      setShowFailureModal(true);
+      setShowErrorAlert(true);
       return;
     }
 
     const formData = new FormData();
     Object.keys(userData).forEach((key) => {
-      formData.append(key, userData[key]);
+      if (userData[key] !== null) {
+        formData.append(key, userData[key]);
+      }
     });
 
     try {
       await API.post("/register/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setShowSuccessModal(true);
+      setShowSuccessDialog(true);
     } catch (error) {
-      setErrorMessage(error.response?.data || "Registration failed. Please try again.");
-      setShowFailureModal(true);
+      setErrorMessage(error.response?.data?.message || 
+                     (typeof error.response?.data === 'object' ? 
+                      Object.values(error.response.data).flat().join(", ") : 
+                      "Registration failed. Please try again."));
+      setShowErrorAlert(true);
     }
   };
 
   return (
-    <Container fluid className="d-flex justify-content-center align-items-center register-container">
-      <Card className="p-4 shadow-sm" style={{ width: "500px" }}>
-        <Card.Body>
-          <h3 className="text-center mb-4">Create an Account</h3>
-          <Form onSubmit={handleSubmit}>
-            <Row>
-              <Col>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="text"
-                    name="first_name"
-                    placeholder="First Name"
-                    value={userData.first_name}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="text"
-                    name="last_name"
-                    placeholder="Last Name"
-                    value={userData.last_name}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+    <Container component="main" maxWidth="md" sx={{ mt: 8, mb: 8 }}>
+      <Card className="shadow-lg border-0">
+        <Card.Body className="p-5">
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
+            <Avatar sx={{ m: 1, bgcolor: 'primary.main', width: 56, height: 56 }}>
+              <PersonAddIcon fontSize="large" />
+            </Avatar>
+            <Typography component="h1" variant="h4" sx={{ mt: 2, fontWeight: 'bold' }}>
+              Create an Account
+            </Typography>
+          </Box>
 
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={userData.username}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="First Name"
+                  name="first_name"
+                  value={userData.first_name}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Last Name"
+                  name="last_name"
+                  value={userData.last_name}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Username"
+                  name="username"
+                  value={userData.username}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  type="email"
+                  label="Email Address"
+                  name="email"
+                  value={userData.email}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="password"
+                  label="Password"
+                  name="password"
+                  value={userData.password}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="password"
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  value={userData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  name="phone"
+                  value={userData.phone}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Address"
+                  name="address"
+                  value={userData.address}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                  multiline
+                  rows={2}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Button
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                    sx={{ mr: 2 }}
+                  >
+                    Upload Profile Picture
+                    <VisuallyHiddenInput 
+                      type="file" 
+                      name="profile_pic"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                  </Button>
+                  {fileSelected && <Typography variant="body2" color="text.secondary">
+                    File selected: {userData.profile_pic?.name}
+                  </Typography>}
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  sx={{ 
+                    mt: 2, 
+                    py: 1.5,
+                    fontSize: '1rem',
+                    textTransform: 'none'
+                  }}
+                >
+                  Register Account
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
 
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                value={userData.email}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Row>
-              <Col>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={userData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Repeat Password"
-                    value={userData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                name="phone"
-                placeholder="Phone Number"
-                value={userData.phone}
-                onChange={handleChange}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                name="address"
-                placeholder="Address"
-                value={userData.address}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            {/* File Upload for Profile Picture */}
-            <Form.Group className="mb-3">
-              <Form.Label>Profile Picture</Form.Label>
-              <Form.Control
-                type="file"
-                name="profile_pic"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </Form.Group>
-
-            <Button variant="primary" type="submit" className="w-100">
-              Register Account
-            </Button>
-          </Form>
-
-          <p className="text-center mt-3">
-            Already have an account?{" "}
-            <span className="login-link" onClick={() => navigate("/login")}>
-              Login
-            </span>
-          </p>
+          <Box sx={{ mt: 4, textAlign: 'center' }}>
+            <Typography variant="body1">
+              Already have an account?{" "}
+              <Typography
+                component="span"
+                variant="body1"
+                color="primary"
+                sx={{ 
+                  cursor: 'pointer',
+                  fontWeight: 'medium',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Log in
+              </Typography>
+            </Typography>
+          </Box>
         </Card.Body>
       </Card>
 
-      {/* Success Modal */}
-      <Modal show={showSuccessModal} onHide={() => navigate("/login")} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Registration Successful</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Your account has been created successfully. You can now log in.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => navigate("/login")}>
+      {/* Success Dialog */}
+      <Dialog
+        open={showSuccessDialog}
+        onClose={() => navigate("/login")}
+      >
+        <DialogTitle>Registration Successful</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Your account has been created successfully. You can now log in.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => navigate("/login")} variant="contained" autoFocus>
             Go to Login
           </Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
 
-      {/* Failure Modal */}
-      <Modal show={showFailureModal} onHide={() => setShowFailureModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Registration Failed</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      {/* Error Alert */}
+      <Snackbar 
+        open={showErrorAlert} 
+        autoHideDuration={6000} 
+        onClose={() => setShowErrorAlert(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setShowErrorAlert(false)} 
+          severity="error" 
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {errorMessage}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowFailureModal(false)}>
-            Try Again
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
