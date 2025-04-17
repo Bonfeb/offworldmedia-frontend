@@ -6,8 +6,8 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Team from "./pages/Team";
 import Service from "./pages/Service";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
 import "./assets/css/Home.css";
 import "./assets/css/Login.css";
 import "./assets/css/Register.css";
@@ -32,6 +32,7 @@ import AdminMessages from "./pages/admin/AdminMessages";
 import VideoRecording from "./pages/admin/services/VideoRecording";
 import AudioRecording from "./pages/admin/services/AudioRecording";
 import PhotoShooting from "./pages/admin/services/PhotoShooting";
+import ResetPassword from "./components/auth/ResetPassword";
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
               path="/event-details/:serviceId/:bookingId?"
               element={<FillEventDetails />}
             />
+            <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
 
             {/*Admin Dashboard with Nested Routes*/}
             <Route path="/admin-dashboard" element={<AdminDashboard />}>

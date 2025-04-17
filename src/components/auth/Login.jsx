@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { Container, Card, Form, Button, Modal } from "react-bootstrap";
 
 const Login = () => {
@@ -87,6 +87,12 @@ const Login = () => {
             Don't have an account?{" "}
             <span className="register-link" onClick={() => navigate("/register")}>
               Register
+            </span>
+          </p>
+          <p className="text-center mt-3">
+            Forgot Password? {" "}
+            <span className="register-link" onClick={() => navigate("/reset-password")}>
+                Reset
             </span>
           </p>
         </Card.Body>

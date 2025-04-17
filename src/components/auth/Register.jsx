@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import API from "../api";
+import API from "../../api";
 
 // Material UI imports
 import { 
