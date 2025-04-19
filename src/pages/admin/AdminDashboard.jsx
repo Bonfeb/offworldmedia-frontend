@@ -32,6 +32,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { Card, Box, Typography, CircularProgress, Badge } from "@mui/material";
 import NewService from "./services/NewService";
 import BookingModals from "./bookings/BookingModals";
+import BookingNotification from "./bookings/BookingNotification";
 
 const AdminDashboard = () => {
   const { userProfilePic, firstName, lastName, logout, user } =
@@ -558,7 +559,7 @@ const AdminDashboard = () => {
                   <FontAwesomeIcon icon={faEnvelope} />
                 </span>
                 <span className="mx-2 text-light" style={{ cursor: "pointer" }}>
-                  <FontAwesomeIcon icon={faBell} />
+                  <BookingNotification />
                 </span>
                 <Image
                   src={userProfilePic || "/default-profile.png"}
