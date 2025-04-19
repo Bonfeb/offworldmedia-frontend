@@ -26,6 +26,7 @@ import {
   faCalendarAlt,
   faGears,
   faGear,
+  faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import API from "../../api";
 import { AuthContext } from "../../context/AuthContext";
@@ -45,7 +46,8 @@ const AdminDashboard = () => {
   const [recentReviews, setRecentReviews] = useState([]);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -62,11 +64,11 @@ const AdminDashboard = () => {
 
         // Fetch dashboard stats
         const response = await Promise.race([
-        API.get("/admin-dashboard/", {
-          withCredentials: true,
-        }),
-        timeoutPromise
-      ]);
+          API.get("/admin-dashboard/", {
+            withCredentials: true,
+          }),
+          timeoutPromise,
+        ]);
         setDashboardData(response.data);
 
         // Fetch recent bookings from the new endpoint
@@ -75,7 +77,7 @@ const AdminDashboard = () => {
             params: { action: "bookings" },
             withCredentials: true,
           }),
-          timeoutPromise
+          timeoutPromise,
         ]);
         setRecentBookings(bookingsResponse.data.slice(0, 2)); // Get only 5 most recent
 
@@ -84,7 +86,7 @@ const AdminDashboard = () => {
           API.get("/reviews/", {
             withCredentials: true,
           }),
-          timeoutPromise
+          timeoutPromise,
         ]);
         setRecentReviews(reviewsResponse.data.slice(0, 2));
 
@@ -106,7 +108,7 @@ const AdminDashboard = () => {
   };
 
   const handleToggleNotificationDropdown = () => {
-    setShowNotificationDropdown(prevState => !prevState);
+    setShowNotificationDropdown((prevState) => !prevState);
   };
 
   // Format date function
@@ -563,12 +565,17 @@ const AdminDashboard = () => {
                 <span className="mx-2 text-light" style={{ cursor: "pointer" }}>
                   <FontAwesomeIcon icon={faEnvelope} />
                 </span>
-                <span className="mx-2 text-light" style={{ cursor: "pointer" }} onClick={handleToggleNotificationDropdown}>
-                  <BookingNotification
+                <span
+                  className="mx-2 text-light"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleToggleNotificationDropdown}
+                >
+                  <FontAwesomeIcon icon={faBell}/>
+                </span>
+                <BookingNotification
                     showDropdown={showNotificationDropdown}
                     setShowDropdown={setShowNotificationDropdown}
                   />
-                </span>
                 <Image
                   src={userProfilePic || "/default-profile.png"}
                   roundedCircle
@@ -577,10 +584,7 @@ const AdminDashboard = () => {
                   className="ms-3"
                   alt="User profile"
                 />
-                <span className="text-light ms-2">
-                  {firstName} {lastName}{" "}
-                  <i className="fa fa-angle-down ms-1"></i>
-                </span>
+                <FontAwesomeIcon icon={faAngleDown} />
               </div>
             </div>
           </Container>
