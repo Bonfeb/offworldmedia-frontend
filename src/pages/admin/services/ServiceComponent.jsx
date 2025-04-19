@@ -35,15 +35,8 @@ const ServiceComponent = ({ category, title }) => {
 
   const fetchServices = async () => {
     try {
-      const response = await API.get("/admin-dashboard/?action=services");
-
-      const allServices = response.data;
-      // Filter by category directly
-      const filteredService = allServices.filter(
-        (service) => service.category === category
-      );
-
-      setServiceDetails(filteredService);
+      const response = await API.get(`/admin-dashboard/?action=services&category=${category}`);
+      setServiceDetails(response.data);
       setLoading(false);
     } catch (err) {
       setError(`Failed to load ${title} service. Please try again later.`);
