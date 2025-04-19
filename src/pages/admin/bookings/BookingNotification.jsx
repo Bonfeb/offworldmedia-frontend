@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown, Badge, Spinner } from 'react-bootstrap';
+import { Dropdown, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faBellSlash, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import API from '../../../api';
 
-const BookingNotification = () => {
+const BookingNotification = ({ showDropdown, setShowDropdown }) => {
   const [latestBookings, setLatestBookings] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [lastChecked, setLastChecked] = useState(new Date().toISOString());
   const [playSound, setPlaySound] = useState(true);
   
-  const notificationSound = new Audio('/notification.wav')
+  const notificationSound = new Audio('/notification.wav');
 
   const fetchLatestBookings = async () => {
     setIsLoading(true);
@@ -83,19 +82,13 @@ const BookingNotification = () => {
     setLastChecked(new Date().toISOString());
   };
 
+  const handleToggleDropdown = () => {
+    setShowDropdown(prevState => !prevState);
+  };
+
   return (
     <>
       <Dropdown show={showDropdown} onToggle={setShowDropdown}>
-        <Dropdown.Toggle 
-          as={CustomToggle} 
-          unreadCount={unreadCount}
-          onClick={() => {
-            if (unreadCount > 0 && !showDropdown) {
-              markAsRead();
-            }
-          }}
-        />
-        
         <Dropdown.Menu 
           style={{ 
             width: '350px',
@@ -119,21 +112,21 @@ const BookingNotification = () => {
               </small>
             )}
             <FontAwesomeIcon 
-                icon={playSound ? faBell : faBellSlash}
-                title={playSound ? 'Sound On' : 'Sound Off'}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPlaySound(!playSound);
-                }}
-                style={{
-                  color: playSound ? '#38b2ac' : '#a0aec0',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  marginLeft: '10px'
-                }}
-              />
+              icon={playSound ? faBell : faBellSlash}
+              title={playSound ? 'Sound On' : 'Sound Off'}
+              onClick={(e) => {
+                e.stopPropagation();
+                setPlaySound(!playSound);
+              }}
+              style={{
+                color: playSound ? '#38b2ac' : '#a0aec0',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                marginLeft: '10px'
+              }}
+            />
           </Dropdown.Header>
-          
+
           {isLoading ? (
             <Dropdown.Item className="text-center py-3">
               <Spinner animation="border" size="sm" />
@@ -171,13 +164,12 @@ const BookingNotification = () => {
           )}
         </Dropdown.Menu>
       </Dropdown>
-      
+
       <ToastContainer />
     </>
   );
 };
 
-// Helper function for status colors
 const getStatusColor = (status) => {
   switch(status) {
     case 'completed': return 'success';
@@ -186,40 +178,5 @@ const getStatusColor = (status) => {
     default: return 'secondary';
   }
 };
-
-// Custom toggle component remains the same
-const CustomToggle = React.forwardRef(({ children, onClick, unreadCount }, ref) => (
-  <span
-    ref={ref}
-    onClick={onClick}
-    style={{ 
-      cursor: 'pointer',
-      position: 'relative',
-      marginRight: '10px'
-    }}
-  >
-    <FontAwesomeIcon icon={faBell} />
-    {unreadCount > 0 && (
-      <span 
-        style={{
-          position: 'absolute',
-          top: '-5px',
-          right: '-5px',
-          backgroundColor: '#f56565',
-          color: 'white',
-          borderRadius: '50%',
-          width: '18px',
-          height: '18px',
-          fontSize: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {unreadCount}
-      </span>
-    )}
-  </span>
-));
 
 export default BookingNotification;

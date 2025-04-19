@@ -45,6 +45,7 @@ const AdminDashboard = () => {
   const [recentReviews, setRecentReviews] = useState([]);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -102,6 +103,10 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleToggleNotificationDropdown = () => {
+    setShowNotificationDropdown(prevState => !prevState);
   };
 
   // Format date function
@@ -558,8 +563,11 @@ const AdminDashboard = () => {
                 <span className="mx-2 text-light" style={{ cursor: "pointer" }}>
                   <FontAwesomeIcon icon={faEnvelope} />
                 </span>
-                <span className="mx-2 text-light" style={{ cursor: "pointer" }}>
-                  <BookingNotification />
+                <span className="mx-2 text-light" style={{ cursor: "pointer" }} onClick={handleToggleNotificationDropdown}>
+                  <BookingNotification
+                    showDropdown={showNotificationDropdown}
+                    setShowDropdown={setShowNotificationDropdown}
+                  />
                 </span>
                 <Image
                   src={userProfilePic || "/default-profile.png"}
