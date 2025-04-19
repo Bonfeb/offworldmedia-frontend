@@ -56,7 +56,7 @@ const BookingNotification = ({ showDropdown, setShowDropdown }) => {
                 </small>
               </div>,
               {
-                position: "top-right",
+                position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
@@ -104,6 +104,11 @@ const BookingNotification = ({ showDropdown, setShowDropdown }) => {
             max-width: 100%;
             overflow: hidden;
           }
+           .Toastify__toast-container--top-center {
+            top: 20px; /* Adjust distance from top */
+            left: 50%;
+            transform: translateX(-50%); /* Center the toast horizontally */
+          } 
         `}
       </style>
       <Dropdown show={showDropdown} onToggle={setShowDropdown}>
