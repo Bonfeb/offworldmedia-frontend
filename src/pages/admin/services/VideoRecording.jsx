@@ -1,5 +1,5 @@
 import ServiceComponent from "./ServiceComponent";
 
-const VideoRecording = () => <ServiceComponent category="video_recording" title="Video Recording" />;
+const VideoRecording = () => <ServiceComponent category="video" title="Video Recording" />;
 
 export default VideoRecording;

@@ -35,7 +35,7 @@ const ServiceComponent = ({ category, title }) => {
 
   const fetchServices = async () => {
     try {
-      const response = await API.get("/services/");
+      const response = await API.get("/admin-dashboard/?action=services");
 
       const allServices = response.data;
       // Filter by category directly
