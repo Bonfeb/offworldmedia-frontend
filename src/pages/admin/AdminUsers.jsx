@@ -140,16 +140,6 @@ const AdminUsers = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Container className="mt-4">
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      </Container>
-    );
-  }
-
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Admin Users Management</h2>
@@ -168,174 +158,184 @@ const AdminUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              <React.Fragment key={user.id || user.username}>
-                <tr>
-                  <td className="text-center">{index + 1}</td>
-                  <td className="text-center">
-                    <IconButton 
-                      size="small"
-                      onClick={() => toggleRowExpansion(user.id)}
-                    >
-                      {expandedRows[user.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                  </td>
-                  <td>{user.first_name}</td>
-                  <td>{user.username}</td>
-                  <td>{user.phone || 'N/A'}</td>
-                  <td className="text-center">
-                    <Tooltip title="Edit User">
-                      <IconButton 
-                        color="primary" 
-                        onClick={() => handleEditClick(user)}
-                        size="small"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete User">
-                      <IconButton 
-                        color="error" 
-                        onClick={() => handleDeleteClick(user)}
-                        size="small"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </td>
-                </tr>
-                {expandedRows[user.id] && (
-                  <tr>
-                    <td colSpan="6" className="p-0">
-                      <div className="p-3 bg-light">
-                        <Row>
-                          <Col md={4}>
-                            <Card className="mb-3">
-                              <Card.Header>User Details</Card.Header>
-                              <Card.Body>
-                                <div className="d-flex mb-3">
-                                  {user.profile_pic ? (
-                                    <img 
-                                      src={user.profile_pic} 
-                                      alt={`${user.first_name}'s profile`} 
-                                      style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '50%' }}
-                                    />
-                                  ) : (
-                                    <div 
-                                      className="d-flex justify-content-center align-items-center bg-secondary text-white"
-                                      style={{ width: '100px', height: '100px', borderRadius: '50%' }}
-                                    >
-                                      No Image
-                                    </div>
-                                  )}
-                                  <div className="ms-3">
-                                    <h5>{user.first_name} {user.last_name}</h5>
-                                    <p className="mb-1"><strong>Username:</strong> {user.username}</p>
-                                    <p className="mb-1"><strong>Phone:</strong> {user.phone || 'N/A'}</p>
-                                  </div>
-                                </div>
-                                <p><strong>Address:</strong> {user.address}</p>
-                              </Card.Body>
-                            </Card>
-                          </Col>
-                          <Col md={8}>
+            {error ? (
+              <tr>
+                <td colSpan="6" className="text-center text-danger">
+                  {error}
+                </td>
+              </tr>
+            ) : (
+              <>
+                {users.map((user, index) => (
+                  <React.Fragment key={user.id || user.username}>
+                    <tr>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="text-center">
+                        <IconButton 
+                          size="small"
+                          onClick={() => toggleRowExpansion(user.id)}
+                        >
+                          {expandedRows[user.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </IconButton>
+                      </td>
+                      <td>{user.first_name}</td>
+                      <td>{user.username}</td>
+                      <td>{user.phone || 'N/A'}</td>
+                      <td className="text-center">
+                        <Tooltip title="Edit User">
+                          <IconButton 
+                            color="primary" 
+                            onClick={() => handleEditClick(user)}
+                            size="small"
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete User">
+                          <IconButton 
+                            color="error" 
+                            onClick={() => handleDeleteClick(user)}
+                            size="small"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                    {expandedRows[user.id] && (
+                      <tr>
+                        <td colSpan="6" className="p-0">
+                          <div className="p-3 bg-light">
                             <Row>
-                              <Col md={12}>
+                              <Col md={4}>
                                 <Card className="mb-3">
-                                  <Card.Header>Bookings</Card.Header>
-                                  <Card.Body style={{ maxHeight: '150px', overflow: 'auto' }}>
-                                    {userDetails[user.id]?.bookings?.length > 0 ? (
-                                      <Table size="sm">
-                                        <thead>
-                                          <tr>
-                                            <th>ID</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {userDetails[user.id]?.bookings?.map(booking => (
-                                            <tr key={booking.id}>
-                                              <td>{booking.id}</td>
-                                              <td>{booking.date}</td>
-                                              <td>{booking.status}</td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </Table>
-                                    ) : (
-                                      <p className="mb-0">No bookings found</p>
-                                    )}
+                                  <Card.Header>User Details</Card.Header>
+                                  <Card.Body>
+                                    <div className="d-flex mb-3">
+                                      {user.profile_pic ? (
+                                        <img 
+                                          src={user.profile_pic} 
+                                          alt={`${user.first_name}'s profile`} 
+                                          style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '50%' }}
+                                        />
+                                      ) : (
+                                        <div 
+                                          className="d-flex justify-content-center align-items-center bg-secondary text-white"
+                                          style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+                                        >
+                                          No Image
+                                        </div>
+                                      )}
+                                      <div className="ms-3">
+                                        <h5>{user.first_name} {user.last_name}</h5>
+                                        <p className="mb-1"><strong>Username:</strong> {user.username}</p>
+                                        <p className="mb-1"><strong>Phone:</strong> {user.phone || 'N/A'}</p>
+                                      </div>
+                                    </div>
+                                    <p><strong>Address:</strong> {user.address}</p>
                                   </Card.Body>
                                 </Card>
                               </Col>
-                              <Col md={6}>
-                                <Card className="mb-3">
-                                  <Card.Header>Reviews</Card.Header>
-                                  <Card.Body style={{ maxHeight: '150px', overflow: 'auto' }}>
-                                    {userDetails[user.id]?.reviews?.length > 0 ? (
-                                      <Table size="sm">
-                                        <thead>
-                                          <tr>
-                                            <th>Rating</th>
-                                            <th>Comment</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {userDetails[user.id]?.reviews?.map(review => (
-                                            <tr key={review.id}>
-                                              <td>{review.rating}/5</td>
-                                              <td>{review.comment}</td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </Table>
-                                    ) : (
-                                      <p className="mb-0">No reviews found</p>
-                                    )}
-                                  </Card.Body>
-                                </Card>
-                              </Col>
-                              <Col md={6}>
-                                <Card>
-                                  <Card.Header>Messages</Card.Header>
-                                  <Card.Body style={{ maxHeight: '150px', overflow: 'auto' }}>
-                                    {userDetails[user.id]?.messages?.length > 0 ? (
-                                      <Table size="sm">
-                                        <thead>
-                                          <tr>
-                                            <th>Date</th>
-                                            <th>Message</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {userDetails[user.id]?.messages?.map(message => (
-                                            <tr key={message.id}>
-                                              <td>{message.date}</td>
-                                              <td>{message.content}</td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </Table>
-                                    ) : (
-                                      <p className="mb-0">No messages found</p>
-                                    )}
-                                  </Card.Body>
-                                </Card>
+                              <Col md={8}>
+                                <Row>
+                                  <Col md={12}>
+                                    <Card className="mb-3">
+                                      <Card.Header>Bookings</Card.Header>
+                                      <Card.Body style={{ maxHeight: '150px', overflow: 'auto' }}>
+                                        {userDetails[user.id]?.bookings?.length > 0 ? (
+                                          <Table size="sm">
+                                            <thead>
+                                              <tr>
+                                                <th>ID</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {userDetails[user.id]?.bookings?.map(booking => (
+                                                <tr key={booking.id}>
+                                                  <td>{booking.id}</td>
+                                                  <td>{booking.date}</td>
+                                                  <td>{booking.status}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </Table>
+                                        ) : (
+                                          <p className="mb-0">No bookings found</p>
+                                        )}
+                                      </Card.Body>
+                                    </Card>
+                                  </Col>
+                                  <Col md={6}>
+                                    <Card className="mb-3">
+                                      <Card.Header>Reviews</Card.Header>
+                                      <Card.Body style={{ maxHeight: '150px', overflow: 'auto' }}>
+                                        {userDetails[user.id]?.reviews?.length > 0 ? (
+                                          <Table size="sm">
+                                            <thead>
+                                              <tr>
+                                                <th>Rating</th>
+                                                <th>Comment</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {userDetails[user.id]?.reviews?.map(review => (
+                                                <tr key={review.id}>
+                                                  <td>{review.rating}/5</td>
+                                                  <td>{review.comment}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </Table>
+                                        ) : (
+                                          <p className="mb-0">No reviews found</p>
+                                        )}
+                                      </Card.Body>
+                                    </Card>
+                                  </Col>
+                                  <Col md={6}>
+                                    <Card>
+                                      <Card.Header>Messages</Card.Header>
+                                      <Card.Body style={{ maxHeight: '150px', overflow: 'auto' }}>
+                                        {userDetails[user.id]?.messages?.length > 0 ? (
+                                          <Table size="sm">
+                                            <thead>
+                                              <tr>
+                                                <th>Date</th>
+                                                <th>Message</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {userDetails[user.id]?.messages?.map(message => (
+                                                <tr key={message.id}>
+                                                  <td>{message.date}</td>
+                                                  <td>{message.content}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </Table>
+                                        ) : (
+                                          <p className="mb-0">No messages found</p>
+                                        )}
+                                      </Card.Body>
+                                    </Card>
+                                  </Col>
+                                </Row>
                               </Col>
                             </Row>
-                          </Col>
-                        </Row>
-                      </div>
-                    </td>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+                {users.length === 0 && !error && (
+                  <tr>
+                    <td colSpan="6" className="text-center">No users found</td>
                   </tr>
                 )}
-              </React.Fragment>
-            ))}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan="6" className="text-center">No users found</td>
-              </tr>
+              </>
             )}
           </tbody>
         </Table>
