@@ -11,7 +11,6 @@ import {
   Alert,
 } from "react-bootstrap";
 import API from "../../../api";
-import { media_url } from "../../../utils/constants";
 
 const ServiceComponent = ({ category, title }) => {
   const [serviceDetails, setServiceDetails] = useState([]);
@@ -38,23 +37,16 @@ const ServiceComponent = ({ category, title }) => {
     try {
       const response = await API.get("/services/");
 
-      // Ensure response data has expected structure
-      const services = response.data.services[category] || [];
-      console.log("Services:", response);
+      const allServices = response.data;
+      // Filter by category directly
+      const filteredService = allServices.filter(
+        (service) => service.category === category
+      );
 
-      if (services) {
-        setServiceDetails(services);
-      } else {
-        // Handle cases where services are structured differently
-        const filteredServices = response.data.filter(
-          (service) => service.category === category
-        );
-        setServiceDetails(filteredServices);
-      }
-
+      setServiceDetails(filteredService);
       setLoading(false);
     } catch (err) {
-      setError(`Failed to load ${title} services. Please try again later.`);
+      setError(`Failed to load ${title} service. Please try again later.`);
       setLoading(false);
     }
   };
