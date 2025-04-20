@@ -36,21 +36,10 @@ const CancelledBookings = () => {
           status: BOOKING_STATUS.CANCELLED,
         },
       });
-
       console.log("API Response:", response.data);
 
-      let bookings = [];
-      if (
-        response.data &&
-        response.data.admin_bookings &&
-        response.data.admin_bookings.cancelled_bookings
-      ) {
-        bookings = response.data.admin_bookings.cancelled_bookings;
-      }
-
-      const formattedBookings = formatBookings(bookings);
-      console.log("Formatted Bookings:", formattedBookings);
-      setCancelledBookings(formattedBookings);
+      let bookings = response.data || [];
+      setCancelledBookings(bookings);
       setError(null);
     } catch (err) {
       console.error("Failed to load cancelled bookings", err);

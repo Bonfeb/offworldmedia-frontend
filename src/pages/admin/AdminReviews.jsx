@@ -38,9 +38,9 @@ const AdminReviews = () => {
 
   return (
     <Container className="admin-reviews mt-4">
-      <h5 className="text-center" style={{color: 'greenyellow'}}>User Reviews</h5>
+      <h5 className="text-center" style={{color: 'greenyellow'}}>USER REVIEWS</h5>
       <hr/>
-      <Card className="review-card mb-3">
+      <Card className="review-card my-3">
         <Card.Body>
           {error && (
             <Alert severity="error" className="mb-3">
@@ -62,7 +62,8 @@ const AdminReviews = () => {
                           alt={review.user.name}
                           className="user-avatar"
                         />
-                        <Typography variant="h6">{review.user.username} | <small className="text-muted">{review.service}</small></Typography>
+                        <Typography variant="h6">{review.user.username}</Typography>
+                        <small className="text-muted">{review.service.name}</small>
                       </Box>
                       <Rating 
                         value={review.rating} 

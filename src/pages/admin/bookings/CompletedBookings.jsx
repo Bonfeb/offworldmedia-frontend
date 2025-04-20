@@ -37,19 +37,8 @@ const CompletedBookings = () => {
         },
       });
 
-      let bookings = [];
-
-      if (
-        response.data &&
-        response.data.admin_bookings &&
-        response.data.admin_bookings.completed_bookings
-      ) {
-        bookings = response.data.admin_bookings.completed_bookings;
-      }
-
-      const formattedBookings = formatBookings(bookings);
-
-      setCompletedBookings(formattedBookings);
+      let bookings = response.data || [];
+      setCompletedBookings(bookings);
       setError(null);
     } catch (err) {
       console.error("Failed to load completed bookings", err);

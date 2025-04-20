@@ -19,9 +19,6 @@ import {
   handleUpdateConfirm,
 } from "../../../utils/constants";
 
-// Import required Bootstrap CSS if not already in your project
-// import 'bootstrap/dist/css/bootstrap.min.css';
-
 const PendingBookings = () => {
   const [pendingBookings, setPendingBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,29 +39,18 @@ const PendingBookings = () => {
     try {
       setLoading(true);
       // Make sure we're requesting PENDING status, not canceled
-      const response = await API.get("/admin-dashboard/", {
+      const response = await API.get('/admin-dashboard/', {
         params: {
           action: "bookings",
           status: BOOKING_STATUS.PENDING,
         },
       });
-
       // Debug the response
       console.log("API Response:", response.data);
 
-      // Format bookings data - handle different response formats
-      let bookings = [];
-      if (
-        response.data &&
-        response.data.admin_bookings &&
-        response.data.admin_bookings.pending_bookings
-      ) {
-        bookings = response.data.admin_bookings.pending_bookings;
-      }
-      // Add serialNo to each booking for display
-      const formattedBookings = formatBookings(bookings);
-      console.log("Formatted Bookings:", formattedBookings);
-      setPendingBookings(formattedBookings);
+      let bookings = response.data || [];
+      
+      setPendingBookings(bookings);
       setError(null);
     } catch (err) {
       console.error("Failed to load pending bookings", err);
