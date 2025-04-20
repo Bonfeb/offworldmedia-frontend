@@ -38,6 +38,8 @@ const AdminReviews = () => {
 
   return (
     <Container className="admin-reviews mt-4">
+      <h5 className="text-center" style={{color: 'greenyellow'}}>User Reviews</h5>
+      <hr/>
       <Card className="review-card mb-3">
         <Card.Body>
           {error && (
@@ -56,11 +58,11 @@ const AdminReviews = () => {
                     <Box className="review-header d-flex justify-content-between align-items-center">
                       <Box className="d-flex align-items-center gap-2">
                         <Avatar 
-                          src={review.user.avatar || "/api/placeholder/60/60"} 
+                          src={review.user.profile_pic || "/api/placeholder/60/60"} 
                           alt={review.user.name}
                           className="user-avatar"
                         />
-                        <Typography variant="h6">{review.user.name}</Typography>
+                        <Typography variant="h6">{review.user.username} | <small className="text-muted">{review.service}</small></Typography>
                       </Box>
                       <Rating 
                         value={review.rating} 
