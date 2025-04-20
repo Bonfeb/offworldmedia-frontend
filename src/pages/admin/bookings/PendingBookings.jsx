@@ -42,8 +42,9 @@ const PendingBookings = () => {
     try {
       setLoading(true);
       // Make sure we're requesting PENDING status, not canceled
-      const response = await API.get("/bookings/", {
+      const response = await API.get("/admin-dashboard/", {
         params: {
+          action: "bookings",
           status: BOOKING_STATUS.PENDING,
         },
       });

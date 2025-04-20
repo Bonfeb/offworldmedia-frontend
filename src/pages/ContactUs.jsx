@@ -15,6 +15,7 @@ import {
   faPhone,
   faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import emailjs from '@emailjs/browser';
 import API from "../api";
 
 const ContactUs = () => {
@@ -28,6 +29,7 @@ const ContactUs = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
@@ -57,27 +59,49 @@ const ContactUs = () => {
       setShowModal(true);
       return;
     }
+    
+    setIsLoading(true);
+    
+    // Prepare EmailJS template parameters
+    const templateParams = {
+      from_name: `${formData.firstName} ${formData.lastName}`,
+      reply_to: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+    };
+    
     try {
+      // Send email via EmailJS
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID, // Replace with your EmailJS service ID
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID, // Replace with your EmailJS template ID
+        templateParams,
+        import.meta.env.VITE_EMAILJS_USER_ID // Replace with your EmailJS public key
+      );
+      
+      // After successful email, also save to backend if needed
       const response = await API.post("/contact/", formData, {
         withCredentials: true,
       });
-      setResponseMessage(response.data.message);
+      
+      setResponseMessage("Message sent successfully! We'll get back to you soon.");
       setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
+        ...formData,
         subject: "",
         message: "",
       });
     } catch (error) {
+      console.error("Error sending message:", error);
       setResponseMessage("Error sending message. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <Container fluid className="py-5" style={{ background: "linear-gradient(to right,rgb(11, 177, 80),rgb(1, 63, 172))", minHeight: "100vh"}}>
-      <h1 className="text-center mb-4">Get in Touch With Us</h1>
-      <hr/>
+      <h1 className="text-center mb-4 text-white">Get in Touch With Us</h1>
+      <hr className="bg-white"/>
       <Row className="justify-content-center">
         <Col md={6}>
           <Card className="p-4 shadow h-100 d-flex flex-column justify-content-center">
@@ -91,7 +115,6 @@ const ContactUs = () => {
             ></iframe>
             <ListGroup variant="flush" className="mt-3">
               <ListGroup.Item>
-                {" "}
                 <div className="flex-grow-1">
                   <FontAwesomeIcon icon={faEnvelope} className="text-primary" />{" "}
                   <strong>Email: </strong>
@@ -190,13 +213,19 @@ const ContactUs = () => {
                 />
               </Form.Group>
               <Row>
-              <Button variant="success" type="submit">
-                Send Message
-              </Button>
+                <Button 
+                  variant="success" 
+                  type="submit" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Sending...' : 'Send Message'}
+                </Button>
               </Row>
             </Form>
             {responseMessage && (
-              <p className="mt-3 text-success">{responseMessage}</p>
+              <div className={`mt-3 ${responseMessage.includes('Error') ? 'text-danger' : 'text-success'}`}>
+                {responseMessage}
+              </div>
             )}
           </Card>
         </Col>

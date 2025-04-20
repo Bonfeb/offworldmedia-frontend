@@ -30,8 +30,9 @@ const CompletedBookings = () => {
   const loadBookings = async () => {
     try {
       setLoading(true);
-      const response = await API.get("/bookings/", {
+      const response = await API.get("/admin-dashboard/", {
         params: {
+          action: "bookings",
           status: BOOKING_STATUS.COMPLETED,
         },
       });
