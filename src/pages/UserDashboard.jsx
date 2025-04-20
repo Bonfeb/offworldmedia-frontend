@@ -13,6 +13,8 @@ import {
   Modal,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import API from "../api";
 
 const UserDashboard = () => {
@@ -32,13 +34,17 @@ const UserDashboard = () => {
 
   const [modalData, setModalData] = useState({});
   const navigate = useNavigate();
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };  
 
   useEffect(() => {
     fetchUserDashboard();
   }, []);
 
   useEffect(() => {
-    console.log("Cart State Updated:");
+    console.log("Cart State Updated:", cart);
   }, [cart]);
 
   const fetchUserDashboard = async () => {
@@ -328,7 +334,7 @@ const UserDashboard = () => {
                     <Tab.Pane eventKey={status} key={status}>
                       <Card className="mb-2">
                         <Card.Body>
-                          {!bookings?.[status]?.length === 0 ? (
+                          {bookings?.[status]?.length === 0 ? (
                             <p className="text-muted text-center">
                               No bookings found.
                             </p>
