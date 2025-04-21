@@ -58,7 +58,7 @@ function Row({ booking, onEdit, onDelete }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {booking.user.username || booking.user.email}
+          {booking.user.username}
         </TableCell>
         <TableCell>{booking.service.name}</TableCell>
         <TableCell>{format(new Date(booking.event_date), 'MMM dd, yyyy')}</TableCell>
@@ -92,11 +92,11 @@ function Row({ booking, onEdit, onDelete }) {
               <Table size="small" aria-label="booking details">
                 <TableBody>
                   <TableRow>
-                    <TableCell component="th" scope="row">Time</TableCell>
+                    <TableCell component="th" scope="row">Event Time</TableCell>
                     <TableCell>{booking.event_time}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Location</TableCell>
+                    <TableCell component="th" scope="row">Event Location</TableCell>
                     <TableCell>{booking.event_location}</TableCell>
                   </TableRow>
                   <TableRow>
@@ -104,8 +104,12 @@ function Row({ booking, onEdit, onDelete }) {
                     <TableCell>{format(new Date(booking.booked_at), 'MMM dd, yyyy HH:mm')}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">User ID</TableCell>
-                    <TableCell>{booking.user.id}</TableCell>
+                    <TableCell component="th" scope="row">Customer Contact</TableCell>
+                    <TableCell>{booking.user.phone}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">Booking ID</TableCell>
+                    <TableCell>{booking.id}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">Service ID</TableCell>
@@ -274,11 +278,11 @@ export default function AllBookings() {
         </Typography>
         
         <TableContainer sx={{ maxHeight: 'calc(100vh - 200px)' }}>
-          <Table stickyHeader aria-label="collapsible table">
+          <Table stickyHeader striped hover aria-label="collapsible table">
             <TableHead>
-              <TableRow>
+              <TableRow className="fw-bold">
                 <TableCell />
-                <TableCell>User</TableCell>
+                <TableCell>Customer</TableCell>
                 <TableCell>Service</TableCell>
                 <TableCell>Event Date</TableCell>
                 <TableCell>Status</TableCell>
