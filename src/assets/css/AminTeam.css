@@ -1,0 +1,105 @@
+/* AdminTeam.css */
+.admin-team-container {
+    padding: 2rem 0;
+  }
+  
+  .admin-team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .team-members-row {
+    margin-top: 1.5rem;
+  }
+  
+  .team-member-card {
+    height: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .team-member-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 1.5rem;
+  }
+  
+  .team-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f5f5f5;
+  }
+  
+  .default-avatar {
+    width: 120px;
+    height: 120px;
+    font-size: 3rem;
+    background-color: #e0e0e0;
+  }
+  
+  .member-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  
+  .member-bio {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0.5rem 0;
+    padding: 0 0.5rem;
+  }
+  
+  .member-role {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.75rem;
+  }
+  
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .social-icons .MuiIconButton-root {
+    color: #6c757d;
+    margin: 0 0.3rem;
+  }
+  
+  .action-buttons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .avatar-container {
+      padding-top: 1rem;
+    }
+    
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .default-avatar {
+      width: 100px;
+      height: 100px;
+      font-size: 2.5rem;
+    }
+  }

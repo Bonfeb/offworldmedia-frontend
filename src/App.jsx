@@ -14,6 +14,7 @@ import "./assets/css/Register.css";
 import "./assets/css/Service.css";
 import "./assets/css/Reviews.css";
 import "./assets/css/AdminReviews.css";
+import "./assets/css/AdminTeam.css";
 import Profile from "./pages/Profile";
 import Booking from "./pages/Booking";
 import ProfileUpdate from "./pages/ProfileUpdate";
