@@ -27,6 +27,7 @@ import {
   faGears,
   faGear,
   faAngleDown,
+  faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import API from "../../api";
 import { AuthContext } from "../../context/AuthContext";
@@ -464,6 +465,14 @@ const AdminDashboard = () => {
         <Nav className="flex-column mt-2">
           <Nav.Link
             as={NavLink}
+            to="/admin-dashboard/team-members"
+            className="text-light py-2"
+          >
+            <FontAwesomeIcon icon={faUserGroup} className="me-4" /> Team
+          </Nav.Link>
+          <hr style={{ color: "yellowgreen" }} />
+          <Nav.Link
+            as={NavLink}
             to="/admin-dashboard/users"
             className="text-light py-2"
           >
@@ -570,12 +579,12 @@ const AdminDashboard = () => {
                   style={{ cursor: "pointer" }}
                   onClick={handleToggleNotificationDropdown}
                 >
-                  <FontAwesomeIcon icon={faBell}/>
+                  <FontAwesomeIcon icon={faBell} />
                 </span>
                 <BookingNotification
-                    showDropdown={showNotificationDropdown}
-                    setShowDropdown={setShowNotificationDropdown}
-                  />
+                  showDropdown={showNotificationDropdown}
+                  setShowDropdown={setShowNotificationDropdown}
+                />
                 <Image
                   src={userProfilePic || "/default-profile.png"}
                   roundedCircle

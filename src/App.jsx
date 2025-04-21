@@ -35,6 +35,7 @@ import AudioRecording from "./pages/admin/services/AudioRecording";
 import PhotoShooting from "./pages/admin/services/PhotoShooting";
 import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
+import AdminTeam from "./pages/admin/AdminTeam";
 
 function App() {
   return (
@@ -87,6 +88,7 @@ function App() {
               <Route path="users" element={ <AdminUsers /> } />
               <Route path="reviews" element={<AdminReviews/>} />
               <Route path="messages" element={<AdminMessages/>} />
+              <Route path="team-members" element={<AdminTeam /> } />
             </Route>
           </Routes>
         </div>
