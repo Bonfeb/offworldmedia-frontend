@@ -83,7 +83,7 @@ function App() {
               <Route path="pending-bookings" element={ <PendingBookings /> } />
               <Route path="completed-bookings" element={ <CompletedBookings /> } />
               <Route path="cancelled-bookings" element={ <CancelledBookings /> } />
-              <Route path="all-bookings" elemen={ <AllBookings /> } />
+              <Route path="all-bookings" element={ <AllBookings /> } />
               <Route path="services" element={ <AdminServices /> } />
               <Route path="video-recording" element={ <VideoRecording /> } />
               <Route path="audio-recording" element={ <AudioRecording /> } />
