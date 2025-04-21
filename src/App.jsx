@@ -37,6 +37,7 @@ import PhotoShooting from "./pages/admin/services/PhotoShooting";
 import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import AdminTeam from "./pages/admin/AdminTeam";
+import AllBookings from "./pages/admin/bookings/AllBookings";
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
               <Route path="pending-bookings" element={ <PendingBookings /> } />
               <Route path="completed-bookings" element={ <CompletedBookings /> } />
               <Route path="cancelled-bookings" element={ <CancelledBookings /> } />
+              <Route path="all=bookings" elemen={ <AllBookings /> } />
               <Route path="services" element={ <AdminServices /> } />
               <Route path="video-recording" element={ <VideoRecording /> } />
               <Route path="audio-recording" element={ <AudioRecording /> } />
