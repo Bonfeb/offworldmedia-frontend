@@ -813,7 +813,7 @@ const AdminDashboard = () => {
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
                             onClick={() =>
-                              navigate("/admin-dashboard/bookings")
+                              navigate("/admin-dashboard/all-bookings")
                             }
                           >
                             View all bookings →
