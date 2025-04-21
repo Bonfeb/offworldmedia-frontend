@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import './AdminTeam.css';
+import API from '../../api';
 
 const AdminTeam = () => {
   const [teamMembers, setTeamMembers] = useState([]);
