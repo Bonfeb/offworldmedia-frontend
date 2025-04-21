@@ -38,7 +38,8 @@ const CompletedBookings = () => {
       });
 
       let bookings = response.data || [];
-      setCompletedBookings(bookings);
+      let formattedBookings = formatBookings(bookings)
+      setCompletedBookings(formattedBookings);
       setError(null);
     } catch (err) {
       console.error("Failed to load completed bookings", err);

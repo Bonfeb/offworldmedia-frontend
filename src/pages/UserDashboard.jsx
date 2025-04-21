@@ -31,13 +31,15 @@ const UserDashboard = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFailureModal, setShowFailureModal] = useState(false);
   const [showPermissionError, setShowPermissionError] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingServiceId, setBookingServiceId] = useState(null);
 
   const [modalData, setModalData] = useState({});
   const navigate = useNavigate();
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
-  };  
+  };
 
   useEffect(() => {
     fetchUserDashboard();
@@ -148,12 +150,15 @@ const UserDashboard = () => {
   const handleBookService = async (serviceId) => {
     console.log("Cart content:", cart);
     console.log("Looking for service_id:", serviceId);
+    setBookingServiceId(serviceId);
+    setBookingLoading(true);
 
     const cartItem = cart.find((item) => item.service === serviceId);
     console.log("🔍 Found Cart Item:", cartItem);
 
     if (!serviceId) {
       console.error("Invalid serviceId:", serviceId);
+      setBookingLoading(false);
       setShowFailureModal(true);
       return;
     }
@@ -202,20 +207,20 @@ const UserDashboard = () => {
           event_location: event_location,
           booking_date: formatDate(new Date()),
           to_email: user.email,
-          admin_email: response.data.admin_emails || ["bonfebdevs@gmail.com"]
+          admin_email: response.data.admin_emails || ["bonfebdevs@gmail.com"],
         };
 
         try {
           // Show loading notification
           const toastId = toast.loading("Notifying admins...");
-          
+
           await emailjs.send(
             import.meta.env.VITE_EMAILJS_SERVICE_ID,
             import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
             emailData,
             import.meta.env.VITE_EMAILJS_USER_ID
           );
-          
+
           // Update to success notification
           toast.update(toastId, {
             render: "Admins have been notified!",
@@ -225,11 +230,15 @@ const UserDashboard = () => {
             closeButton: true,
           });
 
-          setSuccessMessage("Service booked successfully! A confirmation has been sent to your email.");
+          setSuccessMessage(
+            "Service booked successfully! A confirmation has been sent to your email."
+          );
         } catch (emailError) {
           console.error("Email sending failed:", emailError);
           toast.error("Booking successful but admin notification failed");
-          setSuccessMessage("Service booked successfully, but email confirmation failed to send.");
+          setSuccessMessage(
+            "Service booked successfully, but email confirmation failed to send."
+          );
         }
 
         setShowSuccessModal(true);
@@ -243,6 +252,8 @@ const UserDashboard = () => {
       console.error("Error booking service:", error.response?.data || error);
       setShowFailureModal(true);
     }
+    setBookingLoading(false);
+    setBookingServiceId(null);
   };
 
   const handleToUpdateBooking = (booking, serviceId) => {
@@ -251,7 +262,15 @@ const UserDashboard = () => {
   };
 
   return (
-    <Container fluid className="mt-4 py-4" style={{ background: "linear-gradient(to right,rgb(82, 68, 68),rgb(112, 106, 102), rgb(97, 58, 58))", minHeight: "100vh"}}>
+    <Container
+      fluid
+      className="mt-4 py-4"
+      style={{
+        background:
+          "linear-gradient(to right,rgb(82, 68, 68),rgb(112, 106, 102), rgb(97, 58, 58))",
+        minHeight: "100vh",
+      }}
+    >
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
       <Row className="mb-4">
         <Card className="shadow-sm">
@@ -301,8 +320,22 @@ const UserDashboard = () => {
                           console.log("Booking service ID:", item.service);
                           handleBookService(item.service);
                         }}
+                        disabled={
+                          bookingLoading && bookingServiceId === item.service
+                        }
                       >
-                        Book
+                        {bookingLoading && bookingServiceId === item.service ? (
+                          <span>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            Booking...
+                          </span>
+                        ) : (
+                          "Book"
+                        )}
                       </Button>
                     </span>
                   </ListGroup.Item>

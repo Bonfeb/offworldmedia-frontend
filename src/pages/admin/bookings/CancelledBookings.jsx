@@ -39,7 +39,8 @@ const CancelledBookings = () => {
       console.log("API Response:", response.data);
 
       let bookings = response.data || [];
-      setCancelledBookings(bookings);
+      let formattedBookings = formatBookings(bookings)
+      setCancelledBookings(formattedBookings);
       setError(null);
     } catch (err) {
       console.error("Failed to load cancelled bookings", err);

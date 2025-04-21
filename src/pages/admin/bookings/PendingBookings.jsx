@@ -49,8 +49,9 @@ const PendingBookings = () => {
       console.log("API Response:", response.data);
 
       let bookings = response.data || [];
+      let formattedBookings = formatBookings(bookings)
       
-      setPendingBookings(bookings);
+      setPendingBookings(formattedBookings);
       setError(null);
     } catch (err) {
       console.error("Failed to load pending bookings", err);
