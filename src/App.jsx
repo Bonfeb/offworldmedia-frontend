@@ -78,7 +78,7 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />}>
               <Route
                 index
-                element={<AdminDashboard/>}
+                element={<></>}
               />
               <Route path="pending-bookings" element={ <PendingBookings /> } />
               <Route path="completed-bookings" element={ <CompletedBookings /> } />
