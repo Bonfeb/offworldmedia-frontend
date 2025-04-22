@@ -45,6 +45,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [recentBookings, setRecentBookings] = useState([]);
   const [recentReviews, setRecentReviews] = useState([]);
+  const [recentMessages, setRecentMessages] = useState([]);
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showNotificationDropdown, setShowNotificationDropdown] =
@@ -59,38 +60,36 @@ const AdminDashboard = () => {
   
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => {
-            reject(new Error("Request timed out after 10 seconds"));
-          }, 10000);
+            reject(new Error("Request timed out after 20 seconds"));
+          }, 20000);
         });
   
-        console.log("Fetching dashboard stats...");
+        console.log("Fetching admin dashboard overview...");
         const response = await Promise.race([
-          API.get("/admin-dashboard/", { withCredentials: true }),
-          timeoutPromise,
-        ]);
-        console.log("Dashboard stats response:", response.data);
-        setDashboardData(response.data);
-  
-        console.log("Fetching recent bookings...");
-        const bookingsResponse = await Promise.race([
           API.get("/admin-dashboard/", {
-            params: { action: "bookings" },
             withCredentials: true,
           }),
           timeoutPromise,
         ]);
-        console.log("Recent bookings:", bookingsResponse.data);
-        setRecentBookings(bookingsResponse.data.slice(0, 2));
   
-        console.log("Fetching recent reviews...");
-        const reviewsResponse = await Promise.race([
-          API.get("/reviews/", {
-            withCredentials: true,
-          }),
-          timeoutPromise,
-        ]);
-        console.log("Recent reviews:", reviewsResponse.data);
-        setRecentReviews(reviewsResponse.data.slice(0, 2));
+        const {
+          recent_bookings,
+          recent_reviews,
+          recent_messages,
+          ...stats
+        } = response.data;
+  
+        console.log("Dashboard stats response:", stats);
+        setDashboardData(stats);
+  
+        console.log("Recent bookings:", recent_bookings);
+        setRecentBookings(recent_bookings?.slice(0, 2) || []);
+  
+        console.log("Recent reviews:", recent_reviews);
+        setRecentReviews(recent_reviews?.slice(0, 2) || []);
+  
+        console.log("Recent messages:", recent_messages);
+        setRecentMessages(recent_messages?.slice(0, 2) || []);
   
         setError(null);
       } catch (err) {
@@ -111,7 +110,6 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
   
-
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -243,10 +241,10 @@ const AdminDashboard = () => {
           </div>
           <div>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              {booking.service.name}
+              {booking.service?.name || "Unknown Service"}
             </Typography>
             <Typography variant="caption" sx={{ color: "#aaa" }}>
-              {booking.user.username} • {formatDate(booking.event_date)}
+              {booking.user?.username || "Unknown User"} • {formatDate(booking.event_date)}
             </Typography>
           </div>
         </div>
@@ -254,7 +252,7 @@ const AdminDashboard = () => {
           <span
             style={{
               backgroundColor:
-                displayStatus === "Completed" || displayStatus === "Completed"
+                displayStatus === "Completed"
                   ? "#48bb78"
                   : displayStatus === "Pending"
                   ? "#f6ad55"
@@ -286,8 +284,8 @@ const AdminDashboard = () => {
     >
       <div className="d-flex justify-content-between">
         <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-          {review.user.username}
-          <i>{review.service.category}</i>
+          {review.user?.username || "Unknown User"}
+          <i>{review.service?.category || "Unknown Category"}</i>
         </Typography>
         <div>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -307,13 +305,52 @@ const AdminDashboard = () => {
         variant="caption"
         sx={{ color: "#aaa", display: "block", mt: 1 }}
       >
-        "{review.comment}"
+        "{review.comment || "No comment"}"
       </Typography>
       <Typography
         variant="caption"
         sx={{ color: "#888", display: "block", mt: 1 }}
       >
         {formatDate(review.created_at)}
+      </Typography>
+    </div>
+  );
+
+  // Message Item Component
+  const MessageItem = ({ message }) => (
+    <div
+      className="mb-3 pb-2"
+      style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}
+    >
+      <div className="d-flex justify-content-between align-items-center">
+        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+          {message.name || "Unknown User"}
+        </Typography>
+        {message.is_new && (
+          <span
+            style={{
+              backgroundColor: "#4299e1",
+              fontSize: "10px",
+              padding: "1px 6px",
+              borderRadius: "10px",
+              color: "white",
+            }}
+          >
+            New
+          </span>
+        )}
+      </div>
+      <Typography
+        variant="caption"
+        sx={{ color: "#aaa", display: "block", mt: 1 }}
+      >
+        "{message.content || "No content"}"
+      </Typography>
+      <Typography
+        variant="caption"
+        sx={{ color: "#888", display: "block", mt: 1 }}
+      >
+        {message.created_at ? timeAgo(message.created_at) : "Unknown date"}
       </Typography>
     </div>
   );
@@ -741,7 +778,12 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              40%
+                              {Math.round(
+                                (dashboardData.stats?.completed_bookings /
+                                  dashboardData.stats?.total_bookings) *
+                                  100 || 0
+                              )}
+                              %
                             </Typography>
                           </div>
                           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -761,7 +803,12 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              30%
+                              {Math.round(
+                                (dashboardData.stats?.pending_bookings /
+                                  dashboardData.stats?.total_bookings) *
+                                  100 || 0
+                              )}
+                              %
                             </Typography>
                           </div>
                           <div className="d-flex justify-content-between align-items-center">
@@ -781,7 +828,12 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              30%
+                              {Math.round(
+                                (dashboardData.stats?.cancelled_bookings /
+                                  dashboardData.stats?.total_bookings) *
+                                  100 || 0
+                              )}
+                              %
                             </Typography>
                           </div>
                         </div>
@@ -882,77 +934,23 @@ const AdminDashboard = () => {
                         <Typography variant="h6" sx={{ mb: 3 }}>
                           Recent Messages
                         </Typography>
-                        <div
-                          className="mb-3 pb-2"
-                          style={{
-                            borderBottom: "1px solid rgba(255,255,255,0.1)",
-                          }}
-                        >
-                          <div className="d-flex justify-content-between align-items-center">
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "bold" }}
-                            >
-                              Michael Brown
-                            </Typography>
-                            <span
-                              style={{
-                                backgroundColor: "#4299e1",
-                                fontSize: "10px",
-                                padding: "1px 6px",
-                                borderRadius: "10px",
-                                color: "white",
-                              }}
-                            >
-                              New
-                            </span>
-                          </div>
+                        {recentMessages.length > 0 ? (
+                          recentMessages.map((message) => (
+                            <MessageItem key={message.id} message={message} />
+                          ))
+                        ) : (
                           <Typography
-                            variant="caption"
-                            sx={{ color: "#aaa", display: "block", mt: 1 }}
+                            variant="body2"
+                            sx={{ color: "#aaa", textAlign: "center", py: 3 }}
                           >
-                            "I'd like to inquire about your video packages for
-                            corporate events..."
+                            No recent messages found
                           </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{ color: "#888", display: "block", mt: 1 }}
-                          >
-                            Today, 10:45 AM
-                          </Typography>
-                        </div>
-                        <div
-                          className="mb-3 pb-2"
-                          style={{
-                            borderBottom: "1px solid rgba(255,255,255,0.1)",
-                          }}
-                        >
-                          <div className="d-flex justify-content-between">
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "bold" }}
-                            >
-                              Sarah Miller
-                            </Typography>
-                          </div>
-                          <Typography
-                            variant="caption"
-                            sx={{ color: "#aaa", display: "block", mt: 1 }}
-                          >
-                            "Do you offer discounts for multiple session
-                            bookings? Looking for..."
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{ color: "#888", display: "block", mt: 1 }}
-                          >
-                            Yesterday, 4:30 PM
-                          </Typography>
-                        </div>
+                        )}
                         <div className="text-center mt-3">
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
+                            onClick={() => navigate("/admin-dashboard/messages")}
                           >
                             View all messages →
                           </Typography>
@@ -990,7 +988,11 @@ const AdminDashboard = () => {
                               <div
                                 className="progress-bar"
                                 style={{
-                                  width: "75%",
+                                  width: `${Math.round(
+                                    (dashboardData.stats?.completed_bookings /
+                                      dashboardData.stats?.total_bookings) *
+                                      100 || 0
+                                  )}%`,
                                   backgroundColor: "#48bb78",
                                 }}
                               ></div>
@@ -1000,7 +1002,12 @@ const AdminDashboard = () => {
                             variant="body2"
                             sx={{ fontWeight: "bold" }}
                           >
-                            75%
+                            {Math.round(
+                              (dashboardData.stats?.completed_bookings /
+                                dashboardData.stats?.total_bookings) *
+                                100 || 0
+                            )}
+                            %
                           </Typography>
                         </div>
                         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -1021,7 +1028,11 @@ const AdminDashboard = () => {
                               <div
                                 className="progress-bar"
                                 style={{
-                                  width: "60%",
+                                  width: `${Math.round(
+                                    (dashboardData.stats?.pending_bookings /
+                                      dashboardData.stats?.total_bookings) *
+                                      100 || 0
+                                  )}%`,
                                   backgroundColor: "#f6ad55",
                                 }}
                               ></div>
@@ -1031,7 +1042,52 @@ const AdminDashboard = () => {
                             variant="body2"
                             sx={{ fontWeight: "bold" }}
                           >
-                            60%
+                            {Math.round(
+                              (dashboardData.stats?.pending_bookings /
+                                dashboardData.stats?.total_bookings) *
+                                100 || 0
+                            )}
+                            %
+                          </Typography>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "bold" }}
+                            >
+                              Cancelled
+                            </Typography>
+                            <div
+                              className="progress mt-2"
+                              style={{
+                                height: "6px",
+                                backgroundColor: "#2d3748",
+                              }}
+                            >
+                              <div
+                                className="progress-bar"
+                                style={{
+                                  width: `${Math.round(
+                                    (dashboardData.stats?.cancelled_bookings /
+                                      dashboardData.stats?.total_bookings) *
+                                      100 || 0
+                                  )}%`,
+                                  backgroundColor: "#f56565",
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: "bold" }}
+                          >
+                            {Math.round(
+                              (dashboardData.stats?.cancelled_bookings /
+                                dashboardData.stats?.total_bookings) *
+                                100 || 0
+                            )}
+                            %
                           </Typography>
                         </div>
                       </Box>
