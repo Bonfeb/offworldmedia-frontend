@@ -56,24 +56,22 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-
+  
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => {
             reject(new Error("Request timed out after 10 seconds"));
-          }, 10000); // 10 second timeout
+          }, 10000);
         });
-
-        // Fetch dashboard stats
+  
+        console.log("Fetching dashboard stats...");
         const response = await Promise.race([
-          API.get("/admin-dashboard/", {
-            params: {action: "stats"},
-            withCredentials: true,
-          }),
+          API.get("/admin-dashboard/", { withCredentials: true }),
           timeoutPromise,
         ]);
+        console.log("Dashboard stats response:", response.data);
         setDashboardData(response.data);
-
-        // Fetch recent bookings from the new endpoint
+  
+        console.log("Fetching recent bookings...");
         const bookingsResponse = await Promise.race([
           API.get("/admin-dashboard/", {
             params: { action: "bookings" },
@@ -81,29 +79,38 @@ const AdminDashboard = () => {
           }),
           timeoutPromise,
         ]);
-        setRecentBookings(bookingsResponse.data.slice(0, 2)); // Get only 5 most recent
-
-        // Fetch recent reviews from the new endpoint
+        console.log("Recent bookings:", bookingsResponse.data);
+        setRecentBookings(bookingsResponse.data.slice(0, 2));
+  
+        console.log("Fetching recent reviews...");
         const reviewsResponse = await Promise.race([
           API.get("/reviews/", {
-            params: {action: "reviews"},
             withCredentials: true,
           }),
           timeoutPromise,
         ]);
+        console.log("Recent reviews:", reviewsResponse.data);
         setRecentReviews(reviewsResponse.data.slice(0, 2));
-
+  
         setError(null);
       } catch (err) {
-        console.error("Error fetching dashboard data:", err);
+        console.error("Dashboard load failed:", err);
+        if (err.response) {
+          console.error("Server error response:", err.response.data);
+        } else if (err.request) {
+          console.error("No response received:", err.request);
+        } else {
+          console.error("Unknown error:", err.message);
+        }
         setError("Failed to load dashboard data. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchDashboardData();
   }, []);
+  
 
   const handleLogout = () => {
     logout();
