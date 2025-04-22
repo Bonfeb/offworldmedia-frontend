@@ -66,6 +66,7 @@ const AdminDashboard = () => {
         // Fetch dashboard stats
         const response = await Promise.race([
           API.get("/admin-dashboard/", {
+            params: {action: "stats"},
             withCredentials: true,
           }),
           timeoutPromise,
@@ -85,6 +86,7 @@ const AdminDashboard = () => {
         // Fetch recent reviews from the new endpoint
         const reviewsResponse = await Promise.race([
           API.get("/reviews/", {
+            params: {action: "reviews"},
             withCredentials: true,
           }),
           timeoutPromise,
