@@ -4,7 +4,7 @@ export const formatBookings = (bookings) => {
     return bookings.map((booking, index) => ({
       id: booking.id,
       serialNo: index + 1,
-      customer: booking.user,
+      customer: booking.user?.username || 'Unknown User',
       service: booking.service?.name || 'Unknown Service',
       location: booking.event_location || 'N/A',
       eventDate: booking.event_date ? new Date(booking.event_date).toLocaleDateString() : 'N/A',
