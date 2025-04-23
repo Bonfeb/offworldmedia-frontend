@@ -28,6 +28,7 @@ import {
   faGear,
   faAngleDown,
   faUserGroup,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import API from "../../api";
 import { AuthContext } from "../../context/AuthContext";
@@ -53,17 +54,37 @@ const AdminDashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Toggle sidebar based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 992) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-  
+
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => {
             reject(new Error("Request timed out after 20 seconds"));
           }, 20000);
         });
-  
+
         console.log("Fetching admin dashboard overview...");
         const response = await Promise.race([
           API.get("/admin-dashboard/", {
@@ -71,26 +92,22 @@ const AdminDashboard = () => {
           }),
           timeoutPromise,
         ]);
-  
-        const {
-          recent_bookings,
-          recent_reviews,
-          recent_messages,
-          stats
-        } = response.data;
-  
+
+        const { recent_bookings, recent_reviews, recent_messages, stats } =
+          response.data;
+
         console.log("Dashboard stats response:", stats);
         setDashboardData(stats);
-  
+
         console.log("Recent bookings:", recent_bookings);
         setRecentBookings(recent_bookings?.slice(0, 2) || []);
-  
+
         console.log("Recent reviews:", recent_reviews);
         setRecentReviews(recent_reviews?.slice(0, 2) || []);
-  
+
         console.log("Recent messages:", recent_messages);
         setRecentMessages(recent_messages?.slice(0, 2) || []);
-  
+
         setError(null);
       } catch (err) {
         console.error("Dashboard load failed:", err);
@@ -106,10 +123,10 @@ const AdminDashboard = () => {
         setIsLoading(false);
       }
     };
-  
+
     fetchDashboardData();
   }, []);
-  
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -117,6 +134,10 @@ const AdminDashboard = () => {
 
   const handleToggleNotificationDropdown = () => {
     setShowNotificationDropdown((prevState) => !prevState);
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   // Format date function
@@ -244,7 +265,8 @@ const AdminDashboard = () => {
               {booking.service?.name || "Unknown Service"}
             </Typography>
             <Typography variant="caption" sx={{ color: "#aaa" }}>
-              {booking.user?.username || "Unknown User"} • {formatDate(booking.event_date)}
+              {booking.user?.username || "Unknown User"} •{" "}
+              {formatDate(booking.event_date)}
             </Typography>
           </div>
         </div>
@@ -276,7 +298,7 @@ const AdminDashboard = () => {
     );
   };
 
-   // Review Item Component
+  // Review Item Component
   const ReviewItem = ({ review }) => (
     <div
       className="mb-3 pb-2"
@@ -364,12 +386,16 @@ const AdminDashboard = () => {
       <div
         className={`sidebar ${sidebarOpen ? "open" : "closed"}`}
         style={{
-          width: sidebarOpen ? "240px" : "60px",
+          width: sidebarOpen ? "240px" : "0",
+          minWidth: sidebarOpen ? "240px" : "0",
           backgroundColor: "#12151f",
           color: "#fff",
-          transition: "width 0.3s ease",
+          transition: "all 0.3s ease",
           overflow: "hidden",
           boxShadow: "2px 0 5px rgba(0,0,0,0.2)",
+          position: window.innerWidth < 992 ? "fixed" : "relative",
+          zIndex: 1000,
+          height: "100vh",
         }}
       >
         <div className="text-center p-3">
@@ -542,7 +568,15 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="main-content" style={{ flex: 1, overflow: "auto" }}>
+      <div 
+        className="main-content" 
+        style={{ 
+          flex: 1, 
+          overflow: "auto",
+          marginLeft: window.innerWidth < 992 ? "0" : sidebarOpen ? "240px" : "60px",
+          transition: "margin 0.3s ease"
+        }}
+      >
         <Navbar
           bg="dark"
           variant="dark"
@@ -552,8 +586,14 @@ const AdminDashboard = () => {
           }}
         >
           <Container fluid className="d-flex justify-content-between">
-            <div className="d-flex">
-              <div className="input-group">
+            <div className="d-flex align-items-center">
+              <button 
+                className="btn btn-dark me-2 d-lg-none"
+                onClick={toggleSidebar}
+              >
+                <FontAwesomeIcon icon={faBars} />
+              </button>
+              <div className="input-group d-none d-md-flex">
                 <input
                   type="text"
                   className="form-control bg-dark text-light border-dark"
@@ -563,7 +603,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="d-flex align-items-center">
-              <Dropdown>
+              <Dropdown className="me-2">
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                   <span
                     className="rounded-pill px-3 py-2"
@@ -617,7 +657,7 @@ const AdminDashboard = () => {
                 </Dropdown.Menu>
               </Dropdown>
               <div className="d-flex align-items-center">
-                <span className="mx-2 text-light" style={{ cursor: "pointer" }}>
+                <span className="mx-2 text-light d-none d-sm-block" style={{ cursor: "pointer" }}>
                   <FontAwesomeIcon icon={faEnvelope} />
                 </span>
                 <span
@@ -636,16 +676,16 @@ const AdminDashboard = () => {
                   roundedCircle
                   width="30"
                   height="30"
-                  className="ms-3"
+                  className="ms-3 d-none d-sm-block"
                   alt="User profile"
                 />
-                <FontAwesomeIcon icon={faAngleDown} />
+                <FontAwesomeIcon icon={faAngleDown} className="d-none d-sm-block" />
               </div>
             </div>
           </Container>
         </Navbar>
 
-        <Container fluid className="px-4 py-4">
+        <Container fluid className="px-3 px-md-4 py-4">
           {/* Show statistics by default if on the base dashboard route */}
           {location.pathname === "/admin-dashboard" ? (
             isLoading ? (
@@ -660,7 +700,7 @@ const AdminDashboard = () => {
             ) : dashboardData ? (
               <>
                 <Row className="mb-4">
-                  <Col lg={3} md={6} className="mb-3">
+                  <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faCalendarAlt}
                       value={dashboardData?.total_bookings || 0}
@@ -668,7 +708,7 @@ const AdminDashboard = () => {
                       color="#4299e1"
                     />
                   </Col>
-                  <Col lg={3} md={6} className="mb-3">
+                  <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faClock}
                       value={dashboardData?.pending_bookings || 0}
@@ -676,7 +716,7 @@ const AdminDashboard = () => {
                       color="#f6ad55"
                     />
                   </Col>
-                  <Col lg={3} md={6} className="mb-3">
+                  <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faCheckCircle}
                       value={dashboardData?.completed_bookings || 0}
@@ -684,7 +724,7 @@ const AdminDashboard = () => {
                       color="#48bb78"
                     />
                   </Col>
-                  <Col lg={3} md={6} className="mb-3">
+                  <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faTimesCircle}
                       value={dashboardData?.cancelled_bookings || 0}
@@ -695,7 +735,7 @@ const AdminDashboard = () => {
                 </Row>
 
                 <Row>
-                  <Col lg={4} md={6} className="mb-4">
+                  <Col xl={4} lg={6} md={12} className="mb-4">
                     <Card
                       sx={{
                         backgroundColor: "#1e213a",
@@ -841,7 +881,7 @@ const AdminDashboard = () => {
                     </Card>
                   </Col>
 
-                  <Col lg={8} md={6} className="mb-4">
+                  <Col xl={8} lg={6} md={12} className="mb-4">
                     <Card
                       sx={{
                         backgroundColor: "#1e213a",
@@ -886,7 +926,7 @@ const AdminDashboard = () => {
                 </Row>
 
                 <Row>
-                  <Col lg={4} md={6} className="mb-3">
+                  <Col xl={4} lg={6} md={12} className="mb-3">
                     <Card
                       sx={{
                         backgroundColor: "#1e213a",
@@ -922,7 +962,7 @@ const AdminDashboard = () => {
                       </Box>
                     </Card>
                   </Col>
-                  <Col lg={4} md={6} className="mb-3">
+                  <Col xl={4} lg={6} md={12} className="mb-3">
                     <Card
                       sx={{
                         backgroundColor: "#1e213a",
@@ -950,7 +990,9 @@ const AdminDashboard = () => {
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
-                            onClick={() => navigate("/admin-dashboard/messages")}
+                            onClick={() =>
+                              navigate("/admin-dashboard/messages")
+                            }
                           >
                             View all messages →
                           </Typography>
@@ -990,5 +1032,4 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
 export default AdminDashboard;

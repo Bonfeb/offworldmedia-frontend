@@ -34,13 +34,9 @@ function Home() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        console.log("Fetching services...");
-        console.log("Using baseURL:", import.meta.env.VITE_BASE_URL);
         const response = await API.get("/services/", {
           withCredentials: true,
         });
-       
-        console.log("API Response:", response.data);
         setServices(response.data);
       } catch (error) {
         console.error("Error fetching services:", error);
@@ -59,72 +55,79 @@ function Home() {
       navigate("/login");
       return;
     }
-
-    // Redirect to FillEventDetails page
     navigate(`/event-details/${serviceId}`);
   };
 
-  // Loading state
   if (loading) {
     return (
-      <div className="text-center">
+      <div className="text-center py-5">
         <Spinner animation="border" variant="primary" />
         <p>Loading services...</p>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <Alert variant="danger" className="text-center">
+      <Alert variant="danger" className="text-center my-5">
         {error}
       </Alert>
     );
   }
 
-  // No services available
   if (services.length === 0) {
-    return <p className="text-center">No services available.</p>;
+    return <p className="text-center my-5">No services available.</p>;
   }
 
-  // Render services
   return (
-    <Container fluid className="p-0 m-0">
-      {/* Part 1: Hero Section */}
-      <Container fluid className="hero-section py-5 m-0">
-        <h1>Relate to Our Creative Designs Beyond Expectations</h1>
-        <p>
-          Leading digital agency with solid design and development expertise.
-        </p>
-      </Container>
-
-      {/* Part 2: About Section */}
-      <Container fluid className="about-section py-5 m-0">
-        <Row className="text-center">
-          <h2>About Us</h2>
-          <hr style={{ color: "red" }} />
-          <p>
-            We are a leading digital agency with expertise in design and
-            development. Our team builds readymade websites, mobile
-            applications, and online business solutions.
-          </p>
-        </Row>
-      </Container>
-
-      {/* Part 3: Studio Work Showcase */}
-      <section className="showcase-section py-5 m-0">
+    <Container fluid className="p-0 m-0 home-container">
+      {/* Hero Section */}
+      <section className="hero-section">
         <Container>
-          <Row>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1>Relate to Our Creative Designs Beyond Expectations</h1>
+            <p className="hero-subtitle">
+              Leading digital agency with solid design and development expertise.
+            </p>
+          </motion.div>
+        </Container>
+      </section>
+
+      {/* About Section */}
+      <section className="about-section">
+        <Container>
+          <Row className="justify-content-center">
+            <Col xl={8} lg={10} className="text-center">
+              <h2>About Us</h2>
+              <div className="section-divider"></div>
+              <p className="about-text">
+                We are a leading digital agency with expertise in design and
+                development. Our team builds readymade websites, mobile
+                applications, and online business solutions.
+              </p>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* Studio Work Showcase */}
+      <section className="showcase-section">
+        <Container>
+          <Row className="align-items-center">
             {/* Left Column - Image Carousel */}
-            <Col md={6}>
-              <Carousel>
+            <Col lg={6} className="mb-4 mb-lg-0">
+              <Carousel controls indicators>
                 {carouselImages.map((image, index) => (
                   <Carousel.Item key={index}>
                     <img
-                      className="d-block w-100 rounded"
+                      className="d-block w-100 rounded showcase-image"
                       src={image}
                       alt={`Studio Image ${index + 1}`}
+                      loading="lazy"
                     />
                   </Carousel.Item>
                 ))}
@@ -132,95 +135,95 @@ function Home() {
             </Col>
 
             {/* Right Column - Embedded YouTube Videos */}
-            <Col md={6} className="d-flex flex-column gap-3">
-              <iframe
-                width="895"
-                height="503"
-                src="https://www.youtube.com/embed/rZTh1m9SDGM"
-                title="Gonda - Kidutani"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
-              <iframe
-                width="895"
-                height="503"
-                src="https://www.youtube.com/embed/lEO9Tp2EMm4"
-                title="Bechi x Nizo Nanga x Baclint - Telephone (Official Dance Video)"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
+            <Col lg={6} className="video-container">
+              <div className="video-wrapper mb-3">
+                <iframe
+                  src="https://www.youtube.com/embed/rZTh1m9SDGM"
+                  title="Gonda - Kidutani"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="video-wrapper">
+                <iframe
+                  src="https://www.youtube.com/embed/lEO9Tp2EMm4"
+                  title="Bechi x Nizo Nanga x Baclint - Telephone"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
             </Col>
           </Row>
         </Container>
       </section>
 
-      {/* Part 4: Services Offered */}
-      <Container fluid className="services text-center py-4 m-0">
-        <h2 style={{ color: "#75aadb" }}>
-          We Offer Awesome{" "}
-          <span style={{ color: "#d12d33" }}>
-            <strong>Services</strong>
-          </span>
-        </h2>
-        <hr />
-        <p className="d-inline-block" style={{ width: "50%" }}>
-          <strong>
-            Ut possimus qui ut temporibus culpa velit eveniet modi omnis est
-            adipisci expedita at voluptas atque vitae autem.
-          </strong>
-        </p>
+      {/* Services Section */}
+      <section className="services-section">
+        <Container>
+          <div className="section-header text-center">
+            <h2>
+              We Offer Awesome <span>Services</span>
+            </h2>
+            <div className="section-divider"></div>
+            <p className="section-description">
+              Ut possimus qui ut temporibus culpa velit eveniet modi omnis est
+              adipisci expedita at voluptas atque vitae autem.
+            </p>
+          </div>
 
-        {showAlert && (
-          <Alert variant="success" className="text-center">
-            Service added to cart. Go to your dashboard to view and/or book it!
-          </Alert>
-        )}
+          {showAlert && (
+            <Alert variant="success" className="text-center" dismissible>
+              Service added to cart. Go to your dashboard to view and/or book it!
+            </Alert>
+          )}
 
-        {authAlert && (
-          <Alert variant="danger" className="text-center">
-            You must be logged in to add services to the cart.{" "}
-          </Alert>
-        )}
+          {authAlert && (
+            <Alert variant="danger" className="text-center" dismissible>
+              You must be logged in to add services to the cart.
+            </Alert>
+          )}
 
-        <Row className="justify-content-center mt-4">
-          {services.map((service) => (
-            <Col
-              xs={12}
-              md={6}
-              lg={3}
-              className="d-flex align-items-stretch mb-4"
-              key={service.id}
-            >
-              <div className="text-center icon-box p-4 shadow-lg">
-                <div className="position-absolute top-0 end-0 bg-warning text-white px-3 py-1 rounded-end">
-                  KSH {service.price}
-                </div>
-                <div className="icon mb-3">
-                  <Image
-                    src={service.image}
-                    className="rounded-circle"
-                    style={{ width: "220px", height: "200px" }}
-                  />
-                </div>
-                <hr />
-                <h4 className="title">{service.name}</h4>
-                <hr />
-                <p className="description">{service.description}</p>
-                <Button
-                  className="w-100 mt-2 bg-primary"
-                  onClick={() => handleFillEventDetails(service.id)}
+          <Row className="services-row">
+            {services.map((service) => (
+              <Col
+                key={service.id}
+                xl={3}
+                lg={4}
+                md={6}
+                sm={6}
+                className="mb-4"
+              >
+                <motion.div 
+                  className="service-card"
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Fill Event Details to Book
-                </Button>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </Container>
+                  <div className="price-badge">KSH {service.price}</div>
+                  <div className="service-image-container">
+                    <Image
+                      src={service.image}
+                      className="service-image"
+                      alt={service.name}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="service-content">
+                    <h3 className="service-title">{service.name}</h3>
+                    <p className="service-description">{service.description}</p>
+                    <Button
+                      variant="primary"
+                      className="service-button"
+                      onClick={() => handleFillEventDetails(service.id)}
+                    >
+                      Fill Event Details to Book
+                    </Button>
+                  </div>
+                </motion.div>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
     </Container>
   );
 }
