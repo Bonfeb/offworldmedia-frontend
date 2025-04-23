@@ -57,59 +57,47 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-  
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => {
-            reject(new Error("Request timed out after 20 seconds"));
-          }, 20000);
-        });
-  
+
         console.log("Fetching admin dashboard overview...");
-        const response = await Promise.race([
-          API.get("/admin-dashboard/", {
-            withCredentials: true,
-          }),
-          timeoutPromise,
-        ]);
-  
-        const {
-          recent_bookings,
-          recent_reviews,
-          recent_messages,
-          stats
-        } = response.data;
-  
-        console.log("Dashboard stats response:", stats);
+        const response = await API.get("/admin-dashboard/", {
+          withCredentials: true,
+        });
+
+        console.log("Dashboard response:", response.data);
+
+        // Process data if successful
+        const { recent_bookings, recent_reviews, recent_messages, stats } =
+          response.data;
+
         setDashboardData(stats);
-  
-        console.log("Recent bookings:", recent_bookings);
         setRecentBookings(recent_bookings?.slice(0, 2) || []);
-  
-        console.log("Recent reviews:", recent_reviews);
         setRecentReviews(recent_reviews?.slice(0, 2) || []);
-  
-        console.log("Recent messages:", recent_messages);
         setRecentMessages(recent_messages?.slice(0, 2) || []);
-  
+
         setError(null);
       } catch (err) {
         console.error("Dashboard load failed:", err);
         if (err.response) {
-          console.error("Server error response:", err.response.data);
+          const errorMessage =
+            err.response.data.error || "Server error. Please try again.";
+          setError(errorMessage);
+          console.error("Server error details:", err.response.data);
         } else if (err.request) {
+          setError(
+            "No response received from server. Please check your connection."
+          );
           console.error("No response received:", err.request);
         } else {
+          setError(`Error: ${err.message}`);
           console.error("Unknown error:", err.message);
         }
-        setError("Failed to load dashboard data. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
-  
     fetchDashboardData();
   }, []);
-  
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -244,7 +232,8 @@ const AdminDashboard = () => {
               {booking.service?.name || "Unknown Service"}
             </Typography>
             <Typography variant="caption" sx={{ color: "#aaa" }}>
-              {booking.user?.username || "Unknown User"} • {formatDate(booking.event_date)}
+              {booking.user?.username || "Unknown User"} •{" "}
+              {formatDate(booking.event_date)}
             </Typography>
           </div>
         </div>
@@ -950,7 +939,9 @@ const AdminDashboard = () => {
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
-                            onClick={() => navigate("/admin-dashboard/messages")}
+                            onClick={() =>
+                              navigate("/admin-dashboard/messages")
+                            }
                           >
                             View all messages →
                           </Typography>
