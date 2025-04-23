@@ -57,47 +57,59 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-
-        console.log("Fetching admin dashboard overview...");
-        const response = await API.get("/admin-dashboard/", {
-          withCredentials: true,
+  
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => {
+            reject(new Error("Request timed out after 20 seconds"));
+          }, 20000);
         });
-
-        console.log("Dashboard response:", response.data);
-
-        // Process data if successful
-        const { recent_bookings, recent_reviews, recent_messages, stats } =
-          response.data;
-
+  
+        console.log("Fetching admin dashboard overview...");
+        const response = await Promise.race([
+          API.get("/admin-dashboard/", {
+            withCredentials: true,
+          }),
+          timeoutPromise,
+        ]);
+  
+        const {
+          recent_bookings,
+          recent_reviews,
+          recent_messages,
+          stats
+        } = response.data;
+  
+        console.log("Dashboard stats response:", stats);
         setDashboardData(stats);
+  
+        console.log("Recent bookings:", recent_bookings);
         setRecentBookings(recent_bookings?.slice(0, 2) || []);
+  
+        console.log("Recent reviews:", recent_reviews);
         setRecentReviews(recent_reviews?.slice(0, 2) || []);
+  
+        console.log("Recent messages:", recent_messages);
         setRecentMessages(recent_messages?.slice(0, 2) || []);
-
+  
         setError(null);
       } catch (err) {
         console.error("Dashboard load failed:", err);
         if (err.response) {
-          const errorMessage =
-            err.response.data.error || "Server error. Please try again.";
-          setError(errorMessage);
-          console.error("Server error details:", err.response.data);
+          console.error("Server error response:", err.response.data);
         } else if (err.request) {
-          setError(
-            "No response received from server. Please check your connection."
-          );
           console.error("No response received:", err.request);
         } else {
-          setError(`Error: ${err.message}`);
           console.error("Unknown error:", err.message);
         }
+        setError("Failed to load dashboard data. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
+  
     fetchDashboardData();
   }, []);
-
+  
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -232,8 +244,7 @@ const AdminDashboard = () => {
               {booking.service?.name || "Unknown Service"}
             </Typography>
             <Typography variant="caption" sx={{ color: "#aaa" }}>
-              {booking.user?.username || "Unknown User"} •{" "}
-              {formatDate(booking.event_date)}
+              {booking.user?.username || "Unknown User"} • {formatDate(booking.event_date)}
             </Typography>
           </div>
         </div>
@@ -265,7 +276,7 @@ const AdminDashboard = () => {
     );
   };
 
-  // Review Item Component
+   // Review Item Component
   const ReviewItem = ({ review }) => (
     <div
       className="mb-3 pb-2"
@@ -274,7 +285,7 @@ const AdminDashboard = () => {
       <div className="d-flex justify-content-between">
         <Typography variant="body2" sx={{ fontWeight: "bold" }}>
           {review.user?.username || "Unknown User"}
-          <i>{review.service?.category || "Unknown Category"}</i>
+          <i>{review.service?.category || "Unknown Service"}</i>
         </Typography>
         <div>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -652,7 +663,7 @@ const AdminDashboard = () => {
                   <Col lg={3} md={6} className="mb-3">
                     <StatsCard
                       icon={faCalendarAlt}
-                      value={dashboardData.stats?.total_bookings || 0}
+                      value={dashboardData?.total_bookings || 0}
                       label="Total Bookings"
                       color="#4299e1"
                     />
@@ -660,7 +671,7 @@ const AdminDashboard = () => {
                   <Col lg={3} md={6} className="mb-3">
                     <StatsCard
                       icon={faClock}
-                      value={dashboardData.stats?.pending_bookings || 0}
+                      value={dashboardData?.pending_bookings || 0}
                       label="Pending Bookings"
                       color="#f6ad55"
                     />
@@ -668,7 +679,7 @@ const AdminDashboard = () => {
                   <Col lg={3} md={6} className="mb-3">
                     <StatsCard
                       icon={faCheckCircle}
-                      value={dashboardData.stats?.completed_bookings || 0}
+                      value={dashboardData?.completed_bookings || 0}
                       label="Completed Bookings"
                       color="#48bb78"
                     />
@@ -676,7 +687,7 @@ const AdminDashboard = () => {
                   <Col lg={3} md={6} className="mb-3">
                     <StatsCard
                       icon={faTimesCircle}
-                      value={dashboardData.stats?.cancelled_bookings || 0}
+                      value={dashboardData?.cancelled_bookings || 0}
                       label="Cancelled Bookings"
                       color="#f56565"
                     />
@@ -939,9 +950,7 @@ const AdminDashboard = () => {
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
-                            onClick={() =>
-                              navigate("/admin-dashboard/messages")
-                            }
+                            onClick={() => navigate("/admin-dashboard/messages")}
                           >
                             View all messages →
                           </Typography>
