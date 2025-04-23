@@ -76,7 +76,7 @@ const AdminDashboard = () => {
           recent_bookings,
           recent_reviews,
           recent_messages,
-          ...stats
+          stats
         } = response.data;
   
         console.log("Dashboard stats response:", stats);
