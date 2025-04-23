@@ -51,13 +51,16 @@ const AdminDashboard = () => {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showNotificationDropdown, setShowNotificationDropdown] =
     useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   // Toggle sidebar based on screen size
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 992) {
+      const mobile = window.innerWidth < 992;
+      setIsMobileView(mobile);
+      if (mobile) {
         setSidebarOpen(false);
       } else {
         setSidebarOpen(true);
@@ -73,6 +76,13 @@ const AdminDashboard = () => {
     // Clean up
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Close sidebar when clicking a nav item on mobile
+  const handleNavItemClick = () => {
+    if (isMobileView) {
+      setSidebarOpen(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -393,7 +403,7 @@ const AdminDashboard = () => {
           transition: "all 0.3s ease",
           overflow: "hidden",
           boxShadow: "2px 0 5px rgba(0,0,0,0.2)",
-          position: window.innerWidth < 992 ? "fixed" : "relative",
+          position: isMobileView ? "fixed" : "relative",
           zIndex: 1000,
           height: "100vh",
         }}
@@ -442,7 +452,7 @@ const AdminDashboard = () => {
                 border: "1px solid #2e3347",
               }}
             >
-              <Dropdown.Item as={NavLink} to="/profile" className="text-light">
+              <Dropdown.Item as={NavLink} to="/profile" className="text-light" onClick={handleNavItemClick}>
                 View Profile
               </Dropdown.Item>
               <Dropdown.Item onClick={handleLogout} className="text-light">
@@ -464,6 +474,7 @@ const AdminDashboard = () => {
             to="/admin-dashboard"
             end
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faChartPie} className="me-3" /> Dashboard
           </Nav.Link>
@@ -479,6 +490,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/video-recording"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faClock} className="me-3" /> Video
           </Nav.Link>
@@ -486,6 +498,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/audio-recording"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faTimesCircle} className="me-3" /> Audio
           </Nav.Link>
@@ -493,6 +506,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/photo-shooting"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faCheckCircle} className="me-3" /> Photo
           </Nav.Link>
@@ -509,6 +523,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/pending-bookings"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faClock} className="me-3" /> Pending
           </Nav.Link>
@@ -516,6 +531,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/cancelled-bookings"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faTimesCircle} className="me-3" /> Cancelled
           </Nav.Link>
@@ -523,6 +539,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/completed-bookings"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faCheckCircle} className="me-3" /> Completed
           </Nav.Link>
@@ -539,6 +556,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/team-members"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faUserGroup} className="me-4" /> Team
           </Nav.Link>
@@ -547,6 +565,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/users"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faUser} className="me-3" /> Users
           </Nav.Link>
@@ -554,6 +573,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/reviews"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faStar} className="me-3" /> Reviews
           </Nav.Link>
@@ -561,6 +581,7 @@ const AdminDashboard = () => {
             as={NavLink}
             to="/admin-dashboard/messages"
             className="text-light py-2"
+            onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faEnvelope} className="me-3" /> Messages
           </Nav.Link>
@@ -573,7 +594,7 @@ const AdminDashboard = () => {
         style={{ 
           flex: 1, 
           overflow: "auto",
-          marginLeft: window.innerWidth < 992 ? "0" : sidebarOpen ? "240px" : "60px",
+          marginLeft: isMobileView ? "0" : sidebarOpen ? "240px" : "60px",
           transition: "margin 0.3s ease"
         }}
       >
@@ -913,9 +934,10 @@ const AdminDashboard = () => {
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
-                            onClick={() =>
-                              navigate("/admin-dashboard/all-bookings")
-                            }
+                            onClick={() => {
+                              handleNavItemClick();
+                              navigate("/admin-dashboard/all-bookings");
+                            }}
                           >
                             View all bookings →
                           </Typography>
@@ -954,7 +976,10 @@ const AdminDashboard = () => {
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
-                            onClick={() => navigate("/admin-dashboard/reviews")}
+                            onClick={() => {
+                              handleNavItemClick();
+                              navigate("/admin-dashboard/reviews");
+                            }}
                           >
                             View all reviews →
                           </Typography>
@@ -990,9 +1015,10 @@ const AdminDashboard = () => {
                           <Typography
                             variant="body2"
                             sx={{ color: "#4299e1", cursor: "pointer" }}
-                            onClick={() =>
-                              navigate("/admin-dashboard/messages")
-                            }
+                            onClick={() => {
+                              handleNavItemClick();
+                              navigate("/admin-dashboard/messages");
+                            }}
                           >
                             View all messages →
                           </Typography>
