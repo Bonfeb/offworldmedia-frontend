@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Nav, Navbar, Offcanvas, Dropdown, Image } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Logo from './OWM Icon.ico';
+import Logo from "./assets/images/Logo.ico";
 import { AuthContext } from "../context/AuthContext";
 import {
   AppBar,
