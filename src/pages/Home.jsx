@@ -313,7 +313,7 @@ function Home() {
                 key={service.id}
                 xl={4}
                 lg={4}
-                md={6}
+                md={4}
                 sm={12}
                 className="mb-4"
               >
