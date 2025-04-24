@@ -153,10 +153,14 @@
   border: none;
 }
 
+.services-row > [class*="col-"] {
+  padding: 15px;
+}
+
 /* Services Section */
 .services-section {
   padding: 5rem 0;
-  background: white;
+  background: var(--antique-blue-light);
   position: relative;
 }
 
