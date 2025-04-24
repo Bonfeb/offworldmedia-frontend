@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { motion } from "framer-motion";
 import {
   Carousel,
@@ -15,7 +14,6 @@ import {
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 import Footer from "../components/Footer";
-import { media_url } from "../utils/constants";
 
 function Home() {
   const navigate = useNavigate();
@@ -52,6 +50,7 @@ function Home() {
   const handleFillEventDetails = (serviceId) => {
     if (!isAuthenticated) {
       setAuthAlert(true);
+      setTimeout(() => setAuthAlert(false), 5000);
       navigate("/login");
       return;
     }
@@ -60,23 +59,38 @@ function Home() {
 
   if (loading) {
     return (
-      <div className="text-center py-5">
-        <Spinner animation="border" variant="primary" />
-        <p>Loading services...</p>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh", background: "#f5f9ff" }}>
+        <div className="text-center">
+          <Spinner animation="border" variant="primary" style={{ width: "3rem", height: "3rem" }} />
+          <p className="mt-3" style={{ color: "#1a73e8", fontWeight: 500 }}>Loading amazing services for you...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <Alert variant="danger" className="text-center my-5">
-        {error}
-      </Alert>
+      <Container>
+        <Alert variant="danger" className="text-center my-5">
+          <i className="fa fa-exclamation-triangle me-2"></i>
+          {error}
+        </Alert>
+      </Container>
     );
   }
 
   if (services.length === 0) {
-    return <p className="text-center my-5">No services available.</p>;
+    return (
+      <Container>
+        <div className="text-center my-5 py-5">
+          <img src="/no-data.svg" alt="No services" style={{ width: "150px", marginBottom: "20px" }} />
+          <p style={{ color: "#344955", fontSize: "1.2rem" }}>No services available at the moment.</p>
+          <Button variant="outline-primary" onClick={() => window.location.reload()}>
+            Refresh
+          </Button>
+        </div>
+      </Container>
+    );
   }
 
   return (
@@ -91,8 +105,32 @@ function Home() {
           >
             <h1>Relate to Our Creative Designs Beyond Expectations</h1>
             <p className="hero-subtitle">
-              Leading digital agency with solid design and development expertise.
+              Leading digital agency with solid design and development expertise. We create meaningful experiences that connect with your audience.
             </p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <Button 
+                variant="light" 
+                size="lg" 
+                className="mt-4 me-2" 
+                style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
+                onClick={() => navigate("/services")}
+              >
+                Explore Services
+              </Button>
+              <Button 
+                variant="outline-light" 
+                size="lg" 
+                className="mt-4" 
+                style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
+                onClick={() => navigate("/contact")}
+              >
+                Contact Us
+              </Button>
+            </motion.div>
           </motion.div>
         </Container>
       </section>
@@ -102,13 +140,22 @@ function Home() {
         <Container>
           <Row className="justify-content-center">
             <Col xl={8} lg={10} className="text-center">
-              <h2>About Us</h2>
-              <div className="section-divider"></div>
-              <p className="about-text">
-                We are a leading digital agency with expertise in design and
-                development. Our team builds readymade websites, mobile
-                applications, and online business solutions.
-              </p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <h2>About Us</h2>
+                <div className="section-divider"></div>
+                <p className="about-text">
+                  We are a leading digital agency with expertise in design and
+                  development. Our team builds readymade websites, mobile
+                  applications, and online business solutions. With a passion for creativity
+                  and an eye for detail, we bring your vision to life through cutting-edge
+                  technology and innovative design.
+                </p>
+              </motion.div>
             </Col>
           </Row>
         </Container>
@@ -120,38 +167,52 @@ function Home() {
           <Row className="align-items-center">
             {/* Left Column - Image Carousel */}
             <Col lg={6} className="mb-4 mb-lg-0">
-              <Carousel controls indicators>
-                {carouselImages.map((image, index) => (
-                  <Carousel.Item key={index}>
-                    <img
-                      className="d-block w-100 rounded showcase-image"
-                      src={image}
-                      alt={`Studio Image ${index + 1}`}
-                      loading="lazy"
-                    />
-                  </Carousel.Item>
-                ))}
-              </Carousel>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <Carousel controls indicators interval={3000} pause="hover">
+                  {carouselImages.map((image, index) => (
+                    <Carousel.Item key={index}>
+                      <img
+                        className="d-block w-100 rounded showcase-image"
+                        src={image}
+                        alt={`Studio Image ${index + 1}`}
+                        loading="lazy"
+                      />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </motion.div>
             </Col>
 
             {/* Right Column - Embedded YouTube Videos */}
             <Col lg={6} className="video-container">
-              <div className="video-wrapper mb-3">
-                <iframe
-                  src="https://www.youtube.com/embed/rZTh1m9SDGM"
-                  title="Gonda - Kidutani"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-              <div className="video-wrapper">
-                <iframe
-                  src="https://www.youtube.com/embed/lEO9Tp2EMm4"
-                  title="Bechi x Nizo Nanga x Baclint - Telephone"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <div className="video-wrapper mb-3">
+                  <iframe
+                    src="https://www.youtube.com/embed/rZTh1m9SDGM"
+                    title="Gonda - Kidutani"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="video-wrapper">
+                  <iframe
+                    src="https://www.youtube.com/embed/lEO9Tp2EMm4"
+                    title="Bechi x Nizo Nanga x Baclint - Telephone"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </motion.div>
             </Col>
           </Row>
         </Container>
@@ -160,31 +221,46 @@ function Home() {
       {/* Services Section */}
       <section className="services-section">
         <Container>
-          <div className="section-header text-center">
+          <motion.div
+            className="section-header text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
             <h2>
               We Offer Awesome <span>Services</span>
             </h2>
             <div className="section-divider"></div>
             <p className="section-description">
-              Ut possimus qui ut temporibus culpa velit eveniet modi omnis est
-              adipisci expedita at voluptas atque vitae autem.
+              Our premium services are designed to meet all your creative needs, from photography to video production, ensuring high-quality results for your projects.
             </p>
-          </div>
+          </motion.div>
 
           {showAlert && (
-            <Alert variant="success" className="text-center" dismissible>
+            <Alert 
+              variant="success" 
+              className="text-center" 
+              dismissible 
+              onClose={() => setShowAlert(false)}
+            >
               Service added to cart. Go to your dashboard to view and/or book it!
             </Alert>
           )}
 
           {authAlert && (
-            <Alert variant="danger" className="text-center" dismissible>
+            <Alert 
+              variant="danger" 
+              className="text-center" 
+              dismissible 
+              onClose={() => setAuthAlert(false)}
+            >
               You must be logged in to add services to the cart.
             </Alert>
           )}
 
           <Row className="services-row">
-            {services.map((service) => (
+            {services.map((service, index) => (
               <Col
                 key={service.id}
                 xl={3}
@@ -195,8 +271,11 @@ function Home() {
               >
                 <motion.div 
                   className="service-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
                   whileHover={{ y: -5 }}
-                  transition={{ duration: 0.3 }}
                 >
                   <div className="price-badge">KSH {service.price}</div>
                   <div className="service-image-container">
@@ -215,13 +294,24 @@ function Home() {
                       className="service-button"
                       onClick={() => handleFillEventDetails(service.id)}
                     >
-                      Fill Event Details to Book
+                      Book Now
                     </Button>
                   </div>
                 </motion.div>
               </Col>
             ))}
           </Row>
+          
+          <div className="text-center mt-5">
+            <Button 
+              variant="outline-primary" 
+              size="lg"
+              onClick={() => navigate("/services")}
+              style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
+            >
+              View All Services
+            </Button>
+          </div>
         </Container>
       </section>
     </Container>
