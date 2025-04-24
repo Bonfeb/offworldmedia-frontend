@@ -353,7 +353,8 @@ function Home() {
 
           <div className="text-center mt-5">
             <Button
-              variant="outline-primary"
+              className="rounded-pill px-4 py-2"
+              variant="primary"
               size="lg"
               onClick={() => navigate("/services")}
               style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
