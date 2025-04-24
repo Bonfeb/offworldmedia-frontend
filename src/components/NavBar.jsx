@@ -1,20 +1,27 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Container,
-  Nav,
-  Navbar,
-  Offcanvas,
-  Dropdown,
-  Image,
-} from "react-bootstrap";
+import { Nav, Navbar, Offcanvas, Dropdown, Image } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Logo from './OWM Icon.ico';
 import { AuthContext } from "../context/AuthContext";
-import { AppBar, Box, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  Container,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 function NavBar() {
   const { isAuthenticated, userProfilePic, userGroups, logout } = useContext(AuthContext);
   const [showNavbar, setShowNavbar] = useState(true);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,160 +42,322 @@ function NavBar() {
 
   const handleNavItemClick = (path) => {
     setShowOffcanvas(false);
+    setAnchorEl(null);
     navigate(path);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Antique blue color palette
+  const colors = {
+    antiqueBlue: "#4B5EAA",
+    blue: "#4682B4",
+    shadeBlue: "#6A8299",
   };
 
   // Gradient style for the offcanvas
   const offcanvasStyle = {
-    background: "linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460, #533483)",
-    color: "white"
+    background: `linear-gradient(to bottom, ${colors.antiqueBlue}, ${colors.blue}, ${colors.shadeBlue})`,
+    color: "white",
   };
 
   return (
-    <AppBar position="static" color="primary" className="m-0 p-0">
-      <Container fluid>
-        <Navbar expand="lg" variant="dark" className="p-0 w-100">
-          <Toolbar className="w-100 p-0">
-            <Navbar.Brand as={Link} to="/">
-              OffWorldMedia
-            </Navbar.Brand>
-            <Box sx={{ flexGrow: 1 }} />
-            
-            {/* Desktop Navigation */}
-            <Box sx={{ display: { xs: 'none', lg: 'flex' } }}>
-              <Nav className="align-items-center me-3">
-                <Nav.Link as={Link} to="/" onClick={() => handleNavItemClick("/")}>
-                  Home
-                </Nav.Link>
-                <Nav.Link as={Link} to="/team" onClick={() => handleNavItemClick("/team")}>
-                  Team
-                </Nav.Link>
-                <Nav.Link as={Link} to="/contactus" onClick={() => handleNavItemClick("/contactus")}>
-                  Contact Us
-                </Nav.Link>
-                <Nav.Link as={Link} to="/reviews" onClick={() => handleNavItemClick("/reviews")}>
-                  Reviews
-                </Nav.Link>
-              </Nav>
-
-              <Nav className="d-flex align-items-center">
-                {!isAuthenticated ? (
-                  <>
-                    <Nav.Link as={Link} to="/register" onClick={() => handleNavItemClick("/register")}>
-                      Register
-                    </Nav.Link>
-                    <Nav.Link as={Link} to="/login" onClick={() => handleNavItemClick("/login")}>
-                      Login
-                    </Nav.Link>
-                  </>
-                ) : (
-                  <Dropdown align="end">
-                    <Dropdown.Toggle
-                      as="div"
-                      className="d-flex align-items-center"
-                    >
-                      <Image
-                        src={userProfilePic}
-                        roundedCircle
-                        width="45"
-                        height="45"
-                        className="me-2"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item as={Link} to="/profile" onClick={() => handleNavItemClick("/profile")}>
-                        My Profile
-                      </Dropdown.Item>
-                      <Dropdown.Divider />
-                      {userGroups && userGroups.includes("admin") ? (
-                        <Dropdown.Item as={Link} to="/admin-dashboard" onClick={() => handleNavItemClick("/admin-dashboard")}>
-                          Admin Dashboard
-                        </Dropdown.Item>
-                      ) : (
-                        <Dropdown.Item as={Link} to="/userdashboard" onClick={() => handleNavItemClick("/userdashboard")}>
-                          My Dashboard
-                        </Dropdown.Item>
-                      )}
-                      <Dropdown.Divider />
-                      <Dropdown.Item
-                        onClick={handleLogout}
-                        className="text-danger"
-                      >
-                        Logout
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                )}
-              </Nav>
-            </Box>
-            
-            <Navbar.Toggle 
-              aria-controls="offcanvasNavbar" 
-              onClick={() => setShowOffcanvas(!showOffcanvas)}
-              className="d-lg-none"
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: colors.antiqueBlue,
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          {/* Navbar Brand */}
+          <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+            <img
+              src={Logo}
+              alt="OffWorldMedia Logo"
+              style={{ height: 40, marginRight: 8 }}
             />
-          </Toolbar>
-        </Navbar>
-        
-        {/* Offcanvas Menu with Gradient Background */}
-        <Navbar.Offcanvas 
-          id="offcanvasNavbar" 
-          placement="end" 
-          show={showOffcanvas} 
-          onHide={() => setShowOffcanvas(false)}
-          style={offcanvasStyle}
-        >
-          <Offcanvas.Header closeButton closeVariant="white">
-            <Offcanvas.Title className="mx-auto text-white">OffWorldMedia</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body className="d-flex flex-column justify-content-start">
-            <Nav className="flex-column text-center mt-3">
-              <Nav.Link onClick={() => handleNavItemClick("/")} className="py-2 text-white">
-                Home
-              </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/team")} className="py-2 text-white">
-                Team
-              </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/contactus")} className="py-2 text-white">
-                Contact Us
-              </Nav.Link>
-              <Nav.Link onClick={() => handleNavItemClick("/reviews")} className="py-2 text-white">
-                Reviews
-              </Nav.Link>
-              
-              {!isAuthenticated ? (
-                <>
-                  <Nav.Link onClick={() => handleNavItemClick("/register")} className="py-2 text-white">
-                    Register
-                  </Nav.Link>
-                  <Nav.Link onClick={() => handleNavItemClick("/login")} className="py-2 text-white">
-                    Login
-                  </Nav.Link>
-                </>
-              ) : (
-                <>
-                  <Nav.Link onClick={() => handleNavItemClick("/profile")} className="py-2 text-white">
+            <Typography
+              variant="h6"
+              noWrap
+              component={Link}
+              to="/"
+              sx={{
+                fontWeight: 700,
+                color: "white",
+                textDecoration: "none",
+                "&:hover": { color: colors.shadeBlue },
+              }}
+            >
+              OffWorldMedia
+            </Typography>
+          </Box>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          {/* Desktop Navigation */}
+          <Box sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}>
+            <Button
+              component={Link}
+              to="/"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("/")}
+            >
+              Home
+            </Button>
+            <Button
+              component={Link}
+              to="/team"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("/team")}
+            >
+              Team
+            </Button>
+            <Button
+              component={Link}
+              to="/contactus"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("/contactus")}
+            >
+              Contact Us
+            </Button>
+            <Button
+              component={Link}
+              to="/reviews"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("/reviews")}
+            >
+              Reviews
+            </Button>
+
+            {!isAuthenticated ? (
+              <>
+                <Button
+                  component={Link}
+                  to="/register"
+                  sx={{
+                    color: "white",
+                    mx: 1,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    "&:hover": { backgroundColor: colors.shadeBlue },
+                  }}
+                  onClick={() => handleNavItemClick("/register")}
+                >
+                  Register
+                </Button>
+                <Button
+                  component={Link}
+                  to="/login"
+                  sx={{
+                    color: "white",
+                    mx: 1,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    "&:hover": { backgroundColor: colors.shadeBlue },
+                  }}
+                  onClick={() => handleNavItemClick("/login")}
+                >
+                  Login
+                </Button>
+              </>
+            ) : (
+              <Box sx={{ ml: 2 }}>
+                <IconButton onClick={handleMenuOpen}>
+                  <Avatar
+                    src={userProfilePic}
+                    sx={{ width: 40, height: 40, border: `2px solid ${colors.shadeBlue}` }}
+                  />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                  PaperProps={{
+                    sx: {
+                      backgroundColor: colors.blue,
+                      color: "white",
+                    },
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => handleNavItemClick("/profile")}
+                    sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
+                  >
                     My Profile
-                  </Nav.Link>
+                  </MenuItem>
                   {userGroups && userGroups.includes("admin") ? (
-                    <Nav.Link onClick={() => handleNavItemClick("/admin-dashboard")} className="py-2 text-white">
+                    <MenuItem
+                      onClick={() => handleNavItemClick("/admin-dashboard")}
+                      sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
+                    >
                       Admin Dashboard
-                    </Nav.Link>
+                    </MenuItem>
                   ) : (
-                    <Nav.Link onClick={() => handleNavItemClick("/userdashboard")} className="py-2 text-white">
+                    <MenuItem
+                      onClick={() => handleNavItemClick("/userdashboard")}
+                      sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
+                    >
                       My Dashboard
-                    </Nav.Link>
+                    </MenuItem>
                   )}
-                  <Nav.Link onClick={handleLogout} className="text-danger py-2">
+                  <MenuItem
+                    onClick={handleLogout}
+                    sx={{
+                      color: "#ff4d4f",
+                      "&:hover": { backgroundColor: colors.shadeBlue },
+                    }}
+                  >
                     Logout
-                  </Nav.Link>
-                </>
-              )}
-            </Nav>
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            )}
+          </Box>
+
+          {/* Mobile Menu Toggle */}
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            sx={{ display: { xs: "flex", lg: "none" } }}
+            onClick={() => setShowOffcanvas(!showOffcanvas)}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Toolbar>
       </Container>
+
+      {/* Offcanvas Menu with Gradient Background */}
+      <Navbar.Offcanvas
+        id="offcanvasNavbar"
+        placement="end"
+        show={showOffcanvas}
+        onHide={() => setShowOffcanvas(false)}
+        style={offcanvasStyle}
+      >
+        <Offcanvas.Header closeButton closeVariant="white">
+          <Offcanvas.Title className="mx-auto text-white">
+            OffWorldMedia
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body className="d-flex flex-column justify-content-start">
+          <Nav className="flex-column text-center mt-3">
+            <Nav.Link
+              onClick={() => handleNavItemClick("/")}
+              className="py-2 text-white"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Home
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => handleNavItemClick("/team")}
+              className="py-2 text-white"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Team
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => handleNavItemClick("/contactus")}
+              className="py-2 text-white"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Contact Us
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => handleNavItemClick("/reviews")}
+              className="py-2 text-white"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Reviews
+            </Nav.Link>
+
+            {!isAuthenticated ? (
+              <>
+                <Nav.Link
+                  onClick={() => handleNavItemClick("/register")}
+                  className="py-2 text-white"
+                  style={{ fontSize: "1.1rem" }}
+                >
+                  Register
+                </Nav.Link>
+                <Nav.Link
+                  onClick={() => handleNavItemClick("/login")}
+                  className="py-2 text-white"
+                  style={{ fontSize: "1.1rem" }}
+                >
+                  Login
+                </Nav.Link>
+              </>
+            ) : (
+              <>
+                <Nav.Link
+                  onClick={() => handleNavItemClick("/profile")}
+                  className="py-2 text-white"
+                  style={{ fontSize: "1.1rem" }}
+                >
+                  My Profile
+                </Nav.Link>
+                {userGroups && userGroups.includes("admin") ? (
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/admin-dashboard")}
+                    className="py-2 text-white"
+                    style={{ fontSize: "1.1rem" }}
+                  >
+                    Admin Dashboard
+                  </Nav.Link>
+                ) : (
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/userdashboard")}
+                    className="py-2 text-white"
+                    style={{ fontSize: "1.1rem" }}
+                  >
+                    My Dashboard
+                  </Nav.Link>
+                )}
+                <Nav.Link
+                  onClick={handleLogout}
+                  className="text-danger py-2"
+                  style={{ fontSize: "1.1rem" }}
+                >
+                  Logout
+                </Nav.Link>
+              </>
+            )}
+          </Nav>
+        </Offcanvas.Body>
+      </Navbar.Offcanvas>
     </AppBar>
   );
 }
