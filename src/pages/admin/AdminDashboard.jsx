@@ -594,7 +594,7 @@ const AdminDashboard = () => {
         style={{ 
           flex: 1, 
           overflow: "auto",
-          marginLeft: isMobileView ? "0" : sidebarOpen ? "240px" : "60px",
+          width: isMobileView ? "100%" : `calc(100% - ${sidebarOpen ? "240px" : "0px"})`,
           transition: "margin 0.3s ease"
         }}
       >

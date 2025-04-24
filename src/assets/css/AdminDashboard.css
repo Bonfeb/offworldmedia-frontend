@@ -4,6 +4,14 @@
   min-height: 100vh;
   background-color: #1a1d2b;
   color: #fff;
+  width: 100%;
+  overflow: hidden;
+}
+
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 100%;
 }
 
 /* Sidebar Styles */
@@ -17,6 +25,7 @@
   box-shadow: 2px 0 5px rgba(0,0,0,0.2);
   z-index: 1030;
   height: 100vh;
+  flex-shrink: 0;
 }
 
 .sidebar.closed {
@@ -64,6 +73,14 @@
   flex: 1;
   overflow-x: hidden;
   transition: margin-left 0.3s ease;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.main-content .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 100%;
 }
 
 /* Navbar Styles */
@@ -327,6 +344,31 @@
     width: 100%;
     max-width: 280px;
   }
+}
+
+@media (min-width: 1200px) {
+  .stat-card {
+    padding: 2rem;
+  }
+  
+  .dashboard-section {
+    padding: 1.75rem;
+  }
+  
+  .chart-container {
+    height: 350px;
+  }
+  
+  .status-doughnut {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Ensure proper row layout */
+.stats-row {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* Animation for sidebar */
