@@ -282,6 +282,7 @@ function Home() {
               from photography to video production, ensuring high-quality
               results for your projects.
             </p>
+            <hr/>
           </motion.div>
 
           {showAlert && (
