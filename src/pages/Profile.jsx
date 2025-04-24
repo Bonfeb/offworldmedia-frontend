@@ -141,9 +141,9 @@ function Profile() {
         Your Profile
       </Typography>
       
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <ProfileCard elevation={2}>
+      <Grid container spacing={3} justifyContent="center">
+        <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <ProfileCard elevation={2} sx={{ maxWidth: '400px', width: '100%' }}>
             <Box display="flex" flexDirection="column" alignItems="center">
               <ProfileAvatar
                 src={preview || userProfilePic || "/default-profile.png"}
