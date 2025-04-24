@@ -125,7 +125,7 @@ function Home() {
                 size="lg" 
                 className="mt-4" 
                 style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
-                onClick={() => navigate("/contact")}
+                onClick={() => navigate("/contactus")}
               >
                 Contact Us
               </Button>
