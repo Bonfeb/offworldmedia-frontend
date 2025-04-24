@@ -13,7 +13,6 @@ import {
 } from "react-bootstrap";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
-import Footer from "../components/Footer";
 
 function Home() {
   const navigate = useNavigate();
@@ -103,9 +102,9 @@ function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1>Relate to Our Creative Designs Beyond Expectations</h1>
+            <h1>Welcom to OffWorld Media Africa</h1>
             <p className="hero-subtitle">
-              Leading digital agency with solid design and development expertise. We create meaningful experiences that connect with your audience.
+            We offer top-notch services in video production, photography, and audio production.
             </p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -263,10 +262,10 @@ function Home() {
             {services.map((service, index) => (
               <Col
                 key={service.id}
-                xl={3}
+                xl={4}
                 lg={4}
                 md={6}
-                sm={6}
+                sm={12}
                 className="mb-4"
               >
                 <motion.div 
