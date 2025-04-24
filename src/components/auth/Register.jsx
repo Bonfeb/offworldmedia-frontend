@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import API from "../../api";
 
@@ -10,7 +9,6 @@ import {
   Typography, 
   Box, 
   Grid, 
-  Paper, 
   Avatar, 
   Container,
   Alert,
@@ -19,14 +17,24 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  useMediaQuery,
+  useTheme,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import PhoneIcon from "@mui/icons-material/Phone";
+import HomeIcon from "@mui/icons-material/Home";
+import EmailIcon from "@mui/icons-material/Email";
+import PersonIcon from "@mui/icons-material/Person";
 
 // React Bootstrap components for layout
-import { Card, Row, Col } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
 // Styled component for file input
 const VisuallyHiddenInput = styled('input')({
@@ -42,14 +50,64 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 // Styled Card with gradient background
-const GradientCard = styled(Card)({
-  background: 'linear-gradient(90deg,rgb(129, 177, 199) 0%,rgb(172, 108, 145) 50%, #90caf9 100%)',
-  borderRadius: '12px',
-  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)'
-});
+const GradientCard = styled(Card)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  borderRadius: '16px',
+  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+  overflow: 'hidden',
+  position: 'relative',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    background: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(10px)',
+  }
+}));
+
+const FormContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  zIndex: 1,
+  padding: theme.spacing(4),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3),
+  },
+}));
+
+const FormTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: 700,
+  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  marginBottom: theme.spacing(3),
+  textAlign: 'center',
+}));
+
+const AvatarStyled = styled(Avatar)(({ theme }) => ({
+  margin: '0 auto',
+  width: 80,
+  height: 80,
+  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  boxShadow: '0 8px 16px rgba(37, 117, 252, 0.3)',
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
+  padding: '12px 0',
+  '&:hover': {
+    background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+    boxShadow: '0 6px 15px rgba(37, 117, 252, 0.4)',
+  }
+}));
 
 const Register = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [userData, setUserData] = useState({
     first_name: "",
@@ -67,6 +125,8 @@ const Register = () => {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [fileSelected, setFileSelected] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -98,7 +158,6 @@ const Register = () => {
     });
 
     try {
-
       const response = await API.post("/register/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -112,23 +171,22 @@ const Register = () => {
                     "Registration failed. Please try again.");
       
       console.error("Registration failed:", error.response?.data || error.message);
-      console.error("Error Response:", error.response);
       setErrorMessage(errMsg);
       setShowErrorAlert(true);
     }
   };
 
   return (
-    <Container component="main" maxWidth="md" sx={{ mt: 8, mb: 8 }}>
-      <GradientCard className="shadow-lg border-0">
-        <Card.Body className="p-5">
+    <Container component="main" maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
+      <GradientCard className="border-0">
+        <FormContainer>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
-            <Avatar sx={{ m: 1, bgcolor: 'primary.main', width: 56, height: 56 }}>
+            <AvatarStyled>
               <PersonAddIcon fontSize="large" />
-            </Avatar>
-            <Typography component="h1" variant="h4" sx={{ mt: 2, fontWeight: 'bold' }}>
+            </AvatarStyled>
+            <FormTitle variant="h4" component="h1">
               Create an Account
-            </Typography>
+            </FormTitle>
           </Box>
 
           <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -142,6 +200,13 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -153,6 +218,13 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -164,6 +236,13 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -176,30 +255,61 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   label="Password"
                   name="password"
                   value={userData.password}
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   label="Confirm Password"
                   name="confirmPassword"
                   value={userData.confirmPassword}
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -210,6 +320,13 @@ const Register = () => {
                   value={userData.phone}
                   onChange={handleChange}
                   variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -223,15 +340,29 @@ const Register = () => {
                   variant="outlined"
                   multiline
                   rows={2}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <HomeIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: 2 }}>
                   <Button
                     component="label"
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
-                    sx={{ mr: 2 }}
+                    sx={{ 
+                      background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+                      boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+                      },
+                      width: isMobile ? '100%' : 'auto'
+                    }}
                   >
                     Upload Profile Picture
                     <VisuallyHiddenInput 
@@ -241,13 +372,19 @@ const Register = () => {
                       onChange={handleFileChange}
                     />
                   </Button>
-                  {fileSelected && <Typography variant="body2" color="text.secondary">
-                    File selected: {userData.profile_pic?.name}
-                  </Typography>}
+                  {fileSelected && (
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{ mt: isMobile ? 1 : 0 }}
+                    >
+                      File selected: {userData.profile_pic?.name}
+                    </Typography>
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <Button
+                <StyledButton
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -260,7 +397,7 @@ const Register = () => {
                   }}
                 >
                   Register Account
-                </Button>
+                </StyledButton>
               </Grid>
             </Grid>
           </Box>
@@ -271,10 +408,12 @@ const Register = () => {
               <Typography
                 component="span"
                 variant="body1"
-                color="primary"
                 sx={{ 
                   cursor: 'pointer',
                   fontWeight: 'medium',
+                  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                   '&:hover': {
                     textDecoration: 'underline'
                   }
@@ -285,22 +424,41 @@ const Register = () => {
               </Typography>
             </Typography>
           </Box>
-        </Card.Body>
+        </FormContainer>
       </GradientCard>
 
       {/* Success Dialog */}
       <Dialog
         open={showSuccessDialog}
         onClose={() => navigate("/login")}
+        PaperProps={{
+          sx: {
+            borderRadius: '16px',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+          }
+        }}
       >
-        <DialogTitle>Registration Successful</DialogTitle>
+        <DialogTitle sx={{ background: 'linear-gradient(to right, #6a11cb, #2575fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          Registration Successful
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Your account has been created successfully. You can now log in.
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => navigate("/login")} variant="contained" autoFocus>
+        <DialogActions sx={{ pb: 3, px: 3 }}>
+          <Button 
+            onClick={() => navigate("/login")} 
+            variant="contained"
+            sx={{
+              background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+              boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+              }
+            }}
+            autoFocus
+          >
             Go to Login
           </Button>
         </DialogActions>
