@@ -12,6 +12,7 @@ import {
   Button,
 } from "react-bootstrap";
 import API from "../api";
+import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 function Home() {
@@ -22,6 +23,11 @@ function Home() {
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [authAlert, setAuthAlert] = useState(false);
+  const [videos, setvideos] = useState([]);
+
+  const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+  const CHANNEL_ID = import.meta.env.VITE_YOUR_CHANNEL_ID;
+  const MAX_RESULTS = 3;
 
   const imageContext = import.meta.glob("../assets/images/*.jpg", {
     eager: true,
@@ -46,6 +52,29 @@ function Home() {
     fetchServices();
   }, []);
 
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await axios.get(
+          `https://www.googleapis.com/youtube/v3/search`,
+          {
+            params: {
+              key: YOUTUBE_API_KEY,
+              channelId: CHANNEL_ID,
+              part: "snippet",
+              maxResults: MAX_RESULTS,
+              order: "date",
+            },
+          }
+        );
+        setvideos(response.data.items);
+      } catch (error) {
+        console.error("Error fetching YouTube videos:", error);
+      }
+    };
+    fetchVideos();
+  }, []);
+
   const handleFillEventDetails = (serviceId) => {
     if (!isAuthenticated) {
       setAuthAlert(true);
@@ -58,10 +87,19 @@ function Home() {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh", background: "#f5f9ff" }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh", background: "#f5f9ff" }}
+      >
         <div className="text-center">
-          <Spinner animation="border" variant="primary" style={{ width: "3rem", height: "3rem" }} />
-          <p className="mt-3" style={{ color: "#1a73e8", fontWeight: 500 }}>Loading amazing services for you...</p>
+          <Spinner
+            animation="border"
+            variant="primary"
+            style={{ width: "3rem", height: "3rem" }}
+          />
+          <p className="mt-3" style={{ color: "#1a73e8", fontWeight: 500 }}>
+            Loading amazing services for you...
+          </p>
         </div>
       </div>
     );
@@ -82,9 +120,18 @@ function Home() {
     return (
       <Container>
         <div className="text-center my-5 py-5">
-          <img src="/no-data.svg" alt="No services" style={{ width: "150px", marginBottom: "20px" }} />
-          <p style={{ color: "#344955", fontSize: "1.2rem" }}>No services available at the moment.</p>
-          <Button variant="outline-primary" onClick={() => window.location.reload()}>
+          <img
+            src="/no-data.svg"
+            alt="No services"
+            style={{ width: "150px", marginBottom: "20px" }}
+          />
+          <p style={{ color: "#344955", fontSize: "1.2rem" }}>
+            No services available at the moment.
+          </p>
+          <Button
+            variant="outline-primary"
+            onClick={() => window.location.reload()}
+          >
             Refresh
           </Button>
         </div>
@@ -97,33 +144,34 @@ function Home() {
       {/* Hero Section */}
       <section className="hero-section">
         <Container>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <h1>Welcom to OffWorld Media Africa</h1>
             <p className="hero-subtitle">
-            We offer top-notch services in video production, photography, and audio production.
+              We offer top-notch services in video production, photography, and
+              audio production.
             </p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.5 }}
             >
-              <Button 
-                variant="light" 
-                size="lg" 
-                className="mt-4 me-2" 
+              <Button
+                variant="light"
+                size="lg"
+                className="mt-4 me-2"
                 style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
                 onClick={() => navigate("/services")}
               >
                 Explore Services
               </Button>
-              <Button 
-                variant="outline-light" 
-                size="lg" 
-                className="mt-4" 
+              <Button
+                variant="outline-light"
+                size="lg"
+                className="mt-4"
                 style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
                 onClick={() => navigate("/contactus")}
               >
@@ -150,9 +198,9 @@ function Home() {
                 <p className="about-text">
                   We are a leading digital agency with expertise in design and
                   development. Our team builds readymade websites, mobile
-                  applications, and online business solutions. With a passion for creativity
-                  and an eye for detail, we bring your vision to life through cutting-edge
-                  technology and innovative design.
+                  applications, and online business solutions. With a passion
+                  for creativity and an eye for detail, we bring your vision to
+                  life through cutting-edge technology and innovative design.
                 </p>
               </motion.div>
             </Col>
@@ -196,20 +244,18 @@ function Home() {
                 viewport={{ once: true }}
               >
                 <div className="video-wrapper mb-3">
-                  <iframe
-                    src="https://www.youtube.com/embed/rZTh1m9SDGM"
-                    title="Gonda - Kidutani"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-                <div className="video-wrapper">
-                  <iframe
-                    src="https://www.youtube.com/embed/lEO9Tp2EMm4"
-                    title="Bechi x Nizo Nanga x Baclint - Telephone"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
+                  {videos.map((video) => (
+                    <iframe
+                      key={video.id.videoId}
+                      width="100%"
+                      height="250"
+                      src={`https://www.youtube.com/embed/${video.id.videoId}`}
+                      title={video.snippet.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  ))}
                 </div>
               </motion.div>
             </Col>
@@ -232,26 +278,29 @@ function Home() {
             </h2>
             <div className="section-divider"></div>
             <p className="section-description">
-              Our premium services are designed to meet all your creative needs, from photography to video production, ensuring high-quality results for your projects.
+              Our premium services are designed to meet all your creative needs,
+              from photography to video production, ensuring high-quality
+              results for your projects.
             </p>
           </motion.div>
 
           {showAlert && (
-            <Alert 
-              variant="success" 
-              className="text-center" 
-              dismissible 
+            <Alert
+              variant="success"
+              className="text-center"
+              dismissible
               onClose={() => setShowAlert(false)}
             >
-              Service added to cart. Go to your dashboard to view and/or book it!
+              Service added to cart. Go to your dashboard to view and/or book
+              it!
             </Alert>
           )}
 
           {authAlert && (
-            <Alert 
-              variant="danger" 
-              className="text-center" 
-              dismissible 
+            <Alert
+              variant="danger"
+              className="text-center"
+              dismissible
               onClose={() => setAuthAlert(false)}
             >
               You must be logged in to add services to the cart.
@@ -268,7 +317,7 @@ function Home() {
                 sm={12}
                 className="mb-4"
               >
-                <motion.div 
+                <motion.div
                   className="service-card"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -300,10 +349,10 @@ function Home() {
               </Col>
             ))}
           </Row>
-          
+
           <div className="text-center mt-5">
-            <Button 
-              variant="outline-primary" 
+            <Button
+              variant="outline-primary"
               size="lg"
               onClick={() => navigate("/services")}
               style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
