@@ -29,25 +29,13 @@ import LoginIcon from "@mui/icons-material/Login";
 // React Bootstrap components
 import { Card } from "react-bootstrap";
 
-// Styled Card with gradient background
-const GradientCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+// Styled Card with dark blue background
+const DarkBlueCard = styled(Card)(({ theme }) => ({
+  background: '#1a237e', // Dark blue background
   borderRadius: '16px',
-  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
   maxWidth: '500px',
   width: '100%',
-  overflow: 'hidden',
-  position: 'relative',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(10px)',
-  }
 }));
 
 const FormContainer = styled(Box)(({ theme }) => ({
@@ -61,40 +49,44 @@ const FormContainer = styled(Box)(({ theme }) => ({
 
 const FormTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+  color: '#ffffff',
   marginBottom: theme.spacing(3),
   textAlign: 'center',
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
+  background: '#3f51b5',
+  boxShadow: '0 4px 10px rgba(63, 81, 181, 0.3)',
   padding: '12px 0',
   '&:hover': {
-    background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
-    boxShadow: '0 6px 15px rgba(37, 117, 252, 0.4)',
+    background: '#303f9f',
+    boxShadow: '0 6px 15px rgba(63, 81, 181, 0.4)',
   }
 }));
 
-const GradientText = styled(Typography)(({ theme }) => ({
-  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
-  cursor: 'pointer',
-  fontWeight: 'medium',
-  display: 'inline',
-  '&:hover': {
-    textDecoration: 'underline'
+const StyledTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(255, 255, 255, 0.5)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#90caf9',
+    },
+    color: 'white'
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: '#90caf9',
+  },
+  '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+    color: 'rgba(255, 255, 255, 0.7)',
   }
-}));
-
-const IconContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: theme.spacing(3),
-}));
+});
 
 const CircleIcon = styled(Box)(({ theme }) => ({
   width: 80,
@@ -103,8 +95,10 @@ const CircleIcon = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  boxShadow: '0 8px 16px rgba(37, 117, 252, 0.3)',
+  background: '#3f51b5',
+  boxShadow: '0 8px 16px rgba(63, 81, 181, 0.3)',
+  margin: '0 auto',
+  marginBottom: theme.spacing(3),
 }));
 
 const Login = () => {
@@ -163,20 +157,18 @@ const Login = () => {
         py: 3
       }}
     >
-      <GradientCard className="border-0">
+      <DarkBlueCard className="border-0">
         <FormContainer>
-          <IconContainer>
-            <CircleIcon>
-              <LoginIcon sx={{ fontSize: 40, color: 'white' }} />
-            </CircleIcon>
-          </IconContainer>
+          <CircleIcon>
+            <LoginIcon sx={{ fontSize: 40, color: 'white' }} />
+          </CircleIcon>
           
           <FormTitle variant="h4" component="h1">
             Welcome Back
           </FormTitle>
           
-          <Box component="form" onSubmit={handleSubmit} noValidate>
-            <TextField
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
+            <StyledTextField
               margin="normal"
               required
               fullWidth
@@ -190,14 +182,14 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon color="primary" />
+                    <PersonIcon />
                   </InputAdornment>
                 ),
               }}
               sx={{ mb: 3 }}
             />
             
-            <TextField
+            <StyledTextField
               margin="normal"
               required
               fullWidth
@@ -212,7 +204,7 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LockOutlinedIcon color="primary" />
+                    <LockOutlinedIcon />
                   </InputAdornment>
                 ),
                 endAdornment: (
@@ -220,6 +212,7 @@ const Login = () => {
                     <IconButton
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
+                      sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
                     >
                       {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                     </IconButton>
@@ -239,23 +232,47 @@ const Login = () => {
             </StyledButton>
             
             <Box sx={{ mt: 4, textAlign: 'center' }}>
-              <Typography variant="body1" sx={{ mb: 2 }}>
+              <Typography variant="body1" sx={{ mb: 2 }} color="rgba(255, 255, 255, 0.7)">
                 Don't have an account?{" "}
-                <GradientText onClick={() => navigate("/register")}>
+                <Typography
+                  component="span"
+                  variant="body1"
+                  sx={{ 
+                    cursor: 'pointer',
+                    fontWeight: 'medium',
+                    color: '#90caf9',
+                    '&:hover': {
+                      textDecoration: 'underline'
+                    }
+                  }}
+                  onClick={() => navigate("/register")}
+                >
                   Register
-                </GradientText>
+                </Typography>
               </Typography>
               
-              <Typography variant="body1">
+              <Typography variant="body1" color="rgba(255, 255, 255, 0.7)">
                 Forgot Password?{" "}
-                <GradientText onClick={() => navigate("/forgot-password")}>
+                <Typography
+                  component="span"
+                  variant="body1"
+                  sx={{ 
+                    cursor: 'pointer',
+                    fontWeight: 'medium',
+                    color: '#90caf9',
+                    '&:hover': {
+                      textDecoration: 'underline'
+                    }
+                  }}
+                  onClick={() => navigate("/forgot-password")}
+                >
                   Reset
-                </GradientText>
+                </Typography>
               </Typography>
             </Box>
           </Box>
         </FormContainer>
-      </GradientCard>
+      </DarkBlueCard>
 
       {/* Success Dialog */}
       <Dialog
@@ -268,7 +285,7 @@ const Login = () => {
           }
         }}
       >
-        <DialogTitle sx={{ background: 'linear-gradient(to right, #6a11cb, #2575fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <DialogTitle sx={{ color: '#3f51b5' }}>
           Login Successful
         </DialogTitle>
         <DialogContent>
@@ -281,10 +298,10 @@ const Login = () => {
             onClick={() => navigate(userGroups?.includes("admin") ? "/admin-dashboard" : "/userdashboard")}
             variant="contained"
             sx={{
-              background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-              boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
+              background: '#3f51b5',
+              boxShadow: '0 4px 10px rgba(63, 81, 181, 0.3)',
               '&:hover': {
-                background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+                background: '#303f9f',
               }
             }}
           >
