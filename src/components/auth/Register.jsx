@@ -1,5 +1,3 @@
-
-// Register.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api";
@@ -51,13 +49,23 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-// Styled Card with dark blue background
-const DarkBlueCard = styled(Card)(({ theme }) => ({
-  background: '#1a237e', // Dark blue background
+// Styled Card with gradient background
+const GradientCard = styled(Card)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
   borderRadius: '16px',
-  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
   overflow: 'hidden',
-  width: '100%'
+  position: 'relative',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    background: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(10px)',
+  }
 }));
 
 const FormContainer = styled(Box)(({ theme }) => ({
@@ -71,7 +79,9 @@ const FormContainer = styled(Box)(({ theme }) => ({
 
 const FormTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  color: '#ffffff',
+  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
   marginBottom: theme.spacing(3),
   textAlign: 'center',
 }));
@@ -80,43 +90,19 @@ const AvatarStyled = styled(Avatar)(({ theme }) => ({
   margin: '0 auto',
   width: 80,
   height: 80,
-  background: '#3f51b5',
-  boxShadow: '0 8px 16px rgba(63, 81, 181, 0.3)',
+  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  boxShadow: '0 8px 16px rgba(37, 117, 252, 0.3)',
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  background: '#3f51b5',
-  boxShadow: '0 4px 10px rgba(63, 81, 181, 0.3)',
+  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
   padding: '12px 0',
   '&:hover': {
-    background: '#303f9f',
-    boxShadow: '0 6px 15px rgba(63, 81, 181, 0.4)',
+    background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+    boxShadow: '0 6px 15px rgba(37, 117, 252, 0.4)',
   }
 }));
-
-const StyledTextField = styled(TextField)({
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: 'rgba(255, 255, 255, 0.3)',
-    },
-    '&:hover fieldset': {
-      borderColor: 'rgba(255, 255, 255, 0.5)',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#90caf9',
-    },
-    color: 'white'
-  },
-  '& .MuiInputLabel-root': {
-    color: 'rgba(255, 255, 255, 0.7)',
-  },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: '#90caf9',
-  },
-  '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-    color: 'rgba(255, 255, 255, 0.7)',
-  }
-});
 
 const Register = () => {
   const navigate = useNavigate();
@@ -192,7 +178,7 @@ const Register = () => {
 
   return (
     <Container component="main" maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
-      <DarkBlueCard className="border-0">
+      <GradientCard className="border-0">
         <FormContainer>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
             <AvatarStyled>
@@ -203,10 +189,10 @@ const Register = () => {
             </FormTitle>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   label="First Name"
                   name="first_name"
@@ -217,14 +203,14 @@ const Register = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PersonIcon />
+                        <PersonIcon color="primary" />
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   label="Last Name"
                   name="last_name"
@@ -235,14 +221,14 @@ const Register = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PersonIcon />
+                        <PersonIcon color="primary" />
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
               <Grid item xs={12}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   label="Username"
                   name="username"
@@ -253,14 +239,14 @@ const Register = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PersonIcon />
+                        <PersonIcon color="primary" />
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
               <Grid item xs={12}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   type="email"
                   label="Email Address"
@@ -272,14 +258,14 @@ const Register = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <EmailIcon />
+                        <EmailIcon color="primary" />
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   type={showPassword ? "text" : "password"}
                   label="Password"
@@ -294,7 +280,6 @@ const Register = () => {
                         <IconButton
                           onClick={() => setShowPassword(!showPassword)}
                           edge="end"
-                          sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
                         >
                           {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </IconButton>
@@ -304,7 +289,7 @@ const Register = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   type={showConfirmPassword ? "text" : "password"}
                   label="Confirm Password"
@@ -319,7 +304,6 @@ const Register = () => {
                         <IconButton
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           edge="end"
-                          sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
                         >
                           {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </IconButton>
@@ -329,7 +313,7 @@ const Register = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   label="Phone Number"
                   name="phone"
@@ -339,14 +323,14 @@ const Register = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PhoneIcon />
+                        <PhoneIcon color="primary" />
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
               <Grid item xs={12}>
-                <StyledTextField
+                <TextField
                   fullWidth
                   label="Address"
                   name="address"
@@ -359,7 +343,7 @@ const Register = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <HomeIcon />
+                        <HomeIcon color="primary" />
                       </InputAdornment>
                     ),
                   }}
@@ -372,10 +356,10 @@ const Register = () => {
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
                     sx={{ 
-                      background: '#3f51b5',
-                      boxShadow: '0 4px 10px rgba(63, 81, 181, 0.3)',
+                      background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+                      boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
                       '&:hover': {
-                        background: '#303f9f',
+                        background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
                       },
                       width: isMobile ? '100%' : 'auto'
                     }}
@@ -391,7 +375,7 @@ const Register = () => {
                   {fileSelected && (
                     <Typography 
                       variant="body2" 
-                      color="rgba(255, 255, 255, 0.7)"
+                      color="text.secondary"
                       sx={{ mt: isMobile ? 1 : 0 }}
                     >
                       File selected: {userData.profile_pic?.name}
@@ -419,7 +403,7 @@ const Register = () => {
           </Box>
 
           <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Typography variant="body1" color="rgba(255, 255, 255, 0.7)">
+            <Typography variant="body1">
               Already have an account?{" "}
               <Typography
                 component="span"
@@ -427,7 +411,9 @@ const Register = () => {
                 sx={{ 
                   cursor: 'pointer',
                   fontWeight: 'medium',
-                  color: '#90caf9',
+                  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                   '&:hover': {
                     textDecoration: 'underline'
                   }
@@ -439,7 +425,7 @@ const Register = () => {
             </Typography>
           </Box>
         </FormContainer>
-      </DarkBlueCard>
+      </GradientCard>
 
       {/* Success Dialog */}
       <Dialog
@@ -452,7 +438,7 @@ const Register = () => {
           }
         }}
       >
-        <DialogTitle sx={{ color: '#3f51b5' }}>
+        <DialogTitle sx={{ background: 'linear-gradient(to right, #6a11cb, #2575fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           Registration Successful
         </DialogTitle>
         <DialogContent>
@@ -465,10 +451,10 @@ const Register = () => {
             onClick={() => navigate("/login")} 
             variant="contained"
             sx={{
-              background: '#3f51b5',
-              boxShadow: '0 4px 10px rgba(63, 81, 181, 0.3)',
+              background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+              boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
               '&:hover': {
-                background: '#303f9f',
+                background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
               }
             }}
             autoFocus
