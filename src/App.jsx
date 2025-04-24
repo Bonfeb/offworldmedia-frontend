@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Box } from '@mui/material';
 import "bootstrap/dist/css/bootstrap.min.css";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
@@ -42,6 +43,17 @@ import AllBookings from "./pages/admin/bookings/AllBookings";
 function App() {
   return (
     <Router>
+      <Box
+        sx={{
+          background: 'linear-gradient(to right,rgb(64, 70, 82),rgb(66, 76, 92))', // nice blue gradient
+          minHeight: '100vh',
+          width: '100%',
+          color: '#fff', // optional: white text on dark bg
+          [theme => theme.breakpoints.down('sm')]: {
+            background: 'linear-gradient(to bottom,rgb(81, 88, 100),rgb(63, 71, 85))', // mobile-friendly direction
+          },
+        }}
+      >
       <div style={{ 
         display: "flex", 
         flexDirection: "column", 
@@ -97,6 +109,7 @@ function App() {
         </div>
         <Footer />
       </div>
+      </Box>
     </Router>
   );
 }
