@@ -162,7 +162,7 @@ function NavBar() {
             </Button>
             <Button
               component={Link}
-              to="#"
+              to="/media-gallery"
               sx={{
                 color: "white",
                 mx: 1,
@@ -170,7 +170,7 @@ function NavBar() {
                 fontSize: "1rem",
                 "&:hover": { backgroundColor: colors.shadeBlue },
               }}
-              onClick={() => handleNavItemClick("#")}
+              onClick={() => handleNavItemClick("/media-gallery")}
             >
               Gallery
             </Button>

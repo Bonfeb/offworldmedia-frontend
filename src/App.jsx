@@ -39,6 +39,7 @@ import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AllBookings from "./pages/admin/bookings/AllBookings";
+import MediaGallery from "./pages/MediaGallery";
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
             <Route path="/services" element={<Service />} />
             <Route path="/contactus" element={<ContactUs />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/media-gallery" element={<MediaGallery />} />
             <Route path="/review/:serviceId" element={<Reviews />} />
             <Route
               path="/event-details/:serviceId"

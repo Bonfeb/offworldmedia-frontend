@@ -6,6 +6,7 @@ const NewService = ({ show, handleClose, refreshServices }) => {
   const [formData, setFormData] = useState({
     name: "",
     category: "video",
+    audio_category: "", // Add this
     description: "",
     price: "",
     image: null,
@@ -14,13 +15,32 @@ const NewService = ({ show, handleClose, refreshServices }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const audioSubcategories = [
+    { value: "beat_making", label: "Beat Making" },
+    { value: "sound_recording", label: "Sound Recording" },
+    { value: "mixing", label: "Mixing" },
+    { value: "mastering", label: "Mastering" },
+    { value: "music_video", label: "Music Video Production" },
+  ];
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
+    console.log("File selected:", e.target.files[0]);
+    if (name === "category") {
+      setFormData((prev) => ({
+        ...prev,
+        category: value,
+        audio_category: value === "audio" ? prev.audio_category : "",
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -31,13 +51,14 @@ const NewService = ({ show, handleClose, refreshServices }) => {
     try {
       const formDataToSend = new FormData();
       Object.keys(formData).forEach((key) => {
+        // Skip appending audio_category if category is not audio
+        if (key === "audio_category" && formData.category !== "audio") return;
         formDataToSend.append(key, formData[key]);
       });
 
       const accessToken = sessionStorage.getItem("accessToken");
-      console.log("Access Token being sent:", accessToken); // ✅ Confirm token is present
-      console.log("Form Data being sent:", formData); // Optional debug info
-
+      console.log("Access Token being sent:", accessToken);
+      console.log("Form Data being sent:", formData);
 
       await API.post("/service/", formDataToSend, {
         headers: {
@@ -78,12 +99,36 @@ const NewService = ({ show, handleClose, refreshServices }) => {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Category</Form.Label>
-            <Form.Select name="category" onChange={handleChange}>
+            <Form.Select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+            >
               <option value="video">Video Recording</option>
               <option value="audio">Audio Recording</option>
               <option value="photo">Photo Shooting</option>
             </Form.Select>
           </Form.Group>
+
+          {formData.category === "audio" && (
+            <Form.Group className="mb-3">
+              <Form.Label>Audio Subcategory</Form.Label>
+              <Form.Select
+                name="audio_category"
+                value={formData.audio_category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Subcategory</option>
+                {audioSubcategories.map((sub) => (
+                  <option key={sub.value} value={sub.value}>
+                    {sub.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          )}
+
           <Form.Group className="mb-3">
             <Form.Label>Description</Form.Label>
             <Form.Control

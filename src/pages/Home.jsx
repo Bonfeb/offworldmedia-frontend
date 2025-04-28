@@ -10,7 +10,11 @@ import {
   Alert,
   Image,
   Button,
+  Card,
+  Nav,
+  Tab,
 } from "react-bootstrap";
+import { Paper, Typography, Box, Chip, Divider } from "@mui/material";
 import API from "../api";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
@@ -18,6 +22,8 @@ import { AuthContext } from "../context/AuthContext";
 function Home() {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
+  const [groupedServices, setGroupedServices] = useState({});
+  const [activeCategory, setActiveCategory] = useState('');
   const { isAuthenticated } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,7 +46,49 @@ function Home() {
         const response = await API.get("/services/", {
           withCredentials: true,
         });
-        setServices(response.data);
+        
+        // Handle the structured data response
+        if (response.data.services && response.data.services.grouped_services) {
+          // If admin/staff response format
+          setGroupedServices(response.data.services.grouped_services);
+          
+          // Flatten services for other components that might need the full list
+          const allServices = [];
+          Object.keys(response.data.services.grouped_services).forEach(category => {
+            Object.keys(response.data.services.grouped_services[category]).forEach(subcategory => {
+              allServices.push(...response.data.services.grouped_services[category][subcategory]);
+            });
+          });
+          setServices(allServices);
+          
+          // Set the first category as active
+          if (Object.keys(response.data.services.grouped_services).length > 0) {
+            setActiveCategory(Object.keys(response.data.services.grouped_services)[0]);
+          }
+        } else {
+          // Regular user format - need to organize by category and subcategory
+          const servicesData = response.data;
+          setServices(servicesData);
+          
+          // Group services by category and subcategory
+          const grouped = {};
+          servicesData.forEach(service => {
+            if (!grouped[service.category]) {
+              grouped[service.category] = {};
+            }
+            if (!grouped[service.category][service.subcategory]) {
+              grouped[service.category][service.subcategory] = [];
+            }
+            grouped[service.category][service.subcategory].push(service);
+          });
+          
+          setGroupedServices(grouped);
+          
+          // Set the first category as active
+          if (Object.keys(grouped).length > 0) {
+            setActiveCategory(Object.keys(grouped)[0]);
+          }
+        }
       } catch (error) {
         console.error("Error fetching services:", error);
         setError("Failed to load services.");
@@ -55,6 +103,9 @@ function Home() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
         const response = await axios.get(
           `https://www.googleapis.com/youtube/v3/search`,
           {
@@ -65,13 +116,31 @@ function Home() {
               maxResults: MAX_RESULTS,
               order: "date",
             },
+            signal: controller.signal
           }
         );
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.data || !response.data.items) {
+          throw new Error('Invalid response format from YouTube API');
+        }
+        
         setvideos(response.data.items);
       } catch (error) {
-        console.error("Error fetching YouTube videos:", error);
+        if (axios.isCancel(error)) {
+          console.error("YouTube API request timed out");
+        } else if (error.response) {
+          const status = error.response.status;
+          console.error(`YouTube API error (${status}): ${error.response.data?.error?.message || 'Unknown error'}`);
+        } else if (error.request) {
+          console.error("Network error when fetching YouTube videos");
+        } else {
+          console.error("Error fetching YouTube videos:", error.message);
+        }
       }
     };
+    
     fetchVideos();
   }, []);
 
@@ -83,6 +152,19 @@ function Home() {
       return;
     }
     navigate(`/event-details/${serviceId}`);
+  };
+
+  // Function to format category name for display
+  const formatCategoryName = (category) => {
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
+  // Function to format subcategory name for display
+  const formatSubcategoryName = (subcategory) => {
+    return subcategory
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   if (loading) {
@@ -149,7 +231,7 @@ function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1>Welcom to OffWorld Media Africa</h1>
+            <h1>Welcome to OffWorld Media Africa</h1>
             <p className="hero-subtitle">
               We offer top-notch services in video production, photography, and
               audio production.
@@ -333,18 +415,25 @@ function Home() {
                 viewport={{ once: true }}
               >
                 <div className="video-wrapper mb-3">
-                  {videos.map((video) => (
-                    <iframe
-                      key={video.id.videoId}
-                      width="100%"
-                      height="250"
-                      src={`https://www.youtube.com/embed/${video.id.videoId}`}
-                      title={video.snippet.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
-                  ))}
+                  {videos.length > 0 ? (
+                    videos.map((video) => (
+                      <div key={video.id.videoId} className="mb-3">
+                        <iframe
+                          width="100%"
+                          height="250"
+                          src={`https://www.youtube.com/embed/${video.id.videoId}`}
+                          title={video.snippet.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-5">
+                      <p>No videos available at the moment.</p>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </Col>
@@ -352,8 +441,8 @@ function Home() {
         </Container>
       </section>
 
-      {/* Services Section */}
-      <section className="services-section">
+      {/* Services Section - Updated with Categories and Subcategories */}
+      <section className="services-section py-5">
         <Container>
           <motion.div
             className="section-header text-center"
@@ -371,7 +460,6 @@ function Home() {
               from photography to video production, ensuring high-quality
               results for your projects.
             </p>
-            <hr />
           </motion.div>
 
           {showAlert && (
@@ -397,48 +485,103 @@ function Home() {
             </Alert>
           )}
 
-          <Row className="services-row">
-            {services.map((service, index) => (
-              <Col
-                key={service.id}
-                xl={4}
-                lg={4}
-                md={4}
-                sm={12}
-                className="mb-4"
-              >
-                <motion.div
-                  className="service-card"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="price-badge">KSH {service.price}</div>
-                  <div className="service-image-container">
-                    <Image
-                      src={service.image}
-                      className="service-image"
-                      alt={service.name}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="service-content">
-                    <h3 className="service-title">{service.name}</h3>
-                    <p className="service-description">{service.description}</p>
-                    <Button
-                      variant="primary"
-                      className="service-button"
-                      onClick={() => handleFillEventDetails(service.id)}
-                    >
-                      Book Now
-                    </Button>
-                  </div>
-                </motion.div>
-              </Col>
-            ))}
-          </Row>
+          {/* Category Tabs */}
+          <div className="category-tabs mb-4">
+            <Tab.Container 
+              id="service-categories" 
+              defaultActiveKey={Object.keys(groupedServices)[0] || ""}
+              onSelect={(k) => setActiveCategory(k)}
+            >
+              <Row>
+                <Col sm={12}>
+                  <Nav variant="tabs" className="service-category-nav">
+                    {Object.keys(groupedServices).map((category) => (
+                      <Nav.Item key={category}>
+                        <Nav.Link eventKey={category}>
+                          {formatCategoryName(category)}
+                        </Nav.Link>
+                      </Nav.Item>
+                    ))}
+                  </Nav>
+                </Col>
+                <Col sm={12}>
+                  <Tab.Content>
+                    {Object.keys(groupedServices).map((category) => (
+                      <Tab.Pane key={category} eventKey={category}>
+                        {/* Subcategory sections */}
+                        {Object.keys(groupedServices[category]).map((subcategory) => (
+                          <div key={subcategory} className="subcategory-section my-4">
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                mb: 3,
+                              }}
+                            >
+                              <Typography variant="h5" component="h3">
+                                {formatSubcategoryName(subcategory)}
+                              </Typography>
+                              <Divider sx={{ flexGrow: 1, ml: 2 }} />
+                            </Box>
+                            
+                            <Row className="services-row">
+                              {groupedServices[category][subcategory].map((service, index) => (
+                                <Col
+                                  key={service.id}
+                                  xl={4}
+                                  lg={4}
+                                  md={4}
+                                  sm={12}
+                                  className="mb-4"
+                                >
+                                  <motion.div
+                                    className="service-card"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                    whileHover={{ y: -5 }}
+                                  >
+                                    <div className="price-badge">KSH {service.price}</div>
+                                    <div className="service-image-container">
+                                      <Image
+                                        src={service.image}
+                                        className="service-image"
+                                        alt={service.name}
+                                        loading="lazy"
+                                      />
+                                    </div>
+                                    <div className="service-content">
+                                      <h3 className="service-title">{service.name}</h3>
+                                      <p className="service-description">{service.description}</p>
+                                      <Chip 
+                                        label={formatSubcategoryName(service.subcategory)}
+                                        size="small"
+                                        color="primary"
+                                        variant="outlined"
+                                        className="mb-3"
+                                      />
+                                      <Button
+                                        variant="primary"
+                                        className="service-button"
+                                        onClick={() => handleFillEventDetails(service.id)}
+                                      >
+                                        Book Now
+                                      </Button>
+                                    </div>
+                                  </motion.div>
+                                </Col>
+                              ))}
+                            </Row>
+                          </div>
+                        ))}
+                      </Tab.Pane>
+                    ))}
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
+          </div>
 
           <div className="text-center mt-5">
             <Button
