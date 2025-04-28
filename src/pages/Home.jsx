@@ -196,12 +196,101 @@ function Home() {
                 <h2>About Us</h2>
                 <div className="section-divider"></div>
                 <p className="about-text">
-                  We are a leading digital agency with expertise in design and
-                  development. Our team builds readymade websites, mobile
-                  applications, and online business solutions. With a passion
-                  for creativity and an eye for detail, we bring your vision to
-                  life through cutting-edge technology and innovative design.
+                  Offworld Media Africa is a business company specializing in
+                  photography, videography, music production, graphic designing
+                  and digital broadcasting.
                 </p>
+                <Row className="g-4">
+                  <Col xl={6} md={12} sm={12} lg={6}>
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        height: "100%",
+                        borderRadius: 2,
+                        transition: "transform 0.3s, box-shadow 0.3s",
+                        "&:hover": {
+                          transform: "translateY(-5px)",
+                          boxShadow: "0 12px 20px rgba(0,0,0,0.1)",
+                        },
+                      }}
+                    >
+                      <Card
+                        className="border-0 h-100"
+                        style={{ backgroundColor: "transparent" }}
+                      >
+                        <Card.Header
+                          className="text-center border-bottom-0 pt-4"
+                          style={{ backgroundColor: "transparent" }}
+                        >
+                          <Typography
+                            variant="h4"
+                            component="h2"
+                            fontWeight="medium"
+                            color="primary"
+                          >
+                            Vision
+                          </Typography>
+                        </Card.Header>
+                        <Card.Body className="d-flex align-items-center">
+                          <Typography
+                            variant="body1"
+                            component="p"
+                            className="text-center px-4 pb-3"
+                          >
+                            To be a transformative force in global media,
+                            revealing the essence of life and capturing the
+                            heartbeat through photography, film, music and
+                            digital broadcasting.
+                          </Typography>
+                        </Card.Body>
+                      </Card>
+                    </Paper>
+                  </Col>
+
+                  <Col xl={6} md={12} sm={12} lg={6}>
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        height: "100%",
+                        borderRadius: 2,
+                        transition: "transform 0.3s, box-shadow 0.3s",
+                        "&:hover": {
+                          transform: "translateY(-5px)",
+                          boxShadow: "0 12px 20px rgba(0,0,0,0.1)",
+                        },
+                      }}
+                    >
+                      <Card
+                        className="border-0 h-100"
+                        style={{ backgroundColor: "transparent" }}
+                      >
+                        <Card.Header
+                          className="text-center border-bottom-0 pt-4"
+                          style={{ backgroundColor: "transparent" }}
+                        >
+                          <Typography
+                            variant="h4"
+                            component="h2"
+                            fontWeight="medium"
+                            color="secondary"
+                          >
+                            Mission
+                          </Typography>
+                        </Card.Header>
+                        <Card.Body className="d-flex align-items-center">
+                          <Typography
+                            variant="body1"
+                            component="p"
+                            className="text-center px-4 pb-3"
+                          >
+                            To create powerful visuals and authentic sounds that
+                            inspire, resonate and move both hearts and minds.
+                          </Typography>
+                        </Card.Body>
+                      </Card>
+                    </Paper>
+                  </Col>
+                </Row>
               </motion.div>
             </Col>
           </Row>
@@ -282,7 +371,7 @@ function Home() {
               from photography to video production, ensuring high-quality
               results for your projects.
             </p>
-            <hr/>
+            <hr />
           </motion.div>
 
           {showAlert && (

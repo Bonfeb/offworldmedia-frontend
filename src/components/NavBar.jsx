@@ -148,6 +148,34 @@ function NavBar() {
             </Button>
             <Button
               component={Link}
+              to="/services"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("/services")}
+            >
+              Services
+            </Button>
+            <Button
+              component={Link}
+              to="#"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("#")}
+            >
+              Gallery
+            </Button>
+            <Button
+              component={Link}
               to="/reviews"
               sx={{
                 color: "white",
