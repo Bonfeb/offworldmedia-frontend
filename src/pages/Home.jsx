@@ -47,27 +47,29 @@ function Home() {
           withCredentials: true,
         });
         
-        // Handle the structured data response
-        if (response.data.services && response.data.services.grouped_services) {
-          // If admin/staff response format
-          setGroupedServices(response.data.services.grouped_services);
+        // Check if services data exists in the response
+        if (!response.data || (!response.data.services && !Array.isArray(response.data))) {
+          throw new Error("Invalid response format");
+        }
+        
+        // Extract services array depending on response format
+        const servicesData = response.data.services || response.data;
+        
+        // Process grouped services if present
+        if (typeof servicesData === 'object' && servicesData.grouped_services) {
+          // Admin/staff response format
+          setGroupedServices(servicesData.grouped_services);
           
-          // Flatten services for other components that might need the full list
+          // Flatten services for components that need the full list
           const allServices = [];
-          Object.keys(response.data.services.grouped_services).forEach(category => {
-            Object.keys(response.data.services.grouped_services[category]).forEach(subcategory => {
-              allServices.push(...response.data.services.grouped_services[category][subcategory]);
+          Object.keys(servicesData.grouped_services).forEach(category => {
+            Object.keys(servicesData.grouped_services[category]).forEach(subcategory => {
+              allServices.push(...servicesData.grouped_services[category][subcategory]);
             });
           });
           setServices(allServices);
-          
-          // Set the first category as active
-          if (Object.keys(response.data.services.grouped_services).length > 0) {
-            setActiveCategory(Object.keys(response.data.services.grouped_services)[0]);
-          }
-        } else {
-          // Regular user format - need to organize by category and subcategory
-          const servicesData = response.data;
+        } else if (Array.isArray(servicesData)) {
+          // Regular user format - array of services
           setServices(servicesData);
           
           // Group services by category and subcategory
@@ -83,12 +85,16 @@ function Home() {
           });
           
           setGroupedServices(grouped);
-          
-          // Set the first category as active
-          if (Object.keys(grouped).length > 0) {
-            setActiveCategory(Object.keys(grouped)[0]);
-          }
+        } else {
+          throw new Error("Invalid services data format");
         }
+        
+        // Set the first category as active if available
+        const categories = Object.keys(groupedServices);
+        if (categories.length > 0) {
+          setActiveCategory(categories[0]);
+        }
+        
       } catch (error) {
         console.error("Error fetching services:", error);
         setError("Failed to load services.");
@@ -99,6 +105,14 @@ function Home() {
 
     fetchServices();
   }, []);
+
+  // Set the active category when groupedServices changes
+  useEffect(() => {
+    const categories = Object.keys(groupedServices);
+    if (categories.length > 0 && !activeCategory) {
+      setActiveCategory(categories[0]);
+    }
+  }, [groupedServices, activeCategory]);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -487,100 +501,106 @@ function Home() {
 
           {/* Category Tabs */}
           <div className="category-tabs mb-4">
-            <Tab.Container 
-              id="service-categories" 
-              defaultActiveKey={Object.keys(groupedServices)[0] || ""}
-              onSelect={(k) => setActiveCategory(k)}
-            >
-              <Row>
-                <Col sm={12}>
-                  <Nav variant="tabs" className="service-category-nav">
-                    {Object.keys(groupedServices).map((category) => (
-                      <Nav.Item key={category}>
-                        <Nav.Link eventKey={category}>
-                          {formatCategoryName(category)}
-                        </Nav.Link>
-                      </Nav.Item>
-                    ))}
-                  </Nav>
-                </Col>
-                <Col sm={12}>
-                  <Tab.Content>
-                    {Object.keys(groupedServices).map((category) => (
-                      <Tab.Pane key={category} eventKey={category}>
-                        {/* Subcategory sections */}
-                        {Object.keys(groupedServices[category]).map((subcategory) => (
-                          <div key={subcategory} className="subcategory-section my-4">
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                mb: 3,
-                              }}
-                            >
-                              <Typography variant="h5" component="h3">
-                                {formatSubcategoryName(subcategory)}
-                              </Typography>
-                              <Divider sx={{ flexGrow: 1, ml: 2 }} />
-                            </Box>
-                            
-                            <Row className="services-row">
-                              {groupedServices[category][subcategory].map((service, index) => (
-                                <Col
-                                  key={service.id}
-                                  xl={4}
-                                  lg={4}
-                                  md={4}
-                                  sm={12}
-                                  className="mb-4"
-                                >
-                                  <motion.div
-                                    className="service-card"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    viewport={{ once: true }}
-                                    whileHover={{ y: -5 }}
+            {Object.keys(groupedServices).length > 0 ? (
+              <Tab.Container 
+                id="service-categories" 
+                activeKey={activeCategory}
+                onSelect={(k) => setActiveCategory(k)}
+              >
+                <Row>
+                  <Col sm={12}>
+                    <Nav variant="tabs" className="service-category-nav">
+                      {Object.keys(groupedServices).map((category) => (
+                        <Nav.Item key={category}>
+                          <Nav.Link eventKey={category}>
+                            {formatCategoryName(category)}
+                          </Nav.Link>
+                        </Nav.Item>
+                      ))}
+                    </Nav>
+                  </Col>
+                  <Col sm={12}>
+                    <Tab.Content>
+                      {Object.keys(groupedServices).map((category) => (
+                        <Tab.Pane key={category} eventKey={category}>
+                          {/* Subcategory sections */}
+                          {Object.keys(groupedServices[category]).map((subcategory) => (
+                            <div key={subcategory} className="subcategory-section my-4">
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mb: 3,
+                                }}
+                              >
+                                <Typography variant="h5" component="h3">
+                                  {formatSubcategoryName(subcategory)}
+                                </Typography>
+                                <Divider sx={{ flexGrow: 1, ml: 2 }} />
+                              </Box>
+                              
+                              <Row className="services-row">
+                                {groupedServices[category][subcategory].map((service, index) => (
+                                  <Col
+                                    key={service.id}
+                                    xl={4}
+                                    lg={4}
+                                    md={4}
+                                    sm={12}
+                                    className="mb-4"
                                   >
-                                    <div className="price-badge">KSH {service.price}</div>
-                                    <div className="service-image-container">
-                                      <Image
-                                        src={service.image}
-                                        className="service-image"
-                                        alt={service.name}
-                                        loading="lazy"
-                                      />
-                                    </div>
-                                    <div className="service-content">
-                                      <h3 className="service-title">{service.name}</h3>
-                                      <p className="service-description">{service.description}</p>
-                                      <Chip 
-                                        label={formatSubcategoryName(service.subcategory)}
-                                        size="small"
-                                        color="primary"
-                                        variant="outlined"
-                                        className="mb-3"
-                                      />
-                                      <Button
-                                        variant="primary"
-                                        className="service-button"
-                                        onClick={() => handleFillEventDetails(service.id)}
-                                      >
-                                        Book Now
-                                      </Button>
-                                    </div>
-                                  </motion.div>
-                                </Col>
-                              ))}
-                            </Row>
-                          </div>
-                        ))}
-                      </Tab.Pane>
-                    ))}
-                  </Tab.Content>
-                </Col>
-              </Row>
-            </Tab.Container>
+                                    <motion.div
+                                      className="service-card"
+                                      initial={{ opacity: 0, y: 20 }}
+                                      whileInView={{ opacity: 1, y: 0 }}
+                                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                                      viewport={{ once: true }}
+                                      whileHover={{ y: -5 }}
+                                    >
+                                      <div className="price-badge">KSH {service.price}</div>
+                                      <div className="service-image-container">
+                                        <Image
+                                          src={service.image}
+                                          className="service-image"
+                                          alt={service.name}
+                                          loading="lazy"
+                                        />
+                                      </div>
+                                      <div className="service-content">
+                                        <h3 className="service-title">{service.name}</h3>
+                                        <p className="service-description">{service.description}</p>
+                                        <Chip 
+                                          label={formatSubcategoryName(service.subcategory)}
+                                          size="small"
+                                          color="primary"
+                                          variant="outlined"
+                                          className="mb-3"
+                                        />
+                                        <Button
+                                          variant="primary"
+                                          className="service-button"
+                                          onClick={() => handleFillEventDetails(service.id)}
+                                        >
+                                          Book Now
+                                        </Button>
+                                      </div>
+                                    </motion.div>
+                                  </Col>
+                                ))}
+                              </Row>
+                            </div>
+                          ))}
+                        </Tab.Pane>
+                      ))}
+                    </Tab.Content>
+                  </Col>
+                </Row>
+              </Tab.Container>
+            ) : (
+              <div className="text-center py-4">
+                <p>No service categories available.</p>
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-5">
