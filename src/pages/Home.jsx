@@ -23,7 +23,7 @@ function Home() {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [groupedServices, setGroupedServices] = useState({});
-  const [activeCategory, setActiveCategory] = useState('');
+  const [activeCategory, setActiveCategory] = useState("");
   const { isAuthenticated } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,63 +46,28 @@ function Home() {
         const response = await API.get("/services/", {
           withCredentials: true,
         });
-        
-        // Check if services data exists in the response
-        if (!response.data || (!response.data.services && !Array.isArray(response.data))) {
-          throw new Error("Invalid response format");
+
+        // Check if response data exists
+        if (!response.data) {
+          throw new Error("No data received from server");
         }
-        
-        // Extract services array depending on response format
-        const servicesData = response.data.services || response.data;
-        
-        // Process grouped services if present
-        if (typeof servicesData === 'object' && servicesData.grouped_services) {
-          // Admin/staff response format
-          setGroupedServices(servicesData.grouped_services);
-          
-          // Flatten services for components that need the full list
-          const allServices = [];
-          Object.keys(servicesData.grouped_services).forEach(category => {
-            Object.keys(servicesData.grouped_services[category]).forEach(subcategory => {
-              allServices.push(...servicesData.grouped_services[category][subcategory]);
-            });
-          });
-          setServices(allServices);
-        } else if (Array.isArray(servicesData)) {
-          // Regular user format - array of services
-          setServices(servicesData);
-          
-          // Group services by category and subcategory
-          const grouped = {};
-          servicesData.forEach(service => {
-            if (!grouped[service.category]) {
-              grouped[service.category] = {};
-            }
-            if (!grouped[service.category][service.subcategory]) {
-              grouped[service.category][service.subcategory] = [];
-            }
-            grouped[service.category][service.subcategory].push(service);
-          });
-          
-          setGroupedServices(grouped);
-        } else {
-          throw new Error("Invalid services data format");
-        }
-        
+
+        // Set both services and groupedServices from the response
+        setServices(response.data.services || []);
+        setGroupedServices(response.data.grouped_services || {});
+
         // Set the first category as active if available
-        const categories = Object.keys(groupedServices);
+        const categories = Object.keys(response.data.grouped_services || {});
         if (categories.length > 0) {
           setActiveCategory(categories[0]);
         }
-        
       } catch (error) {
         console.error("Error fetching services:", error);
-        setError("Failed to load services.");
+        setError(`Failed to load services. ${error.message}`);
       } finally {
         setLoading(false);
       }
     };
-
     fetchServices();
   }, []);
 
@@ -119,7 +84,7 @@ function Home() {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
+
         const response = await axios.get(
           `https://www.googleapis.com/youtube/v3/search`,
           {
@@ -130,23 +95,27 @@ function Home() {
               maxResults: MAX_RESULTS,
               order: "date",
             },
-            signal: controller.signal
+            signal: controller.signal,
           }
         );
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!response.data || !response.data.items) {
-          throw new Error('Invalid response format from YouTube API');
+          throw new Error("Invalid response format from YouTube API");
         }
-        
+
         setvideos(response.data.items);
       } catch (error) {
         if (axios.isCancel(error)) {
           console.error("YouTube API request timed out");
         } else if (error.response) {
           const status = error.response.status;
-          console.error(`YouTube API error (${status}): ${error.response.data?.error?.message || 'Unknown error'}`);
+          console.error(
+            `YouTube API error (${status}): ${
+              error.response.data?.error?.message || "Unknown error"
+            }`
+          );
         } else if (error.request) {
           console.error("Network error when fetching YouTube videos");
         } else {
@@ -154,7 +123,7 @@ function Home() {
         }
       }
     };
-    
+
     fetchVideos();
   }, []);
 
@@ -176,9 +145,9 @@ function Home() {
   // Function to format subcategory name for display
   const formatSubcategoryName = (subcategory) => {
     return subcategory
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   if (loading) {
@@ -502,8 +471,8 @@ function Home() {
           {/* Category Tabs */}
           <div className="category-tabs mb-4">
             {Object.keys(groupedServices).length > 0 ? (
-              <Tab.Container 
-                id="service-categories" 
+              <Tab.Container
+                id="service-categories"
                 activeKey={activeCategory}
                 onSelect={(k) => setActiveCategory(k)}
               >
@@ -524,72 +493,94 @@ function Home() {
                       {Object.keys(groupedServices).map((category) => (
                         <Tab.Pane key={category} eventKey={category}>
                           {/* Subcategory sections */}
-                          {Object.keys(groupedServices[category]).map((subcategory) => (
-                            <div key={subcategory} className="subcategory-section my-4">
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  mb: 3,
-                                }}
+                          {Object.keys(groupedServices[category]).map(
+                            (subcategory) => (
+                              <div
+                                key={subcategory}
+                                className="subcategory-section my-4"
                               >
-                                <Typography variant="h5" component="h3">
-                                  {formatSubcategoryName(subcategory)}
-                                </Typography>
-                                <Divider sx={{ flexGrow: 1, ml: 2 }} />
-                              </Box>
-                              
-                              <Row className="services-row">
-                                {groupedServices[category][subcategory].map((service, index) => (
-                                  <Col
-                                    key={service.id}
-                                    xl={4}
-                                    lg={4}
-                                    md={4}
-                                    sm={12}
-                                    className="mb-4"
-                                  >
-                                    <motion.div
-                                      className="service-card"
-                                      initial={{ opacity: 0, y: 20 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                                      viewport={{ once: true }}
-                                      whileHover={{ y: -5 }}
-                                    >
-                                      <div className="price-badge">KSH {service.price}</div>
-                                      <div className="service-image-container">
-                                        <Image
-                                          src={service.image}
-                                          className="service-image"
-                                          alt={service.name}
-                                          loading="lazy"
-                                        />
-                                      </div>
-                                      <div className="service-content">
-                                        <h3 className="service-title">{service.name}</h3>
-                                        <p className="service-description">{service.description}</p>
-                                        <Chip 
-                                          label={formatSubcategoryName(service.subcategory)}
-                                          size="small"
-                                          color="primary"
-                                          variant="outlined"
-                                          className="mb-3"
-                                        />
-                                        <Button
-                                          variant="primary"
-                                          className="service-button"
-                                          onClick={() => handleFillEventDetails(service.id)}
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    mb: 3,
+                                  }}
+                                >
+                                  <Typography variant="h5" component="h3">
+                                    {formatSubcategoryName(subcategory)}
+                                  </Typography>
+                                  <Divider sx={{ flexGrow: 1, ml: 2 }} />
+                                </Box>
+
+                                <Row className="services-row">
+                                  {groupedServices[category][subcategory].map(
+                                    (service, index) => (
+                                      <Col
+                                        key={service.id}
+                                        xl={4}
+                                        lg={4}
+                                        md={4}
+                                        sm={12}
+                                        className="mb-4"
+                                      >
+                                        <motion.div
+                                          className="service-card"
+                                          initial={{ opacity: 0, y: 20 }}
+                                          whileInView={{ opacity: 1, y: 0 }}
+                                          transition={{
+                                            duration: 0.5,
+                                            delay: index * 0.1,
+                                          }}
+                                          viewport={{ once: true }}
+                                          whileHover={{ y: -5 }}
                                         >
-                                          Book Now
-                                        </Button>
-                                      </div>
-                                    </motion.div>
-                                  </Col>
-                                ))}
-                              </Row>
-                            </div>
-                          ))}
+                                          <div className="price-badge">
+                                            KSH {service.price}
+                                          </div>
+                                          <div className="service-image-container">
+                                            <Image
+                                              src={service.image}
+                                              className="service-image"
+                                              alt={service.name}
+                                              loading="lazy"
+                                            />
+                                          </div>
+                                          <div className="service-content">
+                                            <h3 className="service-title">
+                                              {service.name}
+                                            </h3>
+                                            <p className="service-description">
+                                              {service.description}
+                                            </p>
+                                            <Chip
+                                              label={formatSubcategoryName(
+                                                service.subcategory
+                                              )}
+                                              size="small"
+                                              color="primary"
+                                              variant="outlined"
+                                              className="mb-3"
+                                            />
+                                            <Button
+                                              variant="primary"
+                                              className="service-button"
+                                              onClick={() =>
+                                                handleFillEventDetails(
+                                                  service.id
+                                                )
+                                              }
+                                            >
+                                              Book Now
+                                            </Button>
+                                          </div>
+                                        </motion.div>
+                                      </Col>
+                                    )
+                                  )}
+                                </Row>
+                              </div>
+                            )
+                          )}
                         </Tab.Pane>
                       ))}
                     </Tab.Content>
