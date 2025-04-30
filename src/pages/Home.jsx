@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -30,10 +30,15 @@ function Home() {
   const [showAlert, setShowAlert] = useState(false);
   const [authAlert, setAuthAlert] = useState(false);
   const [videos, setVideos] = useState([]);
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  
+  // Timer ref for video carousel
+  const videoTimerRef = useRef(null);
 
   const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
   const CHANNEL_ID = import.meta.env.VITE_YOUR_CHANNEL_ID;
   const MAX_RESULTS = 3;
+  const VIDEO_DISPLAY_DURATION = 120000; // 2 minutes in milliseconds
 
   const imageContext = import.meta.glob("../assets/images/*.jpg", {
     eager: true,
@@ -145,6 +150,28 @@ function Home() {
     fetchVideos();
   }, []);
 
+  // Video carousel timer effect
+  useEffect(() => {
+    if (videos.length > 0) {
+      // Clear any existing timer
+      if (videoTimerRef.current) {
+        clearTimeout(videoTimerRef.current);
+      }
+      
+      // Set a new timer
+      videoTimerRef.current = setTimeout(() => {
+        setActiveVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
+      }, VIDEO_DISPLAY_DURATION);
+    }
+    
+    // Cleanup timer on unmount or when activeVideoIndex changes
+    return () => {
+      if (videoTimerRef.current) {
+        clearTimeout(videoTimerRef.current);
+      }
+    };
+  }, [activeVideoIndex, videos.length]);
+
   const handleFillEventDetails = (serviceId) => {
     if (!isAuthenticated) {
       setAuthAlert(true);
@@ -178,6 +205,21 @@ function Home() {
       <p className="mt-3">Loading services...</p>
     </div>
   );
+
+  // Manual video navigation
+  const goToPrevVideo = () => {
+    if (videoTimerRef.current) {
+      clearTimeout(videoTimerRef.current);
+    }
+    setActiveVideoIndex((prevIndex) => (prevIndex - 1 + videos.length) % videos.length);
+  };
+
+  const goToNextVideo = () => {
+    if (videoTimerRef.current) {
+      clearTimeout(videoTimerRef.current);
+    }
+    setActiveVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
+  };
 
   // Services section rendering function
   const renderServicesSection = () => {
@@ -346,7 +388,7 @@ function Home() {
             <Col lg={12} className="text-center">
               <Box component={Paper} elevation={0} className="about-content p-4 p-md-5">
                 <Typography variant="h2" component="h2" className="section-title mb-4">
-                  Whoe We Are
+                  Who We Are
                 </Typography>
 
                 <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
@@ -427,27 +469,74 @@ function Home() {
               </div>
             </Col>
 
-            {/* Right Column - Embedded YouTube Videos */}
+            {/* Right Column - YouTube Video Carousel */}
             <Col lg={6}>
               <div className="videos-container">
                 <h3 className="mb-4">Latest Videos</h3>
 
-                <div className="youtube-videos">
+                <div className="youtube-video-carousel position-relative shadow rounded overflow-hidden">
                   {videos.length > 0 ? (
-                    videos.map((video) => (
-                      <div key={video.id.videoId} className="mb-4 youtube-video-container shadow rounded overflow-hidden">
+                    <>
+                      <div className="youtube-video-container">
                         <iframe
                           className="youtube-iframe"
                           width="100%"
-                          height="250"
-                          src={`https://www.youtube.com/embed/${video.id.videoId}`}
-                          title={video.snippet.title}
+                          height="350"
+                          src={`https://www.youtube.com/embed/${videos[activeVideoIndex]?.id.videoId}?autoplay=1&mute=0`}
+                          title={videos[activeVideoIndex]?.snippet.title}
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
                         ></iframe>
                       </div>
-                    ))
+                      
+                      {/* Video Navigation Controls */}
+                      <div className="video-carousel-controls d-flex justify-content-between align-items-center mt-3">
+                        <div className="d-flex align-items-center">
+                          <Button 
+                            variant="light" 
+                            className="carousel-control-btn me-2" 
+                            onClick={goToPrevVideo}
+                          >
+                            &lt; Prev
+                          </Button>
+                          
+                          <div className="video-indicators d-flex">
+                            {videos.map((_, index) => (
+                              <div
+                                key={index}
+                                className={`video-indicator mx-1 ${index === activeVideoIndex ? 'active' : ''}`}
+                                style={{
+                                  width: '10px',
+                                  height: '10px',
+                                  borderRadius: '50%',
+                                  backgroundColor: index === activeVideoIndex ? '#007bff' : '#ccc',
+                                  cursor: 'pointer'
+                                }}
+                                onClick={() => {
+                                  if (videoTimerRef.current) {
+                                    clearTimeout(videoTimerRef.current);
+                                  }
+                                  setActiveVideoIndex(index);
+                                }}
+                              />
+                            ))}
+                          </div>
+                          
+                          <Button 
+                            variant="light" 
+                            className="carousel-control-btn ms-2" 
+                            onClick={goToNextVideo}
+                          >
+                            Next &gt;
+                          </Button>
+                        </div>
+                        
+                        <Typography variant="caption" className="video-title">
+                          {videos[activeVideoIndex]?.snippet.title || "Video Title"}
+                        </Typography>
+                      </div>
+                    </>
                   ) : (
                     <div className="no-videos-placeholder text-center p-5 bg-light rounded">
                       <h5>No videos available at the moment.</h5>
