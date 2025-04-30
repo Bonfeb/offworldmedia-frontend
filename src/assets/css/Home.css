@@ -3,6 +3,7 @@
   overflow-x: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #2c3e50;
+  background-color: var(--antique-blue-dark); /* Added background color to entire page */
 }
 
 /* Color Variables */
@@ -15,13 +16,17 @@
   --antique-blue: #344955;
   --antique-blue-light: #4a6572;
   --antique-blue-dark: #232f34;
+  --blue-gradient-light: #3681d8;
+  --blue-gradient-dark: #1c4587;
   --text-on-dark: #ffffff;
-  --text-on-light: #2c3e50;
+  --text-on-light: #e8f0fe; /* Changed to light blue for better contrast on dark backgrounds */
+  --card-bg: #2c3e50; /* New variable for card backgrounds */
+  --card-hover-bg: #34495e; /* New variable for card hover state */
 }
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%);
+  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--accent-blue) 100%); /* Changed gradient */
   color: var(--text-on-dark);
   padding: 6rem 0;
   text-align: center;
@@ -89,7 +94,7 @@
 
 /* About Section */
 .about-section {
-  background: var(--antique-blue-light);
+  background: linear-gradient(135deg, var(--blue-gradient-dark) 0%, var(--blue-gradient-light) 100%); /* Changed background */
   padding: 5rem 0;
   color: var(--text-on-dark);
   position: relative;
@@ -106,7 +111,7 @@
 }
 
 .about-content {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(26, 49, 75, 0.7); /* Darker blue with transparency */
   border-radius: 15px;
   padding: 2.5rem;
   backdrop-filter: blur(10px);
@@ -125,7 +130,7 @@
 }
 
 .vision-box, .mission-box {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
   border-radius: 10px;
   padding: 1.5rem;
   height: 100%;
@@ -135,7 +140,8 @@
 
 .vision-box:hover, .mission-box:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(13, 71, 161, 0.7); /* Darker on hover */
 }
 
 .box-title {
@@ -149,7 +155,7 @@
 
 /* Showcase Section */
 .showcase-section {
-  background: var(--antique-blue);
+  background: linear-gradient(135deg, var(--dark-blue) 0%, var(--antique-blue) 100%); /* Changed background */
   padding: 5rem 0;
   position: relative;
 }
@@ -167,7 +173,7 @@
 .carousel-container {
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -199,7 +205,7 @@
 .youtube-video-container {
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -213,7 +219,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
   border-radius: 10px;
   color: white;
 }
@@ -221,7 +227,7 @@
 /* Services Section */
 .services-section {
   padding: 5rem 0;
-  background: var(--antique-blue-light);
+  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%); /* Changed background */
   position: relative;
 }
 
@@ -270,7 +276,7 @@
   padding: 8px 20px;
   border-radius: 20px;
   font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
   color: var(--text-on-dark);
   border: none;
   transition: all 0.3s ease;
@@ -280,7 +286,7 @@
   background-color: var(--primary-blue);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .subcategory-section {
@@ -300,20 +306,21 @@
 
 /* Service Cards */
 .service-card {
-  background: white;
+  background: var(--card-bg); /* Changed from white to dark blue */
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   height: 100%;
   position: relative;
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .service-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  border-color: rgba(26, 115, 232, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(26, 115, 232, 0.4);
+  background: var(--card-hover-bg); /* Slightly lighter blue on hover */
 }
 
 .price-badge {
@@ -326,14 +333,14 @@
   border-radius: 20px;
   font-weight: 600;
   z-index: 1;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .service-card-title {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: var(--antique-blue-dark);
+  color: var(--light-blue); /* Changed to light blue */
   position: relative;
   padding-bottom: 0.5rem;
 }
@@ -349,11 +356,11 @@
 }
 
 .service-card-description {
-  color: var(--text-on-light);
+  color: var(--text-on-light); /* Changed to light blue */
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
   line-height: 1.6;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .book-now-btn {
@@ -362,15 +369,15 @@
   font-weight: 600;
   border: none;
   transition: all 0.3s ease;
-  background-color: rgb(33, 80, 33);
+  background-color: var(--primary-blue); /* Changed to match color scheme */
   color: white;
   border-radius: 5px;
 }
 
 .book-now-btn:hover {
-  background-color: var(--primary-blue);
+  background-color: var(--secondary-blue);
   transform: translateY(-2px);
-  box-shadow: 0 5px 10px rgba(26, 115, 232, 0.2);
+  box-shadow: 0 5px 10px rgba(26, 115, 232, 0.3);
 }
 
 .view-all-button {
@@ -379,14 +386,15 @@
   font-weight: 600;
   transition: all 0.3s ease;
   border-color: var(--primary-blue);
-  color: var(--primary-blue);
+  color: var(--text-on-dark);
+  background-color: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
 }
 
 .view-all-button:hover {
   background-color: var(--primary-blue);
   color: white;
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(26, 115, 232, 0.2);
+  box-shadow: 0 5px 15px rgba(26, 115, 232, 0.3);
 }
 
 /* Loading Spinner */
@@ -397,7 +405,7 @@
 /* No services container */
 .no-services-container {
   padding: 3rem 0;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(13, 71, 161, 0.3); /* Dark blue with transparency */
   border-radius: 10px;
 }
 
