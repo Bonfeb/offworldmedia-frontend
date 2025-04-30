@@ -94,7 +94,7 @@
 
 /* About Section */
 .about-section {
-  background: linear-gradient(135deg, var(--blue-gradient-dark) 0%, var(--blue-gradient-light) 100%); /* Changed background */
+  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%); /* Changed background */
   padding: 5rem 0;
   color: var(--text-on-dark);
   position: relative;
