@@ -171,19 +171,11 @@ function Home() {
 
   // Loading spinner component
   const LoadingSpinner = () => (
-    <div
-      className="d-flex justify-content-center align-items-center my-5 py-5"
-    >
-      <div className="text-center">
-        <Spinner
-          animation="border"
-          variant="primary"
-          style={{ width: "2rem", height: "2rem" }}
-        />
-        <p className="mt-3" style={{ color: "#1a73e8", fontWeight: 500 }}>
-          Loading services...
-        </p>
-      </div>
+    <div className="text-center py-5">
+      <Spinner animation="border" role="status" variant="primary">
+        <span className="visually-hidden">Loading services...</span>
+      </Spinner>
+      <p className="mt-3">Loading services...</p>
     </div>
   );
 
@@ -196,161 +188,106 @@ function Home() {
     return (
       <>
         {error && (
-          <Alert variant="danger" className="text-center my-3">
-            <i className="fa fa-exclamation-triangle me-2"></i>
+          <Alert variant="danger" className="mb-4">
             {error}
           </Alert>
         )}
 
         {showAlert && (
-          <Alert
-            variant="success"
-            className="text-center"
-            dismissible
-            onClose={() => setShowAlert(false)}
-          >
-            Service added to cart. Go to your dashboard to view and/or book
-            it!
+          <Alert variant="success" dismissible onClose={() => setShowAlert(false)}>
+            Service added to cart. Go to your dashboard to view and/or book it!
           </Alert>
         )}
 
         {authAlert && (
-          <Alert
-            variant="danger"
-            className="text-center"
-            dismissible
-            onClose={() => setAuthAlert(false)}
-          >
+          <Alert variant="warning" dismissible onClose={() => setAuthAlert(false)}>
             You must be logged in to add services to the cart.
           </Alert>
         )}
 
         {/* Category Tabs */}
-        <div className="category-tabs mb-4">
+        <div className="service-tabs-container">
           {Object.keys(groupedServices).length > 0 ? (
-            <Tab.Container
-              id="service-categories"
-              activeKey={activeCategory}
-              onSelect={(k) => setActiveCategory(k)}
-            >
-              <Row>
-                <Col sm={12}>
-                  <Nav variant="tabs" className="service-category-nav">
-                    {Object.keys(groupedServices).map((category) => (
-                      <Nav.Item key={category}>
-                        <Nav.Link eventKey={category}>
-                          {formatCategoryName(category)}
-                        </Nav.Link>
-                      </Nav.Item>
-                    ))}
-                  </Nav>
-                </Col>
-                <Col sm={12}>
-                  <Tab.Content>
-                    {Object.keys(groupedServices).map((category) => (
-                      <Tab.Pane key={category} eventKey={category}>
-                        {/* Subcategory sections */}
-                        {Object.keys(groupedServices[category]).map(
-                          (subcategory) => (
-                            <div
-                              key={subcategory}
-                              className="subcategory-section my-4"
-                            >
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  mb: 3,
-                                }}
-                              >
-                                <Typography variant="h5" component="h3">
-                                  {formatSubcategoryName(subcategory)}
-                                </Typography>
-                                <Divider sx={{ flexGrow: 1, ml: 2 }} />
-                              </Box>
+            <Tab.Container activeKey={activeCategory} onSelect={(k) => setActiveCategory(k)}>
+              <div className="mb-4">
+                <Nav variant="pills" className="service-category-tabs flex-nowrap overflow-auto">
+                  {Object.keys(groupedServices).map((category) => (
+                    <Nav.Item key={category}>
+                      <Nav.Link eventKey={category} className="category-tab">
+                        {formatCategoryName(category)}
+                      </Nav.Link>
+                    </Nav.Item>
+                  ))}
+                </Nav>
+              </div>
+              <Tab.Content>
+                {Object.keys(groupedServices).map((category) => (
+                  <Tab.Pane eventKey={category} key={category}>
+                    {/* Subcategory sections */}
+                    {Object.keys(groupedServices[category]).map(
+                      (subcategory) => (
+                        <div key={subcategory} className="subcategory-section mb-5">
+                          <div className="subcategory-header mb-4">
+                            <h3 className="subcategory-title">
+                              {formatSubcategoryName(subcategory)}
+                            </h3>
+                            <Divider className="mt-2" />
+                          </div>
 
-                              <Row className="services-row">
-                                {groupedServices[category][subcategory].map(
-                                  (service, index) => (
-                                    <Col
-                                      key={service.id || index}
-                                      xl={4}
-                                      lg={4}
-                                      md={4}
-                                      sm={12}
-                                      className="mb-4"
-                                    >
-                                      <motion.div
-                                        className="service-card"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{
-                                          duration: 0.5,
-                                          delay: index * 0.1,
-                                        }}
-                                        viewport={{ once: true }}
-                                        whileHover={{ y: -5 }}
-                                      >
-                                        <div className="price-badge">
-                                          KSH {service.price}
-                                        </div>
-                                        <div className="service-image-container">
-                                          <Image
-                                            src={service.image || "/placeholder-service.jpg"}
-                                            className="service-image"
-                                            alt={service.name}
-                                            loading="lazy"
-                                          />
-                                        </div>
-                                        <div className="service-content">
-                                          <h3 className="service-title">
-                                            {service.name}
-                                          </h3>
-                                          <p className="service-description">
-                                            {service.description}
-                                          </p>
-                                          <Chip
-                                            label={formatSubcategoryName(
-                                              service.subcategory || service.audio_category
-                                            )}
-                                            size="small"
-                                            color="primary"
-                                            variant="outlined"
-                                            className="mb-3"
-                                          />
-                                          <Button
-                                            variant="primary"
-                                            className="service-button"
-                                            onClick={() =>
-                                              handleFillEventDetails(
-                                                service.id
-                                              )
-                                            }
-                                          >
-                                            Book Now
-                                          </Button>
-                                        </div>
-                                      </motion.div>
-                                    </Col>
-                                  )
-                                )}
-                              </Row>
-                            </div>
-                          )
-                        )}
-                      </Tab.Pane>
-                    ))}
-                  </Tab.Content>
-                </Col>
-              </Row>
+                          <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                            {groupedServices[category][subcategory].map(
+                              (service, index) => (
+                                <Col key={service.id}>
+                                  <motion.div
+                                    whileHover={{ y: -10 }}
+                                    transition={{ duration: 0.3 }}
+                                  >
+                                    <Card className="service-card h-100 shadow-sm border-0">
+                                      <div className="price-badge">
+                                        KSH {service.price}
+                                      </div>
+
+                                      <Card.Body className="d-flex flex-column">
+                                        <Card.Title className="service-card-title">
+                                          {service.name}
+                                        </Card.Title>
+
+                                        <Card.Text className="service-card-description flex-grow-1">
+                                          {service.description}
+                                        </Card.Text>
+
+                                        <Button
+                                          variant="primary"
+                                          className="mt-auto book-now-btn"
+                                          onClick={() =>
+                                            handleFillEventDetails(
+                                              service.id
+                                            )
+                                          }
+                                        >
+                                          Book Now
+                                        </Button>
+                                      </Card.Body>
+                                    </Card>
+                                  </motion.div>
+                                </Col>
+                              )
+                            )}
+                          </Row>
+                        </div>
+                      )
+                    )}
+                  </Tab.Pane>
+                ))}
+              </Tab.Content>
             </Tab.Container>
           ) : (
-            <div className="text-center py-4">
-              <p>No service categories available at the moment.</p>
+            <div className="no-services-container text-center py-5">
+              <Alert variant="info">
+                No service categories available at the moment.
+              </Alert>
               {error ? (
-                <Button 
-                  variant="outline-primary" 
-                  onClick={() => window.location.reload()}
+                <Button variant="outline-primary" onClick={() => window.location.reload()}
                   className="mt-2"
                 >
                   Retry
@@ -361,12 +298,9 @@ function Home() {
         </div>
 
         <div className="text-center mt-5">
-          <Button
-            className="rounded-pill px-4 py-2"
-            variant="primary"
-            size="lg"
-            onClick={() => navigate("/services")}
+          <Button variant="outline-primary" onClick={() => navigate("/services")}
             style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
+            className="view-all-button"
           >
             View All Services
           </Button>
@@ -376,211 +310,133 @@ function Home() {
   };
 
   return (
-    <Container fluid className="p-0 m-0 home-container">
+    <div className="home-page">
       {/* Hero Section */}
       <section className="hero-section">
         <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1>Welcome to OffWorld Media Africa</h1>
-            <p className="hero-subtitle">
-              We offer top-notch services in video production, photography, and
-              audio production.
-            </p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <Button
-                variant="light"
-                size="lg"
-                className="mt-4 me-2"
-                style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
-                onClick={() => navigate("/services")}
-              >
-                Explore Services
-              </Button>
-              <Button
-                variant="outline-light"
-                size="lg"
-                className="mt-4"
-                style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
-                onClick={() => navigate("/contactus")}
-              >
-                Contact Us
-              </Button>
-            </motion.div>
-          </motion.div>
+          <Row className="align-items-center">
+            <Col md={12} className="text-center">
+              <h1 className="hero-title mb-4">
+                Welcome to OffWorld Media Africa
+              </h1>
+
+              <p className="hero-subtitle mb-5">
+                We offer top-notch services in video production, photography, and
+                audio production.
+              </p>
+
+              <div className="hero-buttons">
+                <Button variant="primary" className="me-3" onClick={() => navigate("/services")}>
+                  Explore Services
+                </Button>
+                <Button variant="outline-light" onClick={() => navigate("/contactus")}>
+                  Contact Us
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Container>
       </section>
 
       {/* About Section */}
-      <section className="about-section">
+      <section className="about-section py-5">
         <Container>
           <Row className="justify-content-center">
-            <Col xl={8} lg={10} className="text-center">
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <h2>About Us</h2>
-                <div className="section-divider"></div>
-                <p className="about-text">
+            <Col lg={10} className="text-center">
+              <Box component={Paper} elevation={0} className="about-content p-4 p-md-5">
+                <Typography variant="h2" component="h2" className="section-title mb-4">
+                  About Us
+                </Typography>
+
+                <Divider className="mb-4" />
+
+                <Typography variant="body1" className="mb-5">
                   Offworld Media Africa is a business company specializing in
                   photography, videography, music production, graphic designing
                   and digital broadcasting.
-                </p>
-                <Row className="g-4">
-                  <Col xl={6} md={12} sm={12} lg={6}>
-                    <Paper
-                      elevation={3}
-                      sx={{
-                        height: "100%",
-                        borderRadius: 2,
-                        transition: "transform 0.3s, box-shadow 0.3s",
-                        "&:hover": {
-                          transform: "translateY(-5px)",
-                          boxShadow: "0 12px 20px rgba(0,0,0,0.1)",
-                        },
-                      }}
-                    >
-                      <Card
-                        className="border-0 h-100"
-                        style={{ backgroundColor: "transparent" }}
-                      >
-                        <Card.Header
-                          className="text-center border-bottom-0 pt-4"
-                          style={{ backgroundColor: "transparent" }}
-                        >
-                          <Typography
-                            variant="h4"
-                            component="h2"
-                            fontWeight="medium"
-                            color="primary"
-                          >
-                            Vision
-                          </Typography>
-                        </Card.Header>
-                        <Card.Body className="d-flex align-items-center">
-                          <Typography
-                            variant="body1"
-                            component="p"
-                            className="text-center px-4 pb-3"
-                          >
-                            To be a transformative force in global media,
-                            revealing the essence of life and capturing the
-                            heartbeat through photography, film, music and
-                            digital broadcasting.
-                          </Typography>
-                        </Card.Body>
-                      </Card>
-                    </Paper>
+                </Typography>
+
+                <Row className="vision-mission-container">
+                  <Col md={6} className="mb-4 mb-md-0">
+                    <Box component={Paper} elevation={3} className="vision-box p-4 h-100">
+                      <div className="mb-3">
+                        <Typography variant="h4" component="h3" className="box-title">
+                          Vision
+                        </Typography>
+                      </div>
+                      <div>
+                        <Typography variant="body1">
+                          To be a transformative force in global media,
+                          revealing the essence of life and capturing the
+                          heartbeat through photography, film, music and
+                          digital broadcasting.
+                        </Typography>
+                      </div>
+                    </Box>
                   </Col>
 
-                  <Col xl={6} md={12} sm={12} lg={6}>
-                    <Paper
-                      elevation={3}
-                      sx={{
-                        height: "100%",
-                        borderRadius: 2,
-                        transition: "transform 0.3s, box-shadow 0.3s",
-                        "&:hover": {
-                          transform: "translateY(-5px)",
-                          boxShadow: "0 12px 20px rgba(0,0,0,0.1)",
-                        },
-                      }}
-                    >
-                      <Card
-                        className="border-0 h-100"
-                        style={{ backgroundColor: "transparent" }}
-                      >
-                        <Card.Header
-                          className="text-center border-bottom-0 pt-4"
-                          style={{ backgroundColor: "transparent" }}
-                        >
-                          <Typography
-                            variant="h4"
-                            component="h2"
-                            fontWeight="medium"
-                            color="secondary"
-                          >
-                            Mission
-                          </Typography>
-                        </Card.Header>
-                        <Card.Body className="d-flex align-items-center">
-                          <Typography
-                            variant="body1"
-                            component="p"
-                            className="text-center px-4 pb-3"
-                          >
-                            To create powerful visuals and authentic sounds that
-                            inspire, resonate and move both hearts and minds.
-                          </Typography>
-                        </Card.Body>
-                      </Card>
-                    </Paper>
+                  <Col md={6}>
+                    <Box component={Paper} elevation={3} className="mission-box p-4 h-100">
+                      <div className="mb-3">
+                        <Typography variant="h4" component="h3" className="box-title">
+                          Mission
+                        </Typography>
+                      </div>
+                      <div>
+                        <Typography variant="body1">
+                          To create powerful visuals and authentic sounds that
+                          inspire, resonate and move both hearts and minds.
+                        </Typography>
+                      </div>
+                    </Box>
                   </Col>
                 </Row>
-              </motion.div>
+              </Box>
             </Col>
           </Row>
         </Container>
       </section>
 
       {/* Studio Work Showcase */}
-      <section className="showcase-section">
+      <section className="showcase-section py-5 bg-light">
         <Container>
-          <Row className="align-items-center">
+          <Row className="g-4">
             {/* Left Column - Image Carousel */}
-            <Col lg={6} className="mb-4 mb-lg-0">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <Carousel controls indicators interval={3000} pause="hover">
+            <Col lg={6}>
+              <div className="carousel-container shadow rounded overflow-hidden">
+                <Carousel fade indicators={true} className="showcase-carousel">
                   {carouselImages.length > 0 ? (
                     carouselImages.map((image, index) => (
                       <Carousel.Item key={index}>
                         <img
-                          className="d-block w-100 rounded showcase-image"
+                          className="d-block w-100 carousel-image"
                           src={image}
-                          alt={`Studio Image ${index + 1}`}
-                          loading="lazy"
+                          alt={`Slide ${index + 1}`}
                         />
                       </Carousel.Item>
                     ))
                   ) : (
                     <Carousel.Item>
-                      <div className="text-center py-5 bg-light rounded">
-                        <p>No carousel images available.</p>
+                      <div className="no-image-placeholder d-flex align-items-center justify-content-center bg-secondary text-white" style={{ height: "400px" }}>
+                        <h3>No carousel images available.</h3>
                       </div>
                     </Carousel.Item>
                   )}
                 </Carousel>
-              </motion.div>
+              </div>
             </Col>
 
             {/* Right Column - Embedded YouTube Videos */}
-            <Col lg={6} className="video-container">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <div className="video-wrapper mb-3">
+            <Col lg={6}>
+              <div className="videos-container">
+                <h3 className="mb-4">Latest Videos</h3>
+
+                <div className="youtube-videos">
                   {videos.length > 0 ? (
                     videos.map((video) => (
-                      <div key={video.id.videoId} className="mb-3">
+                      <div key={video.id.videoId} className="mb-4 youtube-video-container shadow rounded overflow-hidden">
                         <iframe
+                          className="youtube-iframe"
                           width="100%"
                           height="250"
                           src={`https://www.youtube.com/embed/${video.id.videoId}`}
@@ -592,12 +448,12 @@ function Home() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-5 bg-light rounded">
-                      <p>No videos available at the moment.</p>
+                    <div className="no-videos-placeholder text-center p-5 bg-light rounded">
+                      <h5>No videos available at the moment.</h5>
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             </Col>
           </Row>
         </Container>
@@ -606,28 +462,26 @@ function Home() {
       {/* Services Section - Updated with Categories and Subcategories */}
       <section className="services-section py-5">
         <Container>
-          <motion.div
-            className="section-header text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2>
-              We Offer Awesome <span>Services</span>
-            </h2>
-            <div className="section-divider"></div>
-            <p className="section-description">
-              Our premium services are designed to meet all your creative needs,
-              from photography to video production, ensuring high-quality
-              results for your projects.
-            </p>
-          </motion.div>
+          <Row className="justify-content-center mb-5">
+            <Col lg={8} className="text-center">
+              <Typography variant="h2" component="h2" className="section-title mb-3">
+                We Offer Awesome Services
+              </Typography>
+
+              <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
+
+              <Typography variant="subtitle1" className="section-subtitle">
+                Our premium services are designed to meet all your creative needs,
+                from photography to video production, ensuring high-quality
+                results for your projects.
+              </Typography>
+            </Col>
+          </Row>
 
           {renderServicesSection()}
         </Container>
       </section>
-    </Container>
+    </div>
   );
 }
 
