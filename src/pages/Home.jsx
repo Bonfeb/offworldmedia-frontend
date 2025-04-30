@@ -313,7 +313,7 @@ function Home() {
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero-section">
-        <Container>
+        <Container fluid>
           <Row className="align-items-center">
             <Col md={12} className="text-center">
               <h1 className="hero-title mb-4">
@@ -340,15 +340,13 @@ function Home() {
 
       {/* About Section */}
       <section className="about-section py-5">
-        <Container>
+        <Container fluid>
           <Row className="justify-content-center">
-            <Col lg={10} className="text-center">
+            <Col lg={12} className="text-center">
               <Box component={Paper} elevation={0} className="about-content p-4 p-md-5">
                 <Typography variant="h2" component="h2" className="section-title mb-4">
                   About Us
                 </Typography>
-
-                <Divider className="mb-4" />
 
                 <Typography variant="body1" className="mb-5">
                   Offworld Media Africa is a business company specializing in
@@ -399,7 +397,7 @@ function Home() {
 
       {/* Studio Work Showcase */}
       <section className="showcase-section py-5 bg-light">
-        <Container>
+        <Container fluid>
           <Row className="g-4">
             {/* Left Column - Image Carousel */}
             <Col lg={6}>
@@ -461,7 +459,7 @@ function Home() {
 
       {/* Services Section - Updated with Categories and Subcategories */}
       <section className="services-section py-5">
-        <Container>
+        <Container fluid>
           <Row className="justify-content-center mb-5">
             <Col lg={8} className="text-center">
               <Typography variant="h2" component="h2" className="section-title mb-3">

@@ -18,8 +18,8 @@
   --antique-blue-dark: #232f34;
   --blue-gradient-light: #3681d8;
   --blue-gradient-dark: #1c4587;
-  --text-on-dark: #ffffff;
-  --text-on-light: #e8f0fe; /* Changed to light blue for better contrast on dark backgrounds */
+  --text-on-dark: #344955; /* Changed to dark blue for better contrast on light backgrounds */
+  --text-on-light: #344955; /* Changed to light blue for better contrast on dark backgrounds */
   --card-bg: #2c3e50; /* New variable for card backgrounds */
   --card-hover-bg: #34495e; /* New variable for card hover state */
 }
@@ -147,7 +147,7 @@
 .box-title {
   font-size: 1.8rem;
   font-weight: 600;
-  color: var(--light-blue);
+  color: var(--text-on-dark);
   margin-bottom: 1rem;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 0.5rem;
