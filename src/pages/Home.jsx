@@ -29,7 +29,7 @@ function Home() {
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [authAlert, setAuthAlert] = useState(false);
-  const [videos, setvideos] = useState([]);
+  const [videos, setVideos] = useState([]);
 
   const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
   const CHANNEL_ID = import.meta.env.VITE_YOUR_CHANNEL_ID;
@@ -52,18 +52,34 @@ function Home() {
           throw new Error("No data received from server");
         }
 
-        // Set both services and groupedServices from the response
-        setServices(response.data.services || []);
-        setGroupedServices(response.data.grouped_services || {});
+        // Set services and groupedServices safely
+        if (Array.isArray(response.data.services)) {
+          setServices(response.data.services);
+        } else {
+          console.warn("Expected services array not found in response");
+          setServices([]);
+        }
 
-        // Set the first category as active if available
-        const categories = Object.keys(response.data.grouped_services || {});
-        if (categories.length > 0) {
-          setActiveCategory(categories[0]);
+        // Handle grouped_services safely
+        if (response.data.grouped_services && typeof response.data.grouped_services === 'object') {
+          setGroupedServices(response.data.grouped_services);
+          
+          // Set the first category as active if available
+          const categories = Object.keys(response.data.grouped_services);
+          if (categories.length > 0) {
+            setActiveCategory(categories[0]);
+          }
+        } else {
+          console.warn("Expected grouped_services object not found in response");
+          setGroupedServices({});
         }
       } catch (error) {
         console.error("Error fetching services:", error);
-        setError(`Failed to load services. ${error.message}`);
+        setError(`Failed to load services. ${error.message || "Unknown error"}`);
+        
+        // Set empty data to prevent UI errors
+        setServices([]);
+        setGroupedServices({});
       } finally {
         setLoading(false);
       }
@@ -105,7 +121,7 @@ function Home() {
           throw new Error("Invalid response format from YouTube API");
         }
 
-        setvideos(response.data.items);
+        setVideos(response.data.items);
       } catch (error) {
         if (axios.isCancel(error)) {
           console.error("YouTube API request timed out");
@@ -121,6 +137,8 @@ function Home() {
         } else {
           console.error("Error fetching YouTube videos:", error.message);
         }
+        // Set empty videos array to prevent UI errors
+        setVideos([]);
       }
     };
 
@@ -144,65 +162,218 @@ function Home() {
 
   // Function to format subcategory name for display
   const formatSubcategoryName = (subcategory) => {
+    if (!subcategory) return "";
     return subcategory
       .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
 
-  if (loading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh", background: "#f5f9ff" }}
-      >
-        <div className="text-center">
-          <Spinner
-            animation="border"
-            variant="primary"
-            style={{ width: "3rem", height: "3rem" }}
-          />
-          <p className="mt-3" style={{ color: "#1a73e8", fontWeight: 500 }}>
-            Loading amazing services for you...
-          </p>
-        </div>
+  // Loading spinner component
+  const LoadingSpinner = () => (
+    <div
+      className="d-flex justify-content-center align-items-center my-5 py-5"
+    >
+      <div className="text-center">
+        <Spinner
+          animation="border"
+          variant="primary"
+          style={{ width: "2rem", height: "2rem" }}
+        />
+        <p className="mt-3" style={{ color: "#1a73e8", fontWeight: 500 }}>
+          Loading services...
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (error) {
-    return (
-      <Container>
-        <Alert variant="danger" className="text-center my-5">
-          <i className="fa fa-exclamation-triangle me-2"></i>
-          {error}
-        </Alert>
-      </Container>
-    );
-  }
+  // Services section rendering function
+  const renderServicesSection = () => {
+    if (loading) {
+      return <LoadingSpinner />;
+    }
 
-  if (services.length === 0) {
     return (
-      <Container>
-        <div className="text-center my-5 py-5">
-          <img
-            src="/no-data.svg"
-            alt="No services"
-            style={{ width: "150px", marginBottom: "20px" }}
-          />
-          <p style={{ color: "#344955", fontSize: "1.2rem" }}>
-            No services available at the moment.
-          </p>
-          <Button
-            variant="outline-primary"
-            onClick={() => window.location.reload()}
+      <>
+        {error && (
+          <Alert variant="danger" className="text-center my-3">
+            <i className="fa fa-exclamation-triangle me-2"></i>
+            {error}
+          </Alert>
+        )}
+
+        {showAlert && (
+          <Alert
+            variant="success"
+            className="text-center"
+            dismissible
+            onClose={() => setShowAlert(false)}
           >
-            Refresh
+            Service added to cart. Go to your dashboard to view and/or book
+            it!
+          </Alert>
+        )}
+
+        {authAlert && (
+          <Alert
+            variant="danger"
+            className="text-center"
+            dismissible
+            onClose={() => setAuthAlert(false)}
+          >
+            You must be logged in to add services to the cart.
+          </Alert>
+        )}
+
+        {/* Category Tabs */}
+        <div className="category-tabs mb-4">
+          {Object.keys(groupedServices).length > 0 ? (
+            <Tab.Container
+              id="service-categories"
+              activeKey={activeCategory}
+              onSelect={(k) => setActiveCategory(k)}
+            >
+              <Row>
+                <Col sm={12}>
+                  <Nav variant="tabs" className="service-category-nav">
+                    {Object.keys(groupedServices).map((category) => (
+                      <Nav.Item key={category}>
+                        <Nav.Link eventKey={category}>
+                          {formatCategoryName(category)}
+                        </Nav.Link>
+                      </Nav.Item>
+                    ))}
+                  </Nav>
+                </Col>
+                <Col sm={12}>
+                  <Tab.Content>
+                    {Object.keys(groupedServices).map((category) => (
+                      <Tab.Pane key={category} eventKey={category}>
+                        {/* Subcategory sections */}
+                        {Object.keys(groupedServices[category]).map(
+                          (subcategory) => (
+                            <div
+                              key={subcategory}
+                              className="subcategory-section my-4"
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mb: 3,
+                                }}
+                              >
+                                <Typography variant="h5" component="h3">
+                                  {formatSubcategoryName(subcategory)}
+                                </Typography>
+                                <Divider sx={{ flexGrow: 1, ml: 2 }} />
+                              </Box>
+
+                              <Row className="services-row">
+                                {groupedServices[category][subcategory].map(
+                                  (service, index) => (
+                                    <Col
+                                      key={service.id || index}
+                                      xl={4}
+                                      lg={4}
+                                      md={4}
+                                      sm={12}
+                                      className="mb-4"
+                                    >
+                                      <motion.div
+                                        className="service-card"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                          duration: 0.5,
+                                          delay: index * 0.1,
+                                        }}
+                                        viewport={{ once: true }}
+                                        whileHover={{ y: -5 }}
+                                      >
+                                        <div className="price-badge">
+                                          KSH {service.price}
+                                        </div>
+                                        <div className="service-image-container">
+                                          <Image
+                                            src={service.image || "/placeholder-service.jpg"}
+                                            className="service-image"
+                                            alt={service.name}
+                                            loading="lazy"
+                                          />
+                                        </div>
+                                        <div className="service-content">
+                                          <h3 className="service-title">
+                                            {service.name}
+                                          </h3>
+                                          <p className="service-description">
+                                            {service.description}
+                                          </p>
+                                          <Chip
+                                            label={formatSubcategoryName(
+                                              service.subcategory || service.audio_category
+                                            )}
+                                            size="small"
+                                            color="primary"
+                                            variant="outlined"
+                                            className="mb-3"
+                                          />
+                                          <Button
+                                            variant="primary"
+                                            className="service-button"
+                                            onClick={() =>
+                                              handleFillEventDetails(
+                                                service.id
+                                              )
+                                            }
+                                          >
+                                            Book Now
+                                          </Button>
+                                        </div>
+                                      </motion.div>
+                                    </Col>
+                                  )
+                                )}
+                              </Row>
+                            </div>
+                          )
+                        )}
+                      </Tab.Pane>
+                    ))}
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
+          ) : (
+            <div className="text-center py-4">
+              <p>No service categories available at the moment.</p>
+              {error ? (
+                <Button 
+                  variant="outline-primary" 
+                  onClick={() => window.location.reload()}
+                  className="mt-2"
+                >
+                  Retry
+                </Button>
+              ) : null}
+            </div>
+          )}
+        </div>
+
+        <div className="text-center mt-5">
+          <Button
+            className="rounded-pill px-4 py-2"
+            variant="primary"
+            size="lg"
+            onClick={() => navigate("/services")}
+            style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
+          >
+            View All Services
           </Button>
         </div>
-      </Container>
+      </>
     );
-  }
+  };
 
   return (
     <Container fluid className="p-0 m-0 home-container">
@@ -375,16 +546,24 @@ function Home() {
                 viewport={{ once: true }}
               >
                 <Carousel controls indicators interval={3000} pause="hover">
-                  {carouselImages.map((image, index) => (
-                    <Carousel.Item key={index}>
-                      <img
-                        className="d-block w-100 rounded showcase-image"
-                        src={image}
-                        alt={`Studio Image ${index + 1}`}
-                        loading="lazy"
-                      />
+                  {carouselImages.length > 0 ? (
+                    carouselImages.map((image, index) => (
+                      <Carousel.Item key={index}>
+                        <img
+                          className="d-block w-100 rounded showcase-image"
+                          src={image}
+                          alt={`Studio Image ${index + 1}`}
+                          loading="lazy"
+                        />
+                      </Carousel.Item>
+                    ))
+                  ) : (
+                    <Carousel.Item>
+                      <div className="text-center py-5 bg-light rounded">
+                        <p>No carousel images available.</p>
+                      </div>
                     </Carousel.Item>
-                  ))}
+                  )}
                 </Carousel>
               </motion.div>
             </Col>
@@ -413,7 +592,7 @@ function Home() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-5">
+                    <div className="text-center py-5 bg-light rounded">
                       <p>No videos available at the moment.</p>
                     </div>
                   )}
@@ -445,166 +624,7 @@ function Home() {
             </p>
           </motion.div>
 
-          {showAlert && (
-            <Alert
-              variant="success"
-              className="text-center"
-              dismissible
-              onClose={() => setShowAlert(false)}
-            >
-              Service added to cart. Go to your dashboard to view and/or book
-              it!
-            </Alert>
-          )}
-
-          {authAlert && (
-            <Alert
-              variant="danger"
-              className="text-center"
-              dismissible
-              onClose={() => setAuthAlert(false)}
-            >
-              You must be logged in to add services to the cart.
-            </Alert>
-          )}
-
-          {/* Category Tabs */}
-          <div className="category-tabs mb-4">
-            {Object.keys(groupedServices).length > 0 ? (
-              <Tab.Container
-                id="service-categories"
-                activeKey={activeCategory}
-                onSelect={(k) => setActiveCategory(k)}
-              >
-                <Row>
-                  <Col sm={12}>
-                    <Nav variant="tabs" className="service-category-nav">
-                      {Object.keys(groupedServices).map((category) => (
-                        <Nav.Item key={category}>
-                          <Nav.Link eventKey={category}>
-                            {formatCategoryName(category)}
-                          </Nav.Link>
-                        </Nav.Item>
-                      ))}
-                    </Nav>
-                  </Col>
-                  <Col sm={12}>
-                    <Tab.Content>
-                      {Object.keys(groupedServices).map((category) => (
-                        <Tab.Pane key={category} eventKey={category}>
-                          {/* Subcategory sections */}
-                          {Object.keys(groupedServices[category]).map(
-                            (subcategory) => (
-                              <div
-                                key={subcategory}
-                                className="subcategory-section my-4"
-                              >
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    mb: 3,
-                                  }}
-                                >
-                                  <Typography variant="h5" component="h3">
-                                    {formatSubcategoryName(subcategory)}
-                                  </Typography>
-                                  <Divider sx={{ flexGrow: 1, ml: 2 }} />
-                                </Box>
-
-                                <Row className="services-row">
-                                  {groupedServices[category][subcategory].map(
-                                    (service, index) => (
-                                      <Col
-                                        key={service.id}
-                                        xl={4}
-                                        lg={4}
-                                        md={4}
-                                        sm={12}
-                                        className="mb-4"
-                                      >
-                                        <motion.div
-                                          className="service-card"
-                                          initial={{ opacity: 0, y: 20 }}
-                                          whileInView={{ opacity: 1, y: 0 }}
-                                          transition={{
-                                            duration: 0.5,
-                                            delay: index * 0.1,
-                                          }}
-                                          viewport={{ once: true }}
-                                          whileHover={{ y: -5 }}
-                                        >
-                                          <div className="price-badge">
-                                            KSH {service.price}
-                                          </div>
-                                          <div className="service-image-container">
-                                            <Image
-                                              src={service.image}
-                                              className="service-image"
-                                              alt={service.name}
-                                              loading="lazy"
-                                            />
-                                          </div>
-                                          <div className="service-content">
-                                            <h3 className="service-title">
-                                              {service.name}
-                                            </h3>
-                                            <p className="service-description">
-                                              {service.description}
-                                            </p>
-                                            <Chip
-                                              label={formatSubcategoryName(
-                                                service.subcategory
-                                              )}
-                                              size="small"
-                                              color="primary"
-                                              variant="outlined"
-                                              className="mb-3"
-                                            />
-                                            <Button
-                                              variant="primary"
-                                              className="service-button"
-                                              onClick={() =>
-                                                handleFillEventDetails(
-                                                  service.id
-                                                )
-                                              }
-                                            >
-                                              Book Now
-                                            </Button>
-                                          </div>
-                                        </motion.div>
-                                      </Col>
-                                    )
-                                  )}
-                                </Row>
-                              </div>
-                            )
-                          )}
-                        </Tab.Pane>
-                      ))}
-                    </Tab.Content>
-                  </Col>
-                </Row>
-              </Tab.Container>
-            ) : (
-              <div className="text-center py-4">
-                <p>No service categories available.</p>
-              </div>
-            )}
-          </div>
-
-          <div className="text-center mt-5">
-            <Button
-              className="rounded-pill px-4 py-2"
-              variant="primary"
-              size="lg"
-              onClick={() => navigate("/services")}
-              style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
-            >
-              View All Services
-            </Button>
-          </div>
+          {renderServicesSection()}
         </Container>
       </section>
     </Container>
