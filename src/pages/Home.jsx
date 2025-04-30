@@ -319,7 +319,8 @@ function Home() {
               <h1 className="hero-title mb-4">
                 Welcome to OffWorld Media Africa
               </h1>
-
+              <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
+              
               <p className="hero-subtitle mb-5">
                 We offer top-notch services in video production, photography, and
                 audio production.
@@ -345,8 +346,10 @@ function Home() {
             <Col lg={12} className="text-center">
               <Box component={Paper} elevation={0} className="about-content p-4 p-md-5">
                 <Typography variant="h2" component="h2" className="section-title mb-4">
-                  About Us
+                  Whoe We Are
                 </Typography>
+
+                <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
 
                 <Typography variant="body1" className="mb-5">
                   Offworld Media Africa is a business company specializing in
