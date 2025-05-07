@@ -438,7 +438,7 @@ function Home() {
                     variant="contained"
                     color="primary"
                     size="large"
-                    onClick={navigate("/services")}
+                    onClick={()=>navigate("/services")}
                     sx={{ px: 4, py: 1.5 }}
                   >
                     Our Services
@@ -453,7 +453,7 @@ function Home() {
                     variant="outlined"
                     color="inherit"
                     size="large"
-                    onClick={navigate("/contactus")}
+                    onClick={()=> navigate("/contactus")}
                     sx={{ px: 4, py: 1.5 }}
                   >
                     Contact Us
