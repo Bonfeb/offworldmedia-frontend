@@ -188,6 +188,20 @@ function NavBar() {
             >
               Reviews
             </Button>
+            <Button
+              component={Link}
+              to="/new-home-ui"
+              sx={{
+                color: "white",
+                mx: 1,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
+              onClick={() => handleNavItemClick("/new-home-ui")}
+            >
+              NewHomeUI
+            </Button>
 
             {!isAuthenticated ? (
               <>
