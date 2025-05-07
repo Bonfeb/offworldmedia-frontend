@@ -73,10 +73,10 @@ const ContactUs = () => {
     try {
       // Send email via EmailJS
       await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID, // Replace with your EmailJS service ID
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID, // Replace with your EmailJS template ID
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         templateParams,
-        import.meta.env.VITE_EMAILJS_USER_ID // Replace with your EmailJS public key
+        import.meta.env.VITE_EMAILJS_USER_ID
       );
       
       // After successful email, also save to backend if needed
@@ -99,145 +99,175 @@ const ContactUs = () => {
   };
 
   return (
-    <Container fluid className="py-5" style={{ background: "linear-gradient(to right,rgb(11, 177, 80),rgb(1, 63, 172))", minHeight: "100vh"}}>
-      <h1 className="text-center mb-4 text-white">Get in Touch With Us</h1>
-      <hr className="bg-white"/>
-      <Row className="justify-content-center">
-        <Col xs={12} sm={12} md={12} lg={6} xl={6} className="mb-4 mb-lg-0">
-          <Card className="p-4 shadow h-100 d-flex flex-column justify-content-center">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.844733880548!2d39.85400177568686!3d-3.6229327963511357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x183fdd77b5e306bd%3A0x29d1cd979d54b312!2sWater%20Sports%20Ground!5e0!3m2!1sen!2ske!4v1742594009117!5m2!1sen!2ske"
-              width="100%"
-              height="300"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-            ></iframe>
-            <ListGroup variant="flush" className="mt-3">
-              <ListGroup.Item>
-                <div className="flex-grow-1">
-                  <FontAwesomeIcon icon={faEnvelope} className="text-primary" />{" "}
-                  <strong>Email: </strong>
-                  <span className="text-muted">
-                    <i>offworldmedia@africa.com</i>
-                  </span>
+    <Container fluid className="py-4 py-md-5" style={{ 
+      background: "linear-gradient(to right, rgb(11, 177, 80), rgb(1, 63, 172))", 
+      minHeight: "100vh"
+    }}>
+      <Container>
+        <h1 className="text-center mb-3 mb-md-4 text-white fs-2 fs-md-1">Get in Touch With Us</h1>
+        <hr className="bg-white mx-auto" style={{ maxWidth: "80%" }} />
+        
+        <Row className="justify-content-center g-4">
+          {/* Map and Contact Info Card */}
+          <Col xs={12} lg={6}>
+            <Card className="shadow h-100">
+              <Card.Body className="p-3 p-md-4">
+                <div className="map-container mb-3" style={{ height: "250px", position: "relative", overflow: "hidden" }}>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.844733880548!2d39.85400177568686!3d-3.6229327963511357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x183fdd77b5e306bd%3A0x29d1cd979d54b312!2sWater%20Sports%20Ground!5e0!3m2!1sen!2ske!4v1742594009117!5m2!1sen!2ske"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0, position: "absolute", top: 0, left: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    title="Location Map"
+                  ></iframe>
                 </div>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <div className="flex-grow-1">
-                  <FontAwesomeIcon icon={faPhone} className="text-primary" />{" "}
-                  <span className="text-muted">
-                    <strong>Phone:</strong>
-                  </span>
-                  <p>
-                    <i>+2547-979-8030</i>
-                  </p>
-                </div>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <div className="flex-grow-1">
-                  <FontAwesomeIcon
-                    icon={faMapMarkerAlt}
-                    className="text-primary"
-                  />{" "}
-                  <strong>Address:</strong>
-                  <p>
-                    <i>
-                      500 Office Center Drive, Suite 400, Fort Washington, PA
-                      19034
-                    </i>
-                  </p>
-                </div>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
-        </Col>
-        <Col xs={12} sm={12} lg={6} xl={6} md={6}>
-          <Card className="p-4 shadow h-100 d-flex flex-column justify-content-center">
-            <Form onSubmit={handleSubmit}>
-              <Row>
-                <Col md={6}>
+                
+                <ListGroup variant="flush" className="border-top pt-2">
+                  <ListGroup.Item className="px-0 py-2">
+                    <div className="d-flex align-items-center">
+                      <div className="me-3">
+                        <FontAwesomeIcon icon={faEnvelope} className="text-primary fa-fw" size="lg" />
+                      </div>
+                      <div>
+                        <strong>Email: </strong>
+                        <span className="text-muted d-block text-break">
+                          offworldmedia@africa.com
+                        </span>
+                      </div>
+                    </div>
+                  </ListGroup.Item>
+                  
+                  <ListGroup.Item className="px-0 py-2">
+                    <div className="d-flex align-items-center">
+                      <div className="me-3">
+                        <FontAwesomeIcon icon={faPhone} className="text-primary fa-fw" size="lg" />
+                      </div>
+                      <div>
+                        <strong>Phone: </strong>
+                        <span className="text-muted d-block">
+                          +2547-979-8030
+                        </span>
+                      </div>
+                    </div>
+                  </ListGroup.Item>
+                  
+                  <ListGroup.Item className="px-0 py-2">
+                    <div className="d-flex">
+                      <div className="me-3">
+                        <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary fa-fw" size="lg" />
+                      </div>
+                      <div>
+                        <strong>Address: </strong>
+                        <span className="text-muted d-block">
+                          500 Office Center Drive, Suite 400,<br />
+                          Fort Washington, PA 19034
+                        </span>
+                      </div>
+                    </div>
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          {/* Contact Form Card */}
+          <Col xs={12} lg={6}>
+            <Card className="shadow h-100">
+              <Card.Body className="p-3 p-md-4">
+                <Form onSubmit={handleSubmit}>
+                  <Row className="mb-3">
+                    <Col xs={12} sm={6} className="mb-3 mb-sm-0">
+                      <Form.Group>
+                        <Form.Label>First Name *</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="firstName"
+                          value={formData.firstName}
+                          readOnly
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col xs={12} sm={6}>
+                      <Form.Group>
+                        <Form.Label>Last Name *</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="lastName"
+                          value={formData.lastName}
+                          readOnly
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  
                   <Form.Group className="mb-3">
-                    <Form.Label>First Name *</Form.Label>
+                    <Form.Label>Email *</Form.Label>
                     <Form.Control
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       readOnly
                       required
                     />
                   </Form.Group>
-                </Col>
-                <Col md={6}>
+                  
                   <Form.Group className="mb-3">
-                    <Form.Label>Last Name *</Form.Label>
+                    <Form.Label>Subject *</Form.Label>
                     <Form.Control
                       type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      readOnly
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
                       required
                     />
                   </Form.Group>
-                </Col>
-              </Row>
-              <Form.Group className="mb-3">
-                <Form.Label>Email *</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  readOnly
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Subject *</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Message *</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={4}
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-              <Row>
-                <Button 
-                  variant="success" 
-                  type="submit" 
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Sending...' : 'Send Message'}
-                </Button>
-              </Row>
-            </Form>
-            {responseMessage && (
-              <div className={`mt-3 ${responseMessage.includes('Error') ? 'text-danger' : 'text-success'}`}>
-                {responseMessage}
-              </div>
-            )}
-          </Card>
-        </Col>
-      </Row>
+                  
+                  <Form.Group className="mb-3">
+                    <Form.Label>Message *</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      style={{ resize: "vertical", minHeight: "100px" }}
+                    />
+                  </Form.Group>
+                  
+                  <div className="d-grid">
+                    <Button 
+                      variant="success" 
+                      type="submit" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Sending...' : 'Send Message'}
+                    </Button>
+                  </div>
+                </Form>
+                
+                {responseMessage && (
+                  <div className={`mt-3 text-center ${responseMessage.includes('Error') ? 'text-danger' : 'text-success'}`}>
+                    {responseMessage}
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
 
       {/* Authentication Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Authentication Required</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>You need to log in to send a message.</p>
+          <p className="mb-0">You need to log in to send a message.</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
