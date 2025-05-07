@@ -103,7 +103,7 @@ const ContactUs = () => {
       <h1 className="text-center mb-4 text-white">Get in Touch With Us</h1>
       <hr className="bg-white"/>
       <Row className="justify-content-center">
-        <Col md={6}>
+        <Col xs={12} sm={12} md={12} lg={6} xl={6} className="mb-4 mb-lg-0">
           <Card className="p-4 shadow h-100 d-flex flex-column justify-content-center">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.844733880548!2d39.85400177568686!3d-3.6229327963511357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x183fdd77b5e306bd%3A0x29d1cd979d54b312!2sWater%20Sports%20Ground!5e0!3m2!1sen!2ske!4v1742594009117!5m2!1sen!2ske"
@@ -152,7 +152,7 @@ const ContactUs = () => {
             </ListGroup>
           </Card>
         </Col>
-        <Col md={6}>
+        <Col xs={12} sm={12} lg={6} xl={6} md={6}>
           <Card className="p-4 shadow h-100 d-flex flex-column justify-content-center">
             <Form onSubmit={handleSubmit}>
               <Row>
