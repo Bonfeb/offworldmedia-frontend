@@ -332,15 +332,19 @@ function Home() {
                                             style={{
                                               backgroundColor: "#007bff",
                                               color: "white",
-                                              border: "none"
+                                              border: "none",
                                             }}
                                             onMouseOver={(e) => {
-                                              e.currentTarget.style.backgroundColor = "#28a745";
-                                              e.currentTarget.style.color = "white";
+                                              e.currentTarget.style.backgroundColor =
+                                                "#28a745";
+                                              e.currentTarget.style.color =
+                                                "white";
                                             }}
                                             onMouseOut={(e) => {
-                                              e.currentTarget.style.backgroundColor = "#007bff";
-                                              e.currentTarget.style.color = "white";
+                                              e.currentTarget.style.backgroundColor =
+                                                "#007bff";
+                                              e.currentTarget.style.color =
+                                                "white";
                                             }}
                                           >
                                             Book Now
@@ -396,12 +400,12 @@ function Home() {
         <div className="text-center mt-5">
           <Button
             onClick={() => navigate("/services")}
-            style={{ 
-              borderRadius: "30px", 
-              padding: "0.5rem 2rem", 
-              backgroundColor: "#007bff", 
+            style={{
+              borderRadius: "30px",
+              padding: "0.5rem 2rem",
+              backgroundColor: "#007bff",
               color: "white",
-              border: "none"
+              border: "none",
             }}
             className="view-all-button"
             onMouseOver={(e) => {
@@ -426,16 +430,17 @@ function Home() {
       <section className="hero-section">
         <Box
           sx={{
-            height: "80vh",
+            minHeight: { xs: "50vh", sm: "60vh", md: "70vh" }, // Responsive height
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "white",
             backgroundImage:
-              "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('/OWM Icon.ico')",
+              'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url("/OWM Icon.ico")',
             backgroundSize: "cover",
             backgroundPosition: "center",
             textAlign: "center",
+            padding: { xs: "2rem 1rem", md: "3rem 2rem" }, // Responsive padding
           }}
           id="home"
         >
@@ -449,7 +454,12 @@ function Home() {
                 variant="h2"
                 component="h1"
                 gutterBottom
-                sx={{ fontWeight: 700, fontSize: { xs: "2.5rem", md: "4rem" } }}
+                className="hero-title"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3.5rem" }, // More responsive sizes
+                  marginBottom: { xs: "1rem", md: "1.5rem" },
+                }}
               >
                 Bringing African Stories to the World
               </Typography>
@@ -457,7 +467,13 @@ function Home() {
                 variant="h5"
                 component="p"
                 gutterBottom
-                sx={{ mb: 4, fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+                className="hero-subtitle"
+                sx={{
+                  mb: { xs: 2, md: 4 },
+                  fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
+                  maxWidth: "800px",
+                  margin: "0 auto",
+                }}
               >
                 Professional media production services across the African
                 continent
@@ -465,9 +481,10 @@ function Home() {
               <Box
                 sx={{
                   display: "flex",
-                  gap: 2,
+                  gap: { xs: 1, md: 2 },
                   justifyContent: "center",
                   flexDirection: { xs: "column", sm: "row" },
+                  marginTop: { xs: "1rem", md: "2rem" },
                 }}
               >
                 <motion.div
@@ -477,11 +494,12 @@ function Home() {
                 >
                   <Button
                     onClick={() => navigate("/services")}
-                    style={{ 
-                      backgroundColor: "#007bff", 
+                    style={{
+                      backgroundColor: "#007bff",
                       color: "white",
                       border: "none",
-                      padding: "10px 20px"
+                      padding: "10px 20px",
+                      width: { xs: "100%", sm: "auto" },
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.backgroundColor = "#28a745";
@@ -502,11 +520,12 @@ function Home() {
                 >
                   <Button
                     onClick={() => navigate("/contactus")}
-                    style={{ 
-                      backgroundColor: "#007bff", 
+                    style={{
+                      backgroundColor: "#007bff",
                       color: "white",
                       border: "none",
-                      padding: "10px 20px"
+                      padding: "10px 20px",
+                      width: { xs: "100%", sm: "auto" },
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.backgroundColor = "#28a745";
@@ -676,10 +695,10 @@ function Home() {
                           <Button
                             className="carousel-control-btn me-2"
                             onClick={goToPrevVideo}
-                            style={{ 
-                              backgroundColor: "#007bff", 
+                            style={{
+                              backgroundColor: "#007bff",
                               color: "white",
-                              border: "none" 
+                              border: "none",
                             }}
                             onMouseOver={(e) => {
                               e.currentTarget.style.backgroundColor = "#28a745";
@@ -723,10 +742,10 @@ function Home() {
                           <Button
                             className="carousel-control-btn ms-2"
                             onClick={goToNextVideo}
-                            style={{ 
-                              backgroundColor: "#007bff", 
+                            style={{
+                              backgroundColor: "#007bff",
                               color: "white",
-                              border: "none" 
+                              border: "none",
                             }}
                             onMouseOver={(e) => {
                               e.currentTarget.style.backgroundColor = "#28a745";
@@ -757,6 +776,20 @@ function Home() {
             </Col>
           </Row>
         </Container>
+        <div className="divider-container" style={{ marginTop: "3rem" }}>
+          <hr
+            className="studio-work-divider"
+            style={{
+              width: "80%",
+              margin: "0 auto",
+              height: "4px",
+              background:
+                "linear-gradient(to right, var(--primary-blue), var(--antique-blue-light))",
+              border: "none",
+              opacity: 0.8,
+            }}
+          />
+        </div>
       </section>
 
       {/* Services Section - Updated with Categories and Subcategories */}
