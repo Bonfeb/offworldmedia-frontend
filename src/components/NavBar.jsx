@@ -18,7 +18,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 
 function NavBar() {
-  const { isAuthenticated, userProfilePic, userGroups, logout } = useContext(AuthContext);
+  const { isAuthenticated, userProfilePic, userGroups, logout } =
+    useContext(AuthContext);
   const [showNavbar, setShowNavbar] = useState(true);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -26,7 +27,8 @@ function NavBar() {
   const location = useLocation();
 
   useEffect(() => {
-    const isAdmin = isAuthenticated && userGroups && userGroups.includes("admin");
+    const isAdmin =
+      isAuthenticated && userGroups && userGroups.includes("admin");
     const isAdminPage = location.pathname.startsWith("/admin-dashboard");
     setShowNavbar(!(isAdmin && isAdminPage));
   }, [isAuthenticated, userGroups, location.pathname]);
@@ -103,7 +105,9 @@ function NavBar() {
           <Box sx={{ flexGrow: 1 }} />
 
           {/* Desktop Navigation */}
-          <Box sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}>
+          <Box
+            sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}
+          >
             <Button
               component={Link}
               to="/"
@@ -188,20 +192,6 @@ function NavBar() {
             >
               Reviews
             </Button>
-            <Button
-              component={Link}
-              to="/new-home-ui"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/new-home-ui")}
-            >
-              NewHomeUI
-            </Button>
 
             {!isAuthenticated ? (
               <>
@@ -239,7 +229,11 @@ function NavBar() {
                 <IconButton onClick={handleMenuOpen}>
                   <Avatar
                     src={userProfilePic}
-                    sx={{ width: 40, height: 40, border: `2px solid ${colors.shadeBlue}` }}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      border: `2px solid ${colors.shadeBlue}`,
+                    }}
                   />
                 </IconButton>
                 <Menu

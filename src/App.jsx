@@ -40,7 +40,6 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AllBookings from "./pages/admin/bookings/AllBookings";
 import MediaGallery from "./pages/MediaGallery";
-import NewHomeUI from "./pages/NewHomeUI";
 
 function App() {
   return (
@@ -87,7 +86,6 @@ function App() {
             />
             <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
             <Route path="/forgot-password/" element={<ForgotPassword />} />
-            <Route path="/new-home-ui" element={<NewHomeUI />} />
 
 
             {/*Admin Dashboard with Nested Routes*/}

@@ -31,7 +31,7 @@ function Home() {
   const [authAlert, setAuthAlert] = useState(false);
   const [videos, setVideos] = useState([]);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
-  
+
   // Timer ref for video carousel
   const videoTimerRef = useRef(null);
 
@@ -66,22 +66,29 @@ function Home() {
         }
 
         // Handle grouped_services safely
-        if (response.data.grouped_services && typeof response.data.grouped_services === 'object') {
+        if (
+          response.data.grouped_services &&
+          typeof response.data.grouped_services === "object"
+        ) {
           setGroupedServices(response.data.grouped_services);
-          
+
           // Set the first category as active if available
           const categories = Object.keys(response.data.grouped_services);
           if (categories.length > 0) {
             setActiveCategory(categories[0]);
           }
         } else {
-          console.warn("Expected grouped_services object not found in response");
+          console.warn(
+            "Expected grouped_services object not found in response"
+          );
           setGroupedServices({});
         }
       } catch (error) {
         console.error("Error fetching services:", error);
-        setError(`Failed to load services. ${error.message || "Unknown error"}`);
-        
+        setError(
+          `Failed to load services. ${error.message || "Unknown error"}`
+        );
+
         // Set empty data to prevent UI errors
         setServices([]);
         setGroupedServices({});
@@ -157,13 +164,13 @@ function Home() {
       if (videoTimerRef.current) {
         clearTimeout(videoTimerRef.current);
       }
-      
+
       // Set a new timer
       videoTimerRef.current = setTimeout(() => {
         setActiveVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
       }, VIDEO_DISPLAY_DURATION);
     }
-    
+
     // Cleanup timer on unmount or when activeVideoIndex changes
     return () => {
       if (videoTimerRef.current) {
@@ -211,7 +218,9 @@ function Home() {
     if (videoTimerRef.current) {
       clearTimeout(videoTimerRef.current);
     }
-    setActiveVideoIndex((prevIndex) => (prevIndex - 1 + videos.length) % videos.length);
+    setActiveVideoIndex(
+      (prevIndex) => (prevIndex - 1 + videos.length) % videos.length
+    );
   };
 
   const goToNextVideo = () => {
@@ -236,13 +245,21 @@ function Home() {
         )}
 
         {showAlert && (
-          <Alert variant="success" dismissible onClose={() => setShowAlert(false)}>
+          <Alert
+            variant="success"
+            dismissible
+            onClose={() => setShowAlert(false)}
+          >
             Service added to cart. Go to your dashboard to view and/or book it!
           </Alert>
         )}
 
         {authAlert && (
-          <Alert variant="warning" dismissible onClose={() => setAuthAlert(false)}>
+          <Alert
+            variant="warning"
+            dismissible
+            onClose={() => setAuthAlert(false)}
+          >
             You must be logged in to add services to the cart.
           </Alert>
         )}
@@ -250,9 +267,15 @@ function Home() {
         {/* Category Tabs */}
         <div className="service-tabs-container">
           {Object.keys(groupedServices).length > 0 ? (
-            <Tab.Container activeKey={activeCategory} onSelect={(k) => setActiveCategory(k)}>
+            <Tab.Container
+              activeKey={activeCategory}
+              onSelect={(k) => setActiveCategory(k)}
+            >
               <div className="mb-4">
-                <Nav variant="pills" className="service-category-tabs flex-nowrap overflow-auto">
+                <Nav
+                  variant="pills"
+                  className="service-category-tabs flex-nowrap overflow-auto"
+                >
                   {Object.keys(groupedServices).map((category) => (
                     <Nav.Item key={category}>
                       <Nav.Link eventKey={category} className="category-tab">
@@ -268,7 +291,10 @@ function Home() {
                     {/* Subcategory sections */}
                     {Object.keys(groupedServices[category]).map(
                       (subcategory) => (
-                        <div key={subcategory} className="subcategory-section mb-5">
+                        <div
+                          key={subcategory}
+                          className="subcategory-section mb-5"
+                        >
                           <div className="subcategory-header mb-4">
                             <h3 className="subcategory-title">
                               {formatSubcategoryName(subcategory)}
@@ -302,9 +328,7 @@ function Home() {
                                           variant="primary"
                                           className="mt-auto book-now-btn"
                                           onClick={() =>
-                                            handleFillEventDetails(
-                                              service.id
-                                            )
+                                            handleFillEventDetails(service.id)
                                           }
                                         >
                                           Book Now
@@ -329,7 +353,9 @@ function Home() {
                 No service categories available at the moment.
               </Alert>
               {error ? (
-                <Button variant="outline-primary" onClick={() => window.location.reload()}
+                <Button
+                  variant="outline-primary"
+                  onClick={() => window.location.reload()}
                   className="mt-2"
                 >
                   Retry
@@ -340,7 +366,9 @@ function Home() {
         </div>
 
         <div className="text-center mt-5">
-          <Button variant="outline-primary" onClick={() => navigate("/services")}
+          <Button
+            variant="outline-primary"
+            onClick={() => navigate("/services")}
             style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
             className="view-all-button"
           >
@@ -355,30 +383,86 @@ function Home() {
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero-section">
-        <Container fluid>
-          <Row className="align-items-center">
-            <Col md={12} className="text-center">
-              <h1 className="hero-title mb-4">
-                Welcome to OffWorld Media Africa
-              </h1>
-              <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
-              
-              <p className="hero-subtitle mb-5">
-                We offer top-notch services in video production, photography, and
-                audio production.
-              </p>
-
-              <div className="hero-buttons">
-                <Button variant="primary" className="me-3" onClick={() => navigate("/services")}>
-                  Explore Services
-                </Button>
-                <Button variant="outline-light" onClick={() => navigate("/contactus")}>
-                  Contact Us
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
+        <Box
+          sx={{
+            height: "80vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            backgroundImage:
+              "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('/OWM Icon.ico')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            textAlign: "center",
+          }}
+          id="home"
+        >
+          <Container maxWidth="lg">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <Typography
+                variant="h2"
+                component="h1"
+                gutterBottom
+                sx={{ fontWeight: 700, fontSize: { xs: "2.5rem", md: "4rem" } }}
+              >
+                Bringing African Stories to the World
+              </Typography>
+              <Typography
+                variant="h5"
+                component="p"
+                gutterBottom
+                sx={{ mb: 4, fontSize: { xs: "1.2rem", md: "1.5rem" } }}
+              >
+                Professional media production services across the African
+                continent
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 2,
+                  justifyContent: "center",
+                  flexDirection: { xs: "column", sm: "row" },
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={navigate("/services")}
+                    sx={{ px: 4, py: 1.5 }}
+                  >
+                    Our Services
+                  </Button>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="large"
+                    onClick={navigate("/contactus")}
+                    sx={{ px: 4, py: 1.5 }}
+                  >
+                    Contact Us
+                  </Button>
+                </motion.div>
+              </Box>
+            </motion.div>
+          </Container>
+        </Box>
       </section>
 
       {/* About Section */}
@@ -386,12 +470,27 @@ function Home() {
         <Container fluid>
           <Row className="justify-content-center">
             <Col lg={12} className="text-center">
-              <Box component={Paper} elevation={0} className="about-content p-4 p-md-5">
-                <Typography variant="h2" component="h2" className="section-title mb-4">
+              <Box
+                component={Paper}
+                elevation={0}
+                className="about-content p-4 p-md-5"
+              >
+                <Typography
+                  variant="h2"
+                  component="h2"
+                  className="section-title mb-4"
+                >
                   Who We Are
                 </Typography>
 
-                <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
+                <Divider
+                  className="mx-auto mb-4"
+                  style={{
+                    width: "50px",
+                    height: "3px",
+                    backgroundColor: "#007bff",
+                  }}
+                />
 
                 <Typography variant="body1" className="mb-5">
                   Offworld Media Africa is a business company specializing in
@@ -401,9 +500,17 @@ function Home() {
 
                 <Row className="vision-mission-container">
                   <Col md={6} className="mb-4 mb-md-0">
-                    <Box component={Paper} elevation={3} className="vision-box p-4 h-100">
+                    <Box
+                      component={Paper}
+                      elevation={3}
+                      className="vision-box p-4 h-100"
+                    >
                       <div className="mb-3">
-                        <Typography variant="h4" component="h3" className="box-title">
+                        <Typography
+                          variant="h4"
+                          component="h3"
+                          className="box-title"
+                        >
                           Vision
                         </Typography>
                       </div>
@@ -411,17 +518,25 @@ function Home() {
                         <Typography variant="body1">
                           To be a transformative force in global media,
                           revealing the essence of life and capturing the
-                          heartbeat through photography, film, music and
-                          digital broadcasting.
+                          heartbeat through photography, film, music and digital
+                          broadcasting.
                         </Typography>
                       </div>
                     </Box>
                   </Col>
 
                   <Col md={6}>
-                    <Box component={Paper} elevation={3} className="mission-box p-4 h-100">
+                    <Box
+                      component={Paper}
+                      elevation={3}
+                      className="mission-box p-4 h-100"
+                    >
                       <div className="mb-3">
-                        <Typography variant="h4" component="h3" className="box-title">
+                        <Typography
+                          variant="h4"
+                          component="h3"
+                          className="box-title"
+                        >
                           Mission
                         </Typography>
                       </div>
@@ -444,6 +559,13 @@ function Home() {
       <section className="showcase-section py-5 bg-light">
         <Container fluid>
           <Row className="g-4">
+            <Typography
+              variant="h2"
+              component="h2"
+              className="section-title mb-4"
+            >
+              Our Studio Work
+            </Typography>
             {/* Left Column - Image Carousel */}
             <Col lg={6}>
               <div className="carousel-container shadow rounded overflow-hidden">
@@ -460,7 +582,10 @@ function Home() {
                     ))
                   ) : (
                     <Carousel.Item>
-                      <div className="no-image-placeholder d-flex align-items-center justify-content-center bg-secondary text-white" style={{ height: "400px" }}>
+                      <div
+                        className="no-image-placeholder d-flex align-items-center justify-content-center bg-secondary text-white"
+                        style={{ height: "400px" }}
+                      >
                         <h3>No carousel images available.</h3>
                       </div>
                     </Carousel.Item>
@@ -472,8 +597,6 @@ function Home() {
             {/* Right Column - YouTube Video Carousel */}
             <Col lg={6}>
               <div className="videos-container">
-                <h3 className="mb-4">Latest Videos</h3>
-
                 <div className="youtube-video-carousel position-relative shadow rounded overflow-hidden">
                   {videos.length > 0 ? (
                     <>
@@ -489,29 +612,34 @@ function Home() {
                           allowFullScreen
                         ></iframe>
                       </div>
-                      
+
                       {/* Video Navigation Controls */}
                       <div className="video-carousel-controls d-flex justify-content-between align-items-center mt-3">
                         <div className="d-flex align-items-center">
-                          <Button 
-                            variant="light" 
-                            className="carousel-control-btn me-2" 
+                          <Button
+                            variant="light"
+                            className="carousel-control-btn me-2"
                             onClick={goToPrevVideo}
                           >
                             &lt; Prev
                           </Button>
-                          
+
                           <div className="video-indicators d-flex">
                             {videos.map((_, index) => (
                               <div
                                 key={index}
-                                className={`video-indicator mx-1 ${index === activeVideoIndex ? 'active' : ''}`}
+                                className={`video-indicator mx-1 ${
+                                  index === activeVideoIndex ? "active" : ""
+                                }`}
                                 style={{
-                                  width: '10px',
-                                  height: '10px',
-                                  borderRadius: '50%',
-                                  backgroundColor: index === activeVideoIndex ? '#007bff' : '#ccc',
-                                  cursor: 'pointer'
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor:
+                                    index === activeVideoIndex
+                                      ? "#007bff"
+                                      : "#ccc",
+                                  cursor: "pointer",
                                 }}
                                 onClick={() => {
                                   if (videoTimerRef.current) {
@@ -522,18 +650,19 @@ function Home() {
                               />
                             ))}
                           </div>
-                          
-                          <Button 
-                            variant="light" 
-                            className="carousel-control-btn ms-2" 
+
+                          <Button
+                            variant="light"
+                            className="carousel-control-btn ms-2"
                             onClick={goToNextVideo}
                           >
                             Next &gt;
                           </Button>
                         </div>
-                        
+
                         <Typography variant="caption" className="video-title">
-                          {videos[activeVideoIndex]?.snippet.title || "Video Title"}
+                          {videos[activeVideoIndex]?.snippet.title ||
+                            "Video Title"}
                         </Typography>
                       </div>
                     </>
@@ -554,16 +683,27 @@ function Home() {
         <Container fluid>
           <Row className="justify-content-center mb-5">
             <Col lg={8} className="text-center">
-              <Typography variant="h2" component="h2" className="section-title mb-3">
+              <Typography
+                variant="h2"
+                component="h2"
+                className="section-title mb-3"
+              >
                 We Offer Awesome Services
               </Typography>
 
-              <Divider className="mx-auto mb-4" style={{ width: "50px", height: "3px", backgroundColor: "#007bff" }} />
+              <Divider
+                className="mx-auto mb-4"
+                style={{
+                  width: "50px",
+                  height: "3px",
+                  backgroundColor: "#007bff",
+                }}
+              />
 
               <Typography variant="subtitle1" className="section-subtitle">
-                Our premium services are designed to meet all your creative needs,
-                from photography to video production, ensuring high-quality
-                results for your projects.
+                Our premium services are designed to meet all your creative
+                needs, from photography to video production, ensuring
+                high-quality results for your projects.
               </Typography>
             </Col>
           </Row>
