@@ -14,7 +14,7 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Paper, Typography, Box, Chip, Divider } from "@mui/material";
+import { Paper, Typography, Box, Chip } from "@mui/material";
 import API from "../api";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
@@ -286,65 +286,93 @@ function Home() {
                 </Nav>
               </div>
               <Tab.Content>
-                {Object.keys(groupedServices).map((category) => (
-                  <Tab.Pane eventKey={category} key={category}>
-                    {/* Subcategory sections */}
-                    {Object.keys(groupedServices[category]).map(
-                      (subcategory) => (
-                        <div
-                          key={subcategory}
-                          className="subcategory-section mb-5"
-                        >
-                          <div className="subcategory-header mb-4">
-                            <h3 className="subcategory-title">
-                              {formatSubcategoryName(subcategory)}
-                            </h3>
-                            <Divider className="mt-2" />
+                {Object.keys(groupedServices).length > 0 ? (
+                  Object.keys(groupedServices).map((category) => (
+                    <Tab.Pane eventKey={category} key={category}>
+                      {/* Subcategory sections */}
+                      {Object.keys(groupedServices[category]).map(
+                        (subcategory) => (
+                          <div
+                            key={subcategory}
+                            className="subcategory-section mb-5"
+                          >
+                            <div className="subcategory-header mb-4">
+                              <h3 className="subcategory-title">
+                                {formatSubcategoryName(subcategory)}
+                              </h3>
+                            </div>
+
+                            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                              {groupedServices[category][subcategory].map(
+                                (service) => (
+                                  <Col key={service.id}>
+                                    <motion.div
+                                      whileHover={{ y: -10 }}
+                                      transition={{ duration: 0.3 }}
+                                    >
+                                      <Card className="service-card h-100 shadow-sm border-0">
+                                        <div className="price-badge">
+                                          KSH {service.price}
+                                        </div>
+
+                                        <Card.Body className="d-flex flex-column">
+                                          <Card.Title className="service-card-title">
+                                            {service.name}
+                                          </Card.Title>
+
+                                          <Card.Text className="service-card-description flex-grow-1">
+                                            {service.description}
+                                          </Card.Text>
+
+                                          <Button
+                                            className="mt-auto book-now-btn"
+                                            onClick={() =>
+                                              handleFillEventDetails(service.id)
+                                            }
+                                            style={{
+                                              backgroundColor: "#007bff",
+                                              color: "white",
+                                              border: "none"
+                                            }}
+                                            onMouseOver={(e) => {
+                                              e.currentTarget.style.backgroundColor = "#28a745";
+                                              e.currentTarget.style.color = "white";
+                                            }}
+                                            onMouseOut={(e) => {
+                                              e.currentTarget.style.backgroundColor = "#007bff";
+                                              e.currentTarget.style.color = "white";
+                                            }}
+                                          >
+                                            Book Now
+                                          </Button>
+                                        </Card.Body>
+                                      </Card>
+                                    </motion.div>
+                                  </Col>
+                                )
+                              )}
+                            </Row>
                           </div>
-
-                          <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                            {groupedServices[category][subcategory].map(
-                              (service, index) => (
-                                <Col key={service.id}>
-                                  <motion.div
-                                    whileHover={{ y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                  >
-                                    <Card className="service-card h-100 shadow-sm border-0">
-                                      <div className="price-badge">
-                                        KSH {service.price}
-                                      </div>
-
-                                      <Card.Body className="d-flex flex-column">
-                                        <Card.Title className="service-card-title">
-                                          {service.name}
-                                        </Card.Title>
-
-                                        <Card.Text className="service-card-description flex-grow-1">
-                                          {service.description}
-                                        </Card.Text>
-
-                                        <Button
-                                          variant="primary"
-                                          className="mt-auto book-now-btn"
-                                          onClick={() =>
-                                            handleFillEventDetails(service.id)
-                                          }
-                                        >
-                                          Book Now
-                                        </Button>
-                                      </Card.Body>
-                                    </Card>
-                                  </motion.div>
-                                </Col>
-                              )
-                            )}
-                          </Row>
-                        </div>
-                      )
-                    )}
-                  </Tab.Pane>
-                ))}
+                        )
+                      )}
+                    </Tab.Pane>
+                  ))
+                ) : (
+                  <div className="text-center py-5">
+                    <Alert variant="info">
+                      No service categories available at the moment.
+                    </Alert>
+                    {error ? (
+                      <Button
+                        variant="outline-primary"
+                        onClick={() => window.location.reload()}
+                        className="mt-2"
+                      >
+                        Retry
+                      </Button>
+                    ) : null}
+                  </div>
+                )}
               </Tab.Content>
             </Tab.Container>
           ) : (
@@ -367,10 +395,23 @@ function Home() {
 
         <div className="text-center mt-5">
           <Button
-            variant="outline-primary"
             onClick={() => navigate("/services")}
-            style={{ borderRadius: "30px", padding: "0.5rem 2rem" }}
+            style={{ 
+              borderRadius: "30px", 
+              padding: "0.5rem 2rem", 
+              backgroundColor: "#007bff", 
+              color: "white",
+              border: "none"
+            }}
             className="view-all-button"
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#28a745";
+              e.currentTarget.style.color = "white";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#007bff";
+              e.currentTarget.style.color = "white";
+            }}
           >
             View All Services
           </Button>
@@ -435,11 +476,21 @@ function Home() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    onClick={()=>navigate("/services")}
-                    sx={{ px: 4, py: 1.5 }}
+                    onClick={() => navigate("/services")}
+                    style={{ 
+                      backgroundColor: "#007bff", 
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px"
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = "#28a745";
+                      e.currentTarget.style.color = "white";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = "#007bff";
+                      e.currentTarget.style.color = "white";
+                    }}
                   >
                     Our Services
                   </Button>
@@ -450,11 +501,21 @@ function Home() {
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   <Button
-                    variant="outlined"
-                    color="inherit"
-                    size="large"
-                    onClick={()=> navigate("/contactus")}
-                    sx={{ px: 4, py: 1.5 }}
+                    onClick={() => navigate("/contactus")}
+                    style={{ 
+                      backgroundColor: "#007bff", 
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px"
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = "#28a745";
+                      e.currentTarget.style.color = "white";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = "#007bff";
+                      e.currentTarget.style.color = "white";
+                    }}
                   >
                     Contact Us
                   </Button>
@@ -482,15 +543,6 @@ function Home() {
                 >
                   Who We Are
                 </Typography>
-
-                <Divider
-                  className="mx-auto mb-4"
-                  style={{
-                    width: "50px",
-                    height: "3px",
-                    backgroundColor: "#007bff",
-                  }}
-                />
 
                 <Typography variant="body1" className="mb-5">
                   Offworld Media Africa is a business company specializing in
@@ -558,14 +610,19 @@ function Home() {
       {/* Studio Work Showcase */}
       <section className="showcase-section py-5 bg-light">
         <Container fluid>
-          <Row className="g-4">
-            <Typography
-              variant="h2"
-              component="h2"
-              className="section-title mb-4"
-            >
-              Our Studio Work
-            </Typography>
+          <Row className="justify-content-center">
+            <Col lg={12} className="text-center mb-5">
+              <Typography
+                variant="h2"
+                component="h2"
+                className="section-title mb-4"
+                sx={{ fontWeight: 600 }}
+              >
+                Our Studio Work
+              </Typography>
+            </Col>
+          </Row>
+          <Row className="g-4 justify-content-center">
             {/* Left Column - Image Carousel */}
             <Col lg={6}>
               <div className="carousel-container shadow rounded overflow-hidden">
@@ -617,9 +674,21 @@ function Home() {
                       <div className="video-carousel-controls d-flex justify-content-between align-items-center mt-3">
                         <div className="d-flex align-items-center">
                           <Button
-                            variant="light"
                             className="carousel-control-btn me-2"
                             onClick={goToPrevVideo}
+                            style={{ 
+                              backgroundColor: "#007bff", 
+                              color: "white",
+                              border: "none" 
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.backgroundColor = "#28a745";
+                              e.currentTarget.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.backgroundColor = "#007bff";
+                              e.currentTarget.style.color = "white";
+                            }}
                           >
                             &lt; Prev
                           </Button>
@@ -652,9 +721,21 @@ function Home() {
                           </div>
 
                           <Button
-                            variant="light"
                             className="carousel-control-btn ms-2"
                             onClick={goToNextVideo}
+                            style={{ 
+                              backgroundColor: "#007bff", 
+                              color: "white",
+                              border: "none" 
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.backgroundColor = "#28a745";
+                              e.currentTarget.style.color = "white";
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.backgroundColor = "#007bff";
+                              e.currentTarget.style.color = "white";
+                            }}
                           >
                             Next &gt;
                           </Button>
@@ -690,15 +771,6 @@ function Home() {
               >
                 We Offer Awesome Services
               </Typography>
-
-              <Divider
-                className="mx-auto mb-4"
-                style={{
-                  width: "50px",
-                  height: "3px",
-                  backgroundColor: "#007bff",
-                }}
-              />
 
               <Typography variant="subtitle1" className="section-subtitle">
                 Our premium services are designed to meet all your creative
