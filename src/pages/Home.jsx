@@ -440,7 +440,8 @@ function Home() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             textAlign: "center",
-            padding: { xs: "2rem 1rem", md: "3rem 2rem" }, // Responsive padding
+            padding: 0, // Responsive padding
+            marginBottom: 0, 
           }}
           id="home"
         >
