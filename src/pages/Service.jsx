@@ -57,7 +57,7 @@ function Service() {
       try {
         const response = await API.get("/services/");
         console.log("Fetched services:", response.data);
-        setServices(Array.isArray(response.data) ? response.data : []);
+        setServices(Array.isArray(response.data.services) ? response.data.services : []);
       } catch (error) {
         console.error("Error fetching services:", error);
         setError("Error Loading Services");

@@ -28,7 +28,7 @@ function Team() {
       });
   }, []);
 
-  if (loading) return <p>Loading services...</p>;
+  if (loading) return <p>Loading Team Members...</p>;
   if (error) return <p>{error}</p>;
 
   return (

@@ -231,198 +231,208 @@ function Home() {
   };
 
   // Services section rendering function
-  const renderServicesSection = () => {
-    if (loading) {
-      return <LoadingSpinner />;
-    }
+  // Update the renderServicesSection function with this improved card layout
+const renderServicesSection = () => {
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
-    return (
-      <>
-        {error && (
-          <Alert variant="danger" className="mb-4">
-            {error}
-          </Alert>
-        )}
+  return (
+    <>
+      {error && (
+        <Alert variant="danger" className="mb-4">
+          {error}
+        </Alert>
+      )}
 
-        {showAlert && (
-          <Alert
-            variant="success"
-            dismissible
-            onClose={() => setShowAlert(false)}
+      {showAlert && (
+        <Alert variant="success" dismissible onClose={() => setShowAlert(false)}>
+          Service added to cart. Go to your dashboard to view and/or book it!
+        </Alert>
+      )}
+
+      {authAlert && (
+        <Alert variant="warning" dismissible onClose={() => setAuthAlert(false)}>
+          You must be logged in to add services to the cart.
+        </Alert>
+      )}
+
+      {/* Category Tabs */}
+      <div className="service-tabs-container">
+        {Object.keys(groupedServices).length > 0 ? (
+          <Tab.Container
+            activeKey={activeCategory}
+            onSelect={(k) => setActiveCategory(k)}
           >
-            Service added to cart. Go to your dashboard to view and/or book it!
-          </Alert>
-        )}
-
-        {authAlert && (
-          <Alert
-            variant="warning"
-            dismissible
-            onClose={() => setAuthAlert(false)}
-          >
-            You must be logged in to add services to the cart.
-          </Alert>
-        )}
-
-        {/* Category Tabs */}
-        <div className="service-tabs-container">
-          {Object.keys(groupedServices).length > 0 ? (
-            <Tab.Container
-              activeKey={activeCategory}
-              onSelect={(k) => setActiveCategory(k)}
-            >
-              <div className="mb-4">
-                <Nav
-                  variant="pills"
-                  className="service-category-tabs flex-nowrap overflow-auto"
-                >
-                  {Object.keys(groupedServices).map((category) => (
-                    <Nav.Item key={category}>
-                      <Nav.Link eventKey={category} className="category-tab">
-                        {formatCategoryName(category)}
-                      </Nav.Link>
-                    </Nav.Item>
-                  ))}
-                </Nav>
-              </div>
-              <Tab.Content>
-                {Object.keys(groupedServices).length > 0 ? (
-                  Object.keys(groupedServices).map((category) => (
-                    <Tab.Pane eventKey={category} key={category}>
-                      {/* Subcategory sections */}
-                      {Object.keys(groupedServices[category]).map(
-                        (subcategory) => (
-                          <div
-                            key={subcategory}
-                            className="subcategory-section mb-5"
-                          >
-                            <div className="subcategory-header mb-4">
-                              <h3 className="subcategory-title">
-                                {formatSubcategoryName(subcategory)}
-                              </h3>
-                            </div>
-
-                            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                              {groupedServices[category][subcategory].map(
-                                (service) => (
-                                  <Col key={service.id}>
-                                    <motion.div
-                                      whileHover={{ y: -10 }}
-                                      transition={{ duration: 0.3 }}
-                                    >
-                                      <Card className="service-card h-100 shadow-sm border-0">
-                                        <div className="price-badge">
-                                          KSH {service.price}
-                                        </div>
-
-                                        <Card.Body className="d-flex flex-column">
-                                          <Card.Title className="service-card-title">
-                                            {service.name}
-                                          </Card.Title>
-
-                                          <Card.Text className="service-card-description flex-grow-1">
-                                            {service.description}
-                                          </Card.Text>
-
-                                          <Button
-                                            className="mt-auto book-now-btn"
-                                            onClick={() =>
-                                              handleFillEventDetails(service.id)
-                                            }
-                                            style={{
-                                              backgroundColor: "#007bff",
-                                              color: "white",
-                                              border: "none",
-                                            }}
-                                            onMouseOver={(e) => {
-                                              e.currentTarget.style.backgroundColor =
-                                                "#28a745";
-                                              e.currentTarget.style.color =
-                                                "white";
-                                            }}
-                                            onMouseOut={(e) => {
-                                              e.currentTarget.style.backgroundColor =
-                                                "#007bff";
-                                              e.currentTarget.style.color =
-                                                "white";
-                                            }}
-                                          >
-                                            Book Now
-                                          </Button>
-                                        </Card.Body>
-                                      </Card>
-                                    </motion.div>
-                                  </Col>
-                                )
-                              )}
-                            </Row>
-                          </div>
-                        )
-                      )}
-                    </Tab.Pane>
-                  ))
-                ) : (
-                  <div className="text-center py-5">
-                    <Alert variant="info">
-                      No service categories available at the moment.
-                    </Alert>
-                    {error ? (
-                      <Button
-                        variant="outline-primary"
-                        onClick={() => window.location.reload()}
-                        className="mt-2"
-                      >
-                        Retry
-                      </Button>
-                    ) : null}
-                  </div>
-                )}
-              </Tab.Content>
-            </Tab.Container>
-          ) : (
-            <div className="no-services-container text-center py-5">
-              <Alert variant="info">
-                No service categories available at the moment.
-              </Alert>
-              {error ? (
-                <Button
-                  variant="outline-primary"
-                  onClick={() => window.location.reload()}
-                  className="mt-2"
-                >
-                  Retry
-                </Button>
-              ) : null}
+            <div className="mb-4">
+              <Nav
+                variant="pills"
+                className="service-category-tabs flex-nowrap overflow-auto"
+              >
+                {Object.keys(groupedServices).map((category) => (
+                  <Nav.Item key={category}>
+                    <Nav.Link eventKey={category} className="category-tab">
+                      {formatCategoryName(category)}
+                    </Nav.Link>
+                  </Nav.Item>
+                ))}
+              </Nav>
             </div>
-          )}
-        </div>
+            
+            <Tab.Content>
+              {Object.keys(groupedServices).map((category) => (
+                <Tab.Pane eventKey={category} key={category}>
+                  {/* Subcategory sections */}
+                  {Object.keys(groupedServices[category]).map((subcategory) => (
+                    <div key={subcategory} className="subcategory-section mb-5">
+                      <div className="subcategory-header mb-4">
+                        <h3 className="subcategory-title">
+                          {formatSubcategoryName(subcategory)}
+                        </h3>
+                      </div>
 
-        <div className="text-center mt-5">
-          <Button
-            onClick={() => navigate("/services")}
-            style={{
-              borderRadius: "30px",
-              padding: "0.5rem 2rem",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-            }}
-            className="view-all-button"
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#28a745";
-              e.currentTarget.style.color = "white";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = "#007bff";
-              e.currentTarget.style.color = "white";
-            }}
-          >
-            View All Services
-          </Button>
-        </div>
-      </>
-    );
-  };
+                      {/* Updated Grid Layout */}
+                      <Row className="g-4">
+                        {groupedServices[category][subcategory].map((service) => (
+                          <Col 
+                            key={service.id} 
+                            xs={12} 
+                            sm={12} 
+                            md={12} 
+                            lg={4} 
+                            xl={4}
+                          >
+                            <motion.div
+                              whileHover={{ y: -10 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <Card className="service-card h-100 shadow-sm border-0">
+                                {/* Card Image */}
+                                {service.image && (
+                                  <Card.Img
+                                    variant="top"
+                                    src={service.image}
+                                    alt={service.name}
+                                    style={{
+                                      height: '200px',
+                                      objectFit: 'cover',
+                                      borderTopLeftRadius: 'calc(0.25rem - 1px)',
+                                      borderTopRightRadius: 'calc(0.25rem - 1px)'
+                                    }}
+                                  />
+                                )}
+                                
+                                {/* Price Chip */}
+                                <div 
+                                  className="price-badge" 
+                                  style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px',
+                                    backgroundColor: '#007bff',
+                                    color: 'white',
+                                    padding: '5px 10px',
+                                    borderRadius: '20px',
+                                    fontWeight: 'bold',
+                                    fontSize: '0.9rem'
+                                  }}
+                                >
+                                  KSH {service.price}
+                                </div>
+
+                                <Card.Body className="d-flex flex-column p-4">
+                                  <Card.Title 
+                                    className="service-card-title mb-3"
+                                    style={{
+                                      fontSize: '1.25rem',
+                                      fontWeight: '600',
+                                      color: '#1a1a1a'
+                                    }}
+                                  >
+                                    {service.name}
+                                  </Card.Title>
+
+                                  <Card.Text 
+                                    className="service-card-description mb-4"
+                                    style={{
+                                      color: '#666',
+                                      flexGrow: 1,
+                                      fontSize: '0.95rem'
+                                    }}
+                                  >
+                                    {service.description}
+                                  </Card.Text>
+
+                                  <Button
+                                    variant="primary"
+                                    className="mt-auto book-now-btn"
+                                    onClick={() => handleFillEventDetails(service.id)}
+                                    style={{
+                                      backgroundColor: '#007bff',
+                                      borderColor: '#007bff',
+                                      borderRadius: '30px',
+                                      padding: '8px 20px',
+                                      fontWeight: '500',
+                                      transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseOver={(e) => {
+                                      e.currentTarget.style.backgroundColor = '#0056b3';
+                                      e.currentTarget.style.borderColor = '#0056b3';
+                                    }}
+                                    onMouseOut={(e) => {
+                                      e.currentTarget.style.backgroundColor = '#007bff';
+                                      e.currentTarget.style.borderColor = '#007bff';
+                                    }}
+                                  >
+                                    Book Now
+                                  </Button>
+                                </Card.Body>
+                              </Card>
+                            </motion.div>
+                          </Col>
+                        ))}
+                      </Row>
+                    </div>
+                  ))}
+                </Tab.Pane>
+              ))}
+            </Tab.Content>
+          </Tab.Container>
+        ) : (
+          <div className="no-services-container text-center py-5">
+            <Alert variant="info">
+              No service categories available at the moment.
+            </Alert>
+            {error && (
+              <Button
+                variant="outline-primary"
+                onClick={() => window.location.reload()}
+                className="mt-2"
+              >
+                Retry
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="text-center mt-5">
+        <Button
+          onClick={() => navigate("/services")}
+          variant="primary"
+          style={{
+            borderRadius: "30px",
+            padding: "0.5rem 2rem",
+            fontWeight: "500"
+          }}
+          className="view-all-button"
+        >
+          View All Services
+        </Button>
+      </div>
+    </>
+  );
+};
 
   return (
     <div className="home-page">
