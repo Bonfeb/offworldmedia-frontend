@@ -268,6 +268,7 @@ const renderServicesSection = () => {
               <Nav
                 variant="pills"
                 className="service-category-tabs flex-nowrap overflow-auto"
+                fluid
               >
                 {Object.keys(groupedServices).map((category) => (
                   <Nav.Item key={category}>
