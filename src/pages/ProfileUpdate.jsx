@@ -140,7 +140,13 @@ function ProfileUpdate() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSuccess(true);
-      setTimeout(() => navigate("/dashboard"), 1500);
+      setTimeout(() =>  {
+        if (groups.includes("admin")) {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/userdashboard");
+        }
+      }, 2000);
     } catch (error) {
       console.error("Error updating profile:", error);
       setError("Failed to update profile. Please check your information and try again.");
@@ -164,7 +170,13 @@ function ProfileUpdate() {
           <Card.Body className="p-4">
             <Box display="flex" alignItems="center" mb={3}>
               <IconButton 
-                onClick={() => navigate("/dashboard")}
+                onClick={() => {
+                  if (groups.includes("admin")) {
+                    navigate("/admin-dashboard");
+                  } else {
+                    navigate("/userdashboard");
+                  }
+                }}
                 sx={{ mr: 2 }}
               >
                 <ArrowBackIcon />

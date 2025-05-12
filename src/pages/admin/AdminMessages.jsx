@@ -35,7 +35,7 @@ const AdminMessages = () => {
 
   const handleMarkAsRead = async (messageId) => {
     try {
-      await API.put(`/admin-dashboard/messages/${messageId}/mark-read/`);
+      await API.put(`/contactus/${messageId}`);
       setMessages(messages.map(message =>
         message.id === messageId ? { ...message, read: true } : message
       ));

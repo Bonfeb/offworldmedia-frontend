@@ -106,7 +106,7 @@ const BookingModals = ({
         event_location: createFormValues.event_location,
         status: createFormValues.status,
       };
-      await API.post('/bookings/', payload);
+      await API.post('/admin-dashboard/', payload);
       onCreateConfirm(payload);
       onCreateClose();
       refreshData();
@@ -130,7 +130,7 @@ const BookingModals = ({
         event_location: updateFormValues.event_location,
         status: updateFormValues.status,
       };
-      await API.put(`/bookings/${bookingToUpdate.id}/`, payload);
+      await API.put(`/admin-dashboard/${bookingToUpdate.id}/`, payload);
       onUpdateConfirm(payload);
       onUpdateClose();
       refreshData();
@@ -144,7 +144,7 @@ const BookingModals = ({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      await API.delete(`/bookings/${bookingToUpdate.id}/`);
+      await API.delete(`/admin-dashboard/${bookingToUpdate.id}/`);
       onDeleteConfirm(bookingToUpdate.id);
       onDeleteClose();
       refreshData();

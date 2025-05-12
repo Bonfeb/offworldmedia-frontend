@@ -30,4 +30,6 @@ const ChangePassword = ({ show, handleClose }) => {
       />
     );
   };
+
+  export default ChangePassword;
   

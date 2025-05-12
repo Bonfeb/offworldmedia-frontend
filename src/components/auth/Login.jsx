@@ -28,6 +28,7 @@ import LoginIcon from "@mui/icons-material/Login";
 
 // React Bootstrap components
 import { Card } from "react-bootstrap";
+import ForgotPassword from "./ForgotPassword";
 
 // Styled Card with gradient background
 const GradientCard = styled(Card)(({ theme }) => ({
@@ -122,9 +123,14 @@ const Login = () => {
   const [showFailureDialog, setShowFailureDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userGroups, setUserGroups] = useState(null);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
+  const handleCloseForgot = () => {
+    setShowForgotPassword(false); 
   };
 
   const handleSubmit = async (e) => {
@@ -248,10 +254,14 @@ const Login = () => {
               
               <Typography variant="body1">
                 Forgot Password?{" "}
-                <GradientText onClick={() => navigate("/forgot-password")}>
+                <GradientText onClick={() => setShowForgotPassword(true)}>
                   Reset
                 </GradientText>
               </Typography>
+              <ForgotPassword
+              show={showForgotPassword}
+              handleClose ={handleCloseForgot}
+              />
             </Box>
           </Box>
         </FormContainer>

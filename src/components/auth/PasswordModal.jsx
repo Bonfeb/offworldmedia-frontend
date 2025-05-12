@@ -1,9 +1,21 @@
-// PasswordModal.jsx
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { TextField, InputAdornment, Typography, Box, LinearProgress } from "@mui/material";
+import {
+  TextField,
+  InputAdornment,
+  Typography,
+  Box,
+  LinearProgress,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faKey } from "@fortawesome/free-solid-svg-icons";
+
+const strengthColors = {
+  Weak: "#e53935",
+  Fair: "#fbc02d",
+  Good: "#43a047",
+  Strong: "#1e88e5",
+};
 
 const PasswordModal = ({
   show,
@@ -19,7 +31,10 @@ const PasswordModal = ({
   const [strengthLabel, setStrengthLabel] = useState("");
 
   const toggleShowPassword = (fieldName) => {
-    setShowPassword((prev) => ({ ...prev, [fieldName]: !prev[fieldName] }));
+    setShowPassword((prev) => ({
+      ...prev,
+      [fieldName]: !prev[fieldName],
+    }));
   };
 
   const calculateStrength = (value) => {
@@ -62,6 +77,10 @@ const PasswordModal = ({
     }
   };
 
+  const isFormValid = () =>
+    fields.every((field) => values[field.name]?.trim() !== "") &&
+    (!fields.some((f) => f.type === "password") || strength >= 50);
+
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
@@ -96,6 +115,7 @@ const PasswordModal = ({
                           }
                           style={{ cursor: "pointer" }}
                           onClick={() => toggleShowPassword(field.name)}
+                          aria-label="Toggle password visibility"
                         />
                       </InputAdornment>
                     ) : null,
@@ -104,7 +124,6 @@ const PasswordModal = ({
             </Box>
           ))}
 
-          {/* Show password strength meter if there's a password field */}
           {fields.some((f) => f.type === "password") && (
             <Box mt={2}>
               <Typography variant="body2" gutterBottom>
@@ -118,12 +137,7 @@ const PasswordModal = ({
                   borderRadius: 5,
                   backgroundColor: "#e0e0e0",
                   "& .MuiLinearProgress-bar": {
-                    backgroundColor:
-                      strength < 50
-                        ? "#e53935"
-                        : strength < 75
-                        ? "#fbc02d"
-                        : "#43a047",
+                    backgroundColor: strengthColors[strengthLabel] || "#e0e0e0",
                   },
                 }}
               />
@@ -134,7 +148,7 @@ const PasswordModal = ({
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" disabled={!isFormValid()}>
             Submit
           </Button>
         </Modal.Footer>

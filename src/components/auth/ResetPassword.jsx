@@ -17,6 +17,7 @@ const ResetPassword = () => {
       setShow(false);
       navigate("/login");
     } catch (error) {
+      console.error(error.response?.data || error.message);
       alert("Invalid or expired reset link.");
     }
   };

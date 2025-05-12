@@ -163,7 +163,7 @@ const AdminTeam = () => {
 
     try {
       // Add new member
-      await API.post('/admin-dashboard/?action=team', formDataToSend);
+      await API.post('/team', formDataToSend);
       setSnackbar({
         open: true,
         message: 'Team member added successfully',
