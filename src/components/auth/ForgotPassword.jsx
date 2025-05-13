@@ -34,7 +34,6 @@ const ForgotPassword = ({ show, handleClose }) => {
   }
 };
 
-
   return (
     <PasswordModal
       show={show}

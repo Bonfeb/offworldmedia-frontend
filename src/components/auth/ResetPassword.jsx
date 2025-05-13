@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import PasswordModal from "./PasswordModal";
+import API from "../../api";
 
 const ResetPassword = () => {
   const { uid, token } = useParams();
@@ -11,14 +12,40 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!values.password || !values.confirmPassword) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    if (values.password !== values.confirmPassword) {
+      alert("Passwords don't match");
+      return;
+    }
+
     try {
-      await axios.post(`/reset-password/${uid}/${token}/`, values);
+      await API.post(
+        `/reset-password/${uid}/${token}/`,
+        {
+          password: values.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       alert("Password has been reset successfully!");
       setShow(false);
       navigate("/login");
     } catch (error) {
-      console.error(error.response?.data || error.message);
-      alert("Invalid or expired reset link.");
+      const errorMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Invalid or expired reset link.";
+      console.error("Reset error:", errorMsg);
+      alert(errorMsg);
     }
   };
 
