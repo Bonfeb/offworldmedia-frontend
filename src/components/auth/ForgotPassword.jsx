@@ -1,23 +1,37 @@
 import React, { useState } from "react";
 import axios from "axios";
 import PasswordModal from "./PasswordModal";
+import API from "../../api";
 
 const ForgotPassword = ({ show, handleClose }) => {
   const [values, setValues] = useState({ email: "" });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("/forgot-password/", {
-        ...values,
-        frontend_url: window.location.origin,
-      });
-      alert("Password reset link sent!");
-      handleClose();
-    } catch (err) {
-      alert("Error sending reset link");
+  e.preventDefault();
+
+  try {
+    const payload = {
+      ...values,
+      frontend_url: window.location.origin,
+    };
+
+    console.log("Submitting forgot password request with payload:", payload);
+
+    const response = await API.post("/forgot-password/", payload);
+
+    console.log("Server response:", response.data); // ✅ Check server response
+
+    alert("Password reset link sent!");
+    handleClose();
+  } catch (err) {
+    console.error("Error sending reset link:", err); // ✅ Show full error
+    if (err.response) {
+      console.error("Error response data:", err.response.data);
     }
-  };
+    alert("Error sending reset link");
+  }
+};
+
 
   return (
     <PasswordModal
