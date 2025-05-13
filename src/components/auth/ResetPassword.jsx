@@ -5,7 +5,7 @@ import PasswordModal from "./PasswordModal";
 import API from "../../api";
 
 const ResetPassword = () => {
-  const { uid, token } = useParams();
+  const { uidb64, token } = useParams();
   const navigate = useNavigate();
   const [values, setValues] = useState({ password: "" });
   const [show, setShow] = useState(true);
@@ -25,7 +25,7 @@ const ResetPassword = () => {
 
     try {
       await API.post(
-        `/reset-password/${uid}/${token}/`,
+        `/reset-password/${uidb64}/${token}/`,
         {
           password: values.password,
         },
