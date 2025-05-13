@@ -17,7 +17,9 @@ const ForgotPassword = ({ show, handleClose }) => {
 
     console.log("Submitting forgot password request with payload:", payload);
 
-    const response = await API.post("/forgot-password/", payload);
+    const response = await API.post("/forgot-password/", payload,{
+      withCredentials: false,
+    });
 
     console.log("Server response:", response.data); // ✅ Check server response
 
