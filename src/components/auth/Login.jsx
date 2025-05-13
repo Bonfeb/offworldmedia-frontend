@@ -108,6 +108,15 @@ const CircleIcon = styled(Box)(({ theme }) => ({
   boxShadow: '0 8px 16px rgba(37, 117, 252, 0.3)',
 }));
 
+const ForgotPasswordText = styled(Typography)(({ theme }) => ({
+  borderTop: '1px solid rgba(0, 0, 0, 0.1)',
+  paddingTop: theme.spacing(2),
+  marginTop: theme.spacing(2),
+  fontSize: '0.95rem',
+  color: theme.palette.text.secondary,
+  fontStyle: 'italic',
+}));
+
 const Login = () => {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -252,12 +261,12 @@ const Login = () => {
                 </GradientText>
               </Typography>
               
-              <Typography variant="body1">
+              <ForgotPasswordText variant="body2">
                 Forgot Password?{" "}
                 <GradientText onClick={() => setShowForgotPassword(true)}>
                   Reset
                 </GradientText>
-              </Typography>
+              </ForgotPasswordText>
               <ForgotPassword
               show={showForgotPassword}
               handleClose ={handleCloseForgot}
