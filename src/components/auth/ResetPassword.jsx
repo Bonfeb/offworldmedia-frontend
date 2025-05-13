@@ -13,6 +13,9 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Form submitted with values:", values);
+    console.log("Using uidb64:", uidb64, "and token:", token); 
+
     if (!values.password || !values.confirmPassword) {
       alert("Please fill in all fields");
       return;
