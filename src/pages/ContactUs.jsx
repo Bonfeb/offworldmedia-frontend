@@ -6,7 +6,6 @@ import {
   Form,
   Button,
   Card,
-  Modal,
   ListGroup,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +14,6 @@ import {
   faPhone,
   faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import emailjs from '@emailjs/browser';
 import API from "../api";
 
 const ContactUs = () => {
@@ -28,25 +26,28 @@ const ContactUs = () => {
   });
   const [responseMessage, setResponseMessage] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("access_token");
-    setIsAuthenticated(!!accessToken);
-
-    if (accessToken) {
-      API.get("/profile/", { withCredentials: true })
-        .then((response) => {
-          setFormData((prevState) => ({
-            ...prevState,
+    const checkAuth = async () => {
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) {
+        try {
+          const response = await API.get("/profile/", { withCredentials: true });
+          setIsAuthenticated(true);
+          setFormData(prev => ({
+            ...prev,
             firstName: response.data.first_name,
             lastName: response.data.last_name,
-            email: response.data.email,
+            email: response.data.email
           }));
-        })
-        .catch((error) => console.error("Error fetching user details:", error));
-    }
+        } catch (error) {
+          console.error("Auth check failed:", error);
+          localStorage.removeItem("access_token");
+        }
+      }
+    };
+    checkAuth();
   }, []);
 
   const handleChange = (e) => {
@@ -55,41 +56,18 @@ const ContactUs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      setShowModal(true);
-      return;
-    }
-    
     setIsLoading(true);
-    
-    // Prepare EmailJS template parameters
-    const templateParams = {
-      from_name: `${formData.firstName} ${formData.lastName}`,
-      reply_to: formData.email,
-      subject: formData.subject,
-      message: formData.message,
-    };
-    
     try {
-      // Send email via EmailJS
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        templateParams,
-        import.meta.env.VITE_EMAILJS_USER_ID
-      );
-      
-      // After successful email, also save to backend if needed
-      const response = await API.post("/contact/", formData, {
+      await API.post("/contact/", formData, {
         withCredentials: true,
       });
-      
       setResponseMessage("Message sent successfully! We'll get back to you soon.");
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         subject: "",
         message: "",
-      });
+        ...(isAuthenticated ? {} : { firstName: "", lastName: "", email: "" }),
+      }));
     } catch (error) {
       console.error("Error sending message:", error);
       setResponseMessage("Error sending message. Please try again.");
@@ -126,53 +104,26 @@ const ContactUs = () => {
                 
                 <ListGroup variant="flush" className="border-top pt-2">
                   <ListGroup.Item className="px-0 py-2">
-                    <div className="d-flex align-items-center">
-                      <div className="me-3">
-                        <FontAwesomeIcon icon={faEnvelope} className="text-primary fa-fw" size="lg" />
-                      </div>
-                      <div>
-                        <strong>Email: </strong>
-                        <span className="text-muted d-block text-break">
-                          offworldmedia@africa.com
-                        </span>
-                      </div>
-                    </div>
+                    <FontAwesomeIcon icon={faEnvelope} className="text-primary fa-fw me-2" />
+                    <strong>Email:</strong> <span className="text-muted">offworldmedia@africa.com</span>
                   </ListGroup.Item>
-                  
                   <ListGroup.Item className="px-0 py-2">
-                    <div className="d-flex align-items-center">
-                      <div className="me-3">
-                        <FontAwesomeIcon icon={faPhone} className="text-primary fa-fw" size="lg" />
-                      </div>
-                      <div>
-                        <strong>Phone: </strong>
-                        <span className="text-muted d-block">
-                          +2547-979-8030
-                        </span>
-                      </div>
-                    </div>
+                    <FontAwesomeIcon icon={faPhone} className="text-primary fa-fw me-2" />
+                    <strong>Phone:</strong> <span className="text-muted">+2547-979-8030</span>
                   </ListGroup.Item>
-                  
                   <ListGroup.Item className="px-0 py-2">
-                    <div className="d-flex">
-                      <div className="me-3">
-                        <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary fa-fw" size="lg" />
-                      </div>
-                      <div>
-                        <strong>Address: </strong>
-                        <span className="text-muted d-block">
-                          500 Office Center Drive, Suite 400,<br />
-                          Fort Washington, PA 19034
-                        </span>
-                      </div>
-                    </div>
+                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary fa-fw me-2" />
+                    <strong>Address:</strong> 
+                    <span className="text-muted d-block">
+                      500 Office Center Drive, Suite 400,<br /> Fort Washington, PA 19034
+                    </span>
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Body>
             </Card>
           </Col>
           
-          {/* Contact Form Card */}
+          {/* Contact Form */}
           <Col xs={12} lg={6}>
             <Card className="shadow h-100">
               <Card.Body className="p-3 p-md-4">
@@ -185,7 +136,8 @@ const ContactUs = () => {
                           type="text"
                           name="firstName"
                           value={formData.firstName}
-                          readOnly
+                          onChange={handleChange}
+                          readOnly={isAuthenticated}
                           required
                         />
                       </Form.Group>
@@ -197,24 +149,24 @@ const ContactUs = () => {
                           type="text"
                           name="lastName"
                           value={formData.lastName}
-                          readOnly
+                          onChange={handleChange}
+                          readOnly={isAuthenticated}
                           required
                         />
                       </Form.Group>
                     </Col>
                   </Row>
-                  
                   <Form.Group className="mb-3">
                     <Form.Label>Email *</Form.Label>
                     <Form.Control
                       type="email"
                       name="email"
                       value={formData.email}
-                      readOnly
+                      onChange={handleChange}
+                      readOnly={isAuthenticated}
                       required
                     />
                   </Form.Group>
-                  
                   <Form.Group className="mb-3">
                     <Form.Label>Subject *</Form.Label>
                     <Form.Control
@@ -225,7 +177,6 @@ const ContactUs = () => {
                       required
                     />
                   </Form.Group>
-                  
                   <Form.Group className="mb-3">
                     <Form.Label>Message *</Form.Label>
                     <Form.Control
@@ -238,7 +189,6 @@ const ContactUs = () => {
                       style={{ resize: "vertical", minHeight: "100px" }}
                     />
                   </Form.Group>
-                  
                   <div className="d-grid">
                     <Button 
                       variant="success" 
@@ -249,7 +199,7 @@ const ContactUs = () => {
                     </Button>
                   </div>
                 </Form>
-                
+
                 {responseMessage && (
                   <div className={`mt-3 text-center ${responseMessage.includes('Error') ? 'text-danger' : 'text-success'}`}>
                     {responseMessage}
@@ -260,24 +210,6 @@ const ContactUs = () => {
           </Col>
         </Row>
       </Container>
-
-      {/* Authentication Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Authentication Required</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className="mb-0">You need to log in to send a message.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-          <Button variant="primary" href="/login">
-            Login
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </Container>
   );
 };
