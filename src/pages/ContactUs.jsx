@@ -36,7 +36,8 @@ const ContactUs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState(false);
   const [profileFetching, setProfileFetching] = useState(true);
-  const { user, setUser, isAuthenticated } = useContext(AuthContext);
+  const [user, setUser] = useState(null);
+  const {isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const checkAuth = async () => {
