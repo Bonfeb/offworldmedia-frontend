@@ -191,7 +191,7 @@ const UserDashboard = () => {
     try {
       const response = await API.post(
         `/booking/${serviceId}/`,
-        {},
+        bookingData,
         { withCredentials: true }
       );
 
@@ -275,7 +275,7 @@ const UserDashboard = () => {
       <Row className="mb-4">
         <Card className="shadow-sm">
           <Card.Body>
-            <h5 className="text-center mb-3">Your Cart</h5>
+            <h5 className="text-center mb-3">My Cart</h5>
             {cart.length === 0 ? (
               <p className="text-muted text-center">Your cart is empty.</p>
             ) : (

@@ -63,7 +63,7 @@ const EventDetails = () => {
     try {
       const { event_date, event_time, event_location} = formData;
       const payload = {
-        service: "",
+        service_id: formData.service_id,
         event_date,
         event_location,
         event_time
