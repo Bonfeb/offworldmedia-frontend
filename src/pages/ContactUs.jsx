@@ -15,6 +15,7 @@ import {
   faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import API from "../api";
+import { set } from "date-fns";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -27,22 +28,27 @@ const ContactUs = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       const accessToken = localStorage.getItem("access_token");
       if (accessToken) {
         try {
-          const response = await API.get("/profile/", { withCredentials: true });
+          const response = await API.get("/profile/", {
+            withCredentials: true,
+          });
           setIsAuthenticated(true);
-          setFormData(prev => ({
+          setUser(response.data);
+          console.log("User data:", response.data);
+          setFormData((prev) => ({
             ...prev,
             first_name: response.data.first_name,
             last_name: response.data.last_name,
-            email: response.data.email
+            email: response.data.email,
           }));
         } catch (error) {
-          console.error("Auth check failed:", error);
+          console.error("Auth check failed:", error.response?.data || error.message);
           localStorage.removeItem("access_token");
         }
       }
@@ -58,15 +64,24 @@ const ContactUs = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await API.post("/contact/", formData, {
+      const payload = {
+        ...formData, 
+        ...(isAuthenticated && user ? { user: user.id } : {})
+      };
+
+      await API.post("/contact/", payload, {
         withCredentials: true,
       });
-      setResponseMessage("Message sent successfully! We'll get back to you soon.");
-      setFormData(prev => ({
+      setResponseMessage(
+        "Message sent successfully! We'll get back to you soon."
+      );
+      setFormData((prev) => ({
         ...prev,
         subject: "",
         message: "",
-        ...(isAuthenticated ? {} : { first_name: "", last_name: "", email: "" }),
+        ...(isAuthenticated
+          ? {}
+          : { first_name: "", last_name: "", email: "" }),
       }));
     } catch (error) {
       console.error("Error sending message:", error);
@@ -77,20 +92,34 @@ const ContactUs = () => {
   };
 
   return (
-    <Container fluid className="py-4 py-md-5" style={{ 
-      background: "linear-gradient(to right, rgb(11, 177, 80), rgb(1, 63, 172))", 
-      minHeight: "100vh"
-    }}>
+    <Container
+      fluid
+      className="py-4 py-md-5"
+      style={{
+        background:
+          "linear-gradient(to right, rgb(11, 177, 80), rgb(1, 63, 172))",
+        minHeight: "100vh",
+      }}
+    >
       <Container>
-        <h1 className="text-center mb-3 mb-md-4 text-white fs-2 fs-md-1">Get in Touch With Us</h1>
+        <h1 className="text-center mb-3 mb-md-4 text-white fs-2 fs-md-1">
+          Get in Touch With Us
+        </h1>
         <hr className="bg-white mx-auto" style={{ maxWidth: "80%" }} />
-        
+
         <Row className="justify-content-center g-4">
           {/* Map and Contact Info Card */}
           <Col xs={12} lg={6}>
             <Card className="shadow h-100">
               <Card.Body className="p-3 p-md-4">
-                <div className="map-container mb-3" style={{ height: "250px", position: "relative", overflow: "hidden" }}>
+                <div
+                  className="map-container mb-3"
+                  style={{
+                    height: "250px",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.844733880548!2d39.85400177568686!3d-3.6229327963511357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x183fdd77b5e306bd%3A0x29d1cd979d54b312!2sWater%20Sports%20Ground!5e0!3m2!1sen!2ske!4v1742594009117!5m2!1sen!2ske"
                     width="100%"
@@ -101,28 +130,40 @@ const ContactUs = () => {
                     title="Location Map"
                   ></iframe>
                 </div>
-                
+
                 <ListGroup variant="flush" className="border-top pt-2">
                   <ListGroup.Item className="px-0 py-2">
-                    <FontAwesomeIcon icon={faEnvelope} className="text-primary fa-fw me-2" />
-                    <strong>Email:</strong> <span className="text-muted">offworldmedia@africa.com</span>
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="text-primary fa-fw me-2"
+                    />
+                    <strong>Email:</strong>{" "}
+                    <span className="text-muted">offworldmedia@africa.com</span>
                   </ListGroup.Item>
                   <ListGroup.Item className="px-0 py-2">
-                    <FontAwesomeIcon icon={faPhone} className="text-primary fa-fw me-2" />
-                    <strong>Phone:</strong> <span className="text-muted">+2547-979-8030</span>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className="text-primary fa-fw me-2"
+                    />
+                    <strong>Phone:</strong>{" "}
+                    <span className="text-muted">+2547-979-8030</span>
                   </ListGroup.Item>
                   <ListGroup.Item className="px-0 py-2">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary fa-fw me-2" />
-                    <strong>Address:</strong> 
+                    <FontAwesomeIcon
+                      icon={faMapMarkerAlt}
+                      className="text-primary fa-fw me-2"
+                    />
+                    <strong>Address:</strong>
                     <span className="text-muted d-block">
-                      500 Office Center Drive, Suite 400,<br /> Fort Washington, PA 19034
+                      500 Office Center Drive, Suite 400,
+                      <br /> Fort Washington, PA 19034
                     </span>
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Body>
             </Card>
           </Col>
-          
+
           {/* Contact Form */}
           <Col xs={12} lg={6}>
             <Card className="shadow h-100">
@@ -190,18 +231,35 @@ const ContactUs = () => {
                     />
                   </Form.Group>
                   <div className="d-grid">
-                    <Button 
-                      variant="success" 
-                      type="submit" 
+                    <Button
+                      variant="success"
+                      type="submit"
                       disabled={isLoading}
                     >
-                      {isLoading ? 'Sending...' : 'Send Message'}
+                      {isLoading ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Sending...
+                        </>
+                      ) : (
+                        "Send Message"
+                      )}
                     </Button>
                   </div>
                 </Form>
 
                 {responseMessage && (
-                  <div className={`mt-3 text-center ${responseMessage.includes('Error') ? 'text-danger' : 'text-success'}`}>
+                  <div
+                    className={`mt-3 text-center ${
+                      responseMessage.includes("Error")
+                        ? "text-danger"
+                        : "text-success"
+                    }`}
+                  >
                     {responseMessage}
                   </div>
                 )}
