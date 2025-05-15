@@ -49,9 +49,6 @@ const ContactUs = () => {
         }
 
         const response = await API.get("/profile/", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
           withCredentials: true,
         });
 
@@ -92,10 +89,6 @@ const ContactUs = () => {
       };
 
       await API.post("/contact/", payload, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
         withCredentials: true,
       });
 
