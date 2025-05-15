@@ -18,8 +18,8 @@ import API from "../api";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     subject: "",
     message: "",
@@ -37,8 +37,8 @@ const ContactUs = () => {
           setIsAuthenticated(true);
           setFormData(prev => ({
             ...prev,
-            firstName: response.data.first_name,
-            lastName: response.data.last_name,
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
             email: response.data.email
           }));
         } catch (error) {
@@ -66,7 +66,7 @@ const ContactUs = () => {
         ...prev,
         subject: "",
         message: "",
-        ...(isAuthenticated ? {} : { firstName: "", lastName: "", email: "" }),
+        ...(isAuthenticated ? {} : { first_name: "", last_name: "", email: "" }),
       }));
     } catch (error) {
       console.error("Error sending message:", error);
@@ -134,8 +134,8 @@ const ContactUs = () => {
                         <Form.Label>First Name *</Form.Label>
                         <Form.Control
                           type="text"
-                          name="firstName"
-                          value={formData.firstName}
+                          name="first_name"
+                          value={formData.first_name}
                           onChange={handleChange}
                           readOnly={isAuthenticated}
                           required
@@ -147,8 +147,8 @@ const ContactUs = () => {
                         <Form.Label>Last Name *</Form.Label>
                         <Form.Control
                           type="text"
-                          name="lastName"
-                          value={formData.lastName}
+                          name="last_name"
+                          value={formData.last_name}
                           onChange={handleChange}
                           readOnly={isAuthenticated}
                           required
