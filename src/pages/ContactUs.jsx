@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Container,
   Row,
@@ -15,7 +15,8 @@ import {
   faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import API from "../api";
-import { set } from "date-fns";
+import { AuthContext } from "../context/AuthContext";
+import { is } from "date-fns/locale";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -26,42 +27,50 @@ const ContactUs = () => {
     message: "",
   });
   const [responseMessage, setResponseMessage] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const accessToken = localStorage.getItem("access_token");
-      if (accessToken) {
-        try {
-          console.log("Access token found, checking user profile...");
-          const response = await API.get("/profile/", {
-            withCredentials: true,
-          });
-          console.log("Authentication successful. User data:", response.data);
-          setIsAuthenticated(true);
-          setUser(response.data);
+  const {isAuthenticated} = useContext(AuthContext);
 
-          setFormData((prev) => ({
-            ...prev,
-            first_name: response.data.first_name,
-            last_name: response.data.last_name,
-            email: response.data.email,
-          }));
-        } catch (error) {
-          console.error(
-            "Auth check failed:",
-            error.response?.data || error.message
-          );
-          localStorage.removeItem("access_token");
-        }
-      } else {
+  useEffect(() => {
+  const chechAuth = async () => {
+    try {
+      const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
         console.log("No access token found. User is not authenticated.");
+        return;
       }
-    };
-    checkAuth();
-  }, []);
+
+      console.log("Access token found. Fetching user profile...");
+      const response = await API.get("/profile/", {
+        withCredentials: true,
+      });
+
+      console.log("Authentication successful. User data:", response.data);
+      setUser(response.data);
+
+      // Prefill the form if authenticated
+      setFormData((prev) => ({
+        ...prev,
+        first_name: response.data.first_name,
+        last_name: response.data.last_name,
+        email: response.data.email,
+      }));
+    } catch (error) {
+      console.error(
+        "Failed to fetch user profile:",
+        error.response?.data || error.message
+      );
+      localStorage.removeItem("access_token");
+    }
+  };
+
+  if (isAuthenticated) {
+    console.log("User is authenticated. Fetching user data...");
+    chechAuth();
+  }
+}, [isAuthenticated]);
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
