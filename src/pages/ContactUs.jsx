@@ -35,12 +35,14 @@ const ContactUs = () => {
       const accessToken = localStorage.getItem("access_token");
       if (accessToken) {
         try {
+          console.log("Access token found, checking user profile...");
           const response = await API.get("/profile/", {
             withCredentials: true,
           });
+          console.log("Authentication successful. User data:", response.data);
           setIsAuthenticated(true);
           setUser(response.data);
-          console.log("User data:", response.data);
+
           setFormData((prev) => ({
             ...prev,
             first_name: response.data.first_name,
@@ -48,9 +50,14 @@ const ContactUs = () => {
             email: response.data.email,
           }));
         } catch (error) {
-          console.error("Auth check failed:", error.response?.data || error.message);
+          console.error(
+            "Auth check failed:",
+            error.response?.data || error.message
+          );
           localStorage.removeItem("access_token");
         }
+      } else {
+        console.log("No access token found. User is not authenticated.");
       }
     };
     checkAuth();
@@ -65,10 +72,11 @@ const ContactUs = () => {
     setIsLoading(true);
     try {
       const payload = {
-        ...formData, 
-        ...(isAuthenticated && user ? { user: user.id } : {})
+        ...formData,
+        ...(isAuthenticated && user ? { user: user.id } : {}),
       };
 
+      console.log("Submitting contact form. Payload:", payload);
       await API.post("/contact/", payload, {
         withCredentials: true,
       });
@@ -181,6 +189,11 @@ const ContactUs = () => {
                           readOnly={isAuthenticated}
                           required
                         />
+                        {isAuthenticated && (
+                          <Form.Text className="text-muted">
+                            This is prefilled from your profile.
+                          </Form.Text>
+                        )}
                       </Form.Group>
                     </Col>
                     <Col xs={12} sm={6}>
@@ -194,6 +207,11 @@ const ContactUs = () => {
                           readOnly={isAuthenticated}
                           required
                         />
+                        {isAuthenticated && (
+                          <Form.Text className="text-muted">
+                            This is prefilled from your profile.
+                          </Form.Text>
+                        )}
                       </Form.Group>
                     </Col>
                   </Row>
@@ -207,6 +225,11 @@ const ContactUs = () => {
                       readOnly={isAuthenticated}
                       required
                     />
+                    {isAuthenticated && (
+                      <Form.Text className="text-muted">
+                        This is prefilled from your profile.
+                      </Form.Text>
+                    )}
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Subject *</Form.Label>
