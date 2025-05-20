@@ -258,10 +258,12 @@ section {
 /* Category Tabs */
 .service-tabs-container {
   margin-bottom: 3rem;
+  width: 100%;
 }
 
 .service-category-tabs {
   display: flex;
+  width: 100%;
   overflow-x: auto;
   gap: 10px;
   padding-bottom: 10px;
@@ -293,6 +295,8 @@ section {
   color: var(--text-on-dark);
   border: none;
   transition: all 0.3s ease;
+  flex: 1;
+  text-align: center;
 }
 
 .category-tab:hover, .category-tab.active {
@@ -317,6 +321,11 @@ section {
   margin-bottom: 0.5rem;
 }
 
+.nav-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
 /* Service Cards */
 .service-card {
   background: var(--card-bg); /* Changed from white to dark blue */
@@ -340,7 +349,7 @@ section {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: var(--primary-blue);
+  background: #d4af37; /* Gold color */
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
@@ -399,15 +408,15 @@ section {
   font-weight: 600;
   transition: all 0.3s ease;
   border-color: var(--primary-blue);
-  color: rgb(7, 100, 7);
-  background-color: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
+  color: #eef1ee;
+  background-color: rgba(6, 175, 71, 0.5); /* Dark blue with transparency */
 }
 
 .view-all-button:hover {
   background-color: var(--primary-blue);
   color: white;
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(26, 115, 232, 0.3);
+  box-shadow: 0 5px 15px rgba(14, 100, 212, 0.3);
 }
 
 /* Loading Spinner */
