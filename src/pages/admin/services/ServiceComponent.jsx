@@ -8,8 +8,8 @@ import {
   Modal,
   Form,
   Spinner,
-  Alert,
 } from "react-bootstrap";
+import { Alert, Snackbar } from "@mui/material";
 import API from "../../../api";
 
 const ServiceComponent = ({ category, title }) => {
@@ -17,7 +17,7 @@ const ServiceComponent = ({ category, title }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // Add state for delete modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -25,9 +25,13 @@ const ServiceComponent = ({ category, title }) => {
     price: "",
     image: null,
   });
-  const [successMessage, setSuccessMessage] = useState("");
-  const [updateError, setUpdateError] = useState("");
-  const [deleteError, setDeleteError] = useState("");
+  
+  // Alert states
+  const [alertConfig, setAlertConfig] = useState({
+    open: false,
+    message: "",
+    severity: "success", // success, error, warning, info
+  });
 
   useEffect(() => {
     fetchServices();
@@ -37,11 +41,31 @@ const ServiceComponent = ({ category, title }) => {
     try {
       const response = await API.get(`/admin-dashboard/?action=services&category=${category}`);
       setServiceDetails(response.data);
+      console.log(`📋 Fetched ${response.data.length} services for category: ${category}`);
       setLoading(false);
     } catch (err) {
+      console.error(`❌ Failed to load services:`, {
+        category,
+        error: err.response?.data || err.message
+      });
       setError(`Failed to load ${title} service. Please try again later.`);
       setLoading(false);
     }
+  };
+
+  const showAlert = (message, severity) => {
+    setAlertConfig({
+      open: true,
+      message,
+      severity,
+    });
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertConfig({...alertConfig, open: false});
   };
 
   const handleOpenModal = (service) => {
@@ -98,42 +122,53 @@ const ServiceComponent = ({ category, title }) => {
         formDataToSend.append("image", formData.image);
       }
 
-      await API.put(`/service/${selectedService.id}/`, formDataToSend, {
+      const response = await API.put(`/service/${selectedService.id}/`, formDataToSend, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setSuccessMessage("Service Updated Successfully!");
+      console.log("✅ Service Updated Successfully:", {
+        service: selectedService.name,
+        id: selectedService.id,
+        response: response.data
+      });
+      
+      showAlert("Service Updated Successfully!", "success");
       handleCloseModal();
       fetchServices();
-
-      setTimeout(() => {
-        setSuccessMessage("");
-        handleCloseModal();
-      }, 2000);
     } catch (err) {
-      console.error("Error updating service:", err);
-      setUpdateError("Failed to Update service. Please try again.");
+      console.error("❌ Error updating service:", {
+        service: selectedService?.name,
+        id: selectedService?.id,
+        error: err.response?.data || err.message
+      });
+      showAlert("Failed to Update service. Please try again.", "error");
     }
   };
 
   const handleDelete = async () => {
     if (selectedService) {
       try {
-        await API.delete(`/service/${selectedService.id}/`, {
+        const response = await API.delete(`/service/${selectedService.id}/`, {
           withCredentials: true,
         });
-        setSuccessMessage("Service deleted Successfully!");
-        handleCloseDeleteModal(); // Close delete modal after deletion
+        
+        console.log("✅ Service Deleted Successfully:", {
+          service: selectedService.name,
+          id: selectedService.id,
+          response: response.data
+        });
+        
+        showAlert("Service deleted Successfully!", "success");
+        handleCloseDeleteModal();
         fetchServices();
-
-        setTimeout(() => {
-          setSuccessMessage("");
-          handleCloseDeleteModal();
-        }, 5000);
       } catch (err) {
-        console.error("Error deleting service:", err);
-        setDeleteError("Failed to Delete service. Please try again.");
+        console.error("❌ Error deleting service:", {
+          service: selectedService?.name,
+          id: selectedService?.id,
+          error: err.response?.data || err.message
+        });
+        showAlert("Failed to Delete service. Please try again.", "error");
       }
     }
   };
@@ -155,7 +190,7 @@ const ServiceComponent = ({ category, title }) => {
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: "80vh" }}
       >
-        <Alert variant="danger">{error}</Alert>
+        <Alert severity="error">{error}</Alert>
       </Container>
     );
   }
@@ -163,6 +198,24 @@ const ServiceComponent = ({ category, title }) => {
   return (
     <Container className="py-5">
       <h2 className="mb-4 fw-bold text-center text-primary">{title} Service</h2>
+
+      {/* Global MUI Alert/Snackbar */}
+      <Snackbar 
+        open={alertConfig.open} 
+        autoHideDuration={5000} 
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseAlert} 
+          severity={alertConfig.severity} 
+          sx={{ width: '100%' }}
+          variant="filled"
+          elevation={6}
+        >
+          {alertConfig.message}
+        </Alert>
+      </Snackbar>
 
       <Row className="g-4">
         {serviceDetails.map((service) => (
@@ -216,12 +269,6 @@ const ServiceComponent = ({ category, title }) => {
           <Modal.Title>Update {title} Service</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {updateError && (
-            <Alert variant="danger" className="text-center">
-              {updateError}
-            </Alert>
-          )}
-          {successMessage && <Alert variant="success">{successMessage}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Service Name</Form.Label>
@@ -290,12 +337,6 @@ const ServiceComponent = ({ category, title }) => {
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {deleteError && (
-            <Alert variant="danger" className="text-center">
-              {deleteError}
-            </Alert>
-          )}
-          {successMessage && <Alert variant="success">{successMessage}</Alert>}
           Are you sure you want to delete "{selectedService?.name}"? This action
           cannot be undone.
         </Modal.Body>
