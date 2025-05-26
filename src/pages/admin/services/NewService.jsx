@@ -26,20 +26,28 @@ const NewService = ({ show, handleClose, refreshServices }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
-    console.log("File selected:", e.target.files[0]);
-    if (name === "category") {
+    if (name == "category"){
       setFormData((prev) => ({
         ...prev,
         category: value,
         audio_category: value === "audio" ? prev.audio_category : "",
       }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+    else{
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, image: file }));
+    console.log("File selected:", file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log("File preview:", reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -61,9 +69,6 @@ const NewService = ({ show, handleClose, refreshServices }) => {
       console.log("Form Data being sent:", formData);
 
       await API.post("/service/", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
         withCredentials: true,
       });
 
@@ -152,6 +157,7 @@ const NewService = ({ show, handleClose, refreshServices }) => {
             <Form.Label>Image</Form.Label>
             <Form.Control
               type="file"
+              name="image"
               accept="image/*"
               onChange={handleFileChange}
             />
