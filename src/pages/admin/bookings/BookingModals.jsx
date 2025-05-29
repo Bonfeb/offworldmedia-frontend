@@ -5,7 +5,8 @@ import {
   Select,
   InputLabel,
   FormControl,
-  Box,
+  Snackbar,
+  Alert as MuiAlert,
   MenuItem,
   Grid
 } from '@mui/material';
@@ -49,6 +50,11 @@ const BookingModals = ({
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [snackbar, setSnackbar] = useState({ 
+    open: false, 
+    message: '', 
+    severity: 'success' 
+  });
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
@@ -92,6 +98,11 @@ const BookingModals = ({
     setUpdateFormValues(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
   const formatDate = (date) => date?.toISOString().split('T')[0] || null;
   const formatTime = (date) => date?.toTimeString().split(' ')[0] || null;
 
@@ -110,8 +121,18 @@ const BookingModals = ({
       onCreateConfirm(payload);
       onCreateClose();
       refreshData();
+      setSnackbar({
+        open: true,
+        message: 'Booking created successfully',
+        severity: 'success',
+      });
     } catch (err) {
       setError('Failed to create booking');
+      setSnackbar({
+        open: true,
+        message: 'Failed to create booking',
+        severity: 'error',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -130,12 +151,24 @@ const BookingModals = ({
         event_location: updateFormValues.event_location,
         status: updateFormValues.status,
       };
-      await API.put(`/admin-dashboard/${bookingToUpdate.id}/`, payload);
+      await API.put(`/admin-dashboard/${bookingToUpdate.id}/`, payload, {
+        withCredentials: true,
+      });
       onUpdateConfirm(payload);
       onUpdateClose();
       refreshData();
+      setSnackbar({
+        open: true,
+        message: 'Booking updated successfully',
+        severity: 'success',
+      });
     } catch (err) {
       setError('Failed to update booking');
+      setSnackbar({
+        open: true,
+        message: 'Failed to update booking',
+        severity: 'error',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -144,12 +177,22 @@ const BookingModals = ({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      await API.delete(`/admin-dashboard/${bookingToUpdate.id}/`);
+      await API.delete(`/admin-dashboard/${bookingToUpdate.id}?type=booking&confirm=true`);
       onDeleteConfirm(bookingToUpdate.id);
       onDeleteClose();
       refreshData();
+      setSnackbar({
+        open: true,
+        message: 'Booking deleted successfully',
+        severity: 'success',
+      });
     } catch (err) {
       setError('Failed to delete booking');
+      setSnackbar({
+        open: true,
+        message: 'Failed to delete booking',
+        severity: 'error',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -354,7 +397,31 @@ const BookingModals = ({
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        key="snackbar"
+        action={
+          <Button color="inherit" onClick={handleSnackbarClose}>
+            Close
+          </Button>
+        }
+      >
+        <MuiAlert 
+        onClose={handleSnackbarClose} 
+        severity={snackbar.severity} 
+        sx={{ width: '100%' }}
+        elevation={6}
+        variant="filled"
+        style={{ backgroundColor: snackbar.severity === "error" ? "#f44336" : "#4caf50" }}>
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
     </LocalizationProvider>
+    
   );
 };
 

@@ -16,7 +16,12 @@ import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from "@mui/icons-material";
-import { IconButton, Tooltip } from "@mui/material";
+import {
+  IconButton,
+  Tooltip,
+  Snackbar,
+  Alert as MuiAlert,
+} from "@mui/material";
 import API from "../../api";
 import { set } from "date-fns";
 
@@ -25,6 +30,11 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
@@ -59,6 +69,10 @@ const AdminUsers = () => {
     fetchUsers();
   }, []);
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
   // Handle edit user
   const handleEditClick = (user) => {
     setCurrentUser(user);
@@ -114,25 +128,47 @@ const AdminUsers = () => {
       const formDataToSend = new FormData();
 
       Object.keys(formData).forEach((key) => {
-        if (key !== "profile_pic_review") {
-          formDataToSend.append(key, formData[key]);
+        if (key === "profile_pic_preview") return;
+
+        const newVal = formData[key];
+        const oldVal = currentUser[key];
+
+        if (key === "profile_pic") {
+          if (newVal instanceof File) {
+            formDataToSend.append("profile_pic", newVal);
+          }
+          return;
+        }
+
+        const newValString = newVal == null ? "" : String(newVal);
+        const oldValString = oldVal == null ? "" : String(oldVal);
+
+        if (newValString !== oldValString) {
+          formDataToSend.append(key, newVal);
         }
       });
 
-      if (formData.profile_pic instanceof File) {
-        formDataToSend.append("profile_pic", formData.profile_pic);
-      }
-
-      await API.put(`/admin-dashboard/${currentUser.id}`, formDataToSend);
+      await API.put(`/admin-dashboard/${currentUser.id}`, formDataToSend, {
+        withCredentials: true,
+      });
       fetchUsers(); // Refresh the user list
       setShowModal(false);
+      setSnackbar({
+        open: true,
+        message: "User updated successfully!",
+        severity: "success",
+      });
     } catch (err) {
       console.error("Error updating user:", err);
       const apiError = err.response?.data;
       if (apiError?.err && apiError?.details) {
         alert(`${apiError?.err}\n{JSON.stringify(apiError?.details, null, 2)}`);
       } else {
-        alert("Failed to update user. Please try again.");
+        setSnackbar({
+          open: true,
+          message: "Failed to update user. Please try again.",
+          severity: "error",
+        });
       }
     }
   };
@@ -141,10 +177,15 @@ const AdminUsers = () => {
   const handleDeleteConfirm = async () => {
     try {
       await API.delete(
-        `/admin-dashboard/?action=user&user_id=${currentUser.id}`
+        `/admin-dashboard/{currentUser.id}?type=user&confirm=true`
       );
       fetchUsers(); // Refresh the user list
       setShowDeleteModal(false);
+      setSnackbar({
+        open: true,
+        message: "User deleted successfully!",
+        severity: "success",
+      });
     } catch (err) {
       console.error("Error deleting user:", err);
       alert("Failed to delete user. Please try again.");
@@ -573,6 +614,33 @@ const AdminUsers = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        key="snackbar"
+        action={
+          <Button color="inherit" onClick={handleSnackbarClose}>
+            Close
+          </Button>
+        }
+      >
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+          elevation={6}
+          variant="filled"
+          style={{
+            backgroundColor:
+              snackbar.severity === "error" ? "#f44336" : "#4caf50",
+          }}
+        >
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
     </Container>
   );
 };

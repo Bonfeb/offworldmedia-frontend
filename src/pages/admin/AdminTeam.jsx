@@ -1,22 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Container, Row, Col, Card, Button, Modal, Form, Spinner 
-} from 'react-bootstrap';
-import { 
-  Box, Typography, IconButton, Avatar, Tooltip, Snackbar, Alert,
-  useMediaQuery, useTheme
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import API from '../../api';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Modal,
+  Form,
+  Spinner,
+} from "react-bootstrap";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Avatar,
+  Tooltip,
+  Snackbar,
+  Alert,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import API from "../../api";
 
 const AdminTeam = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [teamMembers, setTeamMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -24,16 +38,16 @@ const AdminTeam = () => {
   const [currentMember, setCurrentMember] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: '',
-    severity: 'success'
+    message: "",
+    severity: "success",
   });
 
   // Form state for editing/adding team members
   const [formData, setFormData] = useState({
-    name: '',
-    role: '',
-    bio: '',
-    profile_pic: null
+    name: "",
+    role: "",
+    bio: "",
+    profile_pic: null,
   });
 
   useEffect(() => {
@@ -44,12 +58,12 @@ const AdminTeam = () => {
   const fetchTeamMembers = async () => {
     setLoading(true);
     try {
-      const response = await API.get('/admin-dashboard/?action=team');
+      const response = await API.get("/admin-dashboard/?action=team");
       setTeamMembers(response.data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch Team Members. Please try again later.');
-      console.error('Error fetching Team Members:', err);
+      setError("Failed to fetch Team Members. Please try again later.");
+      console.error("Error fetching Team Members:", err);
     } finally {
       setLoading(false);
     }
@@ -62,30 +76,30 @@ const AdminTeam = () => {
       name: member.name,
       role: member.role,
       bio: member.bio,
-      profile_pic: null // We don't set the existing image here as we can't pre-fill file inputs
+      profile_pic: null, // We don't set the existing image here as we can't pre-fill file inputs
     });
     setShowModal(true);
   };
 
   // Handle delete team member
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this team member?')) {
+  const handleDelete = async (member_id) => {
+    if (window.confirm("Are you sure you want to delete this team member?")) {
       setLoading(true);
       try {
-        await API.delete(`/admin-dashboard/?action=team&id=${id}`);
+        await API.delete(`/team/${member_id}`);
         setSnackbar({
           open: true,
-          message: 'Team member deleted successfully',
-          severity: 'success'
+          message: "Team member deleted successfully",
+          severity: "success",
         });
         fetchTeamMembers(); // Refetch the updated list
       } catch (err) {
         setSnackbar({
           open: true,
-          message: 'Failed to delete team member',
-          severity: 'error'
+          message: "Failed to delete team member",
+          severity: "error",
         });
-        console.error('Error deleting team member:', err);
+        console.error("Error deleting team member:", err);
       } finally {
         setLoading(false);
       }
@@ -95,16 +109,16 @@ const AdminTeam = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
-    
-    if (name === 'profile_pic' && files && files[0]) {
+
+    if (name === "profile_pic" && files && files[0]) {
       setFormData({
         ...formData,
-        profile_pic: files[0]
+        profile_pic: files[0],
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
   };
@@ -113,35 +127,40 @@ const AdminTeam = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!currentMember) return;
-    
+
     setLoading(true);
 
     // Create FormData object for file upload
     const formDataToSend = new FormData();
-    formDataToSend.append('name', formData.name);
-    formDataToSend.append('role', formData.role);
-    formDataToSend.append('bio', formData.bio);
-    if (formData.profile_pic) {
-      formDataToSend.append('profile_pic', formData.profile_pic);
+    if (formData.name !== currentMember.name) formDataToSend.append("name", formData.name);
+    if (formData.role !== currentMember.role) formDataToSend.append("role", formData.role);
+    if (formData.bio !== currentMember.bio) formDataToSend.append("bio", formData.bio);
+    if (formData.profile_pic instanceof File) {
+      formDataToSend.append("profile_pic", formData.profile_pic);
     }
 
     try {
       // Update existing member
-      await API.put(`/admin-dashboard/?action=team&id=${currentMember.id}`, formDataToSend);
+      await API.put(
+        `/team/${currentMember.id}`,
+        formDataToSend, {
+          withCredentials: true,
+        }
+      );
       setSnackbar({
         open: true,
-        message: 'Team member updated successfully',
-        severity: 'success'
+        message: "Team member updated successfully",
+        severity: "success",
       });
       setShowModal(false);
       fetchTeamMembers(); // Refresh the list
     } catch (err) {
       setSnackbar({
         open: true,
-        message: 'Failed to update team member',
-        severity: 'error'
+        message: "Failed to update team member",
+        severity: "error",
       });
-      console.error('Error updating team member:', err);
+      console.error("Error updating team member:", err);
     } finally {
       setLoading(false);
     }
@@ -154,30 +173,32 @@ const AdminTeam = () => {
 
     // Create FormData object for file upload
     const formDataToSend = new FormData();
-    formDataToSend.append('name', formData.name);
-    formDataToSend.append('role', formData.role);
-    formDataToSend.append('bio', formData.bio);
-    if (formData.profile_pic) {
-      formDataToSend.append('profile_pic', formData.profile_pic);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("role", formData.role);
+    formDataToSend.append("bio", formData.bio);
+    if (formData.profile_pic instanceof File) {
+      formDataToSend.append("profile_pic", formData.profile_pic);
     }
 
     try {
       // Add new member
-      await API.post('/team', formDataToSend);
+      await API.post("/team", formDataToSend, {
+        withCredentials: true,
+      });
       setSnackbar({
         open: true,
-        message: 'Team member added successfully',
-        severity: 'success'
+        message: "Team member added successfully",
+        severity: "success",
       });
       setShowModal(false);
       fetchTeamMembers(); // Refresh the list
     } catch (err) {
       setSnackbar({
         open: true,
-        message: 'Failed to add team member',
-        severity: 'error'
+        message: "Failed to add team member",
+        severity: "error",
       });
-      console.error('Error adding team member:', err);
+      console.error("Error adding team member:", err);
     } finally {
       setLoading(false);
     }
@@ -187,10 +208,10 @@ const AdminTeam = () => {
   const handleAddNewMember = () => {
     setCurrentMember(null);
     setFormData({
-      name: '',
-      role: '',
-      bio: '',
-      profile_pic: null
+      name: "",
+      role: "",
+      bio: "",
+      profile_pic: null,
     });
     setShowModal(true);
   };
@@ -199,26 +220,33 @@ const AdminTeam = () => {
   const handleCloseSnackbar = () => {
     setSnackbar({
       ...snackbar,
-      open: false
+      open: false,
     });
   };
 
   return (
     <Container fluid={isMobile} className="admin-team-container px-md-4">
-      <Box className="admin-team-header" sx={{ 
-        textAlign: 'center', 
-        mb: 4,
-        px: isMobile ? 2 : 0
-      }}>
-        <Typography variant="h4" component="h1" sx={{ 
-          color: '#2c3e50', 
-          fontWeight: 'bold',
-          fontSize: isMobile ? '1.75rem' : '2.25rem'
-        }}>
+      <Box
+        className="admin-team-header"
+        sx={{
+          textAlign: "center",
+          mb: 4,
+          px: isMobile ? 2 : 0,
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            color: "#2c3e50",
+            fontWeight: "bold",
+            fontSize: isMobile ? "1.75rem" : "2.25rem",
+          }}
+        >
           Team Members
         </Typography>
-        <Button 
-          variant="primary" 
+        <Button
+          variant="primary"
           onClick={handleAddNewMember}
           disabled={loading}
           className="mt-3"
@@ -235,7 +263,7 @@ const AdminTeam = () => {
       )}
 
       {loading && !error && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
@@ -243,22 +271,27 @@ const AdminTeam = () => {
       )}
 
       {!loading && !error && teamMembers.length === 0 && (
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center',
-          height: '200px',
-          border: '1px dashed #ccc',
-          borderRadius: '8px',
-          mx: isMobile ? 2 : 0,
-          my: 4,
-          p: 2
-        }}>
-          <Typography variant="h6" sx={{ 
-            color: '#777',
-            fontSize: isMobile ? '1rem' : '1.25rem',
-            textAlign: 'center'
-          }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "200px",
+            border: "1px dashed #ccc",
+            borderRadius: "8px",
+            mx: isMobile ? 2 : 0,
+            my: 4,
+            p: 2,
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#777",
+              fontSize: isMobile ? "1rem" : "1.25rem",
+              textAlign: "center",
+            }}
+          >
             No team members found. Click "Add New Member" to create one.
           </Typography>
         </Box>
@@ -271,41 +304,42 @@ const AdminTeam = () => {
               <Card className="team-member-card h-100 shadow-sm">
                 <div className="avatar-container text-center pt-3">
                   {member.profile_pic ? (
-                    <img 
-                      src={member.profile_pic} 
-                      alt={member.name} 
-                      className="team-avatar" 
+                    <img
+                      src={member.profile_pic}
+                      alt={member.name}
+                      className="team-avatar"
                       style={{
-                        width: isMobile ? '100px' : '120px',
-                        height: isMobile ? '100px' : '120px',
-                        objectFit: 'cover',
-                        borderRadius: '50%'
+                        width: isMobile ? "100px" : "120px",
+                        height: isMobile ? "100px" : "120px",
+                        objectFit: "cover",
+                        borderRadius: "50%",
                       }}
                     />
                   ) : (
-                    <Avatar 
+                    <Avatar
                       className="team-avatar default-avatar"
                       sx={{
-                        width: isMobile ? '100px' : '120px',
-                        height: isMobile ? '100px' : '120px',
-                        fontSize: isMobile ? '2.5rem' : '3rem',
-                        margin: '0 auto'
+                        width: isMobile ? "100px" : "120px",
+                        height: isMobile ? "100px" : "120px",
+                        fontSize: isMobile ? "2.5rem" : "3rem",
+                        margin: "0 auto",
                       }}
                     >
                       {member.name.charAt(0)}
                     </Avatar>
                   )}
                 </div>
-                
+
                 <Card.Body className="text-center d-flex flex-column">
                   <Card.Title className="member-name">{member.name}</Card.Title>
                   <Card.Text className="member-bio flex-grow-1">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                    sed do eiusmod tempor incididunt ut labore et
-                    dolore.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore.
                   </Card.Text>
-                  <Card.Text className="member-role text-muted">{member.role}</Card.Text>
-                  
+                  <Card.Text className="member-role text-muted">
+                    {member.role}
+                  </Card.Text>
+
                   <div className="social-icons">
                     <IconButton size={isMobile ? "small" : "medium"}>
                       <FacebookIcon fontSize="small" />
@@ -317,22 +351,22 @@ const AdminTeam = () => {
                       <InstagramIcon fontSize="small" />
                     </IconButton>
                   </div>
-                  
+
                   <div className="action-buttons mt-2">
-                    <Button 
-                      variant="outline-primary" 
-                      size="sm" 
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
                       onClick={() => handleEdit(member)}
                       className="me-2"
                     >
-                      <EditIcon fontSize="small" /> {isMobile ? '' : 'Update'}
+                      <EditIcon fontSize="small" /> {isMobile ? "" : "Update"}
                     </Button>
-                    <Button 
-                      variant="outline-danger" 
-                      size="sm" 
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
                       onClick={() => handleDelete(member.id)}
                     >
-                      <DeleteIcon fontSize="small" /> {isMobile ? '' : 'Delete'}
+                      <DeleteIcon fontSize="small" /> {isMobile ? "" : "Delete"}
                     </Button>
                   </div>
                 </Card.Body>
@@ -343,10 +377,15 @@ const AdminTeam = () => {
       )}
 
       {/* Edit/Add Member Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered fullscreen={isMobile ? "sm-down" : false}>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        fullscreen={isMobile ? "sm-down" : false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>
-            {currentMember ? 'Edit Team Member' : 'Add New Team Member'}
+            {currentMember ? "Edit Team Member" : "Add New Team Member"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -401,14 +440,16 @@ const AdminTeam = () => {
               />
               {currentMember && currentMember.profile_pic && (
                 <div className="mt-2">
-                  <small>Current image will be kept if no new image is selected</small>
+                  <small>
+                    Current image will be kept if no new image is selected
+                  </small>
                 </div>
               )}
             </Form.Group>
 
-            <Button 
-              variant="primary" 
-              type="submit" 
+            <Button
+              variant="primary"
+              type="submit"
               disabled={loading}
               className="w-100"
             >
@@ -422,10 +463,12 @@ const AdminTeam = () => {
                     aria-hidden="true"
                     className="me-2"
                   />
-                  {currentMember ? 'Updating...' : 'Adding...'}
+                  {currentMember ? "Updating..." : "Adding..."}
                 </>
+              ) : currentMember ? (
+                "Update Member"
               ) : (
-                currentMember ? 'Update Member' : 'Add Member'
+                "Add Member"
               )}
             </Button>
           </Form>
@@ -437,16 +480,16 @@ const AdminTeam = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ 
-          vertical: 'bottom', 
-          horizontal: isMobile ? 'center' : 'right'
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: isMobile ? "center" : "right",
         }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
+        <Alert
+          onClose={handleCloseSnackbar}
           severity={snackbar.severity}
           variant="filled"
-          sx={{ width: isMobile ? '90%' : 'auto' }}
+          sx={{ width: isMobile ? "90%" : "auto" }}
         >
           {snackbar.message}
         </Alert>
