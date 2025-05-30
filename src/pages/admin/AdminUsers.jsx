@@ -74,13 +74,21 @@ const AdminUsers = () => {
       const queryParams = new URLSearchParams({ action: "users" });
       if (filters.username) queryParams.append("username", filters.username);
       if (filters.email) queryParams.append("email", filters.email);
+      queryParams.append("page", pagination.page);
+      queryParams.append("limit", pagination.rowsPerPage);
       const response = await API.get(
         `/admin-dashboard/?${queryParams.toString()}`
       );
-      setUsers(response.data);
+      console.log("API Response:", response.data); // Debug log
+      const usersData = response.data.results || response.data || [];
+      if (!Array.isArray(usersData)) {
+        throw new Error("Unexpected API response format");
+      }
+      setUsers(usersData);
       setError(null);
     } catch (err) {
       setError("Failed to fetch users. Please try again later.");
+      setUsers([]); // Reset to empty array on error
       console.error("Error fetching users:", err);
     } finally {
       setTableLoading(false);
