@@ -56,6 +56,10 @@ const AdminUsers = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
   const [userDetails, setUserDetails] = useState({});
+  const [pagination, setPagination] = useState({
+    page: 1,
+    rowsPerPage: 10,
+  });
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -106,6 +110,7 @@ const AdminUsers = () => {
       ...prev,
       [name]: value,
     }));
+    setPagination({ page: 1, rowsPerPage: 10 });
   };
 
   const handleSnackbarClose = (event, reason) => {
