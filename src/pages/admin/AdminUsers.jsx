@@ -11,7 +11,7 @@ import {
   Row,
   Col,
   FormControl,
-  InputGroup
+  InputGroup,
 } from "react-bootstrap";
 import {
   Edit as EditIcon,
@@ -21,7 +21,7 @@ import {
   Search as SearchIcon,
   Clear as ClearIcon,
   Person as PersonIcon,
-  Dashboard as DashboardIcon
+  Dashboard as DashboardIcon,
 } from "@mui/icons-material";
 import {
   IconButton,
@@ -33,14 +33,14 @@ import {
   Chip,
   Avatar,
   Typography,
-  Fade
+  Fade,
 } from "@mui/material";
 import API from "../../api";
-import { set } from "date-fns";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Initial page load
+  const [tableLoading, setTableLoading] = useState(false); // Table-specific loading
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -69,7 +69,7 @@ const AdminUsers = () => {
 
   // Fetch users from API
   const fetchUsers = async () => {
-    setLoading(true);
+    setTableLoading(true);
     try {
       const queryParams = new URLSearchParams({ action: "users" });
       if (filters.username) queryParams.append("username", filters.username);
@@ -83,12 +83,13 @@ const AdminUsers = () => {
       setError("Failed to fetch users. Please try again later.");
       console.error("Error fetching users:", err);
     } finally {
-      setLoading(false);
+      setTableLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    setLoading(true);
+    fetchUsers().then(() => setLoading(false));
   }, [filters]);
 
   const handleFilterChange = (e) => {
@@ -195,7 +196,9 @@ const AdminUsers = () => {
       console.error("Error updating user:", err);
       const apiError = err.response?.data;
       if (apiError?.err && apiError?.details) {
-        alert(`${apiError?.err}\n${JSON.stringify(apiError?.details, null, 2)}`);
+        alert(
+          `${apiError?.err}\n${JSON.stringify(apiError?.details, null, 2)}`
+        );
       } else {
         setSnackbar({
           open: true,
@@ -265,13 +268,23 @@ const AdminUsers = () => {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "400px" }}
+      >
         <div className="text-center">
-          <Spinner animation="border" role="status" variant="primary" style={{ width: "3rem", height: "3rem" }}>
+          <Spinner
+            animation="border"
+            role="status"
+            variant="primary"
+            style={{ width: "3rem", height: "3rem" }}
+          >
             <span className="visually-hidden">Loading...</span>
           </Spinner>
           <div className="mt-3">
-            <Typography variant="h6" color="text.secondary">Loading users...</Typography>
+            <Typography variant="h6" color="text.secondary">
+              Loading users...
+            </Typography>
           </div>
         </div>
       </Container>
@@ -279,21 +292,30 @@ const AdminUsers = () => {
   }
 
   return (
-    <Box sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', minHeight: '100vh', py: 4 }}>
+    <Box sx={{ background: "#1A2A44", minHeight: "100vh", py: 4 }}>
       <Container>
         {/* Header Section */}
-        <Paper elevation={0} sx={{ p: 3, mb: 3, background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', borderRadius: 3 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 3,
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(10px)",
+            borderRadius: 3,
+          }}
+        >
           <Row className="align-items-center justify-content-between">
             <Col xs="auto">
-              <Link to="/admin-dashboard" style={{ textDecoration: 'none' }}>
-                <Button 
-                  variant="outline-primary" 
+              <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+                <Button
+                  variant="outline-primary"
                   className="d-flex align-items-center gap-2"
-                  style={{ 
-                    borderRadius: '25px', 
-                    padding: '10px 20px',
-                    border: '2px solid #007bff',
-                    fontWeight: '600'
+                  style={{
+                    borderRadius: "25px",
+                    padding: "10px 20px",
+                    border: "2px solid #007bff",
+                    fontWeight: "600",
                   }}
                 >
                   <DashboardIcon fontSize="small" />
@@ -303,8 +325,12 @@ const AdminUsers = () => {
             </Col>
             <Col xs="auto">
               <div className="d-flex align-items-center gap-2">
-                <PersonIcon sx={{ fontSize: 32, color: '#667eea' }} />
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: '#2c3e50', mb: 0 }}>
+                <PersonIcon sx={{ fontSize: 32, color: "#667eea" }} />
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{ fontWeight: 700, color: "#2c3e50", mb: 0 }}
+                >
                   Users Management
                 </Typography>
               </div>
@@ -313,13 +339,25 @@ const AdminUsers = () => {
         </Paper>
 
         {/* Search Section */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 3, background: 'rgba(255, 255, 255, 0.98)' }}>
+        <Paper
+          elevation={2}
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: 3,
+            background: "rgba(255, 255, 255, 0.98)",
+          }}
+        >
           <Row className="align-items-end">
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold text-muted">Search by Username</Form.Label>
+                <Form.Label className="fw-semibold text-muted">
+                  Search by Username
+                </Form.Label>
                 <InputGroup>
-                  <InputGroup.Text style={{ backgroundColor: '#f8f9fa', border: 'none' }}>
+                  <InputGroup.Text
+                    style={{ backgroundColor: "#f8f9fa", border: "none" }}
+                  >
                     <SearchIcon fontSize="small" />
                   </InputGroup.Text>
                   <FormControl
@@ -328,16 +366,20 @@ const AdminUsers = () => {
                     value={filters.username}
                     onChange={handleFilterChange}
                     placeholder="Enter username..."
-                    style={{ border: 'none', borderLeft: '1px solid #dee2e6' }}
+                    style={{ border: "none", borderLeft: "1px solid #dee2e6" }}
                   />
                 </InputGroup>
               </Form.Group>
             </Col>
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold text-muted">Search by Email</Form.Label>
+                <Form.Label className="fw-semibold text-muted">
+                  Search by Email
+                </Form.Label>
                 <InputGroup>
-                  <InputGroup.Text style={{ backgroundColor: '#f8f9fa', border: 'none' }}>
+                  <InputGroup.Text
+                    style={{ backgroundColor: "#f8f9fa", border: "none" }}
+                  >
                     <SearchIcon fontSize="small" />
                   </InputGroup.Text>
                   <FormControl
@@ -346,7 +388,7 @@ const AdminUsers = () => {
                     value={filters.email}
                     onChange={handleFilterChange}
                     placeholder="Enter email..."
-                    style={{ border: 'none', borderLeft: '1px solid #dee2e6' }}
+                    style={{ border: "none", borderLeft: "1px solid #dee2e6" }}
                   />
                 </InputGroup>
               </Form.Group>
@@ -357,10 +399,10 @@ const AdminUsers = () => {
                   variant="outline-secondary"
                   onClick={clearFilters}
                   className="d-flex align-items-center gap-2 w-100"
-                  style={{ 
-                    borderRadius: '20px', 
-                    padding: '10px 20px',
-                    height: '38px'
+                  style={{
+                    borderRadius: "20px",
+                    padding: "10px 20px",
+                    height: "38px",
                   }}
                 >
                   <ClearIcon fontSize="small" />
@@ -375,302 +417,519 @@ const AdminUsers = () => {
         </Paper>
 
         {/* Users Table */}
-        <Paper elevation={3} sx={{ borderRadius: 3, overflow: 'hidden', background: 'rgba(255, 255, 255, 0.98)' }}>
-          <Box sx={{ maxHeight: '600px', overflow: 'auto' }}>
-            <Table hover responsive className="mb-0">
-              <thead style={{ 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                position: 'sticky',
-                top: 0,
-                zIndex: 10
-              }}>
-                <tr>
-                  <th className="text-center text-white fw-bold" style={{ width: "60px", padding: '15px 10px' }}>
-                    #
-                  </th>
-                  <th className="text-white fw-bold" style={{ width: "50px", padding: '15px 10px' }}></th>
-                  <th className="text-white fw-bold" style={{ padding: '15px 10px' }}>User</th>
-                  <th className="text-white fw-bold" style={{ padding: '15px 10px' }}>Contact</th>
-                  <th className="text-center text-white fw-bold" style={{ padding: '15px 10px' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {error ? (
+        <Paper
+          elevation={3}
+          sx={{
+            borderRadius: 3,
+            overflow: "hidden",
+            background: "rgba(255, 255, 255, 0.98)",
+          }}
+        >
+          {tableLoading ? (
+            <Box sx={{ p: 4, textAlign: "center" }}>
+              <Spinner
+                animation="border"
+                role="status"
+                variant="primary"
+                style={{ width: "3rem", height: "3rem" }}
+              >
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+              <Typography variant="h6" color="text.secondary" className="mt-3">
+                Loading users...
+              </Typography>
+            </Box>
+          ) : error ? (
+            <Box sx={{ p: 4, textAlign: "center" }}>
+              <Typography variant="h6" color="error">
+                ⚠️ {error}
+              </Typography>
+            </Box>
+          ) : users.length === 0 ? (
+            <Box sx={{ p: 4, textAlign: "center" }}>
+              <Typography variant="h6" color="text.secondary">
+                👥 No users matched your search criteria
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                className="mt-2"
+              >
+                Try adjusting your search or clear the filters to see all users
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ maxHeight: "600px", overflow: "auto" }}>
+              <Table hover responsive className="mb-0">
+                <thead
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 10,
+                  }}
+                >
                   <tr>
-                    <td colSpan="5" className="text-center text-danger py-4">
-                      <Typography variant="h6" color="error">
-                        ⚠️ {error}
-                      </Typography>
-                    </td>
+                    <th
+                      className="text-center text-white fw-bold"
+                      style={{ width: "60px", padding: "15px 10px" }}
+                    >
+                      #
+                    </th>
+                    <th
+                      className="text-dark fw-bold"
+                      style={{ width: "50px", padding: "15px 10px" }}
+                    ></th>
+                    <th
+                      className="text-dark fw-bold"
+                      style={{ padding: "15px 10px" }}
+                    >
+                      User
+                    </th>
+                    <th
+                      className="text-dark fw-bold"
+                      style={{ padding: "15px 10px" }}
+                    >
+                      Contact
+                    </th>
+                    <th
+                      className="text-center text-dark fw-bold"
+                      style={{ padding: "15px 10px" }}
+                    >
+                      Actions
+                    </th>
                   </tr>
-                ) : (
-                  <>
-                    {users.map((user, index) => (
-                      <React.Fragment key={user.id || user.username}>
-                        <tr style={{ borderBottom: '1px solid #e9ecef' }}>
-                          <td className="text-center align-middle" style={{ padding: '15px 10px' }}>
-                            <Chip 
-                              label={index + 1} 
-                              size="small" 
-                              sx={{ 
-                                backgroundColor: '#667eea', 
-                                color: 'white',
-                                fontWeight: 'bold'
-                              }} 
-                            />
-                          </td>
-                          <td className="text-center align-middle" style={{ padding: '15px 10px' }}>
-                            <Tooltip title={expandedRows[user.id] ? "Collapse details" : "Expand details"}>
+                </thead>
+                <tbody>
+                  {users.map((user, index) => (
+                    <React.Fragment key={user.id || user.username}>
+                      <tr style={{ borderBottom: "1px solid #e9ecef" }}>
+                        <td
+                          className="text-center align-middle"
+                          style={{ padding: "15px 10px" }}
+                        >
+                          <Chip
+                            label={index + 1}
+                            size="small"
+                            sx={{
+                              backgroundColor: "#667eea",
+                              color: "white",
+                              fontWeight: "bold",
+                            }}
+                          />
+                        </td>
+                        <td
+                          className="text-center align-middle"
+                          style={{ padding: "15px 10px" }}
+                        >
+                          <Tooltip
+                            title={
+                              expandedRows[user.id]
+                                ? "Collapse details"
+                                : "Expand details"
+                            }
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={() => toggleRowExpansion(user.id)}
+                              sx={{
+                                backgroundColor: expandedRows[user.id]
+                                  ? "#e3f2fd"
+                                  : "#f5f5f5",
+                                "&:hover": {
+                                  backgroundColor: expandedRows[user.id]
+                                    ? "#bbdefb"
+                                    : "#eeeeee",
+                                },
+                              }}
+                            >
+                              <Fade in={true}>
+                                {expandedRows[user.id] ? (
+                                  <KeyboardArrowUpIcon />
+                                ) : (
+                                  <KeyboardArrowDownIcon />
+                                )}
+                              </Fade>
+                            </IconButton>
+                          </Tooltip>
+                        </td>
+                        <td
+                          className="align-middle"
+                          style={{ padding: "15px 10px" }}
+                        >
+                          <div className="d-flex align-items-center gap-3">
+                            <Avatar
+                              src={user.profile_pic}
+                              sx={{
+                                width: 45,
+                                height: 45,
+                                border: "2px solid #667eea",
+                              }}
+                            >
+                              {user.first_name?.charAt(0)?.toUpperCase()}
+                            </Avatar>
+                            <div>
+                              <Typography
+                                variant="subtitle1"
+                                sx={{ fontWeight: 600, mb: 0 }}
+                              >
+                                {user.first_name} {user.last_name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                @{user.username}
+                              </Typography>
+                            </div>
+                          </div>
+                        </td>
+                        <td
+                          className="align-middle"
+                          style={{ padding: "15px 10px" }}
+                        >
+                          <div>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 500 }}
+                            >
+                              📧 {user.email || "N/A"}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              📱 {user.phone || "N/A"}
+                            </Typography>
+                          </div>
+                        </td>
+                        <td
+                          className="text-center align-middle"
+                          style={{ padding: "15px 10px" }}
+                        >
+                          <div className="d-flex justify-content-center gap-1">
+                            <Tooltip title="Edit User">
                               <IconButton
+                                onClick={() => handleEditClick(user)}
                                 size="small"
-                                onClick={() => toggleRowExpansion(user.id)}
-                                sx={{ 
-                                  backgroundColor: expandedRows[user.id] ? '#e3f2fd' : '#f5f5f5',
-                                  '&:hover': { backgroundColor: expandedRows[user.id] ? '#bbdefb' : '#eeeeee' }
+                                sx={{
+                                  backgroundColor: "#e8f5e8",
+                                  color: "#2e7d32",
+                                  "&:hover": { backgroundColor: "#c8e6c9" },
                                 }}
                               >
-                                <Fade in={true}>
-                                  {expandedRows[user.id] ? (
-                                    <KeyboardArrowUpIcon />
-                                  ) : (
-                                    <KeyboardArrowDownIcon />
-                                  )}
-                                </Fade>
+                                <EditIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
-                          </td>
-                          <td className="align-middle" style={{ padding: '15px 10px' }}>
-                            <div className="d-flex align-items-center gap-3">
-                              <Avatar
-                                src={user.profile_pic}
-                                sx={{ 
-                                  width: 45, 
-                                  height: 45,
-                                  border: '2px solid #667eea'
+                            <Tooltip title="Delete User">
+                              <IconButton
+                                onClick={() => handleDeleteClick(user)}
+                                size="small"
+                                sx={{
+                                  backgroundColor: "#ffebee",
+                                  color: "#d32f2f",
+                                  "&:hover": { backgroundColor: "#ffcdd2" },
                                 }}
                               >
-                                {user.first_name?.charAt(0)?.toUpperCase()}
-                              </Avatar>
-                              <div>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0 }}>
-                                  {user.first_name} {user.last_name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                  @{user.username}
-                                </Typography>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="align-middle" style={{ padding: '15px 10px' }}>
-                            <div>
-                              <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                                📧 {user.email || "N/A"}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                📱 {user.phone || "N/A"}
-                              </Typography>
-                            </div>
-                          </td>
-                          <td className="text-center align-middle" style={{ padding: '15px 10px' }}>
-                            <div className="d-flex justify-content-center gap-1">
-                              <Tooltip title="Edit User">
-                                <IconButton
-                                  onClick={() => handleEditClick(user)}
-                                  size="small"
-                                  sx={{ 
-                                    backgroundColor: '#e8f5e8',
-                                    color: '#2e7d32',
-                                    '&:hover': { backgroundColor: '#c8e6c9' }
-                                  }}
-                                >
-                                  <EditIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Delete User">
-                                <IconButton
-                                  onClick={() => handleDeleteClick(user)}
-                                  size="small"
-                                  sx={{ 
-                                    backgroundColor: '#ffebee',
-                                    color: '#d32f2f',
-                                    '&:hover': { backgroundColor: '#ffcdd2' }
-                                  }}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            </div>
-                          </td>
-                        </tr>
-                        {expandedRows[user.id] && (
-                          <tr>
-                            <td colSpan="5" className="p-0">
-                              <Fade in={expandedRows[user.id]}>
-                                <Box sx={{ p: 3, backgroundColor: '#f8f9fa', borderTop: '3px solid #667eea' }}>
-                                  <Row>
-                                    <Col md={4}>
-                                      <Card className="h-100 shadow-sm" style={{ border: 'none' }}>
-                                        <Card.Header style={{ backgroundColor: '#667eea', color: 'white', fontWeight: 'bold' }}>
-                                          👤 User Details
-                                        </Card.Header>
-                                        <Card.Body>
-                                          <div className="text-center mb-3">
-                                            <Avatar
-                                              src={user.profile_pic}
-                                              sx={{ 
-                                                width: 80, 
-                                                height: 80, 
-                                                mx: 'auto',
-                                                border: '3px solid #667eea'
-                                              }}
-                                            >
-                                              {user.first_name?.charAt(0)?.toUpperCase()}
-                                            </Avatar>
-                                            <Typography variant="h6" className="mt-2 mb-1">
-                                              {user.first_name} {user.last_name}
-                                            </Typography>
-                                            <Chip 
-                                              label={`@${user.username}`} 
-                                              size="small" 
-                                              variant="outlined"
-                                              sx={{ backgroundColor: '#e3f2fd' }}
-                                            />
-                                          </div>
-                                          <Typography variant="body2" className="mb-2">
-                                            <strong>📍 Address:</strong> {user.address || "Not provided"}
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </td>
+                      </tr>
+                      {expandedRows[user.id] && (
+                        <tr>
+                          <td colSpan="5" className="p-0">
+                            <Fade in={expandedRows[user.id]}>
+                              <Box
+                                sx={{
+                                  p: 3,
+                                  backgroundColor: "#f8f9fa",
+                                  borderTop: "3px solid #667eea",
+                                }}
+                              >
+                                <Row>
+                                  <Col md={4}>
+                                    <Card
+                                      className="h-100 shadow-sm"
+                                      style={{ border: "none" }}
+                                    >
+                                      <Card.Header
+                                        style={{
+                                          backgroundColor: "#667eea",
+                                          color: "white",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        👤 User Details
+                                      </Card.Header>
+                                      <Card.Body>
+                                        <div className="text-center mb-3">
+                                          <Avatar
+                                            src={user.profile_pic}
+                                            sx={{
+                                              width: 80,
+                                              height: 80,
+                                              mx: "auto",
+                                              border: "3px solid #667eea",
+                                            }}
+                                          >
+                                            {user.first_name
+                                              ?.charAt(0)
+                                              ?.toUpperCase()}
+                                          </Avatar>
+                                          <Typography
+                                            variant="h6"
+                                            className="mt-2 mb-1"
+                                          >
+                                            {user.first_name} {user.last_name}
                                           </Typography>
-                                        </Card.Body>
-                                      </Card>
-                                    </Col>
-                                    <Col md={8}>
-                                      <Row className="h-100">
-                                        <Col md={12} className="mb-3">
-                                          <Card className="shadow-sm" style={{ border: 'none' }}>
-                                            <Card.Header style={{ backgroundColor: '#4caf50', color: 'white', fontWeight: 'bold' }}>
-                                              📅 Bookings ({userDetails[user.id]?.bookings?.length || 0})
-                                            </Card.Header>
-                                            <Card.Body style={{ maxHeight: "150px", overflow: "auto" }}>
-                                              {userDetails[user.id]?.bookings?.length > 0 ? (
-                                                <Table size="sm" className="mb-0">
-                                                  <thead>
-                                                    <tr>
-                                                      <th>ID</th>
-                                                      <th>Date</th>
-                                                      <th>Status</th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody>
-                                                    {userDetails[user.id]?.bookings?.map((booking) => (
+                                          <Chip
+                                            label={`@${user.username}`}
+                                            size="small"
+                                            variant="outlined"
+                                            sx={{ backgroundColor: "#e3f2fd" }}
+                                          />
+                                        </div>
+                                        <Typography
+                                          variant="body2"
+                                          className="mb-2"
+                                        >
+                                          <strong>📍 Address:</strong>{" "}
+                                          {user.address || "Not provided"}
+                                        </Typography>
+                                      </Card.Body>
+                                    </Card>
+                                  </Col>
+                                  <Col md={8}>
+                                    <Row className="h-100">
+                                      <Col md={12} className="mb-3">
+                                        <Card
+                                          className="shadow-sm"
+                                          style={{ border: "none" }}
+                                        >
+                                          <Card.Header
+                                            style={{
+                                              backgroundColor: "#4caf50",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            📅 Bookings (
+                                            {userDetails[user.id]?.bookings
+                                              ?.length || 0}
+                                            )
+                                          </Card.Header>
+                                          <Card.Body
+                                            style={{
+                                              maxHeight: "150px",
+                                              overflow: "auto",
+                                            }}
+                                          >
+                                            {userDetails[user.id]?.bookings
+                                              ?.length > 0 ? (
+                                              <Table size="sm" className="mb-0">
+                                                <thead>
+                                                  <tr>
+                                                    <th>ID</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {userDetails[
+                                                    user.id
+                                                  ]?.bookings?.map(
+                                                    (booking) => (
                                                       <tr key={booking.id}>
                                                         <td>#{booking.id}</td>
                                                         <td>{booking.date}</td>
                                                         <td>
-                                                          <Chip 
-                                                            label={booking.status} 
+                                                          <Chip
+                                                            label={
+                                                              booking.status
+                                                            }
                                                             size="small"
-                                                            color={booking.status === 'confirmed' ? 'success' : 'default'}
+                                                            color={
+                                                              booking.status ===
+                                                              "confirmed"
+                                                                ? "success"
+                                                                : "default"
+                                                            }
                                                           />
                                                         </td>
                                                       </tr>
-                                                    ))}
-                                                  </tbody>
-                                                </Table>
-                                              ) : (
-                                                <Typography variant="body2" color="text.secondary" className="text-center py-3">
-                                                  No bookings found
-                                                </Typography>
-                                              )}
-                                            </Card.Body>
-                                          </Card>
-                                        </Col>
-                                        <Col md={6}>
-                                          <Card className="shadow-sm h-100" style={{ border: 'none' }}>
-                                            <Card.Header style={{ backgroundColor: '#ff9800', color: 'white', fontWeight: 'bold' }}>
-                                              ⭐ Reviews ({userDetails[user.id]?.reviews?.length || 0})
-                                            </Card.Header>
-                                            <Card.Body style={{ maxHeight: "150px", overflow: "auto" }}>
-                                              {userDetails[user.id]?.reviews?.length > 0 ? (
-                                                userDetails[user.id]?.reviews?.map((review) => (
-                                                  <div key={review.id} className="mb-2 p-2" style={{ backgroundColor: '#fff3e0', borderRadius: '8px' }}>
-                                                    <div className="d-flex justify-content-between">
-                                                      <Chip label={`${review.rating}/5 ⭐`} size="small" />
-                                                    </div>
-                                                    <Typography variant="body2" className="mt-1">
-                                                      {review.comment}
-                                                    </Typography>
+                                                    )
+                                                  )}
+                                                </tbody>
+                                              </Table>
+                                            ) : (
+                                              <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                className="text-center py-3"
+                                              >
+                                                No bookings found
+                                              </Typography>
+                                            )}
+                                          </Card.Body>
+                                        </Card>
+                                      </Col>
+                                      <Col md={6}>
+                                        <Card
+                                          className="shadow-sm h-100"
+                                          style={{ border: "none" }}
+                                        >
+                                          <Card.Header
+                                            style={{
+                                              backgroundColor: "#ff9800",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            ⭐ Reviews (
+                                            {userDetails[user.id]?.reviews
+                                              ?.length || 0}
+                                            )
+                                          </Card.Header>
+                                          <Card.Body
+                                            style={{
+                                              maxHeight: "150px",
+                                              overflow: "auto",
+                                            }}
+                                          >
+                                            {userDetails[user.id]?.reviews
+                                              ?.length > 0 ? (
+                                              userDetails[
+                                                user.id
+                                              ]?.reviews?.map((review) => (
+                                                <div
+                                                  key={review.id}
+                                                  className="mb-2 p-2"
+                                                  style={{
+                                                    backgroundColor: "#fff3e0",
+                                                    borderRadius: "8px",
+                                                  }}
+                                                >
+                                                  <div className="d-flex justify-content-between">
+                                                    <Chip
+                                                      label={`${review.rating}/5 ⭐`}
+                                                      size="small"
+                                                    />
                                                   </div>
-                                                ))
-                                              ) : (
-                                                <Typography variant="body2" color="text.secondary" className="text-center py-3">
-                                                  No reviews found
-                                                </Typography>
-                                              )}
-                                            </Card.Body>
-                                          </Card>
-                                        </Col>
-                                        <Col md={6}>
-                                          <Card className="shadow-sm h-100" style={{ border: 'none' }}>
-                                            <Card.Header style={{ backgroundColor: '#9c27b0', color: 'white', fontWeight: 'bold' }}>
-                                              💬 Messages ({userDetails[user.id]?.messages?.length || 0})
-                                            </Card.Header>
-                                            <Card.Body style={{ maxHeight: "150px", overflow: "auto" }}>
-                                              {userDetails[user.id]?.messages?.length > 0 ? (
-                                                userDetails[user.id]?.messages?.map((message) => (
-                                                  <div key={message.id} className="mb-2 p-2" style={{ backgroundColor: '#f3e5f5', borderRadius: '8px' }}>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                      {message.date}
-                                                    </Typography>
-                                                    <Typography variant="body2" className="mt-1">
-                                                      {message.content}
-                                                    </Typography>
-                                                  </div>
-                                                ))
-                                              ) : (
-                                                <Typography variant="body2" color="text.secondary" className="text-center py-3">
-                                                  No messages found
-                                                </Typography>
-                                              )}
-                                            </Card.Body>
-                                          </Card>
-                                        </Col>
-                                      </Row>
-                                    </Col>
-                                  </Row>
-                                </Box>
-                              </Fade>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    ))}
-                    {users.length === 0 && !error && (
-                      <tr>
-                        <td colSpan="5" className="text-center py-5">
-                          <Typography variant="h6" color="text.secondary">
-                            👥 No users found
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Try adjusting your search criteria
-                          </Typography>
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </Table>
-          </Box>
+                                                  <Typography
+                                                    variant="body2"
+                                                    className="mt-1"
+                                                  >
+                                                    {review.comment}
+                                                  </Typography>
+                                                </div>
+                                              ))
+                                            ) : (
+                                              <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                className="text-center py-3"
+                                              >
+                                                No reviews found
+                                              </Typography>
+                                            )}
+                                          </Card.Body>
+                                        </Card>
+                                      </Col>
+                                      <Col md={6}>
+                                        <Card
+                                          className="shadow-sm h-100"
+                                          style={{ border: "none" }}
+                                        >
+                                          <Card.Header
+                                            style={{
+                                              backgroundColor: "#9c27b0",
+                                              color: "white",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            💬 Messages (
+                                            {userDetails[user.id]?.messages
+                                              ?.length || 0}
+                                            )
+                                          </Card.Header>
+                                          <Card.Body
+                                            style={{
+                                              maxHeight: "150px",
+                                              overflow: "auto",
+                                            }}
+                                          >
+                                            {userDetails[user.id]?.messages
+                                              ?.length > 0 ? (
+                                              userDetails[
+                                                user.id
+                                              ]?.messages?.map((message) => (
+                                                <div
+                                                  key={message.id}
+                                                  className="mb-2 p-2"
+                                                  style={{
+                                                    backgroundColor: "#f3e5f5",
+                                                    borderRadius: "8px",
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    variant="caption"
+                                                    color="text.secondary"
+                                                  >
+                                                    {message.date}
+                                                  </Typography>
+                                                  <Typography
+                                                    variant="body2"
+                                                    className="mt-1"
+                                                  >
+                                                    {message.content}
+                                                  </Typography>
+                                                </div>
+                                              ))
+                                            ) : (
+                                              <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                className="text-center py-3"
+                                              >
+                                                No messages found
+                                              </Typography>
+                                            )}
+                                          </Card.Body>
+                                        </Card>
+                                      </Col>
+                                    </Row>
+                                  </Col>
+                                </Row>
+                              </Box>
+                            </Fade>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </Table>
+            </Box>
+          )}
         </Paper>
 
         {/* Edit User Modal */}
-        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
-          <Modal.Header closeButton style={{ backgroundColor: '#667eea', color: 'white' }}>
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          size="lg"
+          centered
+        >
+          <Modal.Header
+            closeButton
+            style={{ backgroundColor: "#667eea", color: "white" }}
+          >
             <Modal.Title className="d-flex align-items-center gap-2">
               <EditIcon />
               Edit User
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{ backgroundColor: '#f8f9fa' }}>
+          <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
             <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={6}>
@@ -682,7 +941,7 @@ const AdminUsers = () => {
                       value={formData.first_name}
                       onChange={handleChange}
                       required
-                      style={{ borderRadius: '10px' }}
+                      style={{ borderRadius: "10px" }}
                     />
                   </Form.Group>
                 </Col>
@@ -695,7 +954,7 @@ const AdminUsers = () => {
                       value={formData.last_name}
                       onChange={handleChange}
                       required
-                      style={{ borderRadius: '10px' }}
+                      style={{ borderRadius: "10px" }}
                     />
                   </Form.Group>
                 </Col>
@@ -710,7 +969,7 @@ const AdminUsers = () => {
                       value={formData.username}
                       onChange={handleChange}
                       required
-                      style={{ borderRadius: '10px' }}
+                      style={{ borderRadius: "10px" }}
                     />
                   </Form.Group>
                 </Col>
@@ -723,7 +982,7 @@ const AdminUsers = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      style={{ borderRadius: '10px' }}
+                      style={{ borderRadius: "10px" }}
                     />
                   </Form.Group>
                 </Col>
@@ -737,7 +996,7 @@ const AdminUsers = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      style={{ borderRadius: '10px' }}
+                      style={{ borderRadius: "10px" }}
                     />
                   </Form.Group>
                 </Col>
@@ -750,7 +1009,7 @@ const AdminUsers = () => {
                       value={formData.address}
                       onChange={handleChange}
                       required
-                      style={{ borderRadius: '10px' }}
+                      style={{ borderRadius: "10px" }}
                     />
                   </Form.Group>
                 </Col>
@@ -762,34 +1021,39 @@ const AdminUsers = () => {
                   name="profile_pic"
                   accept="image/*"
                   onChange={handleFileChange}
-                  style={{ borderRadius: '10px' }}
+                  style={{ borderRadius: "10px" }}
                 />
                 {formData.profile_pic_preview && (
                   <div className="mt-3 text-center">
                     <Avatar
                       src={formData.profile_pic_preview}
-                      sx={{ width: 100, height: 100, mx: 'auto', border: '3px solid #667eea' }}
+                      sx={{
+                        width: 100,
+                        height: 100,
+                        mx: "auto",
+                        border: "3px solid #667eea",
+                      }}
                     />
                   </div>
                 )}
               </Form.Group>
             </Form>
           </Modal.Body>
-          <Modal.Footer style={{ backgroundColor: '#f8f9fa' }}>
-            <Button 
-              variant="outline-secondary" 
+          <Modal.Footer style={{ backgroundColor: "#f8f9fa" }}>
+            <Button
+              variant="outline-secondary"
               onClick={() => setShowModal(false)}
-              style={{ borderRadius: '20px' }}
+              style={{ borderRadius: "20px" }}
             >
               Cancel
             </Button>
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               onClick={handleSubmit}
-              style={{ 
-                borderRadius: '20px',
-                background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                border: 'none'
+              style={{
+                borderRadius: "20px",
+                background: "linear-gradient(45deg, #667eea, #764ba2)",
+                border: "none",
               }}
             >
               Save Changes
@@ -798,8 +1062,15 @@ const AdminUsers = () => {
         </Modal>
 
         {/* Delete Confirmation Modal */}
-        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-          <Modal.Header closeButton style={{ backgroundColor: '#dc3545', color: 'white' }}>
+        <Modal
+          show={showDeleteModal}
+          onHide={() => setShowDeleteModal(false)}
+          centered
+        >
+          <Modal.Header
+            closeButton
+            style={{ backgroundColor: "#dc3545", color: "white" }}
+          >
             <Modal.Title className="d-flex align-items-center gap-2">
               <DeleteIcon />
               Confirm Delete
@@ -807,12 +1078,19 @@ const AdminUsers = () => {
           </Modal.Header>
           <Modal.Body className="text-center py-4">
             <div className="mb-3">
-              <DeleteIcon sx={{ fontSize: 60, color: '#dc3545' }} />
+              <DeleteIcon sx={{ fontSize: 60, color: "#dc3545" }} />
             </div>
             <Typography variant="h6" className="mb-3">
               Are you sure you want to delete this user?
             </Typography>
-            <Paper elevation={1} sx={{ p: 2, backgroundColor: '#fff3cd', border: '1px solid #ffeaa7' }}>
+            <Paper
+              elevation={1}
+              sx={{
+                p: 2,
+                backgroundColor: "#fff3cd",
+                border: "1px solid #ffeaa7",
+              }}
+            >
               <Typography variant="body1" sx={{ fontWeight: 600 }}>
                 {currentUser?.first_name} {currentUser?.last_name}
               </Typography>
@@ -821,24 +1099,25 @@ const AdminUsers = () => {
               </Typography>
             </Paper>
             <Typography variant="body2" color="error" className="mt-3">
-              ⚠️ This action cannot be undone and will permanently remove all user data.
+              ⚠️ This action cannot be undone and will permanently remove all
+              user data.
             </Typography>
           </Modal.Body>
           <Modal.Footer>
-            <Button 
-              variant="outline-secondary" 
+            <Button
+              variant="outline-secondary"
               onClick={() => setShowDeleteModal(false)}
-              style={{ borderRadius: '20px' }}
+              style={{ borderRadius: "20px" }}
             >
               Cancel
             </Button>
-            <Button 
-              variant="danger" 
+            <Button
+              variant="danger"
               onClick={handleDeleteConfirm}
-              style={{ 
-                borderRadius: '20px',
-                background: 'linear-gradient(45deg, #dc3545, #c82333)',
-                border: 'none'
+              style={{
+                borderRadius: "20px",
+                background: "linear-gradient(45deg, #dc3545, #c82333)",
+                border: "none",
               }}
             >
               Delete User
@@ -856,13 +1135,13 @@ const AdminUsers = () => {
           <MuiAlert
             onClose={handleSnackbarClose}
             severity={snackbar.severity}
-            sx={{ 
+            sx={{
               width: "100%",
-              borderRadius: '15px',
+              borderRadius: "15px",
               fontWeight: 600,
-              '& .MuiAlert-icon': {
-                fontSize: '1.5rem'
-              }
+              "& .MuiAlert-icon": {
+                fontSize: "1.5rem",
+              },
             }}
             elevation={6}
             variant="filled"
