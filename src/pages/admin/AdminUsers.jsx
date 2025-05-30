@@ -22,6 +22,10 @@ import {
   Clear as ClearIcon,
   Person as PersonIcon,
   Dashboard as DashboardIcon,
+  LocationOn as LocationIcon,
+  Badge as BadgeIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
 } from "@mui/icons-material";
 import {
   IconButton,
@@ -34,13 +38,14 @@ import {
   Avatar,
   Typography,
   Fade,
+  Divider,
 } from "@mui/material";
 import API from "../../api";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true); // Initial page load
-  const [tableLoading, setTableLoading] = useState(false); // Table-specific loading
+  const [loading, setLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -49,6 +54,10 @@ const AdminUsers = () => {
     severity: "success",
   });
   const [filters, setFilters] = useState({
+    username: "",
+    email: "",
+  });
+  const [tempFilters, setTempFilters] = useState({
     username: "",
     email: "",
   });
@@ -71,7 +80,6 @@ const AdminUsers = () => {
     profile_pic_preview: null,
   });
 
-  // Fetch users from API
   const fetchUsers = async () => {
     setTableLoading(true);
     try {
@@ -83,7 +91,6 @@ const AdminUsers = () => {
       const response = await API.get(
         `/admin-dashboard/?${queryParams.toString()}`
       );
-      console.log("API Response:", response.data); // Debug log
       const usersData = response.data.results || response.data || [];
       if (!Array.isArray(usersData)) {
         throw new Error("Unexpected API response format");
@@ -92,7 +99,7 @@ const AdminUsers = () => {
       setError(null);
     } catch (err) {
       setError("Failed to fetch users. Please try again later.");
-      setUsers([]); // Reset to empty array on error
+      setUsers([]);
       console.error("Error fetching users:", err);
     } finally {
       setTableLoading(false);
@@ -102,14 +109,18 @@ const AdminUsers = () => {
   useEffect(() => {
     setLoading(true);
     fetchUsers().then(() => setLoading(false));
-  }, [filters]);
+  }, [filters, pagination]);
 
-  const handleFilterChange = (e) => {
+  const handleTempFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prev) => ({
+    setTempFilters((prev) => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSearch = () => {
+    setFilters(tempFilters);
     setPagination({ page: 1, rowsPerPage: 10 });
   };
 
@@ -118,7 +129,6 @@ const AdminUsers = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  // Handle edit user
   const handleEditClick = (user) => {
     setCurrentUser(user);
     setFormData({
@@ -134,13 +144,11 @@ const AdminUsers = () => {
     setShowModal(true);
   };
 
-  // Handle delete user
   const handleDeleteClick = (user) => {
     setCurrentUser(user);
     setShowDeleteModal(true);
   };
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -168,7 +176,6 @@ const AdminUsers = () => {
     }
   };
 
-  // Submit updated user data
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -222,7 +229,6 @@ const AdminUsers = () => {
     }
   };
 
-  // Confirm and delete user
   const handleDeleteConfirm = async () => {
     try {
       await API.delete(
@@ -245,7 +251,6 @@ const AdminUsers = () => {
     }
   };
 
-  // Toggle row expansion and fetch user details
   const toggleRowExpansion = async (userId) => {
     const newExpandedRows = { ...expandedRows };
 
@@ -276,6 +281,7 @@ const AdminUsers = () => {
   };
 
   const clearFilters = () => {
+    setTempFilters({ username: "", email: "" });
     setFilters({ username: "", email: "" });
   };
 
@@ -376,8 +382,8 @@ const AdminUsers = () => {
                   <FormControl
                     type="text"
                     name="username"
-                    value={filters.username}
-                    onChange={handleFilterChange}
+                    value={tempFilters.username}
+                    onChange={handleTempFilterChange}
                     placeholder="Enter username..."
                     style={{ border: "none", borderLeft: "1px solid #dee2e6" }}
                   />
@@ -398,30 +404,43 @@ const AdminUsers = () => {
                   <FormControl
                     type="email"
                     name="email"
-                    value={filters.email}
-                    onChange={handleFilterChange}
+                    value={tempFilters.email}
+                    onChange={handleTempFilterChange}
                     placeholder="Enter email..."
                     style={{ border: "none", borderLeft: "1px solid #dee2e6" }}
                   />
                 </InputGroup>
               </Form.Group>
             </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Button
-                  variant="outline-secondary"
-                  onClick={clearFilters}
-                  className="d-flex align-items-center gap-2 w-100"
-                  style={{
-                    borderRadius: "20px",
-                    padding: "10px 20px",
-                    height: "38px",
-                  }}
-                >
-                  <ClearIcon fontSize="small" />
-                  Clear Search
-                </Button>
-              </Form.Group>
+            <Col md={2}>
+              <Button
+                variant="primary"
+                onClick={handleSearch}
+                className="d-flex align-items-center gap-2 w-100"
+                style={{
+                  borderRadius: "20px",
+                  padding: "10px 20px",
+                  height: "38px",
+                }}
+              >
+                <SearchIcon fontSize="small" />
+                Search
+              </Button>
+            </Col>
+            <Col md={2}>
+              <Button
+                variant="outline-secondary"
+                onClick={clearFilters}
+                className="d-flex align-items-center gap-2 w-100"
+                style={{
+                  borderRadius: "20px",
+                  padding: "10px 20px",
+                  height: "38px",
+                }}
+              >
+                <ClearIcon fontSize="small" />
+                Clear
+              </Button>
             </Col>
           </Row>
           <Typography variant="body2" color="text.secondary" className="mt-2">
@@ -460,16 +479,25 @@ const AdminUsers = () => {
             </Box>
           ) : users.length === 0 ? (
             <Box sx={{ p: 4, textAlign: "center" }}>
-              <Typography variant="h6" color="text.secondary">
-                👥 No users matched your search criteria
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                className="mt-2"
-              >
-                Try adjusting your search or clear the filters to see all users
-              </Typography>
+              {filters.username || filters.email ? (
+                <>
+                  <Typography variant="h6" color="text.secondary">
+                    🔍 No users matched your search criteria
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    className="mt-2"
+                  >
+                    Try adjusting your search or clear the filters to see all
+                    users
+                  </Typography>
+                </>
+              ) : (
+                <Typography variant="h6" color="text.secondary">
+                  👥 No users found in the system
+                </Typography>
+              )}
             </Box>
           ) : (
             <Box sx={{ maxHeight: "600px", overflow: "auto" }}>
@@ -655,7 +683,8 @@ const AdminUsers = () => {
                               <Box
                                 sx={{
                                   p: 3,
-                                  backgroundColor: "#f8f9fa",
+                                  backgroundColor: "#1A2A44",
+                                  color: "white",
                                   borderTop: "3px solid #667eea",
                                 }}
                               >
@@ -663,7 +692,10 @@ const AdminUsers = () => {
                                   <Col md={4}>
                                     <Card
                                       className="h-100 shadow-sm"
-                                      style={{ border: "none" }}
+                                      style={{
+                                        border: "none",
+                                        backgroundColor: "#0F1A2F",
+                                      }}
                                     >
                                       <Card.Header
                                         style={{
@@ -672,43 +704,139 @@ const AdminUsers = () => {
                                           fontWeight: "bold",
                                         }}
                                       >
-                                        👤 User Details
+                                        <div className="d-flex align-items-center gap-2">
+                                          <PersonIcon />
+                                          User Profile
+                                        </div>
                                       </Card.Header>
-                                      <Card.Body>
-                                        <div className="text-center mb-3">
+                                      <Card.Body className="text-center">
+                                        <div className="mb-4">
                                           <Avatar
                                             src={user.profile_pic}
                                             sx={{
-                                              width: 80,
-                                              height: 80,
+                                              width: 100,
+                                              height: 100,
                                               mx: "auto",
                                               border: "3px solid #667eea",
+                                              mb: 2,
                                             }}
                                           >
                                             {user.first_name
                                               ?.charAt(0)
                                               ?.toUpperCase()}
                                           </Avatar>
-                                          <Typography
-                                            variant="h6"
-                                            className="mt-2 mb-1"
-                                          >
-                                            {user.first_name} {user.last_name}
-                                          </Typography>
-                                          <Chip
-                                            label={`@${user.username}`}
-                                            size="small"
-                                            variant="outlined"
-                                            sx={{ backgroundColor: "#e3f2fd" }}
-                                          />
+
+                                          {/* Modernized User Info Display */}
+                                          <div className="text-start">
+                                            <div className="d-flex align-items-center gap-2 mb-3">
+                                              <BadgeIcon color="primary" />
+                                              <div>
+                                                <Typography
+                                                  variant="caption"
+                                                  color="#aaa"
+                                                >
+                                                  Full Name
+                                                </Typography>
+                                                <Typography
+                                                  variant="h6"
+                                                  style={{ color: "white" }}
+                                                >
+                                                  {user.first_name}{" "}
+                                                  {user.last_name}
+                                                </Typography>
+                                              </div>
+                                            </div>
+
+                                            <Divider
+                                              sx={{ my: 2, bgcolor: "#2c3e50" }}
+                                            />
+
+                                            <div className="d-flex align-items-center gap-2 mb-3">
+                                              <BadgeIcon color="primary" />
+                                              <div>
+                                                <Typography
+                                                  variant="caption"
+                                                  color="#aaa"
+                                                >
+                                                  Username
+                                                </Typography>
+                                                <Typography
+                                                  variant="h6"
+                                                  style={{ color: "white" }}
+                                                >
+                                                  @{user.username}
+                                                </Typography>
+                                              </div>
+                                            </div>
+
+                                            <Divider
+                                              sx={{ my: 2, bgcolor: "#2c3e50" }}
+                                            />
+
+                                            <div className="d-flex align-items-center gap-2 mb-3">
+                                              <LocationIcon color="primary" />
+                                              <div>
+                                                <Typography
+                                                  variant="caption"
+                                                  color="#aaa"
+                                                >
+                                                  Address
+                                                </Typography>
+                                                <Typography
+                                                  variant="body1"
+                                                  style={{ color: "white" }}
+                                                >
+                                                  {user.address ||
+                                                    "Not provided"}
+                                                </Typography>
+                                              </div>
+                                            </div>
+
+                                            <Divider
+                                              sx={{ my: 2, bgcolor: "#2c3e50" }}
+                                            />
+
+                                            <div className="d-flex align-items-center gap-2 mb-3">
+                                              <EmailIcon color="primary" />
+                                              <div>
+                                                <Typography
+                                                  variant="caption"
+                                                  color="#aaa"
+                                                >
+                                                  Email
+                                                </Typography>
+                                                <Typography
+                                                  variant="body1"
+                                                  style={{ color: "white" }}
+                                                >
+                                                  {user.email || "Not provided"}
+                                                </Typography>
+                                              </div>
+                                            </div>
+
+                                            <Divider
+                                              sx={{ my: 2, bgcolor: "#2c3e50" }}
+                                            />
+
+                                            <div className="d-flex align-items-center gap-2">
+                                              <PhoneIcon color="primary" />
+                                              <div>
+                                                <Typography
+                                                  variant="caption"
+                                                  color="#aaa"
+                                                >
+                                                  Phone
+                                                </Typography>
+                                                <Typography
+                                                  variant="body1"
+                                                  style={{ color: "white" }}
+                                                >
+                                                  {user.phone || "Not provided"}
+                                                </Typography>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
-                                        <Typography
-                                          variant="body2"
-                                          className="mb-2"
-                                        >
-                                          <strong>📍 Address:</strong>{" "}
-                                          {user.address || "Not provided"}
-                                        </Typography>
                                       </Card.Body>
                                     </Card>
                                   </Col>
@@ -717,7 +845,10 @@ const AdminUsers = () => {
                                       <Col md={12} className="mb-3">
                                         <Card
                                           className="shadow-sm"
-                                          style={{ border: "none" }}
+                                          style={{
+                                            border: "none",
+                                            backgroundColor: "#0F1A2F",
+                                          }}
                                         >
                                           <Card.Header
                                             style={{
@@ -736,15 +867,32 @@ const AdminUsers = () => {
                                               maxHeight: "150px",
                                               overflow: "auto",
                                             }}
+                                            className="text-center"
                                           >
                                             {userDetails[user.id]?.bookings
                                               ?.length > 0 ? (
-                                              <Table size="sm" className="mb-0">
+                                              <Table
+                                                size="sm"
+                                                className="mb-0"
+                                                style={{ color: "white" }}
+                                              >
                                                 <thead>
                                                   <tr>
-                                                    <th>ID</th>
-                                                    <th>Date</th>
-                                                    <th>Status</th>
+                                                    <th
+                                                      style={{ color: "white" }}
+                                                    >
+                                                      ID
+                                                    </th>
+                                                    <th
+                                                      style={{ color: "white" }}
+                                                    >
+                                                      Date
+                                                    </th>
+                                                    <th
+                                                      style={{ color: "white" }}
+                                                    >
+                                                      Status
+                                                    </th>
                                                   </tr>
                                                 </thead>
                                                 <tbody>
@@ -779,6 +927,7 @@ const AdminUsers = () => {
                                                 variant="body2"
                                                 color="text.secondary"
                                                 className="text-center py-3"
+                                                style={{ color: "white" }}
                                               >
                                                 No bookings found
                                               </Typography>
@@ -789,7 +938,10 @@ const AdminUsers = () => {
                                       <Col md={6}>
                                         <Card
                                           className="shadow-sm h-100"
-                                          style={{ border: "none" }}
+                                          style={{
+                                            border: "none",
+                                            backgroundColor: "#0F1A2F",
+                                          }}
                                         >
                                           <Card.Header
                                             style={{
@@ -808,6 +960,7 @@ const AdminUsers = () => {
                                               maxHeight: "150px",
                                               overflow: "auto",
                                             }}
+                                            className="text-center"
                                           >
                                             {userDetails[user.id]?.reviews
                                               ?.length > 0 ? (
@@ -818,8 +971,9 @@ const AdminUsers = () => {
                                                   key={review.id}
                                                   className="mb-2 p-2"
                                                   style={{
-                                                    backgroundColor: "#fff3e0",
+                                                    backgroundColor: "#1A2A44",
                                                     borderRadius: "8px",
+                                                    color: "white",
                                                   }}
                                                 >
                                                   <div className="d-flex justify-content-between">
@@ -831,6 +985,7 @@ const AdminUsers = () => {
                                                   <Typography
                                                     variant="body2"
                                                     className="mt-1"
+                                                    style={{ color: "white" }}
                                                   >
                                                     {review.comment}
                                                   </Typography>
@@ -841,6 +996,7 @@ const AdminUsers = () => {
                                                 variant="body2"
                                                 color="text.secondary"
                                                 className="text-center py-3"
+                                                style={{ color: "white" }}
                                               >
                                                 No reviews found
                                               </Typography>
@@ -851,7 +1007,10 @@ const AdminUsers = () => {
                                       <Col md={6}>
                                         <Card
                                           className="shadow-sm h-100"
-                                          style={{ border: "none" }}
+                                          style={{
+                                            border: "none",
+                                            backgroundColor: "#0F1A2F",
+                                          }}
                                         >
                                           <Card.Header
                                             style={{
@@ -870,6 +1029,7 @@ const AdminUsers = () => {
                                               maxHeight: "150px",
                                               overflow: "auto",
                                             }}
+                                            className="text-center"
                                           >
                                             {userDetails[user.id]?.messages
                                               ?.length > 0 ? (
@@ -880,19 +1040,21 @@ const AdminUsers = () => {
                                                   key={message.id}
                                                   className="mb-2 p-2"
                                                   style={{
-                                                    backgroundColor: "#f3e5f5",
+                                                    backgroundColor: "#1A2A44",
                                                     borderRadius: "8px",
+                                                    color: "white",
                                                   }}
                                                 >
                                                   <Typography
                                                     variant="caption"
-                                                    color="text.secondary"
+                                                    style={{ color: "#aaa" }}
                                                   >
                                                     {message.date}
                                                   </Typography>
                                                   <Typography
                                                     variant="body2"
                                                     className="mt-1"
+                                                    style={{ color: "white" }}
                                                   >
                                                     {message.content}
                                                   </Typography>
@@ -903,6 +1065,7 @@ const AdminUsers = () => {
                                                 variant="body2"
                                                 color="text.secondary"
                                                 className="text-center py-3"
+                                                style={{ color: "white" }}
                                               >
                                                 No messages found
                                               </Typography>
@@ -1166,5 +1329,4 @@ const AdminUsers = () => {
     </Box>
   );
 };
-
 export default AdminUsers;
