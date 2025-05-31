@@ -88,9 +88,12 @@ const AdminUsers = () => {
       if (filters.email) queryParams.append("email", filters.email);
       queryParams.append("page", pagination.page);
       queryParams.append("limit", pagination.rowsPerPage);
+
+      console.log("Fetching users with params:", queryParams.toString());
       const response = await API.get(
         `/admin-dashboard/?${queryParams.toString()}`
       );
+
       const usersData = response.data.results || response.data || [];
       if (!Array.isArray(usersData)) {
         throw new Error("Unexpected API response format");
@@ -107,6 +110,8 @@ const AdminUsers = () => {
   };
 
   useEffect(() => {
+    console.log("Current filters:", filters);
+    console.log("Current pagination:", pagination);
     setLoading(true);
     fetchUsers().then(() => setLoading(false));
   }, [filters, pagination]);
