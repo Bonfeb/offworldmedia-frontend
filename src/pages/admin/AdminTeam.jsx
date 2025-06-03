@@ -176,9 +176,7 @@ const AdminTeam = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("bio", formData.bio);
-    if (formData.profile_pic instanceof File) {
-      formDataToSend.append("profile_pic", formData.profile_pic);
-    }
+    formDataToSend.append("profile_pic", formData.profile_pic);
 
     try {
       // Add new member
