@@ -183,7 +183,8 @@ const AdminTeam = () => {
     console.log("Basic form data appended:", { 
         name: formData.name, 
         role: formData.role, 
-        bio: formData.bio 
+        bio: formData.bio,
+        profile_pic: formData.profile_pic
     });
 
     // Validate profile picture
@@ -205,9 +206,6 @@ const AdminTeam = () => {
         console.log("Attempting to POST to /team endpoint");
         const response = await API.post("/team", formDataToSend, {
             withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
         });
 
         console.log("API Response:", response);

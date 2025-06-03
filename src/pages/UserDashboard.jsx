@@ -177,6 +177,7 @@ const UserDashboard = () => {
       event_date,
       event_time,
       event_location,
+      status: "pending",
     };
 
     if (
