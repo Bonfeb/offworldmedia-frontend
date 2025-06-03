@@ -176,6 +176,15 @@ const AdminTeam = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("bio", formData.bio);
+    if (!formData.profile_pic || !(formData.profile_pic instanceof File)) {
+      setSnackbar({
+        open: true,
+        message: "Please select a profile picture",
+        severity: "error",
+      });
+      setLoading(false);
+      return;
+    }
     formDataToSend.append("profile_pic", formData.profile_pic);
 
     try {
