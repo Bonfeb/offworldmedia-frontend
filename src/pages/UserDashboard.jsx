@@ -173,6 +173,7 @@ const UserDashboard = () => {
     console.log("Cart item found:", { event_date, event_location, event_time });
 
     const bookingData = {
+      service: serviceId,
       event_date,
       event_time,
       event_location,
