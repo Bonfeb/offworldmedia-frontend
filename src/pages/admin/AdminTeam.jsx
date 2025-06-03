@@ -170,46 +170,80 @@ const AdminTeam = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Form submission started");
 
     // Create FormData object for file upload
     const formDataToSend = new FormData();
+    console.log("Initializing FormData");
+    
+    // Append form data with logging
     formDataToSend.append("name", formData.name);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("bio", formData.bio);
+    console.log("Basic form data appended:", { 
+        name: formData.name, 
+        role: formData.role, 
+        bio: formData.bio 
+    });
+
+    // Validate profile picture
+    console.log("Checking profile picture:", formData.profile_pic);
     if (!formData.profile_pic || !(formData.profile_pic instanceof File)) {
-      setSnackbar({
-        open: true,
-        message: "Please select a profile picture",
-        severity: "error",
-      });
-      setLoading(false);
-      return;
+        console.error("Profile picture validation failed - either missing or not a File object");
+        setSnackbar({
+            open: true,
+            message: "Please select a profile picture",
+            severity: "error",
+        });
+        setLoading(false);
+        return;
     }
     formDataToSend.append("profile_pic", formData.profile_pic);
+    console.log("Profile picture appended to FormData");
 
     try {
-      // Add new member
-      await API.post("/team", formDataToSend, {
-        withCredentials: true,
-      });
-      setSnackbar({
-        open: true,
-        message: "Team member added successfully",
-        severity: "success",
-      });
-      setShowModal(false);
-      fetchTeamMembers(); // Refresh the list
+        console.log("Attempting to POST to /team endpoint");
+        const response = await API.post("/team", formDataToSend, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        console.log("API Response:", response);
+        console.log("Response status:", response.status);
+        console.log("Response data:", response.data);
+
+        setSnackbar({
+            open: true,
+            message: "Team member added successfully",
+            severity: "success",
+        });
+        setShowModal(false);
+        console.log("Modal closed, refreshing team members list");
+        fetchTeamMembers(); // Refresh the list
     } catch (err) {
-      setSnackbar({
-        open: true,
-        message: "Failed to add team member",
-        severity: "error",
-      });
-      console.error("Error adding team member:", err);
+        console.error("Error in API call:", err);
+        console.error("Error details:", {
+            message: err.message,
+            response: err.response,
+            request: err.request,
+            config: err.config,
+        });
+
+        const errorMessage = err.response?.data?.message || "Failed to add team member";
+        console.error("Derived error message:", errorMessage);
+
+        setSnackbar({
+            open: true,
+            message: errorMessage,
+            severity: "error",
+        });
     } finally {
-      setLoading(false);
+        console.log("Form submission process completed");
+        setLoading(false);
     }
-  };
+};
 
   // Add new team member
   const handleAddNewMember = () => {
