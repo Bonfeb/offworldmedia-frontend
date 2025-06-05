@@ -206,7 +206,7 @@ const AdminTeam = () => {
 
     try {
       console.log("Attempting to POST to /team endpoint");
-      const response = await API.post("/team", formDataToSend, {
+      const response = await API.post("/team/", formDataToSend, {
         withCredentials: true,
       });
 
