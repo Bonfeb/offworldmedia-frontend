@@ -132,21 +132,21 @@ const AdminTeam = () => {
 
     // Create FormData object for file upload
     const formDataToSend = new FormData();
-    if (formData.name !== currentMember.name) formDataToSend.append("name", formData.name);
-    if (formData.role !== currentMember.role) formDataToSend.append("role", formData.role);
-    if (formData.bio !== currentMember.bio) formDataToSend.append("bio", formData.bio);
+    if (formData.name !== currentMember.name)
+      formDataToSend.append("name", formData.name);
+    if (formData.role !== currentMember.role)
+      formDataToSend.append("role", formData.role);
+    if (formData.bio !== currentMember.bio)
+      formDataToSend.append("bio", formData.bio);
     if (formData.profile_pic instanceof File) {
       formDataToSend.append("profile_pic", formData.profile_pic);
     }
 
     try {
       // Update existing member
-      await API.put(
-        `/team/${currentMember.id}`,
-        formDataToSend, {
-          withCredentials: true,
-        }
-      );
+      await API.put(`/team/${currentMember.id}`, formDataToSend, {
+        withCredentials: true,
+      });
       setSnackbar({
         open: true,
         message: "Team member updated successfully",
@@ -175,73 +175,77 @@ const AdminTeam = () => {
     // Create FormData object for file upload
     const formDataToSend = new FormData();
     console.log("Initializing FormData");
-    
+
     // Append form data with logging
     formDataToSend.append("name", formData.name);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("bio", formData.bio);
-    console.log("Basic form data appended:", { 
-        name: formData.name, 
-        role: formData.role, 
-        bio: formData.bio,
-        profile_pic: formData.profile_pic
+    console.log("Basic form data appended:", {
+      name: formData.name,
+      role: formData.role,
+      bio: formData.bio,
+      profile_pic: formData.profile_pic,
     });
 
     // Validate profile picture
     console.log("Checking profile picture:", formData.profile_pic);
     if (!formData.profile_pic || !(formData.profile_pic instanceof File)) {
-        console.error("Profile picture validation failed - either missing or not a File object");
-        setSnackbar({
-            open: true,
-            message: "Please select a profile picture",
-            severity: "error",
-        });
-        setLoading(false);
-        return;
+      console.error(
+        "Profile picture validation failed - either missing or not a File object"
+      );
+      setSnackbar({
+        open: true,
+        message: "Please select a profile picture",
+        severity: "error",
+      });
+      setLoading(false);
+      return;
     }
     formDataToSend.append("profile_pic", formData.profile_pic);
     console.log("Profile picture appended to FormData");
 
     try {
-        console.log("Attempting to POST to /team endpoint");
-        const response = await API.post("/team", formDataToSend, {
-            withCredentials: true,
-        });
+      console.log("Attempting to POST to /team endpoint");
+      const response = await API.post("/team", formDataToSend, {
+        withCredentials: true,
+      });
 
-        console.log("API Response:", response);
-        console.log("Response status:", response.status);
-        console.log("Response data:", response.data);
+      console.log("API Response:", response);
+      console.log("Response status:", response.status);
+      console.log("Response data:", response.data);
 
-        setSnackbar({
-            open: true,
-            message: "Team member added successfully",
-            severity: "success",
-        });
-        setShowModal(false);
-        console.log("Modal closed, refreshing team members list");
-        fetchTeamMembers(); // Refresh the list
+      setSnackbar({
+        open: true,
+        message: "Team member added successfully",
+        severity: "success",
+      });
+      setShowModal(false);
+      console.log("Modal closed, refreshing team members list");
+      fetchTeamMembers(); // Refresh the list
     } catch (err) {
-        console.error("Error in API call:", err);
-        console.error("Error details:", {
-            message: err.message,
-            response: err.response,
-            request: err.request,
-            config: err.config,
-        });
+      console.error("Error in API call:", err);
+      console.error("Error details:", {
+        message: err.message,
+        response: err.response,
+        request: err.request,
+        config: err.config,
+      });
 
-        const errorMessage = err.response?.data?.message || "Failed to add team member";
-        console.error("Derived error message:", errorMessage);
+      const errorMessage =
+        err.response?.data?.message || "Failed to add team member";
+      console.log("Full server error response:", err.response?.data);
+      console.error("Derived error message:", errorMessage);
 
-        setSnackbar({
-            open: true,
-            message: errorMessage,
-            severity: "error",
-        });
+      setSnackbar({
+        open: true,
+        message: errorMessage,
+        severity: "error",
+      });
     } finally {
-        console.log("Form submission process completed");
-        setLoading(false);
+      console.log("Form submission process completed");
+      setLoading(false);
     }
-};
+  };
 
   // Add new team member
   const handleAddNewMember = () => {
