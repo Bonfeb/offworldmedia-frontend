@@ -15,7 +15,7 @@ const onRefreshed = (token) => {
 };
 
 API.interceptors.request.use((config) => {
-  const publicEndpoints = ['/register/', '/login/', '/token/refresh/', '/services/', '/team/', '/contactus/', '/reviews/'];
+  const publicEndpoints = ['/register/', '/login/', '/token/refresh/', '/services/', '/contactus/', '/reviews/'];
   const isPublicEndpoint = publicEndpoints.some(endpoint => 
     config.url.includes(endpoint));
   if (!isPublicEndpoint){
