@@ -32,7 +32,6 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import API from "../../api";
-import { config } from "@fortawesome/fontawesome-svg-core";
 
 const AdminTeam = () => {
   const theme = useTheme();
@@ -100,10 +99,18 @@ const AdminTeam = () => {
     setShowModal(true);
   };
 
-  // Handle delete team member
+  // Handle opening delete confirmation dialog
+  const handleDeleteClick = (member) => {
+    setDeleteDialog({
+      open: true,
+      member: member,
+    });
+  };
+
+  // Handle actual deletion of team member
   const handleDelete = async () => {
-    if (!deleteDialog.currentMember) return;
-    const member_id = deleteDialog.currentMember.id;
+    if (!deleteDialog.member) return;
+    const member_id = deleteDialog.member.id;
     setLoading(true);
     try {
       const response = await API.delete(`/team/${member_id}/`);
@@ -118,7 +125,7 @@ const AdminTeam = () => {
         });
         fetchTeamMembers(); // Refetch the updated list
       } else {
-        throw new Error(`Unexepected Status code: ${response.status}`);
+        throw new Error(`Unexpected Status code: ${response.status}`);
       }
     } catch (err) {
       console.error("Error deleting team member:", {
@@ -454,7 +461,7 @@ const AdminTeam = () => {
                     <Button
                       variant="outline-danger"
                       size="sm"
-                      onClick={() => handleDelete(member.id)}
+                      onClick={() => handleDeleteClick(member)}
                     >
                       <DeleteIcon fontSize="small" /> {isMobile ? "" : "Delete"}
                     </Button>
@@ -584,6 +591,7 @@ const AdminTeam = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialog.open}
