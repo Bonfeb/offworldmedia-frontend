@@ -101,9 +101,9 @@ const AdminTeam = () => {
   };
 
   // Handle delete team member
-  const handleDelete = async (member_id) => {
-    if (!deleteDialog.member) return;
-    const member_id = deleteDialog.member.id;
+  const handleDelete = async () => {
+    if (!deleteDialog.currentMember) return;
+    const member_id = deleteDialog.currentMember.id;
     setLoading(true);
     try {
       const response = await API.delete(`/team/${member_id}/`);
