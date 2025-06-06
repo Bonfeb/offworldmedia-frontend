@@ -26,6 +26,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import API from "../../api";
+import { config } from "@fortawesome/fontawesome-svg-core";
 
 const AdminTeam = () => {
   const theme = useTheme();
@@ -90,7 +91,7 @@ const AdminTeam = () => {
         if (response.status === 204) {
           setSnackbar({
             open: true,
-            message: "Team member deleted successfully",
+            message: response.data?.message || "Team member deleted successfully",
             severity: "success",
           });
         fetchTeamMembers(); // Refetch the updated list
@@ -101,13 +102,16 @@ const AdminTeam = () => {
        catch (err) {
         console.error("Error deleting team member:", {
           message: err.message,
-          response: err.response,
-          request: err.request,
-          status: err.response?.status,
+          response: {
+            status: err.response?.status,
+            data: err.response?.data,
+            headers: err.response?.headers,
+          },
+          config: err.config,
         });
         setSnackbar({
           open: true,
-          message: "Failed to delete team member",
+          message: "Failed to delete team member. Please try again.",
           severity: "error",
         });
         console.error("Error deleting team member:", err);
