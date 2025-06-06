@@ -86,7 +86,7 @@ const AdminTeam = () => {
     if (window.confirm("Are you sure you want to delete this team member?")) {
       setLoading(true);
       try {
-        await API.delete(`/team/${member_id}`);
+        await API.delete(`/team/${member_id}/`);
         if (response.status === 204) {
           setSnackbar({
             open: true,
@@ -160,7 +160,7 @@ const AdminTeam = () => {
       // Update existing member
       console.log("Sending PUT request to update team member:", currentMember.id);
       console.log("FormData to send:", formDataToSend);
-      await API.put(`/team/${currentMember.id}`, formDataToSend, {
+      await API.put(`/team/${currentMember.id}/`, formDataToSend, {
         withCredentials: true,
       });
       setSnackbar({
