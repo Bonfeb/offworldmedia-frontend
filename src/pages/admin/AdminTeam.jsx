@@ -87,13 +87,24 @@ const AdminTeam = () => {
       setLoading(true);
       try {
         await API.delete(`/team/${member_id}`);
-        setSnackbar({
-          open: true,
-          message: "Team member deleted successfully",
-          severity: "success",
-        });
+        if (response.status === 204) {
+          setSnackbar({
+            open: true,
+            message: "Team member deleted successfully",
+            severity: "success",
+          });
         fetchTeamMembers(); // Refetch the updated list
-      } catch (err) {
+       } else {
+        throw new Error(`Unexepected Status code: ${response.status}`);
+       }
+      }
+       catch (err) {
+        console.error("Error deleting team member:", {
+          message: err.message,
+          response: err.response,
+          request: err.request,
+          status: err.response?.status,
+        });
         setSnackbar({
           open: true,
           message: "Failed to delete team member",
@@ -132,18 +143,23 @@ const AdminTeam = () => {
 
     // Create FormData object for file upload
     const formDataToSend = new FormData();
-    if (formData.name !== currentMember.name)
-      formDataToSend.append("name", formData.name);
-    if (formData.role !== currentMember.role)
-      formDataToSend.append("role", formData.role);
-    if (formData.bio !== currentMember.bio)
-      formDataToSend.append("bio", formData.bio);
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("role", formData.role);
+    formDataToSend.append("bio", formData.bio);
+    console.log("Preparing to update team member:")
     if (formData.profile_pic instanceof File) {
       formDataToSend.append("profile_pic", formData.profile_pic);
     }
-
+    console.log("FormData prepared for update:", {
+      name: formData.name,
+      role: formData.role,
+      bio: formData.bio,
+      profile_pic: formData.profile_pic ? "File selected" : "No new file",
+    });
     try {
       // Update existing member
+      console.log("Sending PUT request to update team member:", currentMember.id);
+      console.log("FormData to send:", formDataToSend);
       await API.put(`/team/${currentMember.id}`, formDataToSend, {
         withCredentials: true,
       });
