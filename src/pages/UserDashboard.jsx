@@ -193,7 +193,7 @@ const UserDashboard = () => {
     try {
       const response = await API.post(
         `/booking/${serviceId}/`,
-        bookingData,
+        {},
         { withCredentials: true }
       );
 
