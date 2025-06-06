@@ -150,112 +150,110 @@ const UserDashboard = () => {
   const handleBookService = async (serviceId) => {
     console.log("Cart content:", cart);
     console.log("Looking for service_id:", serviceId);
-    setBookingServiceId(serviceId);
-    setBookingLoading(true);
 
     const cartItem = cart.find((item) => item.service === serviceId);
     console.log("🔍 Found Cart Item:", cartItem);
 
     if (!serviceId) {
       console.error("Invalid serviceId:", serviceId);
-      setBookingLoading(false);
       setShowFailureModal(true);
       return;
     }
 
-    if (!cartItem) {
-      console.error("Service not found in cart:", serviceId);
-      setShowFailureModal(true);
-      return;
-    }
-
-    const { event_date, event_location, event_time } = cartItem;
-    console.log("Cart item found:", { event_date, event_location, event_time });
-
-    const bookingData = {
-      service_id: serviceId,
-      event_date,
-      event_time,
-      event_location,
-      status: "pending",
-    };
-
-    if (
-      !bookingData.event_date ||
-      !bookingData.event_time ||
-      !bookingData.event_location
-    ) {
-      console.error("Missing event details:", bookingData);
-      setShowFailureModal(true);
-      return;
-    }
-
+    setBookingLoading(true);
     try {
+      console.log("Looking for service_id:", serviceId);
+      const cartItem = cart.find((item) => item.service === serviceId);
+
+      if (!cartItem) {
+        console.error("Service not found in cart:", serviceId);
+        throw new Error("SERVICE_NOT_IN_CART");
+      }
+
+      const { event_date, event_location, event_time, service_id } = cartItem;
+      console.log("Cart item found:", {
+        service_id,
+        event_date,
+        event_location,
+        event_time,
+      });
+
+      // Validate required fields
+      if (!event_date || !event_time || !event_location) {
+        console.error("Missing event details in cart item:", cartItem);
+        throw new Error("MISSING_EVENT_DETAILS");
+      }
+
+      // Send minimal data - backend should get the rest from cart
       const response = await API.post(
         `/booking/${serviceId}/`,
-        {},
+        { status: "pending" }, // Only send what's not in cart
         { withCredentials: true }
       );
 
-      if (response.status === 201) {
-        // Prepare email data
-        const emailData = {
-          service_name: cartItem.service_name || "Service",
-          customer_name: user.name || "Customer",
-          customer_email: user.email,
-          booking_id: response.data.booking_id || "N/A",
-          event_date: formatDate(event_date),
-          event_time: event_time,
-          event_location: event_location,
-          booking_date: formatDate(new Date()),
-          to_email: user.email,
-          admin_email: response.data.admin_emails || ["bonfebdevs@gmail.com"],
-        };
+      if (response.status !== 201) {
+        throw new Error("UNEXPECTED_RESPONSE");
+      }
 
-        try {
-          // Show loading notification
-          const toastId = toast.loading("Notifying admins...");
+      // Handle success case
+      const emailData = {
+        service_name: cartItem.service_name || "Service",
+        customer_name: user.name || "Customer",
+        customer_email: user.email,
+        booking_id: response.data.booking_id || "N/A",
+        event_date: formatDate(event_date),
+        event_time: event_time,
+        event_location: event_location,
+        booking_date: formatDate(new Date()),
+        to_email: user.email,
+        admin_email: response.data.admin_emails || ["bonfebdevs@gmail.com"],
+      };
 
-          await emailjs.send(
-            import.meta.env.VITE_EMAILJS_SERVICE_ID,
-            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-            emailData,
-            import.meta.env.VITE_EMAILJS_USER_ID
-          );
+      const toastId = toast.loading("Notifying admins...");
 
-          // Update to success notification
-          toast.update(toastId, {
-            render: "Admins have been notified!",
-            type: "success",
-            isLoading: false,
-            autoClose: 5000,
-            closeButton: true,
-          });
+      try {
+        await emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+          emailData,
+          import.meta.env.VITE_EMAILJS_USER_ID
+        );
 
-          setSuccessMessage(
-            "Service booked successfully! A confirmation has been sent to your email."
-          );
-        } catch (emailError) {
-          console.error("Email sending failed:", emailError);
-          toast.error("Booking successful but admin notification failed");
-          setSuccessMessage(
-            "Service booked successfully, but email confirmation failed to send."
-          );
-        }
+        toast.update(toastId, {
+          render: "Admins have been notified!",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+          closeButton: true,
+        });
 
+        setSuccessMessage(
+          "Service booked successfully! A confirmation has been sent to your email."
+        );
         setShowSuccessModal(true);
         fetchUserDashboard();
-      } else {
-        toast.error("Booking failed - unexpected response");
-        setShowFailureModal(true);
+      } catch (emailError) {
+        console.error("Email sending failed:", emailError);
+        toast.error("Booking successful but admin notification failed");
+        setSuccessMessage(
+          "Service booked successfully, but email confirmation failed to send."
+        );
       }
     } catch (error) {
-      toast.error("Booking failed - please try again");
-      console.error("Error booking service:", error.response?.data || error);
+      console.error("Booking error:", error.message, error.response?.data);
+
+      const errorMessage =
+        {
+          SERVICE_NOT_IN_CART: "Service not found in your cart",
+          MISSING_EVENT_DETAILS: "Incomplete event details",
+          UNEXPECTED_RESPONSE: "Unexpected server response",
+        }[error.message] || "Booking failed - please try again";
+
+      toast.error(errorMessage);
       setShowFailureModal(true);
+    } finally {
+      setBookingLoading(false);
     }
-    setBookingLoading(false);
-    setBookingServiceId(null);
   };
 
   const handleToUpdateBooking = (booking, serviceId) => {
