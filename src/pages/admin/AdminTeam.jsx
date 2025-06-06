@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Row,
@@ -19,6 +19,12 @@ import {
   Alert,
   useMediaQuery,
   useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Slide
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -40,7 +46,14 @@ const AdminTeam = () => {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
+    vertical: "top",
+    horizontal: "center",
+    autoHideDuration: 3000,
     severity: "success",
+  });
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
   });
 
   // Form state for editing/adding team members
@@ -49,6 +62,11 @@ const AdminTeam = () => {
     role: "",
     bio: "",
     profile_pic: null,
+  });
+
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    member: null,
   });
 
   useEffect(() => {
@@ -84,40 +102,43 @@ const AdminTeam = () => {
 
   // Handle delete team member
   const handleDelete = async (member_id) => {
-    if (window.confirm("Are you sure you want to delete this team member?")) {
-      setLoading(true);
-      try {
-        await API.delete(`/team/${member_id}/`);
-        if (response.status === 204) {
-          setSnackbar({
-            open: true,
-            message: response.data?.message || "Team member deleted successfully",
-            severity: "success",
-          });
-        fetchTeamMembers(); // Refetch the updated list
-       } else {
-        throw new Error(`Unexepected Status code: ${response.status}`);
-       }
-      }
-       catch (err) {
-        console.error("Error deleting team member:", {
-          message: err.message,
-          response: {
-            status: err.response?.status,
-            data: err.response?.data,
-            headers: err.response?.headers,
-          },
-          config: err.config,
-        });
+    if (!deleteDialog.member) return;
+    const member_id = deleteDialog.member.id;
+    setLoading(true);
+    try {
+      const response = await API.delete(`/team/${member_id}/`);
+      if (response.status === 204) {
         setSnackbar({
           open: true,
-          message: "Failed to delete team member. Please try again.",
-          severity: "error",
+          vertical: "top",
+          horizontal: "center",
+          autoHideDuration: 3000,
+          message: response.data?.message || "Team member deleted successfully",
+          severity: "success",
         });
-        console.error("Error deleting team member:", err);
-      } finally {
-        setLoading(false);
+        fetchTeamMembers(); // Refetch the updated list
+      } else {
+        throw new Error(`Unexepected Status code: ${response.status}`);
       }
+    } catch (err) {
+      console.error("Error deleting team member:", {
+        message: err.message,
+        response: {
+          status: err.response?.status,
+          data: err.response?.data,
+          headers: err.response?.headers,
+        },
+        config: err.config,
+      });
+      setSnackbar({
+        open: true,
+        message: "Failed to delete team member. Please try again.",
+        severity: "error",
+      });
+      console.error("Error deleting team member:", err);
+    } finally {
+      setLoading(false);
+      setDeleteDialog({ open: false, member: null });
     }
   };
 
@@ -150,7 +171,7 @@ const AdminTeam = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("bio", formData.bio);
-    console.log("Preparing to update team member:")
+    console.log("Preparing to update team member:");
     if (formData.profile_pic instanceof File) {
       formDataToSend.append("profile_pic", formData.profile_pic);
     }
@@ -162,7 +183,10 @@ const AdminTeam = () => {
     });
     try {
       // Update existing member
-      console.log("Sending PUT request to update team member:", currentMember.id);
+      console.log(
+        "Sending PUT request to update team member:",
+        currentMember.id
+      );
       console.log("FormData to send:", formDataToSend);
       await API.put(`/team/${currentMember.id}/`, formDataToSend, {
         withCredentials: true,
@@ -547,8 +571,8 @@ const AdminTeam = () => {
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: isMobile ? "center" : "right",
+          vertical: "top",
+          horizontal: "center",
         }}
       >
         <Alert
@@ -560,6 +584,32 @@ const AdminTeam = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, member: null })}
+        TransitionComponent={Transition}
+        keepMounted
+      >
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete{" "}
+            <strong>{deleteDialog.member?.name}</strong>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setDeleteDialog({ open: false, member: null })}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} variant="danger">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
