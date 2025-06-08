@@ -264,9 +264,19 @@ const AdminUsers = () => {
         const details = await API.get(
           `/admin-dashboard/?action=user-details&user_id=${userId}`
         );
+        console.log("Fetched user details:", details.data);
+        const responseData = details.data;
         setUserDetails((prev) => ({
           ...prev,
-          [userId]: details.data,
+          [userId]: {
+            user: responseData.user || {},
+            bookings: responseData.bookings || [],
+            total_bookings: responseData.total_bookings || 0,
+            reviews: responseData.reviews || [],
+            total_reviews: responseData.total_reviews || 0,
+            messages: responseData.messages || [],
+            total_messages: responseData.total_messages || 0,
+          },
         }));
       } catch (err) {
         console.error("Error fetching user details:", err);
@@ -274,8 +284,11 @@ const AdminUsers = () => {
           ...prev,
           [userId]: {
             bookings: [],
+            total_bookings: [],
             reviews: [],
+            total_reviews: [],
             messages: [],
+            total_messages: [],
           },
         }));
       }
@@ -863,8 +876,8 @@ const AdminUsers = () => {
                                             }}
                                           >
                                             📅 Bookings (
-                                            {userDetails[user.id]?.bookings
-                                              ?.length || 0}
+                                            {userDetails[user.id]
+                                              ?.total_bookings || 0}
                                             )
                                           </Card.Header>
                                           <Card.Body
@@ -907,7 +920,9 @@ const AdminUsers = () => {
                                                     (booking) => (
                                                       <tr key={booking.id}>
                                                         <td>#{booking.id}</td>
-                                                        <td>{booking.date}</td>
+                                                        <td>
+                                                          {booking.event_date}
+                                                        </td>
                                                         <td>
                                                           <Chip
                                                             label={
@@ -956,8 +971,8 @@ const AdminUsers = () => {
                                             }}
                                           >
                                             ⭐ Reviews (
-                                            {userDetails[user.id]?.reviews
-                                              ?.length || 0}
+                                            {userDetails[user.id]
+                                              ?.total_reviews || 0}
                                             )
                                           </Card.Header>
                                           <Card.Body
@@ -1025,8 +1040,8 @@ const AdminUsers = () => {
                                             }}
                                           >
                                             💬 Messages (
-                                            {userDetails[user.id]?.messages
-                                              ?.length || 0}
+                                            {userDetails[user.id]
+                                              ?.total_messages || 0}
                                             )
                                           </Card.Header>
                                           <Card.Body

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Spinner, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Spinner, Alert } from "react-bootstrap";
 import {
   TextField,
   Select,
@@ -8,12 +8,12 @@ import {
   Snackbar,
   Alert as MuiAlert,
   MenuItem,
-  Grid
-} from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import API from '../../../api';
+  Grid,
+} from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import API from "../../../api";
 
 const BookingModals = ({
   createOpen,
@@ -29,46 +29,52 @@ const BookingModals = ({
   refreshData,
 }) => {
   const [updateFormValues, setUpdateFormValues] = useState({
-    user_id: '',
-    service_id: '',
+    user_id: "",
+    service_id: "",
     event_date: null,
     event_time: null,
-    event_location: '',
-    status: 'pending',
+    event_location: "",
+    status: "pending",
   });
 
   const [createFormValues, setCreateFormValues] = useState({
-    user_id: '',
-    service_id: '',
+    user_id: "",
+    service_id: "",
     event_date: null,
     event_time: null,
-    event_location: '',
-    status: 'pending',
+    event_location: "",
+    status: "pending",
   });
 
   const [users, setUsers] = useState([]);
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [snackbar, setSnackbar] = useState({ 
-    open: false, 
-    message: '', 
-    severity: 'success' 
+  const [error, setError] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [userRes, serviceRes] = await Promise.all([
-          API.get('/admin-dashboard/?action=users'),
-          API.get('/admin-dashboard/?action=services'),
+          API.get("/admin-dashboard/?action=users"),
+          API.get("/admin-dashboard/?action=services"),
         ]);
-        console.log("Users and Services:", userRes, serviceRes);
-        setUsers(userRes.data);
-        setServices(serviceRes.data);
+        const userData = Array.isArray(userRes.data) ? userRes.data : [];
+        const serviceData = Array.isArray(serviceRes.data)
+          ? serviceRes.data
+          : [];
+        console.log("Users and Services:", userData, serviceData);
+        setUsers(userData);
+        setServices(serviceData);
       } catch (err) {
-        setError('Failed to load users or services');
+        setError("Failed to load users or services");
+        setUsers([]);
+        setServices([]);
       }
     };
 
@@ -80,31 +86,35 @@ const BookingModals = ({
   useEffect(() => {
     if (bookingToUpdate) {
       setUpdateFormValues({
-        user_id: bookingToUpdate.user?.id || '',
-        service_id: bookingToUpdate.service?.id || '',
-        event_date: bookingToUpdate.event_date ? new Date(bookingToUpdate.event_date) : null,
-        event_time: bookingToUpdate.event_time ? new Date(`2000-01-01T${bookingToUpdate.event_time}`) : null,
-        event_location: bookingToUpdate.event_location || '',
-        status: bookingToUpdate.status || 'pending',
+        user_id: bookingToUpdate.user?.id || "",
+        service_id: bookingToUpdate.service?.id || "",
+        event_date: bookingToUpdate.event_date
+          ? new Date(bookingToUpdate.event_date)
+          : null,
+        event_time: bookingToUpdate.event_time
+          ? new Date(`2000-01-01T${bookingToUpdate.event_time}`)
+          : null,
+        event_location: bookingToUpdate.event_location || "",
+        status: bookingToUpdate.status || "pending",
       });
     }
   }, [bookingToUpdate]);
 
   const handleCreateInputChange = (field, value) => {
-    setCreateFormValues(prev => ({ ...prev, [field]: value }));
+    setCreateFormValues((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleUpdateInputChange = (field, value) => {
-    setUpdateFormValues(prev => ({ ...prev, [field]: value }));
+    setUpdateFormValues((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') return;
-    setSnackbar(prev => ({ ...prev, open: false }));
+    if (reason === "clickaway") return;
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  const formatDate = (date) => date?.toISOString().split('T')[0] || null;
-  const formatTime = (date) => date?.toTimeString().split(' ')[0] || null;
+  const formatDate = (date) => date?.toISOString().split("T")[0] || null;
+  const formatTime = (date) => date?.toTimeString().split(" ")[0] || null;
 
   const handleCreateSubmit = async () => {
     try {
@@ -117,21 +127,21 @@ const BookingModals = ({
         event_location: createFormValues.event_location,
         status: createFormValues.status,
       };
-      await API.post('/admin-dashboard/', payload);
+      await API.post("/admin-dashboard/", payload);
       onCreateConfirm(payload);
       onCreateClose();
       refreshData();
       setSnackbar({
         open: true,
-        message: 'Booking created successfully',
-        severity: 'success',
+        message: "Booking created successfully",
+        severity: "success",
       });
     } catch (err) {
-      setError('Failed to create booking');
+      setError("Failed to create booking");
       setSnackbar({
         open: true,
-        message: 'Failed to create booking',
-        severity: 'error',
+        message: "Failed to create booking",
+        severity: "error",
       });
     } finally {
       setIsLoading(false);
@@ -159,15 +169,15 @@ const BookingModals = ({
       refreshData();
       setSnackbar({
         open: true,
-        message: 'Booking updated successfully',
-        severity: 'success',
+        message: "Booking updated successfully",
+        severity: "success",
       });
     } catch (err) {
-      setError('Failed to update booking');
+      setError("Failed to update booking");
       setSnackbar({
         open: true,
-        message: 'Failed to update booking',
-        severity: 'error',
+        message: "Failed to update booking",
+        severity: "error",
       });
     } finally {
       setIsLoading(false);
@@ -177,21 +187,23 @@ const BookingModals = ({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      await API.delete(`/admin-dashboard/${bookingToUpdate.id}?type=booking&confirm=true`);
+      await API.delete(
+        `/admin-dashboard/${bookingToUpdate.id}?type=booking&confirm=true`
+      );
       onDeleteConfirm(bookingToUpdate.id);
       onDeleteClose();
       refreshData();
       setSnackbar({
         open: true,
-        message: 'Booking deleted successfully',
-        severity: 'success',
+        message: "Booking deleted successfully",
+        severity: "success",
       });
     } catch (err) {
-      setError('Failed to delete booking');
+      setError("Failed to delete booking");
       setSnackbar({
         open: true,
-        message: 'Failed to delete booking',
-        severity: 'error',
+        message: "Failed to delete booking",
+        severity: "error",
       });
     } finally {
       setIsLoading(false);
@@ -201,7 +213,13 @@ const BookingModals = ({
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       {/* Create Booking Modal */}
-      <Modal show={createOpen} onHide={onCreateClose} centered backdrop="static" size="lg">
+      <Modal
+        show={createOpen}
+        onHide={onCreateClose}
+        centered
+        backdrop="static"
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Create Booking</Modal.Title>
         </Modal.Header>
@@ -215,13 +233,21 @@ const BookingModals = ({
                   labelId="create-user-label"
                   value={createFormValues.user_id}
                   label="User"
-                  onChange={(e) => handleCreateInputChange('user_id', e.target.value)}
+                  onChange={(e) =>
+                    handleCreateInputChange("user_id", e.target.value)
+                  }
                 >
-                  {users.map(user => (
-                    <MenuItem key={`create-user-${user.id}`} value={user.id}>
-                      {user.username}
+                  {users?.length === 0 ? (
+                    <MenuItem value="" disabled>
+                      Loading users...
                     </MenuItem>
-                  ))}
+                  ) : (
+                    users.map((user) => (
+                      <MenuItem key={`create-user-${user.id}`} value={user.id}>
+                        {user.username}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </FormControl>
             </Grid>
@@ -232,13 +258,24 @@ const BookingModals = ({
                   labelId="create-service-label"
                   value={createFormValues.service_id}
                   label="Service"
-                  onChange={(e) => handleCreateInputChange('service_id', e.target.value)}
+                  onChange={(e) =>
+                    handleCreateInputChange("service_id", e.target.value)
+                  }
                 >
-                  {services.map(service => (
-                    <MenuItem key={`create-service-${service.id}`} value={service.id}>
-                      {service.name}
+                  {services.length === 0 ? (
+                    <MenuItem value="" disabled>
+                      Loading services...
                     </MenuItem>
-                  ))}
+                  ) : (
+                    services.map((service) => (
+                      <MenuItem
+                        key={`create-service-${service.id}`}
+                        value={service.id}
+                      >
+                        {service.name}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </FormControl>
             </Grid>
@@ -246,7 +283,7 @@ const BookingModals = ({
               <DatePicker
                 label="Event Date"
                 value={createFormValues.event_date}
-                onChange={(date) => handleCreateInputChange('event_date', date)}
+                onChange={(date) => handleCreateInputChange("event_date", date)}
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </Grid>
@@ -254,7 +291,7 @@ const BookingModals = ({
               <TimePicker
                 label="Event Time"
                 value={createFormValues.event_time}
-                onChange={(time) => handleCreateInputChange('event_time', time)}
+                onChange={(time) => handleCreateInputChange("event_time", time)}
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </Grid>
@@ -262,7 +299,9 @@ const BookingModals = ({
               <TextField
                 label="Event Location"
                 value={createFormValues.event_location}
-                onChange={(e) => handleCreateInputChange('event_location', e.target.value)}
+                onChange={(e) =>
+                  handleCreateInputChange("event_location", e.target.value)
+                }
                 fullWidth
               />
             </Grid>
@@ -273,26 +312,46 @@ const BookingModals = ({
                   labelId="create-status-label"
                   value={createFormValues.status}
                   label="Status"
-                  onChange={(e) => handleCreateInputChange('status', e.target.value)}
+                  onChange={(e) =>
+                    handleCreateInputChange("status", e.target.value)
+                  }
                 >
-                  <MenuItem value="pending" key="create-status-pending">Pending</MenuItem>
-                  <MenuItem value="cancelled" key="create-status-cancelled">Cancelled</MenuItem>
-                  <MenuItem value="completed" key="create-status-completed">Completed</MenuItem>
+                  <MenuItem value="pending" key="create-status-pending">
+                    Pending
+                  </MenuItem>
+                  <MenuItem value="cancelled" key="create-status-cancelled">
+                    Cancelled
+                  </MenuItem>
+                  <MenuItem value="completed" key="create-status-completed">
+                    Completed
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
           </Grid>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onCreateClose}>Cancel</Button>
-          <Button variant="primary" onClick={handleCreateSubmit} disabled={isLoading}>
-            {isLoading ? <Spinner animation="border" size="sm" /> : 'Create'}
+          <Button variant="secondary" onClick={onCreateClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleCreateSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? <Spinner animation="border" size="sm" /> : "Create"}
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Update Booking Modal */}
-      <Modal show={updateOpen} onHide={onUpdateClose} centered backdrop="static" size="lg">
+      <Modal
+        show={updateOpen}
+        onHide={onUpdateClose}
+        centered
+        backdrop="static"
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Update Booking</Modal.Title>
         </Modal.Header>
@@ -306,13 +365,21 @@ const BookingModals = ({
                   labelId="update-user-label"
                   value={updateFormValues.user_id}
                   label="User"
-                  onChange={(e) => handleUpdateInputChange('user_id', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateInputChange("user_id", e.target.value)
+                  }
                 >
-                  {users.map(user => (
-                    <MenuItem key={`update-user-${user.id}`} value={user.id}>
-                      {user.username}
+                  {users.length === 0 ? (
+                    <MenuItem value="" disabled>
+                      Loading users...
                     </MenuItem>
-                  ))}
+                  ) : (
+                    users.map((user) => (
+                      <MenuItem key={`update-user-${user.id}`} value={user.id}>
+                        {user.username}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </FormControl>
             </Grid>
@@ -323,13 +390,24 @@ const BookingModals = ({
                   labelId="update-service-label"
                   value={updateFormValues.service_id}
                   label="Service"
-                  onChange={(e) => handleUpdateInputChange('service_id', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateInputChange("service_id", e.target.value)
+                  }
                 >
-                  {services.map(service => (
-                    <MenuItem key={`update-service-${service.id}`} value={service.id}>
-                      {service.name}
+                  {services.length === 0 ? (
+                    <MenuItem value="" disabled>
+                      Loading services...
                     </MenuItem>
-                  ))}
+                  ) : (
+                    services.map((service) => (
+                      <MenuItem
+                        key={`update-service-${service.id}`}
+                        value={service.id}
+                      >
+                        {service.name}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </FormControl>
             </Grid>
@@ -337,7 +415,7 @@ const BookingModals = ({
               <DatePicker
                 label="Event Date"
                 value={updateFormValues.event_date}
-                onChange={(date) => handleUpdateInputChange('event_date', date)}
+                onChange={(date) => handleUpdateInputChange("event_date", date)}
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </Grid>
@@ -345,7 +423,7 @@ const BookingModals = ({
               <TimePicker
                 label="Event Time"
                 value={updateFormValues.event_time}
-                onChange={(time) => handleUpdateInputChange('event_time', time)}
+                onChange={(time) => handleUpdateInputChange("event_time", time)}
                 renderInput={(params) => <TextField {...params} fullWidth />}
               />
             </Grid>
@@ -353,7 +431,9 @@ const BookingModals = ({
               <TextField
                 label="Event Location"
                 value={updateFormValues.event_location}
-                onChange={(e) => handleUpdateInputChange('event_location', e.target.value)}
+                onChange={(e) =>
+                  handleUpdateInputChange("event_location", e.target.value)
+                }
                 fullWidth
               />
             </Grid>
@@ -364,36 +444,58 @@ const BookingModals = ({
                   labelId="update-status-label"
                   value={updateFormValues.status}
                   label="Status"
-                  onChange={(e) => handleUpdateInputChange('status', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateInputChange("status", e.target.value)
+                  }
                 >
-                  <MenuItem value="pending" key="update-status-pending">Pending</MenuItem>
-                  <MenuItem value="cancelled" key="update-status-cancelled">Cancelled</MenuItem>
-                  <MenuItem value="completed" key="update-status-completed">Completed</MenuItem>
+                  <MenuItem value="pending" key="update-status-pending">
+                    Pending
+                  </MenuItem>
+                  <MenuItem value="cancelled" key="update-status-cancelled">
+                    Cancelled
+                  </MenuItem>
+                  <MenuItem value="completed" key="update-status-completed">
+                    Completed
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
           </Grid>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onUpdateClose}>Cancel</Button>
-          <Button variant="primary" onClick={handleUpdateSubmit} disabled={isLoading}>
-            {isLoading ? <Spinner animation="border" size="sm" /> : 'Update'}
+          <Button variant="secondary" onClick={onUpdateClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleUpdateSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? <Spinner animation="border" size="sm" /> : "Update"}
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Delete Booking Modal */}
-      <Modal show={deleteOpen} onHide={onDeleteClose} centered backdrop="static">
+      <Modal
+        show={deleteOpen}
+        onHide={onDeleteClose}
+        centered
+        backdrop="static"
+      >
         <Modal.Header closeButton className="bg-danger text-white">
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete this booking? This action cannot be undone.
+          Are you sure you want to delete this booking? This action cannot be
+          undone.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onDeleteClose}>Cancel</Button>
+          <Button variant="secondary" onClick={onDeleteClose}>
+            Cancel
+          </Button>
           <Button variant="danger" onClick={handleDelete} disabled={isLoading}>
-            {isLoading ? <Spinner animation="border" size="sm" /> : 'Delete'}
+            {isLoading ? <Spinner animation="border" size="sm" /> : "Delete"}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -402,7 +504,7 @@ const BookingModals = ({
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         key="snackbar"
         action={
           <Button color="inherit" onClick={handleSnackbarClose}>
@@ -410,18 +512,21 @@ const BookingModals = ({
           </Button>
         }
       >
-        <MuiAlert 
-        onClose={handleSnackbarClose} 
-        severity={snackbar.severity} 
-        sx={{ width: '100%' }}
-        elevation={6}
-        variant="filled"
-        style={{ backgroundColor: snackbar.severity === "error" ? "#f44336" : "#4caf50" }}>
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+          elevation={6}
+          variant="filled"
+          style={{
+            backgroundColor:
+              snackbar.severity === "error" ? "#f44336" : "#4caf50",
+          }}
+        >
           {snackbar.message}
         </MuiAlert>
       </Snackbar>
     </LocalizationProvider>
-    
   );
 };
 
