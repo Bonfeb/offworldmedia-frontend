@@ -287,8 +287,9 @@ const AdminUsers = () => {
           bookings: responseData.bookings?.length || 0,
           reviews: responseData.reviews?.length || 0,
           messages: responseData.messages?.length || 0,
+          total_bookings: responseData.total_bookings || 0,
+          total_reviews: responseData.total_reviews || 0,
         });
-
       } catch (err) {
         console.error("Error fetching user details:", err);
         setUserDetails((prev) => ({
@@ -741,7 +742,11 @@ const AdminUsers = () => {
                                       <Card.Body className="text-center">
                                         <div className="mb-4">
                                           <Avatar
-                                            src={user.profile_pic}
+                                            src={
+                                              userDetails[user.id]?.user
+                                                ?.profile_pic ||
+                                              user.profile_pic
+                                            }
                                             sx={{
                                               width: 100,
                                               height: 100,
@@ -750,7 +755,10 @@ const AdminUsers = () => {
                                               mb: 2,
                                             }}
                                           >
-                                            {user.first_name
+                                            {(
+                                              userDetails[user.id]?.user
+                                                ?.first_name || user.first_name
+                                            )
                                               ?.charAt(0)
                                               ?.toUpperCase()}
                                           </Avatar>
@@ -770,8 +778,12 @@ const AdminUsers = () => {
                                                   variant="h6"
                                                   style={{ color: "white" }}
                                                 >
-                                                  {user.first_name}{" "}
-                                                  {user.last_name}
+                                                  {userDetails[user.id]?.user
+                                                    ?.first_name ||
+                                                    user.first_name}{" "}
+                                                  {userDetails[user.id]?.user
+                                                    ?.last_name ||
+                                                    user.last_name}
                                                 </Typography>
                                               </div>
                                             </div>
@@ -793,7 +805,9 @@ const AdminUsers = () => {
                                                   variant="h6"
                                                   style={{ color: "white" }}
                                                 >
-                                                  @{user.username}
+                                                  @
+                                                  {userDetails[user.id]?.user
+                                                    ?.username || user.username}
                                                 </Typography>
                                               </div>
                                             </div>
@@ -815,7 +829,9 @@ const AdminUsers = () => {
                                                   variant="body1"
                                                   style={{ color: "white" }}
                                                 >
-                                                  {user.address ||
+                                                  {userDetails[user.id]?.user
+                                                    ?.address ||
+                                                    user.address ||
                                                     "Not provided"}
                                                 </Typography>
                                               </div>
@@ -838,7 +854,10 @@ const AdminUsers = () => {
                                                   variant="body1"
                                                   style={{ color: "white" }}
                                                 >
-                                                  {user.email || "Not provided"}
+                                                  {userDetails[user.id]?.user
+                                                    ?.email ||
+                                                    user.email ||
+                                                    "Not provided"}
                                                 </Typography>
                                               </div>
                                             </div>
@@ -860,7 +879,10 @@ const AdminUsers = () => {
                                                   variant="body1"
                                                   style={{ color: "white" }}
                                                 >
-                                                  {user.phone || "Not provided"}
+                                                  {userDetails[user.id]?.user
+                                                    ?.phone ||
+                                                    user.phone ||
+                                                    "Not provided"}
                                                 </Typography>
                                               </div>
                                             </div>
@@ -886,12 +908,15 @@ const AdminUsers = () => {
                                               fontWeight: "bold",
                                             }}
                                           >
-                                            <Typography variant="h6" className="mb-0">
-                                            📅 Bookings (
-                                            {userDetails[user.id]
-                                              ?.data.total_bookings || 0}
-                                            )
-                                          </Typography>
+                                            <Typography
+                                              variant="h6"
+                                              className="mb-0"
+                                            >
+                                              📅 Bookings (
+                                              {userDetails[user.id]
+                                                ?.total_bookings || 0}
+                                              )
+                                            </Typography>
                                           </Card.Header>
                                           <Card.Body
                                             style={{
@@ -962,7 +987,9 @@ const AdminUsers = () => {
                                                 className="text-center py-3"
                                                 style={{ color: "white" }}
                                               >
-                                                No bookings found
+                                                {userDetails[user.id]
+                                                  ? "No bookings found"
+                                                  : "Loading bookings..."}
                                               </Typography>
                                             )}
                                           </Card.Body>
@@ -1031,7 +1058,9 @@ const AdminUsers = () => {
                                                 className="text-center py-3"
                                                 style={{ color: "white" }}
                                               >
-                                                No reviews found
+                                                {userDetails[user.id]
+                                                  ? "No reviews found"
+                                                  : "Loading reviews..."}
                                               </Typography>
                                             )}
                                           </Card.Body>
@@ -1082,14 +1111,16 @@ const AdminUsers = () => {
                                                     variant="caption"
                                                     style={{ color: "#aaa" }}
                                                   >
-                                                    {message.date}
+                                                    {message.date ||
+                                                      message.created_at}
                                                   </Typography>
                                                   <Typography
                                                     variant="body2"
                                                     className="mt-1"
                                                     style={{ color: "white" }}
                                                   >
-                                                    {message.content}
+                                                    {message.content ||
+                                                      message.message}
                                                   </Typography>
                                                 </div>
                                               ))
@@ -1100,7 +1131,9 @@ const AdminUsers = () => {
                                                 className="text-center py-3"
                                                 style={{ color: "white" }}
                                               >
-                                                No messages found
+                                                {userDetails[user.id]
+                                                  ? "No messages found"
+                                                  : "Loading messages..."}
                                               </Typography>
                                             )}
                                           </Card.Body>
