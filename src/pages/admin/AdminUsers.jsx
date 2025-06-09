@@ -261,10 +261,13 @@ const AdminUsers = () => {
 
     if (!newExpandedRows[userId] && !userDetails[userId]) {
       try {
+        console.log("Fetching details for user:", userId);
         const details = await API.get(
           `/admin-dashboard/?action=user-details&user_id=${userId}`
         );
+        console.log("API response for user details:", details);
         console.log("Fetched user details:", details.data);
+
         const responseData = details.data;
         setUserDetails((prev) => ({
           ...prev,
@@ -278,6 +281,14 @@ const AdminUsers = () => {
             total_messages: responseData.total_messages || 0,
           },
         }));
+
+        console.log("Stored user details:", {
+          userId,
+          bookings: responseData.bookings?.length || 0,
+          reviews: responseData.reviews?.length || 0,
+          messages: responseData.messages?.length || 0,
+        });
+
       } catch (err) {
         console.error("Error fetching user details:", err);
         setUserDetails((prev) => ({
@@ -875,10 +886,12 @@ const AdminUsers = () => {
                                               fontWeight: "bold",
                                             }}
                                           >
+                                            <Typography variant="h6" className="mb-0">
                                             📅 Bookings (
                                             {userDetails[user.id]
-                                              ?.total_bookings || 0}
+                                              ?.data.total_bookings || 0}
                                             )
+                                          </Typography>
                                           </Card.Header>
                                           <Card.Body
                                             style={{
