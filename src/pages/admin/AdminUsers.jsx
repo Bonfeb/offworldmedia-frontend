@@ -263,7 +263,7 @@ const AdminUsers = () => {
       try {
         console.log("Fetching details for user:", userId);
         const details = await API.get(
-          `/admin-dashboard/?action=user-details&user_id=${userId}`
+          `/admin-dashboard/?action=users&user_id=${userId}`
         );
         console.log("API response for user details:", details);
         console.log("Fetched user details:", details.data);
@@ -296,11 +296,11 @@ const AdminUsers = () => {
           ...prev,
           [userId]: {
             bookings: [],
-            total_bookings: [],
+            total_bookings: 0,
             reviews: [],
-            total_reviews: [],
+            total_reviews: 0,
             messages: [],
-            total_messages: [],
+            total_messages: 0,
           },
         }));
       }
