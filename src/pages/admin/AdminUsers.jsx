@@ -969,7 +969,7 @@ const AdminUsers = () => {
                                                       <tr key={booking.id}>
                                                         <td>{index + 1}</td>
                                                         <td>
-                                                          {booking.service}
+                                                          {booking.service?.category}
                                                         </td>
                                                         <td>
                                                           {
