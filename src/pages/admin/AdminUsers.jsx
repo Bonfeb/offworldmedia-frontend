@@ -967,7 +967,7 @@ const AdminUsers = () => {
                                                   ]?.bookings?.map(
                                                     (booking) => (
                                                       <tr key={booking.id}>
-                                                        <td>#{index + 1}</td>
+                                                        <td>{index + 1}</td>
                                                         <td>
                                                           {booking.service}
                                                         </td>
