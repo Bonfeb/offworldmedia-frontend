@@ -935,17 +935,27 @@ const AdminUsers = () => {
                                                 <thead>
                                                   <tr>
                                                     <th
-                                                      style={{ color: "white" }}
+                                                      style={{ color: "black" }}
                                                     >
-                                                      ID
+                                                      S/No
                                                     </th>
                                                     <th
-                                                      style={{ color: "white" }}
+                                                      style={{ color: "black" }}
                                                     >
-                                                      Date
+                                                      Service
                                                     </th>
                                                     <th
-                                                      style={{ color: "white" }}
+                                                      style={{ color: "black" }}
+                                                    >
+                                                      Event Location
+                                                    </th>
+                                                    <th
+                                                      style={{ color: "black" }}
+                                                    >
+                                                      Event Date
+                                                    </th>
+                                                    <th
+                                                      style={{ color: "black" }}
                                                     >
                                                       Status
                                                     </th>
@@ -957,7 +967,15 @@ const AdminUsers = () => {
                                                   ]?.bookings?.map(
                                                     (booking) => (
                                                       <tr key={booking.id}>
-                                                        <td>#{booking.id}</td>
+                                                        <td>#{index + 1}</td>
+                                                        <td>
+                                                          {booking.service}
+                                                        </td>
+                                                        <td>
+                                                          {
+                                                            booking.event_location
+                                                          }
+                                                        </td>
                                                         <td>
                                                           {booking.event_date}
                                                         </td>
