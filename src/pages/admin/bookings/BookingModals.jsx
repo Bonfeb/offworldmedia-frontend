@@ -161,7 +161,7 @@ const BookingModals = ({
         event_location: updateFormValues.event_location,
         status: updateFormValues.status,
       };
-      await API.put(`/admin-dashboard/${bookingToUpdate.id}/`, payload, {
+      await API.put(`/admin-booking/${bookingToUpdate.id}/`, payload, {
         withCredentials: true,
       });
       onUpdateConfirm(payload);

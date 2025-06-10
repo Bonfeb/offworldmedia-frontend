@@ -207,7 +207,7 @@ const AdminUsers = () => {
         }
       });
 
-      await API.put(`/admin-dashboard/${currentUser.id}`, formDataToSend, {
+      await API.put(`/admin-user/${currentUser.id}/`, formDataToSend, {
         withCredentials: true,
       });
       fetchUsers();
@@ -965,11 +965,11 @@ const AdminUsers = () => {
                                                   {userDetails[
                                                     user.id
                                                   ]?.bookings?.map(
-                                                    (booking) => (
+                                                    (booking, index) => (
                                                       <tr key={booking.id}>
                                                         <td>{index + 1}</td>
                                                         <td>
-                                                          {booking.service?.category}
+                                                          {booking.service?.name}
                                                         </td>
                                                         <td>
                                                           {
