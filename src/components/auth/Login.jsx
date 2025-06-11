@@ -30,11 +30,14 @@ import LoginIcon from "@mui/icons-material/Login";
 import { Card } from "react-bootstrap";
 import ForgotPassword from "./ForgotPassword";
 
-// Styled Card with gradient background
-const GradientCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  borderRadius: '16px',
-  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+// Glassmorphism Card with backdrop blur
+const GlassmorphismCard = styled(Card)(({ theme }) => ({
+  background: 'rgba(255, 255, 255, 0.15)',
+  backdropFilter: 'blur(20px)',
+  WebkitBackdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255, 255, 255, 0.2)',
+  borderRadius: '20px',
+  boxShadow: '0 25px 45px rgba(0, 0, 0, 0.1)',
   maxWidth: '500px',
   width: '100%',
   overflow: 'hidden',
@@ -46,8 +49,32 @@ const GradientCard = styled(Card)(({ theme }) => ({
     right: 0,
     bottom: 0,
     left: 0,
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(10px)',
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+    borderRadius: '20px',
+    zIndex: 0,
+  }
+}));
+
+// Main container with animated gradient background
+const GlassContainer = styled(Container)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '100vh',
+  padding: theme.spacing(3),
+  background: 'linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe)',
+  backgroundSize: '400% 400%',
+  animation: 'gradientShift 15s ease infinite',
+  '@keyframes gradientShift': {
+    '0%': {
+      backgroundPosition: '0% 50%'
+    },
+    '50%': {
+      backgroundPosition: '100% 50%'
+    },
+    '100%': {
+      backgroundPosition: '0% 50%'
+    }
   }
 }));
 
@@ -62,33 +89,62 @@ const FormContainer = styled(Box)(({ theme }) => ({
 
 const FormTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+  color: 'rgba(255, 255, 255, 0.9)',
   marginBottom: theme.spacing(3),
   textAlign: 'center',
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
+const GlassButton = styled(Button)(({ theme }) => ({
+  background: 'rgba(255, 255, 255, 0.2)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  color: 'white',
+  fontWeight: 'bold',
   padding: '12px 0',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
   '&:hover': {
-    background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
-    boxShadow: '0 6px 15px rgba(37, 117, 252, 0.4)',
-  }
+    background: 'rgba(255, 255, 255, 0.3)',
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+    transform: 'translateY(-2px)',
+  },
+  transition: 'all 0.3s ease',
 }));
 
-const GradientText = styled(Typography)(({ theme }) => ({
-  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+const RegisterText = styled(Typography)(({ theme }) => ({
+  color: 'rgba(255, 255, 255, 0.9)',
   cursor: 'pointer',
-  fontWeight: 'medium',
+  fontWeight: 600,
   display: 'inline',
+  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
   '&:hover': {
-    textDecoration: 'underline'
-  }
+    textDecoration: 'underline',
+    color: 'white',
+  },
+  transition: 'all 0.2s ease',
+}));
+
+const ForgotPasswordText = styled(Typography)(({ theme }) => ({
+  borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+  paddingTop: theme.spacing(2),
+  marginTop: theme.spacing(2),
+  fontSize: '0.95rem',
+  color: 'rgba(255, 255, 255, 0.7)',
+  fontStyle: 'italic',
+}));
+
+const ForgotPasswordLink = styled(Typography)(({ theme }) => ({
+  color: 'rgba(255, 255, 255, 0.8)',
+  cursor: 'pointer',
+  fontWeight: 500,
+  display: 'inline',
+  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+  '&:hover': {
+    textDecoration: 'underline',
+    color: 'rgba(255, 255, 255, 0.95)',
+  },
+  transition: 'all 0.2s ease',
 }));
 
 const IconContainer = styled(Box)(({ theme }) => ({
@@ -97,24 +153,54 @@ const IconContainer = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-const CircleIcon = styled(Box)(({ theme }) => ({
+const GlassIcon = styled(Box)(({ theme }) => ({
   width: 80,
   height: 80,
   borderRadius: '50%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  boxShadow: '0 8px 16px rgba(37, 117, 252, 0.3)',
+  background: 'rgba(255, 255, 255, 0.2)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
 }));
 
-const ForgotPasswordText = styled(Typography)(({ theme }) => ({
-  borderTop: '1px solid rgba(0, 0, 0, 0.1)',
-  paddingTop: theme.spacing(2),
-  marginTop: theme.spacing(2),
-  fontSize: '0.95rem',
-  color: theme.palette.text.secondary,
-  fontStyle: 'italic',
+const GlassTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    background: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '12px',
+    color: 'white',
+    '& fieldset': {
+      border: 'none',
+    },
+    '&:hover': {
+      background: 'rgba(255, 255, 255, 0.15)',
+    },
+    '&.Mui-focused': {
+      background: 'rgba(255, 255, 255, 0.2)',
+      boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(255, 255, 255, 0.8)',
+    '&.Mui-focused': {
+      color: 'white',
+    },
+  },
+  '& .MuiOutlinedInput-input': {
+    color: 'white',
+    '&::placeholder': {
+      color: 'rgba(255, 255, 255, 0.6)',
+    },
+  },
+  '& .MuiSvgIcon-root': {
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
 }));
 
 const Login = () => {
@@ -169,21 +255,13 @@ const Login = () => {
   };
 
   return (
-    <Container 
-      sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '100vh',
-        py: 3
-      }}
-    >
-      <GradientCard className="border-0">
+    <GlassContainer>
+      <GlassmorphismCard className="border-0">
         <FormContainer>
           <IconContainer>
-            <CircleIcon>
+            <GlassIcon>
               <LoginIcon sx={{ fontSize: 40, color: 'white' }} />
-            </CircleIcon>
+            </GlassIcon>
           </IconContainer>
           
           <FormTitle variant="h4" component="h1">
@@ -191,7 +269,7 @@ const Login = () => {
           </FormTitle>
           
           <Box component="form" onSubmit={handleSubmit} noValidate>
-            <TextField
+            <GlassTextField
               margin="normal"
               required
               fullWidth
@@ -205,14 +283,14 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon color="primary" />
+                    <PersonIcon />
                   </InputAdornment>
                 ),
               }}
               sx={{ mb: 3 }}
             />
             
-            <TextField
+            <GlassTextField
               margin="normal"
               required
               fullWidth
@@ -227,7 +305,7 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LockOutlinedIcon color="primary" />
+                    <LockOutlinedIcon />
                   </InputAdornment>
                 ),
                 endAdornment: (
@@ -235,6 +313,7 @@ const Login = () => {
                     <IconButton
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
+                      sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                     >
                       {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                     </IconButton>
@@ -244,37 +323,37 @@ const Login = () => {
               sx={{ mb: 4 }}
             />
             
-            <StyledButton
+            <GlassButton
               type="submit"
               fullWidth
               variant="contained"
               size="large"
             >
               Sign In
-            </StyledButton>
+            </GlassButton>
             
             <Box sx={{ mt: 4, textAlign: 'center' }}>
-              <Typography variant="body1" sx={{ mb: 2 }}>
+              <Typography variant="body1" sx={{ mb: 2, color: 'rgba(255, 255, 255, 0.9)' }}>
                 Don't have an account?{" "}
-                <GradientText onClick={() => navigate("/register")}>
+                <RegisterText onClick={() => navigate("/register")}>
                   Register
-                </GradientText>
+                </RegisterText>
               </Typography>
               
               <ForgotPasswordText variant="body2">
                 Forgot Password?{" "}
-                <GradientText onClick={() => setShowForgotPassword(true)}>
+                <ForgotPasswordLink onClick={() => setShowForgotPassword(true)}>
                   Reset
-                </GradientText>
+                </ForgotPasswordLink>
               </ForgotPasswordText>
               <ForgotPassword
-              show={showForgotPassword}
-              handleClose ={handleCloseForgot}
+                show={showForgotPassword}
+                handleClose={handleCloseForgot}
               />
             </Box>
           </Box>
         </FormContainer>
-      </GradientCard>
+      </GlassmorphismCard>
 
       {/* Success Dialog */}
       <Dialog
@@ -284,10 +363,16 @@ const Login = () => {
           sx: {
             borderRadius: '16px',
             boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
           }
         }}
       >
-        <DialogTitle sx={{ background: 'linear-gradient(to right, #6a11cb, #2575fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <DialogTitle sx={{ 
+          background: 'linear-gradient(to right, #6a11cb, #2575fc)', 
+          WebkitBackgroundClip: 'text', 
+          WebkitTextFillColor: 'transparent' 
+        }}>
           Login Successful
         </DialogTitle>
         <DialogContent>
@@ -320,6 +405,8 @@ const Login = () => {
           sx: {
             borderRadius: '16px',
             boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
           }
         }}
       >
@@ -341,7 +428,7 @@ const Login = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </GlassContainer>
   );
 };
 
