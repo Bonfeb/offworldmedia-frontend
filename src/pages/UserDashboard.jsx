@@ -114,12 +114,16 @@ const UserDashboard = () => {
 
     // Debugging: Log the modalData object and its properties
     console.log("🚀 Debug: modalData object:", modalData);
-    console.log("🚀 Debug: modalData.id:", modalData?.id);
+    console.log("🚀 Debug: modalData.booking:", modalData?.booking);
     console.log("🚀 Debug: modalData.booking.id:", modalData?.booking?.id);
 
     // Check if the booking ID is valid
     if (!modalData?.booking?.id) {
-      console.error("Error: booking id is undefined");
+      console.error(
+        "Error: booking id is undefined or modalData is not properly set"
+      );
+      // Show an error message to the user
+      toast.error("Unable to cancel booking. Please try again.");
       return;
     }
 
@@ -133,16 +137,21 @@ const UserDashboard = () => {
       });
       console.log("🚀 API Response after deletion:", response.data);
 
-      // Update the state with the updated data (if applicable)
-      setBookings(response.data.bookings); // Assuming the response contains updated bookings
-      fetchUserDashboard(); // Refresh the dashboard or bookings list
+      // Show success message
+      toast.success("Booking cancelled successfully!");
 
-      console.log("🚀 Updated Bookings Data in State:", bookings);
+      // Refresh the dashboard to get updated data
+      await fetchUserDashboard();
     } catch (error) {
       console.error("Error canceling booking:", error);
-      // If error is 403, show permission error modal
+
+      // Handle different error types
       if (error.response && error.response.status === 403) {
         setShowPermissionError(true);
+      } else if (error.response && error.response.status === 404) {
+        toast.error("Booking not found. It may have already been cancelled.");
+      } else {
+        toast.error("Failed to cancel booking. Please try again.");
       }
     }
   };
@@ -480,6 +489,7 @@ const UserDashboard = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Booking Successful</Modal.Title>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../api";
-import { Card, Form, Button, Container, Row, Col, Image, Alert } from "react-bootstrap";
+import { Card, Form, Button, Container, Row, Col, Image, Toast} from "react-bootstrap";
 
 const EventDetails = () => {
   const { serviceId, bookingId } = useParams(); // Get service and booking IDs
@@ -15,6 +15,9 @@ const EventDetails = () => {
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
 
   useEffect(() => {
     fetchServiceDetails();
@@ -82,6 +85,9 @@ const EventDetails = () => {
 
         if (response.status === 200) {
           setSuccessMessage("Booking updated successfully!");
+          setToastMessage("Booking Updated Successfully!");
+          setToastType("success");
+          setShowToast(true);
           setTimeout(() => navigate("/userdashboard"), 2000);
         }
       } else {
@@ -90,6 +96,9 @@ const EventDetails = () => {
 
         if (response.status === 201) {
           setSuccessMessage("Service added to cart successfully!");
+          setToastMessage("Service added to cart successfully!");
+          setToastType("success");
+          setShowToast(true);
           setTimeout(() => navigate("/userdashboard"), 2000);
         }
       }
@@ -98,6 +107,8 @@ const EventDetails = () => {
       setErrorMessage("Failed to process your request.");
     }
   };
+
+  const toggleShowToast = () => setShowToast(!showToast);
 
   if (!serviceData) {
     return <p className="text-center mt-5">Loading service details...</p>;
@@ -171,6 +182,22 @@ const EventDetails = () => {
           </Card>
         </Col>
       </Row>
+      <Toast 
+        show={showToast} 
+        onClose={toggleShowToast} 
+        delay={3000} 
+        autohide 
+        style={{
+          position: 'fixed', 
+          bottom: 20, 
+          right: 20, 
+          minWidth: '250px',
+          backgroundColor: toastType === "success" ? "#28a745" : "#dc3545",
+          color: "#fff"
+        }}
+      >
+        <Toast.Body>{toastMessage}</Toast.Body>
+      </Toast>
     </Container>
   );
 };
