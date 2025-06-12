@@ -62,7 +62,7 @@ const GlassContainer = styled(Container)(({ theme }) => ({
   alignItems: 'center',
   minHeight: '100vh',
   padding: theme.spacing(3),
-  background: 'linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe)',
+  background: 'linear-gradient(-45deg, #1e3c72, #2a5298, #0f2027, #203a43, #2c5364, #1a237e, #283593, #3949ab)',
   backgroundSize: '400% 400%',
   animation: 'gradientShift 15s ease infinite',
   '@keyframes gradientShift': {
@@ -90,9 +90,18 @@ const FormContainer = styled(Box)(({ theme }) => ({
 const FormTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   color: 'rgba(255, 255, 255, 0.9)',
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(1),
   textAlign: 'center',
   textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+}));
+
+const FormSubtitle = styled(Typography)(({ theme }) => ({
+  fontWeight: 400,
+  color: 'rgba(255, 255, 255, 0.7)',
+  marginBottom: theme.spacing(3),
+  textAlign: 'center',
+  fontSize: '1rem',
+  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
 }));
 
 const GlassButton = styled(Button)(({ theme }) => ({
@@ -267,6 +276,10 @@ const Login = () => {
           <FormTitle variant="h4" component="h1">
             Welcome Back
           </FormTitle>
+          
+          <FormSubtitle variant="body1">
+            Sign in to your account
+          </FormSubtitle>
           
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <GlassTextField
