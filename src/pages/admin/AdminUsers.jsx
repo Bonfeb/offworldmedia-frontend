@@ -62,6 +62,7 @@ const AdminUsers = () => {
     email: "",
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
   const [userDetails, setUserDetails] = useState({});
@@ -235,9 +236,10 @@ const AdminUsers = () => {
   };
 
   const handleDeleteConfirm = async () => {
+    setIsDeleting(true)
     try {
       await API.delete(
-        `/admin-user/${currentUser.id}?type=user&confirm=true`
+        `/admin-user/${currentUser.id}/`
       );
       fetchUsers();
       setShowDeleteModal(false);
@@ -253,6 +255,8 @@ const AdminUsers = () => {
         message: "Failed to delete user. Please try again.",
         severity: "error",
       });
+    } finally{
+      setIsDeleting(false)
     }
   };
 
@@ -1374,13 +1378,14 @@ const AdminUsers = () => {
             <Button
               variant="danger"
               onClick={handleDeleteConfirm}
+              disabled={isDeleting}
               style={{
                 borderRadius: "20px",
                 background: "linear-gradient(45deg, #dc3545, #c82333)",
                 border: "none",
               }}
             >
-              Delete User
+              {isDeleting ? "Deleting..." : "Delete User"}
             </Button>
           </Modal.Footer>
         </Modal>
