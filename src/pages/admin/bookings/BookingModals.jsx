@@ -61,14 +61,15 @@ const BookingModals = ({
     const fetchData = async () => {
       try {
         const [userRes, serviceRes] = await Promise.all([
-          API.get("/admin-dashboard/?action=users"),
-          API.get("/admin-dashboard/?action=services"),
+          API.get("/admin-users/"),
+          API.get("/admin-dashboard/?action=services/"),
         ]);
         const userData = Array.isArray(userRes.data) ? userRes.data : [];
         const serviceData = Array.isArray(serviceRes.data)
           ? serviceRes.data
           : [];
-        console.log("Users and Services:", userData, serviceData);
+        console.log("Users:", userData);
+        console.log("Services:", serviceData)
         setUsers(userData);
         setServices(serviceData);
       } catch (err) {
