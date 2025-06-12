@@ -237,7 +237,7 @@ const AdminUsers = () => {
   const handleDeleteConfirm = async () => {
     try {
       await API.delete(
-        `/admin-dashboard/${currentUser.id}?type=user&confirm=true`
+        `/admin-user/${currentUser.id}?type=user&confirm=true`
       );
       fetchUsers();
       setShowDeleteModal(false);
