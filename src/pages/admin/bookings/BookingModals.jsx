@@ -35,6 +35,7 @@ const BookingModals = ({
     event_time: null,
     event_location: "",
     status: "pending",
+    audio_category: "",
   });
 
   const [createFormValues, setCreateFormValues] = useState({
@@ -56,6 +57,13 @@ const BookingModals = ({
     severity: "success",
   });
   const [success, setSuccess] = useState("");
+  const AUDIO_SUBCATEGORY_CHOICES = [
+    { value: "beat_making", label: "Beat Making" },
+    { value: "sound_recording", label: "Sound Recording" },
+    { value: "mixing", label: "Mixing" },
+    { value: "mastering", label: "Mastering" },
+    { value: "music_video", label: "Music Video Production" },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,11 +73,11 @@ const BookingModals = ({
           API.get("/services/"),
         ]);
         const userData = Array.isArray(userRes.data) ? userRes.data : [];
-        const serviceData = Array.isArray(serviceRes.data)
-          ? serviceRes.data
+        const serviceData = Array.isArray(serviceRes.data.services)
+          ? serviceRes.data.services
           : [];
         console.log("Users:", userData);
-        console.log("Services:", serviceData)
+        console.log("Services:", serviceData);
         setUsers(userData);
         setServices(serviceData);
       } catch (err) {
@@ -97,6 +105,7 @@ const BookingModals = ({
           : null,
         event_location: bookingToUpdate.event_location || "",
         status: bookingToUpdate.status || "pending",
+        audio_category: bookingToUpdate.audio_category || "",
       });
     }
   }, [bookingToUpdate]);
@@ -358,6 +367,14 @@ const BookingModals = ({
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
+
+          {(() => {
+            const selectedService = services.find(
+              (service) => service.id === updateFormValues.service_id
+            );
+            var isAudioCategory = selectedService?.category === "audio";
+          })()}
+
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} key="update-user-grid">
               <FormControl fullWidth>
@@ -412,6 +429,36 @@ const BookingModals = ({
                 </Select>
               </FormControl>
             </Grid>
+            {isAudioCategory && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="audio-subcategory-label">
+                    Audio Subcategory
+                  </InputLabel>
+                  <Select
+                    labelId="audio-subcategory-label"
+                    value={updateFormValues.audio_category || ""}
+                    label="Audio Subcategory"
+                    onChange={(e) =>
+                      handleUpdateInputChange("audio_category", e.target.value)
+                    }
+                  >
+                    {[
+                      { value: "beat_making", label: "Beat Making" },
+                      { value: "sound_recording", label: "Sound Recording" },
+                      { value: "mixing", label: "Mixing" },
+                      { value: "mastering", label: "Mastering" },
+                      { value: "music_video", label: "Music Video Production" },
+                    ].map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+            
             <Grid item xs={12} sm={6} key="update-date-grid">
               <DatePicker
                 label="Event Date"
