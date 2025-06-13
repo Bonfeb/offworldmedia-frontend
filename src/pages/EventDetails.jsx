@@ -17,7 +17,7 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
-  Paper
+  Paper,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -29,9 +29,10 @@ import {
   ShoppingCart,
   Edit,
   Image as ImageIcon,
+  AttachMoney,
   ArrowBack,
   Check,
-  Error as ErrorIcon
+  Error as ErrorIcon,
 } from "@mui/icons-material";
 
 // React Bootstrap
@@ -40,63 +41,63 @@ import { format } from "date-fns";
 
 // Styled Components using MUI's styled API
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: 'rgba(255, 255, 255, 0.1)',
-  backdropFilter: 'blur(15px)',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
-  borderRadius: '24px',
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-  color: 'white'
+  background: "rgba(255, 255, 255, 0.1)",
+  backdropFilter: "blur(15px)",
+  border: "1px solid rgba(255, 255, 255, 0.2)",
+  borderRadius: "24px",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+  color: "white",
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
-  '& .MuiOutlinedInput-root': {
-    background: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    borderRadius: '12px',
-    color: 'white',
-    '& fieldset': {
-      border: 'none',
+  "& .MuiOutlinedInput-root": {
+    background: "rgba(255, 255, 255, 0.1)",
+    backdropFilter: "blur(10px)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    borderRadius: "12px",
+    color: "white",
+    "& fieldset": {
+      border: "none",
     },
-    '&:hover fieldset': {
-      border: 'none',
+    "&:hover fieldset": {
+      border: "none",
     },
-    '&.Mui-focused fieldset': {
-      border: '2px solid rgba(255, 255, 255, 0.5)',
+    "&.Mui-focused fieldset": {
+      border: "2px solid rgba(255, 255, 255, 0.5)",
     },
   },
-  '& .MuiInputLabel-root': {
-    color: 'rgba(255, 255, 255, 0.8)',
+  "& .MuiInputLabel-root": {
+    color: "rgba(255, 255, 255, 0.8)",
   },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: 'white',
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: "white",
   },
-  '& input': {
-    color: 'white',
+  "& input": {
+    color: "white",
   },
-  '& textarea': {
-    color: 'white',
+  "& textarea": {
+    color: "white",
   },
-  '& input::placeholder': {
-    color: 'rgba(255, 255, 255, 0.6)',
-  }
+  "& input::placeholder": {
+    color: "rgba(255, 255, 255, 0.6)",
+  },
 }));
 
 const GradientButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(45deg, #667eea, #764ba2)',
-  borderRadius: '12px',
-  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-  color: 'white',
-  fontWeight: 'bold',
-  padding: '16px 24px',
-  fontSize: '1.1rem',
-  textTransform: 'none',
-  '&:hover': {
-    background: 'linear-gradient(45deg, #5a6fd8, #6a42a0)',
-    boxShadow: '0 6px 20px rgba(102, 126, 234, 0.6)',
-    transform: 'translateY(-2px)',
+  background: "linear-gradient(45deg, #667eea, #764ba2)",
+  borderRadius: "12px",
+  boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+  color: "white",
+  fontWeight: "bold",
+  padding: "16px 24px",
+  fontSize: "1.1rem",
+  textTransform: "none",
+  "&:hover": {
+    background: "linear-gradient(45deg, #5a6fd8, #6a42a0)",
+    boxShadow: "0 6px 20px rgba(102, 126, 234, 0.6)",
+    transform: "translateY(-2px)",
   },
-  transition: 'all 0.3s ease'
+  transition: "all 0.3s ease",
 }));
 
 const EventDetails = () => {
@@ -225,27 +226,27 @@ const EventDetails = () => {
     return (
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#3c4043",
         }}
       >
         <Paper
           elevation={0}
           sx={{
             p: 4,
-            textAlign: 'center',
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '20px',
-            color: 'white'
+            textAlign: "center",
+            background: "rgba(255, 255, 255, 0.1)",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            borderRadius: "20px",
+            color: "white",
           }}
         >
-          <CircularProgress sx={{ color: 'white', mb: 2 }} />
-          <Typography variant="h6" sx={{ color: 'white' }}>
+          <CircularProgress sx={{ color: "white", mb: 2 }} />
+          <Typography variant="h6" sx={{ color: "white" }}>
             Loading service details...
           </Typography>
         </Paper>
@@ -255,7 +256,7 @@ const EventDetails = () => {
 
   if (!serviceData) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
         <Typography variant="h6">Loading service details...</Typography>
       </Box>
     );
@@ -264,45 +265,51 @@ const EventDetails = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: "100vh",
         py: { xs: 2, md: 4 },
         px: { xs: 1, md: 2 },
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        background: "#3c4043",
       }}
     >
-      <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+      <Box sx={{ maxWidth: "1200px", mx: "auto" }}>
         {/* Main Card */}
         <StyledCard>
           {/* Header */}
           <Box
             sx={{
               p: { xs: 2, md: 3 },
-              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(10px)'
+              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+              background: "rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(10px)",
             }}
           >
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 2
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 2,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <IconButton
                   onClick={() => navigate(-1)}
                   sx={{
-                    color: 'white',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    '&:hover': {
-                      background: 'rgba(255, 255, 255, 0.2)'
-                    }
+                    color: "white",
+                    background: "rgba(255, 255, 255, 0.1)",
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.2)",
+                    },
                   }}
                 >
                   <ArrowBack />
                 </IconButton>
-                <Typography variant="h4" component="h1" sx={{ color: 'white', fontWeight: 600 }}>
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{ color: "white", fontWeight: 600 }}
+                >
                   {bookingId ? "Update Booking" : "Event Details"}
                 </Typography>
               </Box>
@@ -310,12 +317,12 @@ const EventDetails = () => {
                 icon={bookingId ? <Edit /> : <ShoppingCart />}
                 label={bookingId ? "Edit Mode" : "Add to Cart"}
                 sx={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white',
+                  background: "rgba(255, 255, 255, 0.2)",
+                  color: "white",
                   fontWeight: 600,
-                  '& .MuiChip-icon': {
-                    color: 'white'
-                  }
+                  "& .MuiChip-icon": {
+                    color: "white",
+                  },
                 }}
               />
             </Box>
@@ -323,28 +330,28 @@ const EventDetails = () => {
 
           <CardContent sx={{ p: { xs: 2, md: 3 } }}>
             {/* Service Display */}
-            <StyledCard sx={{ mb: 3, background: 'rgba(255, 255, 255, 0.05)' }}>
+            <StyledCard sx={{ mb: 3, background: "rgba(255, 255, 255, 0.05)" }}>
               <CardContent>
                 <Grid container spacing={3} alignItems="center">
                   <Grid item xs={12} md={4}>
-                    <Box sx={{ position: 'relative' }}>
+                    <Box sx={{ position: "relative" }}>
                       <img
                         src={serviceData?.image}
                         alt={serviceData?.name}
                         style={{
-                          width: '100%',
-                          height: '200px',
-                          objectFit: 'cover',
-                          borderRadius: '12px'
+                          width: "100%",
+                          height: "200px",
+                          objectFit: "cover",
+                          borderRadius: "12px",
                         }}
                       />
                       <Avatar
                         sx={{
-                          position: 'absolute',
+                          position: "absolute",
                           top: 8,
                           right: 8,
-                          background: 'rgba(0, 0, 0, 0.6)',
-                          color: 'white'
+                          background: "rgba(0, 0, 0, 0.6)",
+                          color: "white",
                         }}
                       >
                         <ImageIcon />
@@ -352,15 +359,34 @@ const EventDetails = () => {
                     </Box>
                   </Grid>
                   <Grid item xs={12} md={8}>
-                    <Typography variant="h4" sx={{ color: 'white', mb: 2, fontWeight: 600 }}>
+                    <Typography
+                      variant="h4"
+                      sx={{ color: "white", mb: 2, fontWeight: 600 }}
+                    >
                       {serviceData?.name}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                      <Typography variant="h5" sx={{ color: '#4ade80', fontWeight: 700 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mb: 2,
+                      }}
+                    >
+                      <Typography
+                        variant="h5"
+                        sx={{ color: "#4ade80", fontWeight: 700 }}
+                      >
                         KSH {serviceData?.price?.toLocaleString()}
                       </Typography>
                     </Box>
-                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.8)",
+                        lineHeight: 1.6,
+                      }}
+                    >
                       {serviceData?.description}
                     </Typography>
                   </Grid>
@@ -375,13 +401,13 @@ const EventDetails = () => {
                 icon={<ErrorIcon />}
                 sx={{
                   mb: 3,
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  color: '#fca5a5',
-                  '& .MuiAlert-icon': {
-                    color: '#fca5a5'
-                  }
+                  background: "rgba(239, 68, 68, 0.1)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(239, 68, 68, 0.3)",
+                  color: "#fca5a5",
+                  "& .MuiAlert-icon": {
+                    color: "#fca5a5",
+                  },
                 }}
               >
                 {errorMessage}
@@ -389,7 +415,7 @@ const EventDetails = () => {
             )}
 
             {/* Form */}
-            <StyledCard sx={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+            <StyledCard sx={{ background: "rgba(255, 255, 255, 0.05)" }}>
               <CardContent>
                 <Box component="form" onSubmit={handleSubmit}>
                   <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -408,7 +434,9 @@ const EventDetails = () => {
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
-                              <CalendarToday sx={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                              <CalendarToday
+                                sx={{ color: "rgba(255, 255, 255, 0.8)" }}
+                              />
                             </InputAdornment>
                           ),
                         }}
@@ -430,7 +458,9 @@ const EventDetails = () => {
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
-                              <AccessTime sx={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                              <AccessTime
+                                sx={{ color: "rgba(255, 255, 255, 0.8)" }}
+                              />
                             </InputAdornment>
                           ),
                         }}
@@ -451,8 +481,13 @@ const EventDetails = () => {
                       required
                       InputProps={{
                         startAdornment: (
-                          <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}>
-                            <LocationOn sx={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                          <InputAdornment
+                            position="start"
+                            sx={{ alignSelf: "flex-start", mt: 1 }}
+                          >
+                            <LocationOn
+                              sx={{ color: "rgba(255, 255, 255, 0.8)" }}
+                            />
                           </InputAdornment>
                         ),
                       }}
@@ -483,14 +518,16 @@ const EventDetails = () => {
             bg={toastType === "success" ? "success" : "danger"}
           >
             <Toast.Header>
-              {toastType === "success" ? <Check className="me-2" /> : <ErrorIcon className="me-2" />}
+              {toastType === "success" ? (
+                <Check className="me-2" />
+              ) : (
+                <ErrorIcon className="me-2" />
+              )}
               <strong className="me-auto">
                 {toastType === "success" ? "Success" : "Error"}
               </strong>
             </Toast.Header>
-            <Toast.Body className="text-white">
-              {toastMessage}
-            </Toast.Body>
+            <Toast.Body className="text-white">{toastMessage}</Toast.Body>
           </Toast>
         </ToastContainer>
       </Box>
