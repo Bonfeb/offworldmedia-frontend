@@ -62,7 +62,7 @@ const BookingModals = ({
       try {
         const [userRes, serviceRes] = await Promise.all([
           API.get("/admin-users/"),
-          API.get("/admin-dashboard/?action=services/"),
+          API.get("/services/"),
         ]);
         const userData = Array.isArray(userRes.data) ? userRes.data : [];
         const serviceData = Array.isArray(serviceRes.data)
