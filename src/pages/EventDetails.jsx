@@ -29,7 +29,6 @@ import {
   ShoppingCart,
   Edit,
   Image as ImageIcon,
-  AttachMoney,
   ArrowBack,
   Check,
   Error as ErrorIcon
@@ -330,7 +329,7 @@ const EventDetails = () => {
                   <Grid item xs={12} md={4}>
                     <Box sx={{ position: 'relative' }}>
                       <img
-                        src={serviceData?.service_image_url}
+                        src={serviceData?.image}
                         alt={serviceData?.name}
                         style={{
                           width: '100%',
@@ -357,7 +356,6 @@ const EventDetails = () => {
                       {serviceData?.name}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                      <AttachMoney sx={{ color: '#4ade80' }} />
                       <Typography variant="h5" sx={{ color: '#4ade80', fontWeight: 700 }}>
                         KSH {serviceData?.price?.toLocaleString()}
                       </Typography>
