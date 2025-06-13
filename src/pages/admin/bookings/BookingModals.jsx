@@ -92,6 +92,11 @@ const BookingModals = ({
     }
   }, [createOpen, updateOpen]);
 
+  const selectedService = services.find(
+    (service) => service.id === updateFormValues.service_id
+  );
+  const isAudioCategory = selectedService?.category === "audio";
+
   useEffect(() => {
     if (bookingToUpdate) {
       setUpdateFormValues({
@@ -368,13 +373,6 @@ const BookingModals = ({
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
 
-          {(() => {
-            const selectedService = services.find(
-              (service) => service.id === updateFormValues.service_id
-            );
-            var isAudioCategory = selectedService?.category === "audio";
-          })()}
-
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} key="update-user-grid">
               <FormControl fullWidth>
@@ -458,7 +456,7 @@ const BookingModals = ({
                 </FormControl>
               </Grid>
             )}
-            
+
             <Grid item xs={12} sm={6} key="update-date-grid">
               <DatePicker
                 label="Event Date"
