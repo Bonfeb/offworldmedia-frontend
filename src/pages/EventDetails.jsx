@@ -1,21 +1,104 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../api";
+
+// MUI Components
 import {
-  Container,
+  Box,
   Card,
-  CardHeader,
   CardContent,
+  Typography,
   TextField,
   Button,
   Grid,
-  Typography,
-  Box,
+  Avatar,
+  Chip,
+  Alert,
+  CircularProgress,
   IconButton,
+  InputAdornment,
+  Paper
 } from "@mui/material";
-import { Toast } from "react-bootstrap";
-import { CalendarToday, AccessTime, LocationOn } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+
+// MUI Icons
+import {
+  CalendarToday,
+  AccessTime,
+  LocationOn,
+  ShoppingCart,
+  Edit,
+  Image as ImageIcon,
+  AttachMoney,
+  ArrowBack,
+  Check,
+  Error as ErrorIcon
+} from "@mui/icons-material";
+
+// React Bootstrap
+import { Toast, ToastContainer } from "react-bootstrap";
 import { format } from "date-fns";
+
+// Styled Components using MUI's styled API
+const StyledCard = styled(Card)(({ theme }) => ({
+  background: 'rgba(255, 255, 255, 0.1)',
+  backdropFilter: 'blur(15px)',
+  border: '1px solid rgba(255, 255, 255, 0.2)',
+  borderRadius: '24px',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  color: 'white'
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    background: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '12px',
+    color: 'white',
+    '& fieldset': {
+      border: 'none',
+    },
+    '&:hover fieldset': {
+      border: 'none',
+    },
+    '&.Mui-focused fieldset': {
+      border: '2px solid rgba(255, 255, 255, 0.5)',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: 'white',
+  },
+  '& input': {
+    color: 'white',
+  },
+  '& textarea': {
+    color: 'white',
+  },
+  '& input::placeholder': {
+    color: 'rgba(255, 255, 255, 0.6)',
+  }
+}));
+
+const GradientButton = styled(Button)(({ theme }) => ({
+  background: 'linear-gradient(45deg, #667eea, #764ba2)',
+  borderRadius: '12px',
+  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+  color: 'white',
+  fontWeight: 'bold',
+  padding: '16px 24px',
+  fontSize: '1.1rem',
+  textTransform: 'none',
+  '&:hover': {
+    background: 'linear-gradient(45deg, #5a6fd8, #6a42a0)',
+    boxShadow: '0 6px 20px rgba(102, 126, 234, 0.6)',
+    transform: 'translateY(-2px)',
+  },
+  transition: 'all 0.3s ease'
+}));
 
 const EventDetails = () => {
   const { serviceId, bookingId } = useParams();
@@ -32,6 +115,16 @@ const EventDetails = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("success");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
   useEffect(() => {
     fetchServiceDetails();
@@ -48,9 +141,11 @@ const EventDetails = () => {
         ...prevState,
         service_id: serviceId,
       }));
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching service details:", error);
       setErrorMessage("Failed to load service details.");
+      setLoading(false);
     }
   };
 
@@ -121,138 +216,287 @@ const EventDetails = () => {
     } catch (error) {
       console.error("Error processing request:", error);
       setErrorMessage("Failed to process your request.");
+      setToastMessage("Failed to process your request.");
+      setToastType("error");
+      setShowToast(true);
     }
   };
 
-  const toggleShowToast = () => setShowToast(!showToast);
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            textAlign: 'center',
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '20px',
+            color: 'white'
+          }}
+        >
+          <CircularProgress sx={{ color: 'white', mb: 2 }} />
+          <Typography variant="h6" sx={{ color: 'white' }}>
+            Loading service details...
+          </Typography>
+        </Paper>
+      </Box>
+    );
+  }
 
   if (!serviceData) {
-    return <Typography align="center" mt={5}>Loading service details...</Typography>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+        <Typography variant="h6">Loading service details...</Typography>
+      </Box>
+    );
   }
 
   return (
-    <Container
-      maxWidth={false}
+    <Box
       sx={{
-        minHeight: "100vh",
-        background: "linear-gradient(to right, #182C0B, #089494, #174214)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: { xs: 2, md: 5 },
+        minHeight: '100vh',
+        py: { xs: 2, md: 4 },
+        px: { xs: 1, md: 2 },
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
       }}
     >
-      <Card
-        sx={{
-          width: { xs: "100%", md: "50%" },
-          backdropFilter: "blur(10px)",
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          borderRadius: 2,
-          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-          border: "1px solid rgba(255, 255, 255, 0.3)",
-        }}
-      >
-        <CardHeader
-          title={
-            <Typography variant="h5" align="center">
-              {bookingId ? "Update Booking" : "Fill Event Details"}
-            </Typography>
-          }
-        />
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4} sx={{ display: "flex", justifyContent: "center" }}>
-              <Box
-                component="img"
-                src={serviceData.image}
-                alt={serviceData.name}
-                sx={{ width: "100%", height: "150px", objectFit: "cover", borderRadius: 1 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <Typography variant="h6">{serviceData.name}</Typography>
-              <Typography>
-                <strong>Price:</strong> KSH {serviceData.price}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Event Date"
-                  type="date"
-                  name="event_date"
-                  value={formData.event_date}
-                  onChange={handleChange}
-                  required
-                  InputProps={{
-                    startAdornment: <CalendarToday color="action" />,
+      <Box sx={{ maxWidth: '1200px', mx: 'auto' }}>
+        {/* Main Card */}
+        <StyledCard>
+          {/* Header */}
+          <Box
+            sx={{
+              p: { xs: 2, md: 3 },
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 2
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <IconButton
+                  onClick={() => navigate(-1)}
+                  sx={{
+                    color: 'white',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.2)'
+                    }
                   }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Event Time"
-                  type="time"
-                  name="event_time"
-                  value={formData.event_time}
-                  onChange={handleChange}
-                  required
-                  InputProps={{
-                    startAdornment: <AccessTime color="action" />,
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Event Location"
-                  type="text"
-                  name="event_location"
-                  value={formData.event_location}
-                  onChange={handleChange}
-                  required
-                  InputProps={{
-                    startAdornment: <LocationOn color="action" />,
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  fullWidth
-                  sx={{ mt: 2, backgroundColor: "#1976d2", "&:hover": { backgroundColor: "#115293" } }}
                 >
-                  {bookingId ? "Update Booking" : "Add To Cart"}
-                </Button>
-              </Grid>
-            </Grid>
+                  <ArrowBack />
+                </IconButton>
+                <Typography variant="h4" component="h1" sx={{ color: 'white', fontWeight: 600 }}>
+                  {bookingId ? "Update Booking" : "Event Details"}
+                </Typography>
+              </Box>
+              <Chip
+                icon={bookingId ? <Edit /> : <ShoppingCart />}
+                label={bookingId ? "Edit Mode" : "Add to Cart"}
+                sx={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  fontWeight: 600,
+                  '& .MuiChip-icon': {
+                    color: 'white'
+                  }
+                }}
+              />
+            </Box>
           </Box>
-        </CardContent>
-      </Card>
 
-      <Toast
-        show={showToast}
-        onClose={toggleShowToast}
-        delay={3000}
-        autohide
-        style={{
-          position: "fixed",
-          bottom: 20,
-          right: 20,
-          minWidth: "250px",
-          backgroundColor: toastType === "success" ? "#28a745" : "#dc3545",
-          color: "#fff",
-        }}
-      >
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
-    </Container>
+          <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+            {/* Service Display */}
+            <StyledCard sx={{ mb: 3, background: 'rgba(255, 255, 255, 0.05)' }}>
+              <CardContent>
+                <Grid container spacing={3} alignItems="center">
+                  <Grid item xs={12} md={4}>
+                    <Box sx={{ position: 'relative' }}>
+                      <img
+                        src={serviceData?.service_image_url}
+                        alt={serviceData?.name}
+                        style={{
+                          width: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                          borderRadius: '12px'
+                        }}
+                      />
+                      <Avatar
+                        sx={{
+                          position: 'absolute',
+                          top: 8,
+                          right: 8,
+                          background: 'rgba(0, 0, 0, 0.6)',
+                          color: 'white'
+                        }}
+                      >
+                        <ImageIcon />
+                      </Avatar>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Typography variant="h4" sx={{ color: 'white', mb: 2, fontWeight: 600 }}>
+                      {serviceData?.name}
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <AttachMoney sx={{ color: '#4ade80' }} />
+                      <Typography variant="h5" sx={{ color: '#4ade80', fontWeight: 700 }}>
+                        KSH {serviceData?.price?.toLocaleString()}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6 }}>
+                      {serviceData?.description}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </StyledCard>
+
+            {/* Error Alert */}
+            {errorMessage && (
+              <Alert
+                severity="error"
+                icon={<ErrorIcon />}
+                sx={{
+                  mb: 3,
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#fca5a5',
+                  '& .MuiAlert-icon': {
+                    color: '#fca5a5'
+                  }
+                }}
+              >
+                {errorMessage}
+              </Alert>
+            )}
+
+            {/* Form */}
+            <StyledCard sx={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+              <CardContent>
+                <Box component="form" onSubmit={handleSubmit}>
+                  <Grid container spacing={3} sx={{ mb: 3 }}>
+                    <Grid item xs={12} md={6}>
+                      <StyledTextField
+                        fullWidth
+                        type="date"
+                        name="event_date"
+                        label="Event Date"
+                        value={formData.event_date}
+                        onChange={handleChange}
+                        required
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <CalendarToday sx={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <StyledTextField
+                        fullWidth
+                        type="time"
+                        name="event_time"
+                        label="Event Time"
+                        value={formData.event_time}
+                        onChange={handleChange}
+                        required
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <AccessTime sx={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Box sx={{ mb: 4 }}>
+                    <StyledTextField
+                      fullWidth
+                      multiline
+                      rows={3}
+                      name="event_location"
+                      label="Event Location"
+                      value={formData.event_location}
+                      onChange={handleChange}
+                      placeholder="Enter the event venue or location"
+                      required
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}>
+                            <LocationOn sx={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Box>
+
+                  <GradientButton
+                    type="submit"
+                    fullWidth
+                    size="large"
+                    startIcon={bookingId ? <Edit /> : <ShoppingCart />}
+                  >
+                    {bookingId ? "Update Booking" : "Add To Cart"}
+                  </GradientButton>
+                </Box>
+              </CardContent>
+            </StyledCard>
+          </CardContent>
+        </StyledCard>
+
+        {/* React Bootstrap Toast */}
+        <ToastContainer position="bottom-end" className="p-3">
+          <Toast
+            show={showToast}
+            onClose={() => setShowToast(false)}
+            delay={4000}
+            autohide
+            bg={toastType === "success" ? "success" : "danger"}
+          >
+            <Toast.Header>
+              {toastType === "success" ? <Check className="me-2" /> : <ErrorIcon className="me-2" />}
+              <strong className="me-auto">
+                {toastType === "success" ? "Success" : "Error"}
+              </strong>
+            </Toast.Header>
+            <Toast.Body className="text-white">
+              {toastMessage}
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
+      </Box>
+    </Box>
   );
 };
 
