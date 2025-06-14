@@ -25,9 +25,10 @@ const BookingModals = ({
   onCreateConfirm,
   onUpdateConfirm,
   onDeleteConfirm,
-  bookingToUpdate,
+  updateBooking,
   refreshData,
 }) => {
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [updateFormValues, setUpdateFormValues] = useState({
     user_id: "",
     service_id: "",
@@ -98,22 +99,23 @@ const BookingModals = ({
   const isAudioCategory = selectedService?.category === "audio";
 
   useEffect(() => {
-    if (bookingToUpdate) {
+    if (updateBooking) {
+      setSelectedBooking(updateBooking);
       setUpdateFormValues({
-        user_id: bookingToUpdate.user?.id || "",
-        service_id: bookingToUpdate.service?.id || "",
-        event_date: bookingToUpdate.event_date
-          ? new Date(bookingToUpdate.event_date)
+        user_id: updateBooking.user?.id || "",
+        service_id: updateBooking.service?.id || "",
+        event_date: updateBooking.event_date
+          ? new Date(updateBooking.event_date)
           : null,
-        event_time: bookingToUpdate.event_time
-          ? new Date(`2000-01-01T${bookingToUpdate.event_time}`)
+        event_time: updateBooking.event_time
+          ? new Date(`2000-01-01T${updateBooking.event_time}`)
           : null,
-        event_location: bookingToUpdate.event_location || "",
-        status: bookingToUpdate.status || "pending",
-        audio_category: bookingToUpdate.audio_category || "",
+        event_location: updateBooking.event_location || "",
+        status: updateBooking.status || "pending",
+        audio_category: updateBooking.audio_category || "",
       });
     }
-  }, [bookingToUpdate]);
+  }, [updateBooking]);
 
   const handleCreateInputChange = (field, value) => {
     setCreateFormValues((prev) => ({ ...prev, [field]: value }));
@@ -164,7 +166,8 @@ const BookingModals = ({
   };
 
   const handleUpdateSubmit = async () => {
-    if (!bookingToUpdate) return;
+    const bookingToUpdate = selectedBooking
+    if (!selectedBooking) return;
 
     try {
       setIsLoading(true);
@@ -175,8 +178,9 @@ const BookingModals = ({
         event_time: formatTime(updateFormValues.event_time),
         event_location: updateFormValues.event_location,
         status: updateFormValues.status,
+        ...(isAudioCategory && {audio_category: updateFormValues.audio_category})
       };
-      await API.put(`/admin-booking/${bookingToUpdate.id}/`, payload, {
+      await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
       onUpdateConfirm(payload);
@@ -203,9 +207,9 @@ const BookingModals = ({
     try {
       setIsLoading(true);
       await API.delete(
-        `/admin-dashboard/${bookingToUpdate.id}?type=booking&confirm=true`
+        `/admin-dashboard/${selectedBooking.id}?type=booking&confirm=true`
       );
-      onDeleteConfirm(bookingToUpdate.id);
+      onDeleteConfirm(selectedBooking.id);
       onDeleteClose();
       refreshData();
       setSnackbar({

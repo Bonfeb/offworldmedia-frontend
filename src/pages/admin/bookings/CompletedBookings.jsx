@@ -53,11 +53,11 @@ const CompletedBookings = () => {
     loadBookings();
   }, []);
 
-  const handleEditClick = (id) =>
-    handleUpdate(id, completedBookings, setSelectedBooking, setUpdateModalOpen);
+  const handleEditClick = (booking) =>
+    handleUpdate(booking, completedBookings, setSelectedBooking, setUpdateModalOpen);
 
-  const handleDeleteClick = (id) =>
-    handleDelete(id, completedBookings, setSelectedBooking, setDeleteModalOpen);
+  const handleDeleteClick = (booking) =>
+    handleDelete(booking, completedBookings, setSelectedBooking, setDeleteModalOpen);
 
   const handleConfirmUpdate = (updatedBooking) =>
     handleUpdateConfirm(
@@ -68,9 +68,9 @@ const CompletedBookings = () => {
       setSubmitting
     );
 
-  const handleConfirmDelete = (id) =>
+  const handleConfirmDelete = (booking) =>
     handleDeleteConfirm(
-      id,
+      booking,
       completedBookings,
       setCompletedBookings,
       setNotification,
@@ -111,7 +111,7 @@ const CompletedBookings = () => {
         onDeleteClose={() => setDeleteModalOpen(false)}
         onUpdateConfirm={handleConfirmUpdate}
         onDeleteConfirm={handleConfirmDelete}
-        bookingToUpdate={selectedBooking}
+        updateBooking={selectedBooking}
         isLoading={submitting}
       />
 

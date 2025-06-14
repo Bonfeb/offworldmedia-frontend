@@ -17,8 +17,8 @@ const BookingRow = ({ row, onUpdate, onDelete, isStriped }) => {
 
   const handleEditClick = (event) => {
     event.stopPropagation(); // Prevent row expansion when clicking edit
-    console.log('Edit clicked for row ID:', row.id);
-    onUpdate(row.id);
+    console.log('Edit clicked for row ID:', row);
+    onUpdate(row);
   };
 
   const handleDeleteClick = (event) => {

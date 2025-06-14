@@ -22,13 +22,10 @@ export const formatBookings = (bookings) => {
     CANCELLED: 'canceled'
   };
 
-  export const handleUpdate = (id, bookings, setSelectedBooking, setUpdateModalOpen) => {
+  export const handleUpdate = (booking, bookings, setSelectedBooking, setUpdateModalOpen) => {
     console.log(`Update booking with ID: ${id}`);
-    const bookingToUpdate = bookings.find((booking) => booking.id === id);
-    if (bookingToUpdate) {
-      setSelectedBooking(bookingToUpdate);
-      setUpdateModalOpen(true);
-    }
+    setSelectedBooking(booking)
+    setUpdateModalOpen(true)
   };
   
   export const handleDelete = (id, bookings, setSelectedBooking, setDeleteModalOpen) => {
