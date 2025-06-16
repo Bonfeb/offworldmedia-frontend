@@ -28,10 +28,9 @@ export const formatBookings = (bookings) => {
     setUpdateModalOpen(true)
   };
   
-  export const handleDelete = (id, bookings, setSelectedBooking, setDeleteModalOpen) => {
-    const bookingToDelete = bookings.find((booking) => booking.id === id);
-    if (bookingToDelete) {
-      setSelectedBooking(bookingToDelete);
+  export const handleDelete = (booking, bookings, setSelectedBooking, setDeleteModalOpen) => {
+    if (booking) {
+      setSelectedBooking(booking);
       setDeleteModalOpen(true);
     }
   };
@@ -58,7 +57,7 @@ export const formatBookings = (bookings) => {
   };
   
   export const handleDeleteConfirm = async (
-    id,
+    booking,
     bookings,
     setBookings,
     setNotification,
@@ -67,8 +66,8 @@ export const formatBookings = (bookings) => {
   ) => {
     setSubmitting(true);
     try {
-      await API.delete(`/bookings/${id}/`);
-      setBookings(bookings.filter((booking) => booking.id !== id)); // Remove from state
+      await API.delete(`/bookings/${booking.id}/`);
+      setBookings(bookings.filter((b) => b.id !== booking.id)); // Remove from state
       setNotification({ open: true, message: "Booking deleted successfully", severity: "success" });
       setDeleteModalOpen(false);
     } catch (err) {

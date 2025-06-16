@@ -80,9 +80,9 @@ const PendingBookings = () => {
       setSubmitting
     );
 
-  const handleConfirmDelete = (id) =>
+  const handleConfirmDelete = (booking) =>
     handleDeleteConfirm(
-      id,
+      booking,
       pendingBookings,
       setPendingBookings,
       setNotification,
