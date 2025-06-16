@@ -23,7 +23,7 @@ export const formatBookings = (bookings) => {
   };
 
   export const handleUpdate = (booking, bookings, setSelectedBooking, setUpdateModalOpen) => {
-    console.log(`Update booking with ID: ${booking}`);
+    console.log(`Updating booking: ${booking}`);
     setSelectedBooking(booking)
     setUpdateModalOpen(true)
   };

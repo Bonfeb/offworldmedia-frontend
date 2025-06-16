@@ -65,13 +65,15 @@ const PendingBookings = () => {
     loadBookings();
   }, []);
 
-  const handleEditClick = (booking) =>
+  const handleEditClick = (booking) => {
     handleUpdate(booking, pendingBookings, setSelectedBooking, setUpdateModalOpen);
+  };
 
-  const handleDeleteClick = (booking) =>
+  const handleDeleteClick = (booking) => {
     handleDelete(booking, pendingBookings, setSelectedBooking, setDeleteModalOpen);
+  };
 
-  const handleConfirmUpdate = (updatedBooking) =>
+  const handleConfirmUpdate = (updatedBooking) => {
     handleUpdateConfirm(
       updatedBooking,
       loadBookings,
@@ -79,8 +81,9 @@ const PendingBookings = () => {
       setUpdateModalOpen,
       setSubmitting
     );
-
-  const handleConfirmDelete = (booking) =>
+  };
+  
+  const handleConfirmDelete = (booking) => {
     handleDeleteConfirm(
       booking,
       pendingBookings,
@@ -89,6 +92,7 @@ const PendingBookings = () => {
       setDeleteModalOpen,
       setSubmitting
     );
+  };
 
   const handleCloseNotification = () => {
     setNotification({ ...notification, open: false });
