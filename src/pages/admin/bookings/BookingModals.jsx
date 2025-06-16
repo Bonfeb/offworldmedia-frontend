@@ -199,7 +199,8 @@ const BookingModals = ({
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
-      onUpdateConfirm(...selectedBooking, ...payload);
+      const updatedBooking = {...selectedBooking, ...payload};
+      onUpdateConfirm(updatedBooking);
       onUpdateClose();
       refreshData();
       setSnackbar({
@@ -534,7 +535,7 @@ const BookingModals = ({
           </Button>
           <Button
             variant="primary"
-            onClick={() => handleUpdateSubmit(booking)}
+            onClick={handleUpdateSubmit}
             disabled={isLoading}
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : "Update"}
@@ -562,7 +563,7 @@ const BookingModals = ({
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleDelete(booking)}
+            onClick={handleDelete}
             disabled={isLoading}
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : "Delete"}
