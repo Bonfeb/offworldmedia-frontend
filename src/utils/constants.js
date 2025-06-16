@@ -25,6 +25,15 @@ export const formatBookings = (bookings) => {
   export const handleUpdate = (booking, bookings, setSelectedBooking, setUpdateModalOpen) => {
     console.log(`Update booking with ID: ${booking}`);
     setSelectedBooking(booking)
+    setUpdateFormValues({
+      user_id: booking.user_id,
+      service_id: booking.service_id,
+      event_date: booking.event_date,
+      event_time: booking.event_time,
+      event_location: booking.event_location,
+      status: booking.status,
+      audio_category: booking.audio_category || "",
+    })
     setUpdateModalOpen(true)
   };
   

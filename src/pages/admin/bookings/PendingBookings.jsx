@@ -123,7 +123,7 @@ const PendingBookings = () => {
         onUpdateClose={() => setUpdateModalOpen(false)}
         onDeleteClose={() => setDeleteModalOpen(false)}
         onUpdateConfirm={handleConfirmUpdate}
-        onDeleteConfirm={handleConfirmDelete}
+        onDeleteConfirm={() => (selectedBooking)}
         updateBooking={selectedBooking}
         isLoading={submitting}
       />

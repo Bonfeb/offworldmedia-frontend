@@ -14,6 +14,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import API from "../../../api";
+import { handleDeleteConfirm, handleUpdateConfirm } from "../../../utils/constants";
 
 const BookingModals = ({
   createOpen,
@@ -166,7 +167,6 @@ const BookingModals = ({
   };
 
   const handleUpdateSubmit = async () => {
-    const bookingToUpdate = selectedBooking
     if (!selectedBooking) return;
 
     try {
@@ -183,7 +183,7 @@ const BookingModals = ({
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
-      onUpdateConfirm(payload);
+      onUpdateConfirm(...selectedBooking, ...payload);
       onUpdateClose();
       refreshData();
       setSnackbar({
@@ -209,7 +209,7 @@ const BookingModals = ({
       await API.delete(
         `/admin-dashboard/${selectedBooking.id}?type=booking&confirm=true`
       );
-      onDeleteConfirm(selectedBooking.id);
+      onDeleteConfirm(selectedBooking);
       onDeleteClose();
       refreshData();
       setSnackbar({
@@ -518,7 +518,7 @@ const BookingModals = ({
           </Button>
           <Button
             variant="primary"
-            onClick={handleUpdateSubmit}
+            onClick={handleUpdateSubmit(booking)}
             disabled={isLoading}
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : "Update"}
@@ -544,7 +544,7 @@ const BookingModals = ({
           <Button variant="secondary" onClick={onDeleteClose}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete} disabled={isLoading}>
+          <Button variant="danger" onClick={handleDelete(booking)} disabled={isLoading}>
             {isLoading ? <Spinner animation="border" size="sm" /> : "Delete"}
           </Button>
         </Modal.Footer>
