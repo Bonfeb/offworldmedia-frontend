@@ -518,7 +518,7 @@ const BookingModals = ({
           </Button>
           <Button
             variant="primary"
-            onClick={handleUpdateSubmit(booking)}
+            onClick={() => handleUpdateSubmit(booking)}
             disabled={isLoading}
           >
             {isLoading ? <Spinner animation="border" size="sm" /> : "Update"}
@@ -544,7 +544,7 @@ const BookingModals = ({
           <Button variant="secondary" onClick={onDeleteClose}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete(booking)} disabled={isLoading}>
+          <Button variant="danger" onClick={() => handleDelete(booking)} disabled={isLoading}>
             {isLoading ? <Spinner animation="border" size="sm" /> : "Delete"}
           </Button>
         </Modal.Footer>
