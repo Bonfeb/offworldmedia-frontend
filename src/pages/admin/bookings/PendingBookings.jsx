@@ -129,7 +129,7 @@ const PendingBookings = () => {
         onUpdateConfirm={handleConfirmUpdate}
         onDeleteConfirm={handleConfirmDelete}
         updateBooking={selectedBooking}
-        isLoading={submitting}
+        refreshData={loadBookings}
       />
 
       <Snackbar
