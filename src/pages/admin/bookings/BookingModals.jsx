@@ -34,13 +34,13 @@ const BookingModals = ({
 }) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [updateFormValues, setUpdateFormValues] = useState({
-    user_id: updateBooking.user_id,
-    service_id: updateBooking.service_id,
-    event_date: updateBooking.event_date,
-    event_time: updateBooking.event_time,
-    event_location: updateBooking.event_location,
-    status: updateBooking.status,
-    audio_category: updateBooking.audio_category || "",
+    user_id: updateBooking?.user_id || updateBooking?.user?.id || "",
+    service_id: updateBooking?.service_id || updateBooking?.service?.id || "",
+    event_date: updateBooking?.event_date || null,
+    event_time: updateBooking?.event_time || null,
+    event_location: updateBooking?.event_location || "",
+    status: updateBooking?.status || "pending",
+    audio_category: updateBooking?.audio_category || "",
   });
 
   const [createFormValues, setCreateFormValues] = useState({
