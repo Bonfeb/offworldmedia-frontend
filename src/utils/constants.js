@@ -3,9 +3,12 @@ import API from "../api";
 export const formatBookings = (bookings) => {
     return bookings.map((booking, index) => ({
       id: booking.id,
+      user_id: booking.user?.id || null,
+      service_id: booking.service?.id || null,
       serialNo: index + 1,
       customer: booking.user?.username || 'Unknown User',
       service: booking.service?.name || 'Unknown Service',
+      audio_category: booking.service.audio_category,
       location: booking.event_location || 'N/A',
       eventDate: booking.event_date ? new Date(booking.event_date).toLocaleDateString() : 'N/A',
       eventTime: booking.event_time || 'N/A',

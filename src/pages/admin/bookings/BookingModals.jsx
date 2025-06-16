@@ -34,13 +34,17 @@ const BookingModals = ({
 }) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [updateFormValues, setUpdateFormValues] = useState({
-    user_id: updateBooking?.user_id || updateBooking?.user?.id || "",
-    service_id: updateBooking?.service_id || updateBooking?.service?.id || "",
-    event_date: updateBooking?.event_date || null,
-    event_time: updateBooking?.event_time || null,
-    event_location: updateBooking?.event_location || "",
-    status: updateBooking?.status || "pending",
-    audio_category: updateBooking?.audio_category || "",
+    user_id: updateBooking.user_id || "",
+    service_id: updateBooking.service_id || "",
+    event_date: updateBooking.eventDate
+      ? new Date(updateBooking.eventDate)
+      : null,
+    event_time: updateBooking.eventTime
+      ? new Date(`2000-01-01T${updateBooking.eventTime}`)
+      : null,
+    event_location: updateBooking.location || "",
+    status: updateBooking.status || "pending",
+    audio_category: updateBooking.audio_category || "",
   });
 
   const [createFormValues, setCreateFormValues] = useState({
@@ -106,15 +110,15 @@ const BookingModals = ({
     if (updateBooking) {
       setSelectedBooking(updateBooking);
       setUpdateFormValues({
-        user_id: updateBooking.user?.id || "",
-        service_id: updateBooking.service?.id || "",
-        event_date: updateBooking.event_date
-          ? new Date(updateBooking.event_date)
+        user_id: updateBooking.user_id || "",
+        service_id: updateBooking.service_id || "",
+        event_date: updateBooking.eventDate
+          ? new Date(updateBooking.eventDate)
           : null,
-        event_time: updateBooking.event_time
-          ? new Date(`2000-01-01T${updateBooking.event_time}`)
+        event_time: updateBooking.eventTime
+          ? new Date(`2000-01-01T${updateBooking.eventTime}`)
           : null,
-        event_location: updateBooking.event_location || "",
+        event_location: updateBooking.location || "",
         status: updateBooking.status || "pending",
         audio_category: updateBooking.audio_category || "",
       });
@@ -186,20 +190,22 @@ const BookingModals = ({
     try {
       setIsLoading(true);
       const payload = {
-        user_id: updateFormValues.user_id,
-        service_id: updateFormValues.service_id,
-        event_date: formatDate(updateFormValues.event_date),
-        event_time: formatTime(updateFormValues.event_time),
-        event_location: updateFormValues.event_location,
-        status: updateFormValues.status,
-        ...(isAudioCategory && {
-          audio_category: updateFormValues.audio_category,
-        }),
+        user_id: updateBooking.user_id || "",
+        service_id: updateBooking.service_id || "",
+        event_date: updateBooking.eventDate
+          ? new Date(updateBooking.eventDate)
+          : null,
+        event_time: updateBooking.eventTime
+          ? new Date(`2000-01-01T${updateBooking.eventTime}`)
+          : null,
+        event_location: updateBooking.location || "",
+        status: updateBooking.status || "pending",
+        audio_category: updateBooking.audio_category || "",
       };
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
-      const updatedBooking = {...selectedBooking, ...payload};
+      const updatedBooking = { ...selectedBooking, ...payload };
       onUpdateConfirm(updatedBooking);
       onUpdateClose();
       refreshData();
@@ -561,11 +567,7 @@ const BookingModals = ({
           <Button variant="secondary" onClick={onDeleteClose}>
             Cancel
           </Button>
-          <Button
-            variant="danger"
-            onClick={handleDelete}
-            disabled={isLoading}
-          >
+          <Button variant="danger" onClick={handleDelete} disabled={isLoading}>
             {isLoading ? <Spinner animation="border" size="sm" /> : "Delete"}
           </Button>
         </Modal.Footer>
