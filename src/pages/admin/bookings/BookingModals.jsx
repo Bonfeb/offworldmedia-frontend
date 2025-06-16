@@ -14,7 +14,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import API from "../../../api";
-import { handleDeleteConfirm, handleUpdateConfirm } from "../../../utils/constants";
+import {
+  handleDeleteConfirm,
+  handleUpdateConfirm,
+} from "../../../utils/constants";
 
 const BookingModals = ({
   createOpen,
@@ -31,13 +34,13 @@ const BookingModals = ({
 }) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [updateFormValues, setUpdateFormValues] = useState({
-    user_id: "",
-    service_id: "",
-    event_date: null,
-    event_time: null,
-    event_location: "",
-    status: "pending",
-    audio_category: "",
+    user_id: booking.user_id,
+    service_id: booking.service_id,
+    event_date: booking.event_date,
+    event_time: booking.event_time,
+    event_location: booking.event_location,
+    status: booking.status,
+    audio_category: booking.audio_category || "",
   });
 
   const [createFormValues, setCreateFormValues] = useState({
@@ -178,7 +181,9 @@ const BookingModals = ({
         event_time: formatTime(updateFormValues.event_time),
         event_location: updateFormValues.event_location,
         status: updateFormValues.status,
-        ...(isAudioCategory && {audio_category: updateFormValues.audio_category})
+        ...(isAudioCategory && {
+          audio_category: updateFormValues.audio_category,
+        }),
       };
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
@@ -544,7 +549,11 @@ const BookingModals = ({
           <Button variant="secondary" onClick={onDeleteClose}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={() => handleDelete(booking)} disabled={isLoading}>
+          <Button
+            variant="danger"
+            onClick={() => handleDelete(booking)}
+            disabled={isLoading}
+          >
             {isLoading ? <Spinner animation="border" size="sm" /> : "Delete"}
           </Button>
         </Modal.Footer>
