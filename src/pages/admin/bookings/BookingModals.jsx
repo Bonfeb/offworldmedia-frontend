@@ -34,8 +34,7 @@ const BookingModals = ({
 }) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [updateFormValues, setUpdateFormValues] = useState({
-    user_id: updateBooking.user_id || "",
-    service_id: updateBooking.service_id || "",
+  
     event_date: updateBooking.eventDate
       ? new Date(updateBooking.eventDate)
       : null,
