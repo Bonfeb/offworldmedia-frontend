@@ -34,14 +34,14 @@ const BookingModals = ({
 }) => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [updateFormValues, setUpdateFormValues] = useState({
-  
-    event_date: updateBooking.eventDate
-      ? new Date(updateBooking.eventDate)
+    
+    event_date: updateBooking.event_date
+      ? new Date(updateBooking.event_date)
       : null,
-    event_time: updateBooking.eventTime
-      ? new Date(`2000-01-01T${updateBooking.eventTime}`)
+    event_time: updateBooking.event_time
+      ? new Date(`2000-01-01T${updateBooking.event_time}`)
       : null,
-    event_location: updateBooking.location || "",
+    event_location: updateBooking.event_location || "",
     status: updateBooking.status || "pending",
     audio_category: updateBooking.audio_category || "",
   });

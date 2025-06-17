@@ -3,6 +3,8 @@ import API from "../api";
 export const formatBookings = (bookings) => {
     return bookings.map((booking, index) => ({
       id: booking.id,
+      user_id: booking.user.id || booking.user_id || null,
+      service_id: booking.service?.id || null,
       serialNo: index + 1,
       customer: booking.user?.username || 'Unknown User',
       service: booking.service?.name || 'Unknown Service',
