@@ -3,8 +3,6 @@ import API from "../api";
 export const formatBookings = (bookings) => {
     return bookings.map((booking, index) => ({
       id: booking.id,
-      user_id: booking.user.id || booking.user_id || null,
-      service_id: booking.service?.id || null,
       serialNo: index + 1,
       customer: booking.user?.username || 'Unknown User',
       service: booking.service?.name || 'Unknown Service',
@@ -47,7 +45,7 @@ export const formatBookings = (bookings) => {
   ) => {
     setSubmitting(true);
     try {
-      await API.put(`/bookings/${updatedBooking.id}/`, updatedBooking);
+      await API.put(`/admin-booking/${updatedBooking.id}/`, updatedBooking);
       await loadBookings(); // Refresh bookings
       setNotification({ open: true, message: "Booking updated successfully", severity: "success" });
       setUpdateModalOpen(false);
@@ -69,7 +67,7 @@ export const formatBookings = (bookings) => {
   ) => {
     setSubmitting(true);
     try {
-      await API.delete(`/bookings/${booking.id}/`);
+      await API.delete(`/admin-booking/${booking.id}/`);
       setBookings(bookings.filter((b) => b.id !== booking.id)); // Remove from state
       setNotification({ open: true, message: "Booking deleted successfully", severity: "success" });
       setDeleteModalOpen(false);
