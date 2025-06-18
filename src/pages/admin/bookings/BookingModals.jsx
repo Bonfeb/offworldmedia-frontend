@@ -159,6 +159,7 @@ const BookingModals = ({
         event_location: createFormValues.event_location,
         status: createFormValues.status,
       };
+      console.log("Payload: ", payload)
       await API.post("/admin-dashboard/", payload);
       onCreateConfirm(payload);
       onCreateClose();
@@ -198,6 +199,7 @@ const BookingModals = ({
         status: updateBooking.status || "pending",
         audio_category: updateBooking.audio_category || "",
       };
+      console.log("Payload and Selected Booking:", payload, selectedBooking)
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });

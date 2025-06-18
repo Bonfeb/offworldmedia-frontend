@@ -21,7 +21,8 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment,
-  IconButton
+  IconButton,
+  CircularProgress
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -101,6 +102,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
   '&:hover': {
     background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
     boxShadow: '0 6px 15px rgba(37, 117, 252, 0.4)',
+  },
+  '&:disabled': {
+    background: 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)',
+    color: 'rgba(255, 255, 255, 0.6)',
+    boxShadow: 'none',
   }
 }));
 
@@ -127,6 +133,7 @@ const Register = () => {
   const [fileSelected, setFileSelected] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -150,6 +157,8 @@ const Register = () => {
       return;
     }
 
+    setIsLoading(true); // Start loading
+
     const formData = new FormData();
     Object.keys(userData).forEach((key) => {
       if (userData[key] !== null && key !== 'confirmPassword') {
@@ -163,8 +172,11 @@ const Register = () => {
       });
       
       console.log("Registration successful:", response.data);
+      setIsLoading(false); // Stop loading
       setShowSuccessDialog(true);
     } catch (error) {
+      setIsLoading(false); // Stop loading on error
+      
       const errMsg = error.response?.data?.message || 
                    (typeof error.response?.data === 'object' ? 
                     Object.values(error.response.data).flat().join(", ") : 
@@ -200,6 +212,7 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -218,6 +231,7 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -236,6 +250,7 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -255,6 +270,7 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -274,12 +290,14 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
                           onClick={() => setShowPassword(!showPassword)}
                           edge="end"
+                          disabled={isLoading}
                         >
                           {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </IconButton>
@@ -298,12 +316,14 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           edge="end"
+                          disabled={isLoading}
                         >
                           {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </IconButton>
@@ -320,6 +340,7 @@ const Register = () => {
                   value={userData.phone}
                   onChange={handleChange}
                   variant="outlined"
+                  disabled={isLoading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -340,6 +361,7 @@ const Register = () => {
                   variant="outlined"
                   multiline
                   rows={2}
+                  disabled={isLoading}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -355,11 +377,16 @@ const Register = () => {
                     component="label"
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
+                    disabled={isLoading}
                     sx={{ 
                       background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
                       boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+                      },
+                      '&:disabled': {
+                        background: 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)',
+                        color: 'rgba(255, 255, 255, 0.6)',
                       },
                       width: isMobile ? '100%' : 'auto'
                     }}
@@ -370,6 +397,7 @@ const Register = () => {
                       name="profile_pic"
                       accept="image/*"
                       onChange={handleFileChange}
+                      disabled={isLoading}
                     />
                   </Button>
                   {fileSelected && (
@@ -389,14 +417,31 @@ const Register = () => {
                   fullWidth
                   variant="contained"
                   size="large"
+                  disabled={isLoading}
                   sx={{ 
                     mt: 2, 
                     py: 1.5,
                     fontSize: '1rem',
-                    textTransform: 'none'
+                    textTransform: 'none',
+                    position: 'relative'
                   }}
                 >
-                  Register Account
+                  {isLoading ? (
+                    <>
+                      <CircularProgress 
+                        size={20} 
+                        sx={{ 
+                          color: 'white',
+                          position: 'absolute',
+                          left: '50%',
+                          marginLeft: '-10px'
+                        }} 
+                      />
+                      <Box sx={{ ml: 4 }}>Creating Account...</Box>
+                    </>
+                  ) : (
+                    'Register Account'
+                  )}
                 </StyledButton>
               </Grid>
             </Grid>
@@ -409,16 +454,17 @@ const Register = () => {
                 component="span"
                 variant="body1"
                 sx={{ 
-                  cursor: 'pointer',
+                  cursor: isLoading ? 'default' : 'pointer',
                   fontWeight: 'medium',
                   background: 'linear-gradient(to right, #6a11cb, #2575fc)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
+                  opacity: isLoading ? 0.5 : 1,
                   '&:hover': {
-                    textDecoration: 'underline'
+                    textDecoration: isLoading ? 'none' : 'underline'
                   }
                 }}
-                onClick={() => navigate("/login")}
+                onClick={() => !isLoading && navigate("/login")}
               >
                 Log in
               </Typography>

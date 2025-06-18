@@ -15,7 +15,7 @@ export const formatBookings = (bookings) => {
       price: booking.service?.price || 0,
       status: booking.status || 'N/A',
       booked: booking.booked_at ? new Date(booking.booked_at).toLocaleString() : 'N/A',
-      contact: booking.phone || N/A// Added rating for completed bookings
+      contact: booking.phone || null // Added rating for completed bookings
     }));
   };
 

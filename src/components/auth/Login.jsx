@@ -17,7 +17,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  CircularProgress
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -117,6 +118,12 @@ const GlassButton = styled(Button)(({ theme }) => ({
     background: 'rgba(255, 255, 255, 0.3)',
     boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
     transform: 'translateY(-2px)',
+  },
+  '&:disabled': {
+    background: 'rgba(255, 255, 255, 0.1)',
+    color: 'rgba(255, 255, 255, 0.5)',
+    transform: 'none',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
   },
   transition: 'all 0.3s ease',
 }));
@@ -228,6 +235,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [userGroups, setUserGroups] = useState(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -240,6 +248,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login button clicked! Submitting form...");
+    
+    setIsLoading(true);
     
     try {
       const groups = await login(credentials);
@@ -260,6 +270,8 @@ const Login = () => {
       console.error("Login error:", error.message);
       setErrorMessage(error.message || "Login failed. Please try again.");
       setShowFailureDialog(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -293,6 +305,7 @@ const Login = () => {
               value={credentials.username}
               onChange={handleChange}
               variant="outlined"
+              disabled={isLoading}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -315,6 +328,7 @@ const Login = () => {
               value={credentials.password}
               onChange={handleChange}
               variant="outlined"
+              disabled={isLoading}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -326,6 +340,7 @@ const Login = () => {
                     <IconButton
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
+                      disabled={isLoading}
                       sx={{ color: 'rgba(255, 255, 255, 0.8)' }}
                     >
                       {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
@@ -341,21 +356,23 @@ const Login = () => {
               fullWidth
               variant="contained"
               size="large"
+              disabled={isLoading}
+              startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
             >
-              Sign In
+              {isLoading ? "Authenticating..." : "Sign In"}
             </GlassButton>
             
             <Box sx={{ mt: 4, textAlign: 'center' }}>
               <Typography variant="body1" sx={{ mb: 2, color: 'rgba(255, 255, 255, 0.9)' }}>
                 Don't have an account?{" "}
-                <RegisterText onClick={() => navigate("/register")}>
+                <RegisterText onClick={() => !isLoading && navigate("/register")}>
                   Register
                 </RegisterText>
               </Typography>
               
               <ForgotPasswordText variant="body2">
                 Forgot Password?{" "}
-                <ForgotPasswordLink onClick={() => setShowForgotPassword(true)}>
+                <ForgotPasswordLink onClick={() => !isLoading && setShowForgotPassword(true)}>
                   Reset
                 </ForgotPasswordLink>
               </ForgotPasswordText>
@@ -390,7 +407,7 @@ const Login = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            You have successfully logged in!
+            You have successfully logged in! Redirecting to your dashboard...
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ pb: 3, px: 3 }}>
