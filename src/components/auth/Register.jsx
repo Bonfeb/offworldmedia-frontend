@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import API from "../../api";
 
 // Material UI imports
-import { 
-  TextField, 
-  Button, 
-  Typography, 
-  Box, 
-  Grid, 
-  Avatar, 
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Grid,
+  Avatar,
   Container,
   Alert,
   Snackbar,
@@ -22,7 +22,7 @@ import {
   useTheme,
   InputAdornment,
   IconButton,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -33,87 +33,88 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import HomeIcon from "@mui/icons-material/Home";
 import EmailIcon from "@mui/icons-material/Email";
 import PersonIcon from "@mui/icons-material/Person";
+import CloseIcon from "@mui/icons-material/Close";
 
 // React Bootstrap components for layout
 import { Card } from "react-bootstrap";
 
 // Styled component for file input
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
 // Styled Card with gradient background
 const GradientCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  borderRadius: '16px',
-  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-  overflow: 'hidden',
-  position: 'relative',
-  '&::before': {
+  background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+  borderRadius: "16px",
+  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+  overflow: "hidden",
+  position: "relative",
+  "&::before": {
     content: '""',
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(10px)',
-  }
+    background: "rgba(255, 255, 255, 0.9)",
+    backdropFilter: "blur(10px)",
+  },
 }));
 
 const FormContainer = styled(Box)(({ theme }) => ({
-  position: 'relative',
+  position: "relative",
   zIndex: 1,
   padding: theme.spacing(4),
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(3),
   },
 }));
 
 const FormTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+  background: "linear-gradient(to right, #6a11cb, #2575fc)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
   marginBottom: theme.spacing(3),
-  textAlign: 'center',
+  textAlign: "center",
 }));
 
 const AvatarStyled = styled(Avatar)(({ theme }) => ({
-  margin: '0 auto',
+  margin: "0 auto",
   width: 80,
   height: 80,
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  boxShadow: '0 8px 16px rgba(37, 117, 252, 0.3)',
+  background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+  boxShadow: "0 8px 16px rgba(37, 117, 252, 0.3)",
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-  boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
-  padding: '12px 0',
-  '&:hover': {
-    background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
-    boxShadow: '0 6px 15px rgba(37, 117, 252, 0.4)',
+  background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+  boxShadow: "0 4px 10px rgba(37, 117, 252, 0.3)",
+  padding: "12px 0",
+  "&:hover": {
+    background: "linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)",
+    boxShadow: "0 6px 15px rgba(37, 117, 252, 0.4)",
   },
-  '&:disabled': {
-    background: 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)',
-    color: 'rgba(255, 255, 255, 0.6)',
-    boxShadow: 'none',
-  }
+  "&:disabled": {
+    background: "linear-gradient(135deg, #9e9e9e 0%, #757575 100%)",
+    color: "rgba(255, 255, 255, 0.6)",
+    boxShadow: "none",
+  },
 }));
 
 const Register = () => {
   const navigate = useNavigate();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [userData, setUserData] = useState({
     first_name: "",
@@ -161,7 +162,7 @@ const Register = () => {
 
     const formData = new FormData();
     Object.keys(userData).forEach((key) => {
-      if (userData[key] !== null && key !== 'confirmPassword') {
+      if (userData[key] !== null && key !== "confirmPassword") {
         formData.append(key, userData[key]);
       }
     });
@@ -170,19 +171,23 @@ const Register = () => {
       const response = await API.post("/register/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      
+
       console.log("Registration successful:", response.data);
       setIsLoading(false); // Stop loading
       setShowSuccessDialog(true);
     } catch (error) {
       setIsLoading(false); // Stop loading on error
-      
-      const errMsg = error.response?.data?.message || 
-                   (typeof error.response?.data === 'object' ? 
-                    Object.values(error.response.data).flat().join(", ") : 
-                    "Registration failed. Please try again.");
-      
-      console.error("Registration failed:", error.response?.data || error.message);
+
+      const errMsg =
+        error.response?.data?.message ||
+        (typeof error.response?.data === "object"
+          ? Object.values(error.response.data).flat().join(", ")
+          : "Registration failed. Please try again.");
+
+      console.error(
+        "Registration failed:",
+        error.response?.data || error.message
+      );
       setErrorMessage(errMsg);
       setShowErrorAlert(true);
     }
@@ -191,8 +196,32 @@ const Register = () => {
   return (
     <Container component="main" maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
       <GradientCard className="border-0">
+        <IconButton
+          aria-label="close"
+          onClick={() => navigate("/")}
+          sx={{
+            position: "absolute",
+            right: 16,
+            top: 16,
+            zIndex: 2,
+            color: "white",
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <FormContainer>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mb: 4,
+            }}
+          >
             <AvatarStyled>
               <PersonAddIcon fontSize="large" />
             </AvatarStyled>
@@ -299,7 +328,11 @@ const Register = () => {
                           edge="end"
                           disabled={isLoading}
                         >
-                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -321,11 +354,17 @@ const Register = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                           edge="end"
                           disabled={isLoading}
                         >
-                          {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          {showConfirmPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -372,28 +411,38 @@ const Register = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
+                    alignItems: isMobile ? "flex-start" : "center",
+                    gap: 2,
+                  }}
+                >
                   <Button
                     component="label"
                     variant="contained"
                     startIcon={<CloudUploadIcon />}
                     disabled={isLoading}
-                    sx={{ 
-                      background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-                      boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
-                      '&:hover': {
-                        background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
+                    sx={{
+                      background:
+                        "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+                      boxShadow: "0 4px 10px rgba(37, 117, 252, 0.3)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)",
                       },
-                      '&:disabled': {
-                        background: 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)',
-                        color: 'rgba(255, 255, 255, 0.6)',
+                      "&:disabled": {
+                        background:
+                          "linear-gradient(135deg, #9e9e9e 0%, #757575 100%)",
+                        color: "rgba(255, 255, 255, 0.6)",
                       },
-                      width: isMobile ? '100%' : 'auto'
+                      width: isMobile ? "100%" : "auto",
                     }}
                   >
                     Upload Profile Picture
-                    <VisuallyHiddenInput 
-                      type="file" 
+                    <VisuallyHiddenInput
+                      type="file"
                       name="profile_pic"
                       accept="image/*"
                       onChange={handleFileChange}
@@ -401,8 +450,8 @@ const Register = () => {
                     />
                   </Button>
                   {fileSelected && (
-                    <Typography 
-                      variant="body2" 
+                    <Typography
+                      variant="body2"
                       color="text.secondary"
                       sx={{ mt: isMobile ? 1 : 0 }}
                     >
@@ -418,51 +467,51 @@ const Register = () => {
                   variant="contained"
                   size="large"
                   disabled={isLoading}
-                  sx={{ 
-                    mt: 2, 
+                  sx={{
+                    mt: 2,
                     py: 1.5,
-                    fontSize: '1rem',
-                    textTransform: 'none',
-                    position: 'relative'
+                    fontSize: "1rem",
+                    textTransform: "none",
+                    position: "relative",
                   }}
                 >
                   {isLoading ? (
                     <>
-                      <CircularProgress 
-                        size={20} 
-                        sx={{ 
-                          color: 'white',
-                          position: 'absolute',
-                          left: '50%',
-                          marginLeft: '-10px'
-                        }} 
+                      <CircularProgress
+                        size={20}
+                        sx={{
+                          color: "white",
+                          position: "absolute",
+                          left: "50%",
+                          marginLeft: "-10px",
+                        }}
                       />
                       <Box sx={{ ml: 4 }}>Creating Account...</Box>
                     </>
                   ) : (
-                    'Register Account'
+                    "Register Account"
                   )}
                 </StyledButton>
               </Grid>
             </Grid>
           </Box>
 
-          <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Box sx={{ mt: 4, textAlign: "center" }}>
             <Typography variant="body1">
               Already have an account?{" "}
               <Typography
                 component="span"
                 variant="body1"
-                sx={{ 
-                  cursor: isLoading ? 'default' : 'pointer',
-                  fontWeight: 'medium',
-                  background: 'linear-gradient(to right, #6a11cb, #2575fc)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                sx={{
+                  cursor: isLoading ? "default" : "pointer",
+                  fontWeight: "medium",
+                  background: "linear-gradient(to right, #6a11cb, #2575fc)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                   opacity: isLoading ? 0.5 : 1,
-                  '&:hover': {
-                    textDecoration: isLoading ? 'none' : 'underline'
-                  }
+                  "&:hover": {
+                    textDecoration: isLoading ? "none" : "underline",
+                  },
                 }}
                 onClick={() => !isLoading && navigate("/login")}
               >
@@ -479,13 +528,33 @@ const Register = () => {
         onClose={() => navigate("/login")}
         PaperProps={{
           sx: {
-            borderRadius: '16px',
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-          }
+            borderRadius: "16px",
+            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+          },
         }}
       >
-        <DialogTitle sx={{ background: 'linear-gradient(to right, #6a11cb, #2575fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <DialogTitle
+          sx={{
+            background: "linear-gradient(to right, #6a11cb, #2575fc)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           Registration Successful
+          <IconButton
+            onClick={() => navigate("/login")}
+            sx={{
+              color: "#6a11cb",
+              "&:hover": {
+                backgroundColor: "rgba(106, 17, 203, 0.1)",
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -493,15 +562,15 @@ const Register = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ pb: 3, px: 3 }}>
-          <Button 
-            onClick={() => navigate("/login")} 
+          <Button
+            onClick={() => navigate("/login")}
             variant="contained"
             sx={{
-              background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-              boxShadow: '0 4px 10px rgba(37, 117, 252, 0.3)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)',
-              }
+              background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+              boxShadow: "0 4px 10px rgba(37, 117, 252, 0.3)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #5800c4 0%, #1a68e5 100%)",
+              },
             }}
             autoFocus
           >
@@ -511,17 +580,17 @@ const Register = () => {
       </Dialog>
 
       {/* Error Alert */}
-      <Snackbar 
-        open={showErrorAlert} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={showErrorAlert}
+        autoHideDuration={6000}
         onClose={() => setShowErrorAlert(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert 
-          onClose={() => setShowErrorAlert(false)} 
-          severity="error" 
+        <Alert
+          onClose={() => setShowErrorAlert(false)}
+          severity="error"
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {errorMessage}
         </Alert>
