@@ -26,6 +26,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoginIcon from "@mui/icons-material/Login";
+import CloseIcon from "@mui/icons-material/Close";
 
 // React Bootstrap components
 import { Card } from "react-bootstrap";
