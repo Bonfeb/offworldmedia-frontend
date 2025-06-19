@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
   Box,
   Collapse,
@@ -25,10 +24,6 @@ import {
   CardContent,
   Divider,
 } from "@mui/material";
-import { 
-  Dashboard as DashboardIcon,
-  Person as PersonIcon
- } from "@mui/icons-material";
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
@@ -39,7 +34,6 @@ import {
   Search,
   Clear,
 } from "@mui/icons-material";
-import { Col} from "react-bootstrap";
 import { format } from "date-fns";
 import BookingModals from "./BookingModals";
 import API from "../../../api";
@@ -400,48 +394,9 @@ export default function AllBookings() {
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 3,
-            background: "rgba(255, 255, 255, 0.95)",
-            backdropFilter: "blur(10px)",
-            borderRadius: 3,
-          }}
-        >
-          <Row className="align-items-center justify-content-between">
-            <Col xs="auto">
-              <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
-                <Button
-                  variant="outline-primary"
-                  className="d-flex align-items-center gap-2"
-                  style={{
-                    borderRadius: "25px",
-                    padding: "10px 20px",
-                    border: "2px solid #007bff",
-                    fontWeight: "600",
-                  }}
-                >
-                  <DashboardIcon fontSize="small" />
-                  Back to Dashboard
-                </Button>
-              </Link>
-            </Col>
-            <Col xs="auto">
-              <div className="d-flex align-items-center gap-2">
-                <PersonIcon sx={{ fontSize: 32, color: "#667eea" }} />
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  sx={{ fontWeight: 700, color: "#2c3e50", mb: 0 }}
-                >
-                  All Bookings
-                </Typography>
-              </div>
-            </Col>
-          </Row>
-        </Paper>
+        <Typography variant="h5" component="div" sx={{ padding: 2 }}>
+          All Bookings
+        </Typography>
 
         {/* Search Filters Section */}
         <Box sx={{ padding: 2 }}>
