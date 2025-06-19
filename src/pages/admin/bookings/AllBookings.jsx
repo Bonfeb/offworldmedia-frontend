@@ -39,7 +39,7 @@ import {
   Search,
   Clear,
 } from "@mui/icons-material";
-import {Row, Col} from "react-bootstrap";
+import { Col} from "react-bootstrap";
 import { format } from "date-fns";
 import BookingModals from "./BookingModals";
 import API from "../../../api";
