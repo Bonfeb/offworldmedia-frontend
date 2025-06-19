@@ -16,7 +16,13 @@ import {
   Tooltip,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Divider
 } from '@mui/material';
 import { 
   KeyboardArrowDown, 
@@ -24,7 +30,9 @@ import {
   Edit, 
   Delete,
   NavigateBefore,
-  NavigateNext
+  NavigateNext,
+  Search,
+  Clear
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import BookingModals from './BookingModals';
@@ -58,9 +66,9 @@ function Row({ booking, onEdit, onDelete }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {booking.user.username}
+          {booking.user?.username || booking.user}
         </TableCell>
-        <TableCell>{booking.service.name}</TableCell>
+        <TableCell>{booking.service?.name || booking.service}</TableCell>
         <TableCell>{format(new Date(booking.event_date), 'MMM dd, yyyy')}</TableCell>
         <TableCell>
           <Chip 
@@ -105,7 +113,7 @@ function Row({ booking, onEdit, onDelete }) {
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">Customer Contact</TableCell>
-                    <TableCell>{booking.user.phone}</TableCell>
+                    <TableCell>{booking.user?.phone || 'N/A'}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">Booking ID</TableCell>
@@ -113,7 +121,7 @@ function Row({ booking, onEdit, onDelete }) {
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">Service ID</TableCell>
-                    <TableCell>{booking.service.id}</TableCell>
+                    <TableCell>{booking.service?.id || booking.service}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -177,6 +185,17 @@ export default function AllBookings() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   
+  // Search functionality states
+  const [filters, setFilters] = useState({
+    user: '',
+    service: '',
+    event_location: '',
+    status: '',
+  });
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  
   // Modal states
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -184,8 +203,10 @@ export default function AllBookings() {
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   useEffect(() => {
-    fetchBookings();
-  }, [page, rowsPerPage]);
+    if (!isSearchMode) {
+      fetchBookings();
+    }
+  }, [page, rowsPerPage, isSearchMode]);
 
   const fetchBookings = async () => {
     try {
@@ -209,6 +230,54 @@ export default function AllBookings() {
     if (newRowsPerPage !== rowsPerPage) {
       setRowsPerPage(newRowsPerPage);
     }
+  };
+
+  // Search functionality handlers
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = async () => {
+    setSearchLoading(true);
+    setSearched(true);
+    setIsSearchMode(true);
+    setPage(0); // Reset to first page when searching
+    
+    try {
+      const params = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.append(key, value);
+      });
+      
+      // Add pagination to search
+      params.append('page', '1');
+      params.append('per_page', rowsPerPage.toString());
+      
+      const response = await API.get(`/admin-dashboard/?action=bookings${params.toString()}`);
+      setBookings(response.data.bookings || response.data);
+      setTotalCount(response.data.total || response.data.length);
+    } catch (error) {
+      console.error("Search error:", error);
+      setBookings([]);
+      setTotalCount(0);
+      setError('Failed to search bookings');
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setFilters({
+      user: '',
+      service: '',
+      event_location: '',
+      status: '',
+    });
+    setSearched(false);
+    setIsSearchMode(false);
+    setPage(0);
+    setError(null);
+    fetchBookings();
   };
 
   // Modal handlers
@@ -251,21 +320,21 @@ export default function AllBookings() {
     // Refresh will be handled by refreshData passed to BookingModals
   };
 
+  const refreshData = () => {
+    if (isSearchMode) {
+      handleSearch();
+    } else {
+      fetchBookings();
+    }
+  };
+
   // Display only the current page of bookings
   const displayedBookings = bookings || [];
 
-  if (loading && page === 0) {
+  if (loading && page === 0 && !isSearchMode) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
         <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error && displayedBookings.length === 0) {
-    return (
-      <Box sx={{ padding: 2 }}>
-        <Typography color="error">{error}</Typography>
       </Box>
     );
   }
@@ -277,7 +346,88 @@ export default function AllBookings() {
           All Bookings
         </Typography>
         
-        <TableContainer sx={{ maxHeight: 'calc(100vh - 200px)' }}>
+        {/* Search Filters Section */}
+        <Box sx={{ padding: 2 }}>
+          <Card sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Search Filters
+              </Typography>
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    fullWidth
+                    label="User ID"
+                    name="user"
+                    value={filters.user}
+                    onChange={handleFilterChange}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    fullWidth
+                    label="Service ID"
+                    name="service"
+                    value={filters.service}
+                    onChange={handleFilterChange}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    fullWidth
+                    label="Event Location"
+                    name="event_location"
+                    value={filters.event_location}
+                    onChange={handleFilterChange}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Status"
+                    name="status"
+                    value={filters.status}
+                    onChange={handleFilterChange}
+                    size="small"
+                  >
+                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="confirmed">Confirmed</MenuItem>
+                    <MenuItem value="pending">Pending</MenuItem>
+                    <MenuItem value="cancelled">Cancelled</MenuItem>
+                    <MenuItem value="completed">Completed</MenuItem>
+                  </TextField>
+                </Grid>
+              </Grid>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={handleSearch} 
+                  disabled={searchLoading}
+                  startIcon={searchLoading ? <CircularProgress size={20} color="inherit" /> : <Search />}
+                >
+                  {searchLoading ? 'Searching...' : 'Search Bookings'}
+                </Button>
+                <Button 
+                  variant="outlined" 
+                  onClick={handleClearSearch}
+                  startIcon={<Clear />}
+                  disabled={searchLoading}
+                >
+                  Clear Search
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Divider />
+        
+        <TableContainer sx={{ maxHeight: 'calc(100vh - 400px)' }}>
           <Table stickyHeader striped hover aria-label="collapsible table">
             <TableHead>
               <TableRow className="fw-bold">
@@ -290,7 +440,7 @@ export default function AllBookings() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading && (
+              {(loading || searchLoading) && (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
                     <CircularProgress size={30} />
@@ -298,15 +448,20 @@ export default function AllBookings() {
                 </TableRow>
               )}
               
-              {!loading && displayedBookings.length === 0 && (
+              {!loading && !searchLoading && displayedBookings.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    No bookings found
+                    <Typography variant="body1" color="textSecondary">
+                      {searched && isSearchMode 
+                        ? "No search results found. Try again using different filters."
+                        : "No bookings found"
+                      }
+                    </Typography>
                   </TableCell>
                 </TableRow>
               )}
               
-              {!loading && displayedBookings.map((booking) => (
+              {!loading && !searchLoading && displayedBookings.map((booking) => (
                 <Row 
                   key={booking.id} 
                   booking={booking} 
@@ -338,7 +493,7 @@ export default function AllBookings() {
         onUpdateConfirm={handleUpdateConfirm}
         onDeleteConfirm={handleDeleteConfirm}
         bookingToUpdate={selectedBooking}
-        refreshData={fetchBookings}
+        refreshData={refreshData}
       />
     </>
   );
