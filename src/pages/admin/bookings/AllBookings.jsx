@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Collapse, 
-  IconButton, 
-  Paper, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Collapse,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
   TableRow,
   Typography,
   CircularProgress,
@@ -22,40 +22,45 @@ import {
   Grid,
   Card,
   CardContent,
-  Divider
-} from '@mui/material';
-import { 
-  KeyboardArrowDown, 
-  KeyboardArrowUp, 
-  Edit, 
+  Divider,
+} from "@mui/material";
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  Edit,
   Delete,
   NavigateBefore,
   NavigateNext,
   Search,
-  Clear
-} from '@mui/icons-material';
-import { format } from 'date-fns';
-import BookingModals from './BookingModals';
-import API from '../../../api';
+  Clear,
+} from "@mui/icons-material";
+import { format } from "date-fns";
+import BookingModals from "./BookingModals";
+import API from "../../../api";
 
 // Row component to handle the expandable functionality
 function Row({ booking, onEdit, onDelete }) {
   const [open, setOpen] = useState(false);
-  
+
   // Status color mapping
   const getStatusColor = (status) => {
-    switch(status) {
-      case 'pending': return 'warning';
-      case 'confirmed': return 'success';
-      case 'completed': return 'success';
-      case 'cancelled': return 'error';
-      default: return 'default';
+    switch (status) {
+      case "pending":
+        return "warning";
+      case "confirmed":
+        return "success";
+      case "completed":
+        return "success";
+      case "cancelled":
+        return "error";
+      default:
+        return "default";
     }
   };
 
   return (
     <>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -69,22 +74,32 @@ function Row({ booking, onEdit, onDelete }) {
           {booking.user?.username || booking.user}
         </TableCell>
         <TableCell>{booking.service?.name || booking.service}</TableCell>
-        <TableCell>{format(new Date(booking.event_date), 'MMM dd, yyyy')}</TableCell>
         <TableCell>
-          <Chip 
-            label={booking.status} 
-            color={getStatusColor(booking.status)} 
-            size="small" 
+          {format(new Date(booking.event_date), "MMM dd, yyyy")}
+        </TableCell>
+        <TableCell>
+          <Chip
+            label={booking.status}
+            color={getStatusColor(booking.status)}
+            size="small"
           />
         </TableCell>
         <TableCell align="right">
           <Tooltip title="Edit booking">
-            <IconButton size="small" color="primary" onClick={() => onEdit(booking)}>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => onEdit(booking)}
+            >
               <Edit />
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete booking">
-            <IconButton size="small" color="error" onClick={() => onDelete(booking)}>
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => onDelete(booking)}
+            >
               <Delete />
             </IconButton>
           </Tooltip>
@@ -100,28 +115,47 @@ function Row({ booking, onEdit, onDelete }) {
               <Table size="small" aria-label="booking details">
                 <TableBody>
                   <TableRow>
-                    <TableCell component="th" scope="row">Event Time</TableCell>
+                    <TableCell component="th" scope="row">
+                      Event Time
+                    </TableCell>
                     <TableCell>{booking.event_time}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Event Location</TableCell>
+                    <TableCell component="th" scope="row">
+                      Event Location
+                    </TableCell>
                     <TableCell>{booking.event_location}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Booked at</TableCell>
-                    <TableCell>{format(new Date(booking.booked_at), 'MMM dd, yyyy HH:mm')}</TableCell>
+                    <TableCell component="th" scope="row">
+                      Booked at
+                    </TableCell>
+                    <TableCell>
+                      {format(
+                        new Date(booking.booked_at),
+                        "MMM dd, yyyy HH:mm"
+                      )}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Customer Contact</TableCell>
-                    <TableCell>{booking.user?.phone || 'N/A'}</TableCell>
+                    <TableCell component="th" scope="row">
+                      Customer Contact
+                    </TableCell>
+                    <TableCell>{booking.user?.phone || "N/A"}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Booking ID</TableCell>
+                    <TableCell component="th" scope="row">
+                      Booking ID
+                    </TableCell>
                     <TableCell>{booking.id}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Service ID</TableCell>
-                    <TableCell>{booking.service?.id || booking.service}</TableCell>
+                    <TableCell component="th" scope="row">
+                      Service ID
+                    </TableCell>
+                    <TableCell>
+                      {booking.service?.id || booking.service}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -134,14 +168,21 @@ function Row({ booking, onEdit, onDelete }) {
 }
 
 // Custom pagination display component
-function CustomPaginationDisplay({ page, rowsPerPage, totalCount, onPageChange }) {
+function CustomPaginationDisplay({
+  page,
+  rowsPerPage,
+  totalCount,
+  onPageChange,
+}) {
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'flex-end',
-      padding: 2
-    }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        padding: 2,
+      }}
+    >
       <Typography variant="body2" color="text.secondary" sx={{ mr: 2 }}>
         Rows per page:
       </Typography>
@@ -159,15 +200,16 @@ function CustomPaginationDisplay({ page, rowsPerPage, totalCount, onPageChange }
         </Select>
       </FormControl>
       <Typography variant="body2" color="text.secondary" sx={{ mr: 2 }}>
-        {page * rowsPerPage + 1}–{Math.min((page + 1) * rowsPerPage, totalCount)} of {totalCount}
+        {page * rowsPerPage + 1}–
+        {Math.min((page + 1) * rowsPerPage, totalCount)} of {totalCount}
       </Typography>
-      <IconButton 
+      <IconButton
         disabled={page === 0}
         onClick={(e) => onPageChange(e, page - 1)}
       >
         <NavigateBefore />
       </IconButton>
-      <IconButton 
+      <IconButton
         disabled={(page + 1) * rowsPerPage >= totalCount}
         onClick={(e) => onPageChange(e, page + 1)}
       >
@@ -184,18 +226,18 @@ export default function AllBookings() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
-  
+
   // Search functionality states
   const [filters, setFilters] = useState({
-    user: '',
-    service: '',
-    event_location: '',
-    status: '',
+    user: "",
+    service: "",
+    event_location: "",
+    status: "",
   });
   const [searchLoading, setSearchLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
-  
+
   // Modal states
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -212,15 +254,19 @@ export default function AllBookings() {
     try {
       setLoading(true);
       // Assuming your API supports pagination parameters
-      const response = await API.get(`/admin-dashboard/?action=bookings&page=${page + 1}&per_page=${rowsPerPage}`);
-      
+      const response = await API.get(
+        `/admin-dashboard/?action=bookings&page=${
+          page + 1
+        }&per_page=${rowsPerPage}`
+      );
+
       // Adjust this based on your actual API response structure
       setBookings(response.data.bookings || response.data);
       setTotalCount(response.data.total || response.data.length);
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching bookings:', err);
-      setError('Failed to load bookings');
+      console.error("Error fetching bookings:", err);
+      setError("Failed to load bookings");
       setLoading(false);
     }
   };
@@ -242,27 +288,31 @@ export default function AllBookings() {
     setSearched(true);
     setIsSearchMode(true);
     setPage(0); // Reset to first page when searching
-    
+
     try {
       const params = new URLSearchParams();
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.append(key, value);
       });
-      
+
       // Add pagination to search
-      params.append('page', '1');
-      params.append('per_page', rowsPerPage.toString());
-      
-      const response = await API.get(`/admin-dashboard/?action=bookings${params.toString()}`);
+      params.append("page", "1");
+      params.append("per_page", rowsPerPage.toString());
+
+      const response = await API.get(
+        `/admin-dashboard/?action=bookings${params.toString()}`
+      );
       const bookingsData = response.data.bookings || response.data || [];
-      const bookingsArray = Array.isArray(bookingsData) ? bookingsData : []
+      const bookingsArray = Array.isArray(bookingsData) ? bookingsData : [];
       setBookings(bookingsArray);
       setTotalCount(response.data.total || response.data.length);
     } catch (error) {
       console.error("Search error:", error);
       setBookings([]);
       setTotalCount(0);
-      setError('Failed to search bookings. Kindly try again using other variables.');
+      setError(
+        "Failed to search bookings. Kindly try again using other variables."
+      );
     } finally {
       setSearchLoading(false);
     }
@@ -270,10 +320,10 @@ export default function AllBookings() {
 
   const handleClearSearch = () => {
     setFilters({
-      user: '',
-      service: '',
-      event_location: '',
-      status: '',
+      user: "",
+      service: "",
+      event_location: "",
+      status: "",
     });
     setSearched(false);
     setIsSearchMode(false);
@@ -308,17 +358,17 @@ export default function AllBookings() {
   };
 
   const handleCreateConfirm = (newBooking) => {
-    console.log('Booking created:', newBooking);
+    console.log("Booking created:", newBooking);
     // Refresh will be handled by refreshData passed to BookingModals
   };
 
   const handleUpdateConfirm = (updatedBooking) => {
-    console.log('Booking updated:', updatedBooking);
+    console.log("Booking updated:", updatedBooking);
     // Refresh will be handled by refreshData passed to BookingModals
   };
 
   const handleDeleteConfirm = (bookingId) => {
-    console.log('Booking deleted:', bookingId);
+    console.log("Booking deleted:", bookingId);
     // Refresh will be handled by refreshData passed to BookingModals
   };
 
@@ -335,7 +385,7 @@ export default function AllBookings() {
 
   if (loading && page === 0 && !isSearchMode) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", padding: 4 }}>
         <CircularProgress />
       </Box>
     );
@@ -343,11 +393,50 @@ export default function AllBookings() {
 
   return (
     <>
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <Typography variant="h5" component="div" sx={{ padding: 2 }}>
-          All Bookings
-        </Typography>
-        
+      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 3,
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(10px)",
+            borderRadius: 3,
+          }}
+        >
+          <Row className="align-items-center justify-content-between">
+            <Col xs="auto">
+              <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+                <Button
+                  variant="outline-primary"
+                  className="d-flex align-items-center gap-2"
+                  style={{
+                    borderRadius: "25px",
+                    padding: "10px 20px",
+                    border: "2px solid #007bff",
+                    fontWeight: "600",
+                  }}
+                >
+                  <DashboardIcon fontSize="small" />
+                  Back to Dashboard
+                </Button>
+              </Link>
+            </Col>
+            <Col xs="auto">
+              <div className="d-flex align-items-center gap-2">
+                <PersonIcon sx={{ fontSize: 32, color: "#667eea" }} />
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{ fontWeight: 700, color: "#2c3e50", mb: 0 }}
+                >
+                  All Bookings
+                </Typography>
+              </div>
+            </Col>
+          </Row>
+        </Paper>
+
         {/* Search Filters Section */}
         <Box sx={{ padding: 2 }}>
           <Card sx={{ mb: 2 }}>
@@ -404,18 +493,24 @@ export default function AllBookings() {
                   </TextField>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  onClick={handleSearch} 
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSearch}
                   disabled={searchLoading}
-                  startIcon={searchLoading ? <CircularProgress size={20} color="inherit" /> : <Search />}
+                  startIcon={
+                    searchLoading ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      <Search />
+                    )
+                  }
                 >
-                  {searchLoading ? 'Searching...' : 'Search Bookings'}
+                  {searchLoading ? "Searching..." : "Search Bookings"}
                 </Button>
-                <Button 
-                  variant="outlined" 
+                <Button
+                  variant="outlined"
                   onClick={handleClearSearch}
                   startIcon={<Clear />}
                   disabled={searchLoading}
@@ -428,8 +523,8 @@ export default function AllBookings() {
         </Box>
 
         <Divider />
-        
-        <TableContainer sx={{ maxHeight: 'calc(100vh - 400px)' }}>
+
+        <TableContainer sx={{ maxHeight: "calc(100vh - 400px)" }}>
           <Table stickyHeader striped hover aria-label="collapsible table">
             <TableHead>
               <TableRow className="fw-bold">
@@ -449,33 +544,34 @@ export default function AllBookings() {
                   </TableCell>
                 </TableRow>
               )}
-              
+
               {!loading && !searchLoading && displayedBookings.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
                     <Typography variant="body1" color="textSecondary">
-                      {searched && isSearchMode 
+                      {searched && isSearchMode
                         ? "No search results found. Try again using different filters."
-                        : "No bookings found"
-                      }
+                        : "No bookings found"}
                     </Typography>
                   </TableCell>
                 </TableRow>
               )}
-              
-              {!loading && !searchLoading && displayedBookings.map((booking) => (
-                <Row 
-                  key={booking.id} 
-                  booking={booking} 
-                  onEdit={handleEditBooking}
-                  onDelete={handleDeleteBooking}
-                />
-              ))}
+
+              {!loading &&
+                !searchLoading &&
+                displayedBookings.map((booking) => (
+                  <Row
+                    key={booking.id}
+                    booking={booking}
+                    onEdit={handleEditBooking}
+                    onDelete={handleDeleteBooking}
+                  />
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
-        
-        <CustomPaginationDisplay 
+
+        <CustomPaginationDisplay
           page={page}
           rowsPerPage={rowsPerPage}
           totalCount={totalCount}
@@ -484,7 +580,7 @@ export default function AllBookings() {
       </Paper>
 
       {/* BookingModals component integration */}
-      <BookingModals 
+      <BookingModals
         createOpen={createModalOpen}
         updateOpen={updateModalOpen}
         deleteOpen={deleteModalOpen}

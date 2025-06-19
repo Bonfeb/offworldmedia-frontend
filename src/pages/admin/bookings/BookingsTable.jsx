@@ -109,7 +109,7 @@ const BookingsTable = ({ bookings, onUpdate, onDelete, loading, bookingType = "p
       border: '1px solid',
       borderColor: 'divider'
     }}>
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2, display: 'flex', gap: 2}}>
         <Button
           component={Link}
           to="/admin-dashboard"
@@ -118,6 +118,14 @@ const BookingsTable = ({ bookings, onUpdate, onDelete, loading, bookingType = "p
           sx={{ mb: 2 }}
         >
           Back to Dashboard
+        </Button>
+        <Button
+          component={Link}
+          to="/admin-dashboard/all-bookings"
+          variant="outlined"
+          sx={{ mb: 2 }}
+        >
+          All Bookings
         </Button>
       </Box>
       
