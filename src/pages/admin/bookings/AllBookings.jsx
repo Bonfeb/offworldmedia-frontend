@@ -254,13 +254,15 @@ export default function AllBookings() {
       params.append('per_page', rowsPerPage.toString());
       
       const response = await API.get(`/admin-dashboard/?action=bookings${params.toString()}`);
-      setBookings(response.data.bookings || response.data);
+      const bookingsData = response.data.bookings || response.data || [];
+      const bookingsArray = Array.isArray(bookingsData) ? bookingsData : []
+      setBookings(bookingsArray);
       setTotalCount(response.data.total || response.data.length);
     } catch (error) {
       console.error("Search error:", error);
       setBookings([]);
       setTotalCount(0);
-      setError('Failed to search bookings');
+      setError('Failed to search bookings. Kindly try again using other variables.');
     } finally {
       setSearchLoading(false);
     }
