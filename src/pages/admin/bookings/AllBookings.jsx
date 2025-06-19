@@ -34,8 +34,8 @@ import {
   Search,
   Clear,
   Dashboard,
-  Calendar,
 } from "@mui/icons-material";
+import { Event } from "@mui/icons-material";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import BookingModals from "./BookingModals";
@@ -110,7 +110,7 @@ function BookingsHeader() {
               justifyContent: "center",
             }}
           >
-            <Calendar sx={{ color: "white", fontSize: 28 }} />
+            <Event sx={{ color: "white", fontSize: 28 }} />
           </Box>
           <Typography
             variant="h4"
