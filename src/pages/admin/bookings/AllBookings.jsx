@@ -33,10 +33,101 @@ import {
   NavigateNext,
   Search,
   Clear,
+  Dashboard,
+  Calendar,
 } from "@mui/icons-material";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import BookingModals from "./BookingModals";
 import API from "../../../api";
+
+// Header Component
+function BookingsHeader() {
+  const navigate = useNavigate();
+
+  const handleBackToDashboard = () => {
+    navigate("/admin-dashboard");
+  };
+
+  return (
+    <Box
+      sx={{
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        padding: 3,
+        borderRadius: "12px 12px 0 0",
+        position: "relative",
+        overflow: "hidden",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(255, 255, 255, 0.05)",
+          backdropFilter: "blur(10px)",
+        },
+      }}
+    >
+      <Box sx={{ position: "relative", zIndex: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleBackToDashboard}
+            startIcon={<Dashboard />}
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              color: "white",
+              borderRadius: "25px",
+              textTransform: "none",
+              fontWeight: 500,
+              px: 3,
+              py: 1,
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 8px 25px rgba(0, 0, 0, 0.2)",
+              },
+              transition: "all 0.3s ease",
+            }}
+          >
+            Back to Dashboard
+          </Button>
+        </Box>
+        
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Box
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              borderRadius: "50%",
+              p: 1.5,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Calendar sx={{ color: "white", fontSize: 28 }} />
+          </Box>
+          <Typography
+            variant="h4"
+            sx={{
+              color: "white",
+              fontWeight: 700,
+              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+              letterSpacing: "0.5px",
+            }}
+          >
+            All Bookings
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
 // Row component to handle the expandable functionality
 function Row({ booking, onEdit, onDelete }) {
@@ -394,9 +485,8 @@ export default function AllBookings() {
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <Typography variant="h5" component="div" sx={{ padding: 2 }}>
-          All Bookings
-        </Typography>
+        {/* Header Section */}
+        <BookingsHeader />
 
         {/* Search Filters Section */}
         <Box sx={{ padding: 2 }}>
