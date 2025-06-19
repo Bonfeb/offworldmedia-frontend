@@ -359,7 +359,7 @@ export default function AllBookings() {
                 <Grid item xs={12} md={3}>
                   <TextField
                     fullWidth
-                    label="User ID"
+                    label="User"
                     name="user"
                     value={filters.user}
                     onChange={handleFilterChange}
@@ -369,7 +369,7 @@ export default function AllBookings() {
                 <Grid item xs={12} md={3}>
                   <TextField
                     fullWidth
-                    label="Service ID"
+                    label="Service"
                     name="service"
                     value={filters.service}
                     onChange={handleFilterChange}
@@ -399,7 +399,7 @@ export default function AllBookings() {
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="confirmed">Confirmed</MenuItem>
                     <MenuItem value="pending">Pending</MenuItem>
-                    <MenuItem value="cancelled">Cancelled</MenuItem>
+                    <MenuItem value="canceled">Cancelled</MenuItem>
                     <MenuItem value="completed">Completed</MenuItem>
                   </TextField>
                 </Grid>

@@ -205,9 +205,9 @@ const Register = () => {
             top: 16,
             zIndex: 2,
             color: "white",
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            backgroundColor: "rgba(215, 230, 10, 0.83)",
             "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)",
+              backgroundColor: "rgba(189, 52, 28, 0.94)",
             },
           }}
         >
