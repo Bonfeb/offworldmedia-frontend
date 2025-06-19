@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
   Collapse,
@@ -24,6 +25,10 @@ import {
   CardContent,
   Divider,
 } from "@mui/material";
+import { 
+  Dashboard as DashboardIcon,
+  Person as PersonIcon
+ } from "@mui/icons-material";
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
@@ -34,6 +39,7 @@ import {
   Search,
   Clear,
 } from "@mui/icons-material";
+import {Row, Col} from "react-bootstrap";
 import { format } from "date-fns";
 import BookingModals from "./BookingModals";
 import API from "../../../api";
