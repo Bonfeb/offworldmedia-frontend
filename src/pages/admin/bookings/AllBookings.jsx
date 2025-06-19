@@ -57,72 +57,63 @@ function BookingsHeader() {
         borderRadius: "12px 12px 0 0",
         position: "relative",
         overflow: "hidden",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(255, 255, 255, 0.05)",
-          backdropFilter: "blur(10px)",
-        },
       }}
     >
       <Box sx={{ position: "relative", zIndex: 1 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
           <Button
             variant="contained"
             onClick={handleBackToDashboard}
             startIcon={<Dashboard />}
             sx={{
               backgroundColor: "rgba(255, 255, 255, 0.2)",
-              backdropFilter: "blur(10px)",
               border: "1px solid rgba(255, 255, 255, 0.3)",
               color: "white",
-              borderRadius: "25px",
+              borderRadius: "8px",
               textTransform: "none",
               fontWeight: 500,
               px: 3,
               py: 1,
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 8px 25px rgba(0, 0, 0, 0.2)",
               },
-              transition: "all 0.3s ease",
             }}
           >
             Back to Dashboard
           </Button>
-        </Box>
-        
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Box
-            sx={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              borderRadius: "50%",
-              p: 1.5,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Event sx={{ color: "white", fontSize: 28 }} />
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Box
+              sx={{
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                borderRadius: "50%",
+                p: 1.5,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Event sx={{ color: "white", fontSize: 28 }} />
+            </Box>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "white",
+                fontWeight: 700,
+                letterSpacing: "0.5px",
+              }}
+            >
+              All Bookings
+            </Typography>
           </Box>
-          <Typography
-            variant="h4"
-            sx={{
-              color: "white",
-              fontWeight: 700,
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
-              letterSpacing: "0.5px",
-            }}
-          >
-            All Bookings
-          </Typography>
         </Box>
       </Box>
     </Box>
