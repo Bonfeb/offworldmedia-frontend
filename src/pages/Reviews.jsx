@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import {
   Container,
   Row,
@@ -106,15 +107,15 @@ function Reviews({ reviews }) {
         <h1 className="text-center fw-bold">Reviews</h1>
         <p className="text-center">
           See what the hype is all about and check out our Yelp to see
-          <a
-            href="https://www.yelp.com/"
+          <Link
+            to="all-reviews"
             target="_blank"
             rel="noopener noreferrer"
             className="text-white text-decoration-underline"
           >
             {" "}
             all our reviews!
-          </a>
+          </Link>
         </p>
         <Row className="m-0">
           <Carousel interval={5000} pause="hover">

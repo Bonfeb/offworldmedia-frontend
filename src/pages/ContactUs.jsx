@@ -53,6 +53,7 @@ const ContactUs = () => {
         });
 
         setUser(response.data);
+        console.log("User profile fetched:", response.data);
         setFormData((prev) => ({
           ...prev,
           first_name: response.data.first_name,
