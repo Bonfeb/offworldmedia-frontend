@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Alert, Spinner, Modal, Button, Dropdown, Form } from "react-bootstrap";
 import Slider from "react-slick";
+import { Snackbar, Alert as MuiAlert, IconButton } from "@mui/material";
+import { Edit as EditIcon } from "@mui/icons-material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -42,6 +44,30 @@ const Media = () => {
   const [addVideoLoading, setAddVideoLoading] = useState(false);
   const [updateImageLoading, setUpdateImageLoading] = useState(false);
   const [updateVideoLoading, setUpdateVideoLoading] = useState(false);
+
+  // Snackbar states
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // success, error, warning, info
+  });
+
+  // Show snackbar helper function
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
+  };
+
+  // Close snackbar
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   // Fetch Videos
   useEffect(() => {
@@ -161,9 +187,10 @@ const Media = () => {
       setShowAddImageModal(false);
       setSelectedImageFile(null);
       setImagePreviewUrl(null);
+      showSnackbar("Image uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Failed to upload image. Please try again.");
+      showSnackbar("Failed to upload image. Please try again.", "error");
     } finally {
       setAddImageLoading(false);
     }
@@ -187,9 +214,10 @@ const Media = () => {
       setShowAddVideoModal(false);
       setSelectedVideoFile(null);
       setVideoPreviewUrl(null);
+      showSnackbar("Video uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading video:", error);
-      alert("Failed to upload video. Please try again.");
+      showSnackbar("Failed to upload video. Please try again.", "error");
     } finally {
       setAddVideoLoading(false);
     }
@@ -205,7 +233,7 @@ const Media = () => {
     formData.append("image", selectedImageFile);
 
     try {
-      const response = await API.put(`/images/${selectedImage.id}/`, formData, {
+      const response = await API.put(`/image/${selectedImage.id}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -218,9 +246,10 @@ const Media = () => {
       setSelectedImageFile(null);
       setImagePreviewUrl(null);
       setSelectedImage(null);
+      showSnackbar("Image updated successfully!", "success");
     } catch (error) {
       console.error("Error updating image:", error);
-      alert("Failed to update image. Please try again.");
+      showSnackbar("Failed to update image. Please try again.", "error");
     } finally {
       setUpdateImageLoading(false);
     }
@@ -236,7 +265,7 @@ const Media = () => {
     formData.append("video", selectedVideoFile);
 
     try {
-      const response = await API.put(`/videos/${selectedVideo.id}/`, formData, {
+      const response = await API.put(`/video/${selectedVideo.id}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -249,9 +278,10 @@ const Media = () => {
       setSelectedVideoFile(null);
       setVideoPreviewUrl(null);
       setSelectedVideo(null);
+      showSnackbar("Video updated successfully!", "success");
     } catch (error) {
       console.error("Error updating video:", error);
-      alert("Failed to update video. Please try again.");
+      showSnackbar("Failed to update video. Please try again.", "error");
     } finally {
       setUpdateVideoLoading(false);
     }
@@ -298,6 +328,7 @@ const Media = () => {
     autoplay: true,
     autoplaySpeed: VIDEO_AUTOPLAY_DURATION,
     pauseOnHover: true,
+    adaptiveHeight: true,
   };
 
   // Render video section
@@ -336,31 +367,45 @@ const Media = () => {
     }
 
     return (
-      <div className="carousel-container">
+      <div className="carousel-container position-relative">
         <Slider {...carouselSettings}>
           {videos.map((video) => (
             <div key={video.id} className="position-relative">
-              <video
-                src={video.video}
-                className="w-100"
-                controls
-                autoPlay
-                style={{ maxHeight: "400px", objectFit: "cover" }}
-              >
-                Your browser does not support the video tag.
-              </video>
-              <Button
-                variant="outline-primary"
-                className="position-absolute top-0 end-0 m-2"
-                onClick={() => handleEditVideoClick(video)}
-              >
-                <i className="bi bi-pencil-square"></i>
-              </Button>
-              <div className="text-center mt-2">
-                <h5>Video {video.id}</h5>
-                <p>
-                  Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
-                </p>
+              <div className="video-slide-container position-relative">
+                <video
+                  src={video.video}
+                  className="w-100"
+                  controls
+                  autoPlay
+                  style={{ 
+                    maxHeight: "500px", 
+                    objectFit: "cover",
+                    borderRadius: "8px"
+                  }}
+                >
+                  Your browser does not support the video tag.
+                </video>
+                <IconButton
+                  className="position-absolute"
+                  style={{
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(0, 0, 0, 0.1)",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  }}
+                  onClick={() => handleEditVideoClick(video)}
+                  size="large"
+                >
+                  <EditIcon fontSize="medium" color="primary" />
+                </IconButton>
+                <div className="text-center mt-3 p-3 bg-light rounded">
+                  <h5 className="mb-2">Video {video.id}</h5>
+                  <p className="mb-0 text-muted">
+                    Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
@@ -405,28 +450,42 @@ const Media = () => {
     }
 
     return (
-      <div className="carousel-container">
+      <div className="carousel-container position-relative">
         <Slider {...carouselSettings}>
           {images.map((image) => (
             <div key={image.id} className="position-relative">
-              <img
-                src={image.image}
-                alt={`Gallery image ${image.id}`}
-                className="w-100"
-                style={{ maxHeight: "400px", objectFit: "cover" }}
-              />
-              <Button
-                variant="outline-primary"
-                className="position-absolute top-0 end-0 m-2"
-                onClick={() => handleEditImageClick(image)}
-              >
-                <i className="bi bi-pencil-square"></i>
-              </Button>
-              <div className="text-center mt-2">
-                <h5>Image {image.id}</h5>
-                <p>
-                  Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
-                </p>
+              <div className="image-slide-container position-relative">
+                <img
+                  src={image.image}
+                  alt={`Gallery image ${image.id}`}
+                  className="w-100"
+                  style={{ 
+                    maxHeight: "500px", 
+                    objectFit: "cover",
+                    borderRadius: "8px"
+                  }}
+                />
+                <IconButton
+                  className="position-absolute"
+                  style={{
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(0, 0, 0, 0.1)",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  }}
+                  onClick={() => handleEditImageClick(image)}
+                  size="large"
+                >
+                  <EditIcon fontSize="medium" color="primary" />
+                </IconButton>
+                <div className="text-center mt-3 p-3 bg-light rounded">
+                  <h5 className="mb-2">Image {image.id}</h5>
+                  <p className="mb-0 text-muted">
+                    Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
@@ -459,6 +518,23 @@ const Media = () => {
 
       <h3 className="mb-3 mt-5">Images</h3>
       {renderImageSection()}
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <MuiAlert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+          variant="filled"
+        >
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
 
       {/* Add Image Modal */}
       <Modal show={showAddImageModal} onHide={handleCloseAllModals}>
