@@ -14,18 +14,41 @@
   max-width: 100%;
 }
 
-/* Sidebar Styles */
+/* Sidebar Styles - Updated for vertical scrolling */
 .sidebar {
   width: 240px;
   min-width: 240px;
   background-color: #12151f;
   color: #fff;
   transition: all 0.3s ease;
-  overflow-y: auto;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Hide horizontal scrolling */
   box-shadow: 2px 0 5px rgba(0,0,0,0.2);
   z-index: 1030;
   height: 100vh;
   flex-shrink: 0;
+  /* Custom scrollbar styling for better appearance */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+
+/* Webkit scrollbar styling for Chrome, Safari, Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255,255,255,0.5);
 }
 
 .sidebar.closed {
@@ -38,6 +61,11 @@
   text-align: center;
   padding: 1rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  /* Make profile section sticky at top if desired */
+  position: sticky;
+  top: 0;
+  background-color: #12151f;
+  z-index: 10;
 }
 
 .sidebar .nav-header {
@@ -46,6 +74,8 @@
   letter-spacing: 1px;
   padding: 0.75rem 1rem;
   margin-top: 1rem;
+  /* Prevent text selection for better UX */
+  user-select: none;
 }
 
 .sidebar .nav-link {
@@ -54,6 +84,8 @@
   transition: all 0.2s ease;
   border-radius: 5px;
   margin: 0 0.5rem;
+  /* Ensure nav links don't get cut off during scrolling */
+  flex-shrink: 0;
 }
 
 .sidebar .nav-link:hover, 
@@ -66,6 +98,14 @@
   margin-right: 0.75rem;
   width: 20px;
   text-align: center;
+}
+
+/* Sidebar content wrapper to ensure proper scrolling */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding-bottom: 1rem; /* Add some bottom padding */
 }
 
 /* Main Content Area */
@@ -260,6 +300,8 @@
     height: 100vh;
     z-index: 1040;
     transform: translateX(-100%);
+    /* Ensure scrolling works on mobile */
+    overflow-y: auto;
   }
   
   .sidebar.open {
@@ -307,6 +349,11 @@
   
   .chart-container {
     height: 250px;
+  }
+  
+  /* Adjust sidebar scrollbar on mobile */
+  .sidebar::-webkit-scrollbar {
+    width: 4px;
   }
 }
 
