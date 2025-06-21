@@ -325,6 +325,13 @@ function NavBar() {
               Team
             </Nav.Link>
             <Nav.Link
+              onClick={() => handleNavItemClick("/media-gallery")}
+              className="py-2 text-white"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Gallery
+            </Nav.Link>
+            <Nav.Link
               onClick={() => handleNavItemClick("/contactus")}
               className="py-2 text-white"
               style={{ fontSize: "1.1rem" }}

@@ -41,6 +41,7 @@ import AdminTeam from "./pages/admin/AdminTeam";
 import AllBookings from "./pages/admin/bookings/AllBookings";
 import MediaGallery from "./pages/MediaGallery";
 import AllReviews from "./pages/AllReviews";
+import Media from "./pages/admin/Media";
 
 function App() {
   return (
@@ -105,6 +106,7 @@ function App() {
               <Route path="photo-shooting" element={ <PhotoShooting /> } />
               <Route path="users" element={ <AdminUsers /> } />
               <Route path="reviews" element={<AdminReviews/>} />
+              <Route path="media" element={<Media/>} />
               <Route path="messages" element={<AdminMessages/>} />
               <Route path="team-members" element={<AdminTeam /> } />
             </Route>

@@ -29,6 +29,7 @@ import {
   faAngleDown,
   faUserGroup,
   faBars,
+  faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import API from "../../api";
 import { AuthContext } from "../../context/AuthContext";
@@ -559,6 +560,14 @@ const AdminDashboard = () => {
             onClick={handleNavItemClick}
           >
             <FontAwesomeIcon icon={faUserGroup} className="me-4" /> Team
+          </Nav.Link>
+          <Nav.Link
+            as={NavLink}
+            to="/admin-dashboard/media"
+            className="text-light py-2"
+            onClick={handleNavItemClick}
+          >
+            <FontAwesomeIcon icon={faSliders} className="me-4" /> Media
           </Nav.Link>
           <hr style={{ color: "yellowgreen" }} />
           <Nav.Link
