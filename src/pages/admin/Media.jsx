@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   Alert,
@@ -34,7 +34,7 @@ import API from "../../api";
 // Constants
 const MAX_RESULTS = 10;
 const VIDEO_AUTOPLAY_DURATION = 180000; // 3 minutes in milliseconds
-const THUMBNAIL_SIZE = 100; // Thumbnail size in pixels
+const THUMBNAIL_SIZE = 80; // Thumbnail size in pixels
 
 const Media = () => {
   // State for videos, images, loading states, errors, and modals
@@ -45,6 +45,13 @@ const Media = () => {
   const [videoError, setVideoError] = useState(null);
   const [imageError, setImageError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+
+  // Carousel sync states
+  const [nav1, setNav1] = useState(null);
+  const [nav2, setNav2] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slider1 = useRef(null);
+  const slider2 = useRef(null);
 
   // Modal states
   const [showAddImageModal, setShowAddImageModal] = useState(false);
@@ -77,6 +84,68 @@ const Media = () => {
     message: "",
     severity: "success",
   });
+
+  // Initialize carousels
+  useEffect(() => {
+    setNav1(slider1.current);
+    setNav2(slider2.current);
+  }, []);
+
+  // Main carousel settings
+  const mainCarouselSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    adaptiveHeight: true,
+    asNavFor: nav2,
+    ref: slider1,
+    beforeChange: (current, next) => setCurrentSlide(next),
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          arrows: false,
+        },
+      },
+    ],
+  };
+
+  // Thumbnail carousel settings
+  const thumbnailSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: Math.min(5, videos.length || images.length),
+    slidesToScroll: 1,
+    focusOnSelect: true,
+    centerMode: true,
+    centerPadding: "0px",
+    asNavFor: nav1,
+    ref: slider2,
+    responsive: [
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: Math.min(4, videos.length || images.length),
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: Math.min(3, videos.length || images.length),
+        },
+      },
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow: Math.min(2, videos.length || images.length),
+        },
+      },
+    ],
+  };
 
   // Show snackbar helper function
   const showSnackbar = (message, severity = "success") => {
@@ -353,59 +422,7 @@ const Media = () => {
     setRetryCount((prevCount) => prevCount + 1);
   };
 
-  // Carousel settings for main display
-  const mainCarouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: VIDEO_AUTOPLAY_DURATION,
-    pauseOnHover: true,
-    adaptiveHeight: true,
-    arrows: true,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          arrows: false,
-        },
-      },
-    ],
-  };
-
-  // Thumbnail carousel settings
-  const thumbnailSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    focusOnSelect: true,
-    responsive: [
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-  };
-
-  // Render video section
+  // Render video section with synced carousels
   const renderVideoSection = () => {
     if (videoLoading) {
       return (
@@ -441,7 +458,8 @@ const Media = () => {
     }
 
     return (
-      <div className="video-gallery-container">
+      <>
+        {/* Main Videos Carousel */}
         <Slider {...mainCarouselSettings}>
           {videos.map((video) => (
             <div key={video.id} className="video-slide-container">
@@ -451,7 +469,7 @@ const Media = () => {
                   className="w-100"
                   controls
                   style={{
-                    maxHeight: "500px",
+                    maxHeight: "400px",
                     objectFit: "cover",
                     borderRadius: "8px",
                   }}
@@ -487,7 +505,6 @@ const Media = () => {
                 </div>
               </div>
               <div className="text-center mt-3 p-3 bg-light rounded">
-                <h5 className="mb-2">Video {video.id}</h5>
                 <p className="mb-0 text-muted">
                   Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
                 </p>
@@ -496,40 +513,34 @@ const Media = () => {
           ))}
         </Slider>
 
-        {/* Video thumbnails */}
-        {videos.length > 1 && (
-          <div className="mt-3">
-            <Slider {...thumbnailSettings}>
-              {videos.map((video) => (
-                <div key={`thumb-${video.id}`} className="px-1">
-                  <div
-                    className="video-thumbnail-container"
-                    onClick={() => {
-                      // You could implement navigation to the specific video here
-                    }}
-                  >
-                    <video
-                      src={video.video}
-                      className="w-100"
-                      style={{
-                        height: `${THUMBNAIL_SIZE}px`,
-                        objectFit: "cover",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      muted
-                    />
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        )}
-      </div>
+        {/* Videos Thumbnails Carousel */}
+        <div className="mt-3">
+          <Slider {...thumbnailSettings}>
+            {videos.map((video, index) => (
+              <div key={`thumb-${video.id}`} className="px-1">
+                <video
+                  src={video.video}
+                  className="w-100"
+                  style={{
+                    height: `${THUMBNAIL_SIZE}px`,
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    opacity: index === currentSlide ? 1 : 0.6,
+                    border: index === currentSlide ? "2px solid #0d6efd" : "none",
+                  }}
+                  muted
+                  onClick={() => slider1.current.slickGoTo(index)}
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      </>
     );
   };
 
-  // Render image section
+  // Render image section with synced carousels
   const renderImageSection = () => {
     if (imageLoading) {
       return (
@@ -565,7 +576,8 @@ const Media = () => {
     }
 
     return (
-      <div className="image-gallery-container">
+      <>
+        {/* Main Images Carousel */}
         <Slider {...mainCarouselSettings}>
           {images.map((image) => (
             <div key={image.id} className="image-slide-container">
@@ -576,7 +588,7 @@ const Media = () => {
                   fluid
                   rounded
                   style={{
-                    maxHeight: "500px",
+                    maxHeight: "400px",
                     width: "100%",
                     objectFit: "contain",
                     cursor: "pointer",
@@ -602,7 +614,6 @@ const Media = () => {
                 </div>
               </div>
               <div className="text-center mt-3 p-3 bg-light rounded">
-                <h5 className="mb-2">Image {image.id}</h5>
                 <p className="mb-0 text-muted">
                   Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
                 </p>
@@ -611,32 +622,30 @@ const Media = () => {
           ))}
         </Slider>
 
-        {/* Image thumbnails */}
-        {images.length > 1 && (
-          <div className="mt-3">
-            <Slider {...thumbnailSettings}>
-              {images.map((image) => (
-                <div key={`thumb-${image.id}`} className="px-1">
-                  <BootstrapImage
-                    src={image.image}
-                    alt={`Thumbnail ${image.id}`}
-                    thumbnail
-                    fluid
-                    style={{
-                      height: `${THUMBNAIL_SIZE}px`,
-                      objectFit: "cover",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      // You could implement navigation to the specific image here
-                    }}
-                  />
-                </div>
-              ))}
-            </Slider>
-          </div>
-        )}
-      </div>
+        {/* Images Thumbnails Carousel */}
+        <div className="mt-3">
+          <Slider {...thumbnailSettings}>
+            {images.map((image, index) => (
+              <div key={`thumb-${image.id}`} className="px-1">
+                <BootstrapImage
+                  src={image.image}
+                  alt={`Thumbnail ${image.id}`}
+                  thumbnail
+                  fluid
+                  style={{
+                    height: `${THUMBNAIL_SIZE}px`,
+                    objectFit: "cover",
+                    cursor: "pointer",
+                    opacity: index === currentSlide ? 1 : 0.6,
+                    border: index === currentSlide ? "2px solid #0d6efd" : "none",
+                  }}
+                  onClick={() => slider1.current.slickGoTo(index)}
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      </>
     );
   };
 
@@ -659,11 +668,20 @@ const Media = () => {
         </Dropdown>
       </div>
 
-      <h3 className="mb-3">Videos</h3>
-      {renderVideoSection()}
-
-      <h3 className="mb-3 mt-5">Images</h3>
-      {renderImageSection()}
+      <Row>
+        <Col xs={12} className="mb-5">
+          <h3 className="mb-3">Videos</h3>
+          <div className="video-carousel-container">
+            {renderVideoSection()}
+          </div>
+        </Col>
+        <Col xs={12}>
+          <h3 className="mb-3">Images</h3>
+          <div className="image-carousel-container">
+            {renderImageSection()}
+          </div>
+        </Col>
+      </Row>
 
       {/* Snackbar for notifications */}
       <Snackbar
