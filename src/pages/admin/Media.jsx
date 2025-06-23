@@ -1,10 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Alert, Spinner, Modal, Button, Dropdown, Form } from "react-bootstrap";
 import Slider from "react-slick";
-import { Snackbar, Alert as MuiAlert, IconButton } from "@mui/material";
-import { Edit as EditIcon } from "@mui/icons-material";
-import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormLabel,
+  IconButton,
+  Menu,
+  MenuItem,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { Edit as EditIcon, Fullscreen as FullscreenIcon, AddCircleOutline as AddIcon } from "@mui/icons-material";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import API from "../../api";
@@ -14,7 +29,6 @@ const MAX_RESULTS = 10;
 const VIDEO_AUTOPLAY_DURATION = 180000; // 3 minutes in milliseconds
 
 const Media = () => {
-  // State for videos, images, loading states, errors, and modals
   const [videos, setVideos] = useState([]);
   const [images, setImages] = useState([]);
   const [videoLoading, setVideoLoading] = useState(true);
@@ -22,54 +36,41 @@ const Media = () => {
   const [videoError, setVideoError] = useState(null);
   const [imageError, setImageError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
-
-  // Modal states
   const [showAddImageModal, setShowAddImageModal] = useState(false);
   const [showAddVideoModal, setShowAddVideoModal] = useState(false);
   const [showUpdateImageModal, setShowUpdateImageModal] = useState(false);
   const [showUpdateVideoModal, setShowUpdateVideoModal] = useState(false);
-
-  // File and preview states
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [selectedVideoFile, setSelectedVideoFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
-
-  // Selected media for updating
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
-
-  // Button loading states
   const [addImageLoading, setAddImageLoading] = useState(false);
   const [addVideoLoading, setAddVideoLoading] = useState(false);
   const [updateImageLoading, setUpdateImageLoading] = useState(false);
   const [updateVideoLoading, setUpdateVideoLoading] = useState(false);
-
-  // Snackbar states
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    severity: "success", // success, error, warning, info
+    severity: "success",
   });
+  const [showFullImageModal, setShowFullImageModal] = useState(false);
+  const [fullImageUrl, setFullImageUrl] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  // Show snackbar helper function
+  const videoRefs = useRef({});
+
   const showSnackbar = (message, severity = "success") => {
-    setSnackbar({
-      open: true,
-      message,
-      severity,
-    });
+    setSnackbar({ open: true, message, severity });
   };
 
-  // Close snackbar
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setSnackbar({ ...snackbar, open: false });
   };
 
-  // Fetch Videos
   useEffect(() => {
     const fetchVideos = async () => {
       setVideoLoading(true);
@@ -77,9 +78,7 @@ const Media = () => {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        const response = await API.get("/videos/", {
-          signal: controller.signal,
-        });
+        const response = await API.get("/videos/", { signal: controller.signal });
         clearTimeout(timeoutId);
         if (!Array.isArray(response.data)) {
           throw new Error("Invalid response format from videos API");
@@ -91,15 +90,9 @@ const Media = () => {
         if (axios.isCancel(error)) {
           setVideoError("Request timed out. Please try again.");
         } else if (error.response) {
-          setVideoError(
-            `Server error (${error.response.status}): ${
-              error.response.data?.message || "Unknown error"
-            }`
-          );
+          setVideoError(`Server error (${error.response.status}): ${error.response.data?.message || "Unknown error"}`);
         } else if (error.request) {
-          setVideoError(
-            "Network error. Please check your connection and try again."
-          );
+          setVideoError("Network error. Please check your connection and try again.");
         } else {
           setVideoError(`Error fetching videos: ${error.message}`);
         }
@@ -109,7 +102,6 @@ const Media = () => {
     fetchVideos();
   }, [retryCount]);
 
-  // Fetch Images
   useEffect(() => {
     const fetchImages = async () => {
       setImageLoading(true);
@@ -117,9 +109,7 @@ const Media = () => {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        const response = await API.get("/images/", {
-          signal: controller.signal,
-        });
+        const response = await API.get("/images/", { signal: controller.signal });
         clearTimeout(timeoutId);
         if (!Array.isArray(response.data)) {
           throw new Error("Invalid response format from images API");
@@ -131,15 +121,9 @@ const Media = () => {
         if (axios.isCancel(error)) {
           setImageError("Request timed out. Please try again.");
         } else if (error.response) {
-          setImageError(
-            `Server error (${error.response.status}): ${
-              error.response.data?.message || "Unknown error"
-            }`
-          );
+          setImageError(`Server error (${error.response.status}): ${error.response.data?.message || "Unknown error"}`);
         } else if (error.request) {
-          setImageError(
-            "Network error. Please check your connection and try again."
-          );
+          setImageError("Network error. Please check your connection and try again.");
         } else {
           setImageError(`Error fetching images: ${error.message}`);
         }
@@ -149,7 +133,6 @@ const Media = () => {
     fetchImages();
   }, [retryCount]);
 
-  // Handle image file selection and preview
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -159,7 +142,6 @@ const Media = () => {
     }
   };
 
-  // Handle video file selection and preview
   const handleVideoFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -169,7 +151,6 @@ const Media = () => {
     }
   };
 
-  // Handle add image submission
   const handleAddImageSubmit = async (e) => {
     e.preventDefault();
     if (!selectedImageFile) return;
@@ -182,12 +163,12 @@ const Media = () => {
       const response = await API.post("/images/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       setImages([...images, response.data]);
       setShowAddImageModal(false);
       setSelectedImageFile(null);
       setImagePreviewUrl(null);
       showSnackbar("Image uploaded successfully!", "success");
+      setRetryCount((prev) => prev + 1);
     } catch (error) {
       console.error("Error uploading image:", error);
       showSnackbar("Failed to upload image. Please try again.", "error");
@@ -196,7 +177,6 @@ const Media = () => {
     }
   };
 
-  // Handle add video submission
   const handleAddVideoSubmit = async (e) => {
     e.preventDefault();
     if (!selectedVideoFile) return;
@@ -209,12 +189,12 @@ const Media = () => {
       const response = await API.post("/videos/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       setVideos([...videos, response.data]);
       setShowAddVideoModal(false);
       setSelectedVideoFile(null);
       setVideoPreviewUrl(null);
       showSnackbar("Video uploaded successfully!", "success");
+      setRetryCount((prev) => prev + 1);
     } catch (error) {
       console.error("Error uploading video:", error);
       showSnackbar("Failed to upload video. Please try again.", "error");
@@ -223,7 +203,6 @@ const Media = () => {
     }
   };
 
-  // Handle update image submission
   const handleUpdateImageSubmit = async (e) => {
     e.preventDefault();
     if (!selectedImageFile || !selectedImage) return;
@@ -236,17 +215,13 @@ const Media = () => {
       const response = await API.put(`/image/${selectedImage.id}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      setImages(
-        images.map((item) =>
-          item.id === selectedImage.id ? response.data : item
-        )
-      );
+      setImages(images.map((item) => (item.id === selectedImage.id ? response.data : item)));
       setShowUpdateImageModal(false);
       setSelectedImageFile(null);
       setImagePreviewUrl(null);
       setSelectedImage(null);
       showSnackbar("Image updated successfully!", "success");
+      setRetryCount((prev) => prev + 1);
     } catch (error) {
       console.error("Error updating image:", error);
       showSnackbar("Failed to update image. Please try again.", "error");
@@ -255,7 +230,6 @@ const Media = () => {
     }
   };
 
-  // Handle update video submission
   const handleUpdateVideoSubmit = async (e) => {
     e.preventDefault();
     if (!selectedVideoFile || !selectedVideo) return;
@@ -268,472 +242,580 @@ const Media = () => {
       const response = await API.put(`/video/${selectedVideo.id}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      setVideos(
-        videos.map((item) =>
-          item.id === selectedVideo.id ? response.data : item
-        )
-      );
+      setVideos(videos.map((item) => (item.id === selectedVideo.id ? response.data : item)));
       setShowUpdateVideoModal(false);
       setSelectedVideoFile(null);
       setVideoPreviewUrl(null);
       setSelectedVideo(null);
       showSnackbar("Video updated successfully!", "success");
+      setRetryCount((prev) => prev + 1);
     } catch (error) {
       console.error("Error updating video:", error);
-      showSnackbar("Failed to update video. Please try again.", "error");
+      showSnackbar("Failed to upload video. Please try again.", "error");
     } finally {
       setUpdateVideoLoading(false);
     }
   };
 
-  // Open update image modal
   const handleEditImageClick = (image) => {
     setSelectedImage(image);
     setShowUpdateImageModal(true);
   };
 
-  // Open update video modal
   const handleEditVideoClick = (video) => {
     setSelectedVideo(video);
     setShowUpdateVideoModal(true);
   };
 
-  // Close all modals and reset state
+  const handleViewFullImage = (image) => {
+    setFullImageUrl(image.image);
+    setZoomLevel(1);
+    setShowFullImageModal(true);
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel((prev) => Math.min(prev + 0.2, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel((prev) => Math.max(prev - 0.2, 0.5));
+  };
+
+  const handleFullscreenVideo = (videoId) => {
+    const video = videoRefs.current[videoId];
+    if (video && video.requestFullscreen) {
+      video.requestFullscreen();
+    }
+  };
+
   const handleCloseAllModals = () => {
     setShowAddImageModal(false);
     setShowAddVideoModal(false);
     setShowUpdateImageModal(false);
     setShowUpdateVideoModal(false);
+    setShowFullImageModal(false);
     setSelectedImageFile(null);
     setSelectedVideoFile(null);
     setImagePreviewUrl(null);
     setVideoPreviewUrl(null);
     setSelectedImage(null);
     setSelectedVideo(null);
+    setFullImageUrl(null);
+    setZoomLevel(1);
   };
 
-  // Retry fetching data
   const handleRetry = () => {
     setRetryCount((prevCount) => prevCount + 1);
   };
 
-  // Carousel settings
+  const handleAddMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleAddMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const carouselSettings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: VIDEO_AUTOPLAY_DURATION,
+    autoplay: false,
     pauseOnHover: true,
     adaptiveHeight: true,
+    responsive: [
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
+      { breakpoint: 576, settings: { slidesToShow: 1 } },
+    ],
   };
 
-  // Render video section
+  const thumbnailSettings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    focusOnSelect: true,
+    responsive: [
+      { breakpoint: 768, settings: { slidesToShow: 3 } },
+      { breakpoint: 576, settings: { slidesToShow: 2 } },
+    ],
+  };
+
   const renderVideoSection = () => {
     if (videoLoading) {
       return (
-        <div className="text-center my-5">
-          <Spinner animation="border" role="status" variant="primary">
-            <span className="visually-hidden">Loading videos...</span>
-          </Spinner>
-          <p className="mt-2">Loading videos...</p>
-        </div>
+        <Box sx={{ textAlign: "center", my: 5 }}>
+          <CircularProgress color="primary" />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Loading videos...
+          </Typography>
+        </Box>
       );
     }
 
     if (videoError) {
       return (
-        <Alert variant="danger" className="my-3">
-          <Alert.Heading>Video Loading Error</Alert.Heading>
-          <p>{videoError}</p>
-          <div className="d-flex justify-content-end">
-            <Button variant="outline-danger" onClick={handleRetry}>
+        <Alert severity="error" sx={{ my: 3 }}>
+          <Typography variant="h6">Video Loading Error</Typography>
+          <Typography>{videoError}</Typography>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button variant="outlined" color="error" onClick={handleRetry}>
               Retry Loading Videos
             </Button>
-          </div>
+          </Box>
         </Alert>
       );
     }
 
     if (videos.length === 0) {
       return (
-        <Alert variant="info" className="my-3">
-          <p>No videos found in the gallery.</p>
+        <Alert severity="info" sx={{ my: 3 }}>
+          <Typography>No videos found in the gallery.</Typography>
         </Alert>
       );
     }
 
     return (
-      <div className="carousel-container position-relative">
+      <Box className="carousel-container" sx={{ position: "relative" }}>
         <Slider {...carouselSettings}>
           {videos.map((video) => (
-            <div key={video.id} className="position-relative">
-              <div className="video-slide-container position-relative">
+            <Box key={video.id} sx={{ position: "relative" }}>
+              <Box className="video-slide-container" sx={{ position: "relative" }}>
                 <video
+                  ref={(el) => (videoRefs.current[video.id] = el)}
                   src={video.video}
-                  className="w-100"
+                  className="w-100 rounded"
                   controls
-                  autoPlay
-                  style={{ 
-                    maxHeight: "500px", 
-                    objectFit: "cover",
-                    borderRadius: "8px"
-                  }}
+                  style={{ maxHeight: "500px", objectFit: "contain", width: "100%" }}
                 >
                   Your browser does not support the video tag.
                 </video>
                 <IconButton
-                  className="position-absolute"
-                  style={{
+                  sx={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "50px",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(0, 0, 0, 0.1)",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                    "&:hover": { backgroundColor: "rgba(255, 255, 255, 1)" },
+                  }}
+                  onClick={() => handleFullscreenVideo(video.id)}
+                  size="large"
+                >
+                  <FullscreenIcon color="primary" />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    position: "absolute",
                     top: "10px",
                     right: "10px",
                     backgroundColor: "rgba(255, 255, 255, 0.9)",
                     backdropFilter: "blur(10px)",
                     border: "1px solid rgba(0, 0, 0, 0.1)",
                     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                    "&:hover": { backgroundColor: "rgba(255, 255, 255, 1)" },
                   }}
                   onClick={() => handleEditVideoClick(video)}
                   size="large"
                 >
-                  <EditIcon fontSize="medium" color="primary" />
+                  <EditIcon color="primary" />
                 </IconButton>
-                <div className="text-center mt-3 p-3 bg-light rounded">
-                  <h5 className="mb-2">Video {video.id}</h5>
-                  <p className="mb-0 text-muted">
+                <Box sx={{ textAlign: "center", mt: 2, p: 2, bgcolor: "grey.100", borderRadius: 2 }}>
+                  <Typography variant="h6">Video {video.id}</Typography>
+                  <Typography variant="body2" color="text.secondary">
                     Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           ))}
         </Slider>
-      </div>
+      </Box>
     );
   };
 
-  // Render image section
   const renderImageSection = () => {
     if (imageLoading) {
       return (
-        <div className="text-center my-5">
-          <Spinner animation="border" role="status" variant="primary">
-            <span className="visually-hidden">Loading images...</span>
-          </Spinner>
-          <p className="mt-2">Loading images...</p>
-        </div>
+        <Box sx={{ textAlign: "center", my: 5 }}>
+          <CircularProgress color="primary" />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Loading images...
+          </Typography>
+        </Box>
       );
     }
 
     if (imageError) {
       return (
-        <Alert variant="danger" className="my-3">
-          <Alert.Heading>Image Loading Error</Alert.Heading>
-          <p>{imageError}</p>
-          <div className="d-flex justify-content-end">
-            <Button variant="outline-danger" onClick={handleRetry}>
+        <Alert severity="error" sx={{ my: 3 }}>
+          <Typography variant="h6">Image Loading Error</Typography>
+          <Typography>{imageError}</Typography>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button variant="outlined" color="error" onClick={handleRetry}>
               Retry Loading Images
             </Button>
-          </div>
+          </Box>
         </Alert>
       );
     }
 
     if (images.length === 0) {
       return (
-        <Alert variant="info" className="my-3">
-          <p>No images found in the gallery.</p>
+        <Alert severity="info" sx={{ my: 3 }}>
+          <Typography>No images found in the gallery.</Typography>
         </Alert>
       );
     }
 
     return (
-      <div className="carousel-container position-relative">
-        <Slider {...carouselSettings}>
+      <Box className="carousel-container" sx={{ position: "relative" }}>
+        <Slider {...carouselSettings} className="main-carousel">
           {images.map((image) => (
-            <div key={image.id} className="position-relative">
-              <div className="image-slide-container position-relative">
+            <Box key={image.id} sx={{ position: "relative" }}>
+              <Box className="image-slide-container" sx={{ position: "relative" }}>
                 <img
                   src={image.image}
                   alt={`Gallery image ${image.id}`}
-                  className="w-100"
-                  style={{ 
-                    maxHeight: "500px", 
-                    objectFit: "cover",
-                    borderRadius: "8px"
-                  }}
+                  style={{ maxHeight: "500px", objectFit: "contain", width: "100%", borderRadius: 8, cursor: "pointer" }}
+                  onClick={() => handleViewFullImage(image)}
                 />
                 <IconButton
-                  className="position-absolute"
-                  style={{
+                  sx={{
+                    position: "absolute",
                     top: "10px",
                     right: "10px",
                     backgroundColor: "rgba(255, 255, 255, 0.9)",
                     backdropFilter: "blur(10px)",
                     border: "1px solid rgba(0, 0, 0, 0.1)",
                     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                    "&:hover": { backgroundColor: "rgba(255, 255, 255, 1)" },
                   }}
                   onClick={() => handleEditImageClick(image)}
                   size="large"
                 >
-                  <EditIcon fontSize="medium" color="primary" />
+                  <EditIcon color="primary" />
                 </IconButton>
-                <div className="text-center mt-3 p-3 bg-light rounded">
-                  <h5 className="mb-2">Image {image.id}</h5>
-                  <p className="mb-0 text-muted">
+                <Box sx={{ textAlign: "center", mt: 2, p: 2, bgcolor: "grey.100", borderRadius: 2 }}>
+                  <Typography variant="h6">Image {image.id}</Typography>
+                  <Typography variant="body2" color="text.secondary">
                     Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           ))}
         </Slider>
-      </div>
+        <Box className="thumbnail-carousel" sx={{ mt: 2 }}>
+          <Slider {...thumbnailSettings}>
+            {images.map((image) => (
+              <Box key={image.id} sx={{ px: 0.5 }}>
+                <img
+                  src={image.image}
+                  alt={`Thumbnail ${image.id}`}
+                  style={{ height: "60px", objectFit: "cover", width: "100%", borderRadius: 4, cursor: "pointer" }}
+                  onClick={() => handleViewFullImage(image)}
+                />
+              </Box>
+            ))}
+          </Slider>
+        </Box>
+      </Box>
     );
   };
 
   return (
-    <div className="container my-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Our Media Gallery</h2>
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-add">
-            <i className="bi bi-plus-circle"></i> Add Media
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setShowAddImageModal(true)}>
-              Add Image
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowAddVideoModal(true)}>
-              Add Video
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+    <Box sx={{ maxWidth: "100%", px: { xs: 2, md: 3 }, py: 5 }}>
+      <style jsx>{`
+        .carousel-container {
+          max-width: 100%;
+          margin: 0 auto;
+        }
+        .main-carousel :focus,
+        .thumbnail-carousel :focus {
+          outline: none;
+        }
+        .thumbnail-carousel .slick-slide {
+          padding: 0 5px;
+        }
+        .full-image-container {
+          overflow: auto;
+          max-height: 80vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        @media (max-width: 576px) {
+          .carousel-container {
+            padding: 0;
+          }
+          .video-slide-container video,
+          .image-slide-container img {
+            max-height: 300px !important;
+          }
+        }
+      `}</style>
 
-      <h3 className="mb-3">Videos</h3>
+      <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems="center" sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h2" sx={{ mb: { xs: 2, md: 0 } }}>
+          Our Media Gallery
+        </Typography>
+        <div>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<AddIcon />}
+            onClick={handleAddMenuClick}
+            aria-controls={anchorEl ? "add-media-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={anchorEl ? "true" : undefined}
+          >
+            Add Media
+          </Button>
+          <Menu
+            id="add-media-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleAddMenuClose}
+            MenuListProps={{ "aria-labelledby": "add-media-button" }}
+          >
+            <MenuItem onClick={() => { setShowAddImageModal(true); handleAddMenuClose(); }}>Add Image</MenuItem>
+            <MenuItem onClick={() => { setShowAddVideoModal(true); handleAddMenuClose(); }}>Add Video</MenuItem>
+          </Menu>
+        </div>
+      </Stack>
+
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        Videos
+      </Typography>
       {renderVideoSection()}
 
-      <h3 className="mb-3 mt-5">Images</h3>
+      <Typography variant="h5" sx={{ mt: 5, mb: 2 }}>
+        Images
+      </Typography>
       {renderImageSection()}
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <MuiAlert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-          variant="filled"
-        >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }} variant="filled">
           {snackbar.message}
-        </MuiAlert>
+        </Alert>
       </Snackbar>
 
-      {/* Add Image Modal */}
-      <Modal show={showAddImageModal} onHide={handleCloseAllModals}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleAddImageSubmit}>
-            <Form.Group controlId="formImageFile" className="mb-3">
-              <Form.Label>Upload Image</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleImageFileChange}
-              />
-            </Form.Group>
+      <Dialog open={showAddImageModal} onClose={handleCloseAllModals} maxWidth="sm" fullWidth>
+        <DialogTitle>Add New Image</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleAddImageSubmit}>
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <FormLabel>Upload Image</FormLabel>
+              <input type="file" accept="image/*" onChange={handleImageFileChange} style={{ marginTop: 8 }} />
+            </FormControl>
             {imagePreviewUrl && (
-              <div className="mb-3">
-                <img
-                  src={imagePreviewUrl}
-                  alt="Preview"
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
-                />
-              </div>
+              <Box sx={{ mb: 3 }}>
+                <img src={imagePreviewUrl} alt="Preview" style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: 4 }} />
+              </Box>
             )}
             <Button
-              variant="primary"
+              variant="contained"
               type="submit"
               disabled={!selectedImageFile || addImageLoading}
+              sx={{ mt: 2 }}
             >
               {addImageLoading ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" />
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
                   Uploading...
                 </>
               ) : (
                 "Upload Image"
               )}
             </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAllModals} variant="outlined">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {/* Add Video Modal */}
-      <Modal show={showAddVideoModal} onHide={handleCloseAllModals}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Video</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleAddVideoSubmit}>
-            <Form.Group controlId="formVideoFile" className="mb-3">
-              <Form.Label>Upload Video</Form.Label>
-              <Form.Control
-                type="file"
-                accept="video/*"
-                onChange={handleVideoFileChange}
-              />
-            </Form.Group>
+      <Dialog open={showAddVideoModal} onClose={handleCloseAllModals} maxWidth="sm" fullWidth>
+        <DialogTitle>Add New Video</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleAddVideoSubmit}>
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <FormLabel>Upload Video</FormLabel>
+              <input type="file" accept="video/*" onChange={handleVideoFileChange} style={{ marginTop: 8 }} />
+            </FormControl>
             {videoPreviewUrl && (
-              <div className="mb-3">
-                <video
-                  src={videoPreviewUrl}
-                  controls
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
-                />
-              </div>
+              <Box sx={{ mb: 3 }}>
+                <video src={videoPreviewUrl} controls style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: 4 }} />
+              </Box>
             )}
             <Button
-              variant="primary"
+              variant="contained"
               type="submit"
               disabled={!selectedVideoFile || addVideoLoading}
+              sx={{ mt: 2 }}
             >
               {addVideoLoading ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" />
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
                   Uploading...
                 </>
               ) : (
                 "Upload Video"
               )}
             </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAllModals} variant="outlined">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {/* Update Image Modal */}
-      <Modal show={showUpdateImageModal} onHide={handleCloseAllModals}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleUpdateImageSubmit}>
-            <Form.Group controlId="formUpdateImageFile" className="mb-3">
-              <Form.Label>Current Image</Form.Label>
+      <Dialog open={showUpdateImageModal} onClose={handleCloseAllModals} maxWidth="sm" fullWidth>
+        <DialogTitle>Update Image</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleUpdateImageSubmit}>
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <FormLabel>Current Image</FormLabel>
               {selectedImage && (
-                <div className="mb-3">
-                  <img
-                    src={selectedImage.image}
-                    alt="Current"
-                    style={{ maxWidth: "100%", maxHeight: "200px" }}
-                  />
-                </div>
+                <Box sx={{ mb: 3, mt: 1 }}>
+                  <img src={selectedImage.image} alt="Current" style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: 4 }} />
+                </Box>
               )}
-              <Form.Label>Upload New Image</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleImageFileChange}
-              />
-            </Form.Group>
+              <FormLabel>Upload New Image</FormLabel>
+              <input type="file" accept="image/*" onChange={handleImageFileChange} style={{ marginTop: 8 }} />
+            </FormControl>
             {imagePreviewUrl && (
-              <div className="mb-3">
-                <p>Preview New Image:</p>
-                <img
-                  src={imagePreviewUrl}
-                  alt="Preview"
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
-                />
-              </div>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Preview New Image:
+                </Typography>
+                <img src={imagePreviewUrl} alt="Preview" style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: 4 }} />
+              </Box>
             )}
             <Button
-              variant="primary"
+              variant="contained"
               type="submit"
               disabled={!selectedImageFile || updateImageLoading}
+              sx={{ mt: 2 }}
             >
               {updateImageLoading ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" />
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
                   Updating...
                 </>
               ) : (
                 "Update Image"
               )}
             </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAllModals} variant="outlined">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {/* Update Video Modal */}
-      <Modal show={showUpdateVideoModal} onHide={handleCloseAllModals}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Video</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleUpdateVideoSubmit}>
-            <Form.Group controlId="formUpdateVideoFile" className="mb-3">
-              <Form.Label>Current Video</Form.Label>
+      <Dialog open={showUpdateVideoModal} onClose={handleCloseAllModals} maxWidth="sm" fullWidth>
+        <DialogTitle>Update Video</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleUpdateVideoSubmit}>
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <FormLabel>Current Video</FormLabel>
               {selectedVideo && (
-                <div className="mb-3">
-                  <video
-                    src={selectedVideo.video}
-                    controls
-                    style={{ maxWidth: "100%", maxHeight: "200px" }}
-                  />
-                </div>
+                <Box sx={{ mb: 3, mt: 1 }}>
+                  <video src={selectedVideo.video} controls style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: 4 }} />
+                </Box>
               )}
-              <Form.Label>Upload New Video</Form.Label>
-              <Form.Control
-                type="file"
-                accept="video/*"
-                onChange={handleVideoFileChange}
-              />
-            </Form.Group>
+              <FormLabel>Upload New Video</FormLabel>
+              <input type="file" accept="video/*" onChange={handleVideoFileChange} style={{ marginTop: 8 }} />
+            </FormControl>
             {videoPreviewUrl && (
-              <div className="mb-3">
-                <p>Preview New Video:</p>
-                <video
-                  src={videoPreviewUrl}
-                  controls
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
-                />
-              </div>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  Preview New Video:
+                </Typography>
+                <video src={videoPreviewUrl} controls style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: 4 }} />
+              </Box>
             )}
             <Button
-              variant="primary"
+              variant="contained"
               type="submit"
               disabled={!selectedVideoFile || updateVideoLoading}
+              sx={{ mt: 2 }}
             >
               {updateVideoLoading ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" />
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
                   Updating...
                 </>
               ) : (
                 "Update Video"
               )}
             </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAllModals} variant="outlined">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={showFullImageModal} onClose={handleCloseAllModals} maxWidth="lg" fullWidth>
+        <DialogTitle>View Image</DialogTitle>
+        <DialogContent>
+          <Box className="full-image-container">
+            {fullImageUrl && (
+              <img
+                src={fullImageUrl}
+                alt="Full view"
+                style={{
+                  transform: `scale(${zoomLevel})`,
+                  transition: "transform 0.2s",
+                  maxWidth: "100%",
+                  borderRadius: 4,
+                }}
+              />
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleZoomOut}>
+            Zoom Out
+          </Button>
+          <Button variant="outlined" onClick={handleZoomIn}>
+            Zoom In
+          </Button>
+          <Button variant="contained" onClick={handleCloseAllModals}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {videoError && imageError && (
-        <div className="text-center my-4">
-          <Button variant="primary" onClick={handleRetry}>
+        <Box sx={{ textAlign: "center", my: 4 }}>
+          <Button variant="contained" onClick={handleRetry}>
             Retry Loading All Content
           </Button>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
