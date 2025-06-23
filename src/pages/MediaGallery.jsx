@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Alert, Spinner, Row, Col } from "react-bootstrap";
 import {
-  Alert,
   Spinner,
   Button,
-  IconButton,
   Row,
   Col,
   Image as BootstrapImage,
 } from "react-bootstrap";
-import { Alert, IconButton, Dialog, DialogContent, DialogActions } from "@mui/material";
+import {
+  Alert,
+  IconButton,
+  Dialog,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 import {
   Edit as EditIcon,
   Fullscreen as FullscreenIcon,
