@@ -10,9 +10,7 @@ import {
   Col,
   Image as BootstrapImage,
 } from "react-bootstrap";
-import { Alert, IconButton, Button, Dialog,
-  DialogContent,
-  DialogActions, } from "@mui/material";
+import { Alert, IconButton, Dialog, DialogContent, DialogActions } from "@mui/material";
 import {
   Edit as EditIcon,
   Fullscreen as FullscreenIcon,
