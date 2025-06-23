@@ -217,6 +217,18 @@ const MediaGallery = () => {
     setRetryCount((prevCount) => prevCount + 1);
   };
 
+  // Close fullscreen viewers
+  const handleCloseFullscreen = () => {
+    setFullscreenImage(null);
+    setFullscreenVideo(null);
+    setIsFullscreen(false);
+  };
+
+  // Toggle fullscreen mode
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
   // Render video section
   const renderVideoSection = () => {
     if (videoLoading) {
