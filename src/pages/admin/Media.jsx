@@ -513,7 +513,7 @@ const Media = () => {
           ))}
         </Slider>
 
-        {/* Videos Thumbnails Carousel */}
+        {/* Videos Thumbnails Carousel
         <div className="mt-3">
           <Slider {...thumbnailSettings}>
             {videos.map((video, index) => (
@@ -535,7 +535,7 @@ const Media = () => {
               </div>
             ))}
           </Slider>
-        </div>
+        </div> */}
       </>
     );
   };
@@ -622,7 +622,7 @@ const Media = () => {
           ))}
         </Slider>
 
-        {/* Images Thumbnails Carousel */}
+        {/* Images Thumbnails Carousel 
         <div className="mt-3">
           <Slider {...thumbnailSettings}>
             {images.map((image, index) => (
@@ -644,7 +644,7 @@ const Media = () => {
               </div>
             ))}
           </Slider>
-        </div>
+        </div> */}
       </>
     );
   };
