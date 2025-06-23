@@ -217,6 +217,15 @@ const MediaGallery = () => {
     setRetryCount((prevCount) => prevCount + 1);
   };
 
+  const handleImageFullscreen = (image) => {
+    setFullscreenImage(image);
+  };
+
+  // Open fullscreen video viewer
+  const handleVideoFullscreen = (video) => {
+    setFullscreenVideo(video);
+  };
+
   // Close fullscreen viewers
   const handleCloseFullscreen = () => {
     setFullscreenImage(null);
@@ -284,19 +293,6 @@ const MediaGallery = () => {
                   Your browser does not support the video tag.
                 </video>
                 <div className="position-absolute top-0 end-0 p-2">
-                  <IconButton
-                    onClick={() => handleEditVideoClick(video)}
-                    size="small"
-                    sx={{
-                      backgroundColor: "rgba(255, 255, 255, 0.9)",
-                      backdropFilter: "blur(10px)",
-                      border: "1px solid rgba(0, 0, 0, 0.1)",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                      marginRight: 1,
-                    }}
-                  >
-                    <EditIcon fontSize="small" color="primary" />
-                  </IconButton>
                   <IconButton
                     onClick={() => handleVideoFullscreen(video)}
                     size="small"
