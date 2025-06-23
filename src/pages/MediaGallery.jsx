@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Alert, Spinner, Row, Col } from 'react-bootstrap';
 import Slider from 'react-slick';
@@ -81,6 +81,11 @@ const MediaGallery = () => {
       },
     ],
   };
+
+  useEffect(() => {
+      setNav1(slider1.current);
+      setNav2(slider2.current);
+    }, []);
 
   // Fetch Videos
   useEffect(() => {
