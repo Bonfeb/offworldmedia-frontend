@@ -39,6 +39,13 @@ const MediaGallery = () => {
   const [imageError, setImageError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
 
+  // Fullscreen states
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [fullscreenImage, setFullscreenImage] = useState(null);
+  const [fullscreenVideo, setFullscreenVideo] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
   // Carousel sync states
   const [nav1, setNav1] = useState(null);
   const [nav2, setNav2] = useState(null);
@@ -111,6 +118,9 @@ const MediaGallery = () => {
     const fetchVideos = async () => {
       setVideoLoading(true);
       setVideoError(null);
+      setSelectedVideo(null);
+      setFullscreenVideo(null);
+      setIsFullscreen(false);
 
       try {
         const controller = new AbortController();
@@ -158,6 +168,9 @@ const MediaGallery = () => {
     const fetchImages = async () => {
       setImageLoading(true);
       setImageError(null);
+      setSelectedImage(null);
+      setFullscreenImage(null);
+      setIsFullscreen(false);
 
       try {
         const controller = new AbortController();
