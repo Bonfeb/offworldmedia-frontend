@@ -28,7 +28,7 @@ const MediaGallery = () => {
   const slider2 = useRef(null);
 
   // Carousel settings for different screen sizes
-  const carouselSettings = {
+  const mainCarouselSettings = {
     dots: false,
     infinite: true,
     speed: 500,
