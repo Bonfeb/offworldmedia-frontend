@@ -512,30 +512,6 @@ const Media = () => {
             </div>
           ))}
         </Slider>
-
-        {/* Videos Thumbnails Carousel
-        <div className="mt-3">
-          <Slider {...thumbnailSettings}>
-            {videos.map((video, index) => (
-              <div key={`thumb-${video.id}`} className="px-1">
-                <video
-                  src={video.video}
-                  className="w-100"
-                  style={{
-                    height: `${THUMBNAIL_SIZE}px`,
-                    objectFit: "cover",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    opacity: index === currentSlide ? 1 : 0.6,
-                    border: index === currentSlide ? "2px solid #0d6efd" : "none",
-                  }}
-                  muted
-                  onClick={() => slider1.current.slickGoTo(index)}
-                />
-              </div>
-            ))}
-          </Slider>
-        </div> */}
       </>
     );
   };
@@ -621,30 +597,6 @@ const Media = () => {
             </div>
           ))}
         </Slider>
-
-        {/* Images Thumbnails Carousel 
-        <div className="mt-3">
-          <Slider {...thumbnailSettings}>
-            {images.map((image, index) => (
-              <div key={`thumb-${image.id}`} className="px-1">
-                <BootstrapImage
-                  src={image.image}
-                  alt={`Thumbnail ${image.id}`}
-                  thumbnail
-                  fluid
-                  style={{
-                    height: `${THUMBNAIL_SIZE}px`,
-                    objectFit: "cover",
-                    cursor: "pointer",
-                    opacity: index === currentSlide ? 1 : 0.6,
-                    border: index === currentSlide ? "2px solid #0d6efd" : "none",
-                  }}
-                  onClick={() => slider1.current.slickGoTo(index)}
-                />
-              </div>
-            ))}
-          </Slider>
-        </div> */}
       </>
     );
   };
@@ -652,7 +604,7 @@ const Media = () => {
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <h2 className="mb-3 mb-md-0">Our Media Gallery</h2>
+        <h2 className="mb-3 mb-md-0 text-center">Our Media Gallery</h2>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-add">
             <i className="bi bi-plus-circle me-1"></i> Add Media
@@ -669,14 +621,14 @@ const Media = () => {
       </div>
 
       <Row>
-        <Col xs={12} className="mb-5">
-          <h3 className="mb-3">Videos</h3>
+        <Col xs={12} md={12} lg={6} className="mb-5">
+          <h3 className="mb-3 text-center">Videos</h3>
           <div className="video-carousel-container">
             {renderVideoSection()}
           </div>
         </Col>
-        <Col xs={12}>
-          <h3 className="mb-3">Images</h3>
+        <Col xs={12} md={12} lg={6}>
+          <h3 className="mb-3 text-center">Images</h3>
           <div className="image-carousel-container">
             {renderImageSection()}
           </div>

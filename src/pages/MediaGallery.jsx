@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Alert, Spinner } from 'react-bootstrap';
+import { Alert, Spinner, Row, Col } from 'react-bootstrap';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import API from '../api';
 
 // Constants
 const MAX_RESULTS = 10;
+const THUMBNAIL_SIZE = 80;
 
 const MediaGallery = () => {
-  // State for videos, images, loading states and errors
+  // State declarations
   const [videos, setVideos] = useState([]);
   const [images, setImages] = useState([]);
   const [videoLoading, setVideoLoading] = useState(true);
@@ -15,16 +19,37 @@ const MediaGallery = () => {
   const [videoError, setVideoError] = useState(null);
   const [imageError, setImageError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
-  
-  
-  // Fetch Videos from /videos/ endpoint
+
+  // Carousel settings for different screen sizes
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToScroll: 1,
+    arrows: true,
+    responsive: [
+      {
+        breakpoint: 992, // lg and below
+        settings: {
+          slidesToShow: 1,
+        }
+      },
+      {
+        breakpoint: 1200, // xl and above
+        settings: {
+          slidesToShow: 3,
+        }
+      }
+    ]
+  };
+
+  // Fetch Videos
   useEffect(() => {
     const fetchVideos = async () => {
       setVideoLoading(true);
       setVideoError(null);
       
       try {
-        // Add timeout to prevent hanging requests
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
         
@@ -34,7 +59,6 @@ const MediaGallery = () => {
         
         clearTimeout(timeoutId);
         
-        // Validate response data
         if (!Array.isArray(response.data)) {
           throw new Error('Invalid response format from videos API');
         }
@@ -44,36 +68,29 @@ const MediaGallery = () => {
       } catch (error) {
         setVideoLoading(false);
         
-        // Handle specific error types
         if (axios.isCancel(error)) {
           setVideoError('Request timed out. Please try again.');
         } else if (error.response) {
-          // Server responded with an error status code
           const status = error.response.status;
           setVideoError(`Server error (${status}): ${error.response.data?.message || 'Unknown error'}`);
         } else if (error.request) {
-          // Request made but no response received
           setVideoError('Network error. Please check your connection and try again.');
         } else {
-          // Other errors
           setVideoError(`Error fetching videos: ${error.message}`);
         }
-        
-        console.error('Detailed videos API error:', error);
       }
     };
     
     fetchVideos();
-  }, [retryCount]); // Add retryCount to dependencies for retry functionality
-  
-  // Fetch Images from /images/ endpoint
+  }, [retryCount]);
+
+  // Fetch Images
   useEffect(() => {
     const fetchImages = async () => {
       setImageLoading(true);
       setImageError(null);
       
       try {
-        // Add timeout to prevent hanging requests
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
         
@@ -83,7 +100,6 @@ const MediaGallery = () => {
         
         clearTimeout(timeoutId);
         
-        // Validate response data
         if (!Array.isArray(response.data)) {
           throw new Error('Invalid response format from images API');
         }
@@ -93,39 +109,81 @@ const MediaGallery = () => {
       } catch (error) {
         setImageLoading(false);
         
-        // Handle specific error types
         if (axios.isCancel(error)) {
           setImageError('Request timed out. Please try again.');
         } else if (error.response) {
-          // Server responded with an error status code
           const status = error.response.status;
           setImageError(`Server error (${status}): ${error.response.data?.message || 'Unknown error'}`);
         } else if (error.request) {
-          // Request made but no response received
           setImageError('Network error. Please check your connection and try again.');
         } else {
-          // Other errors
           setImageError(`Error fetching images: ${error.message}`);
         }
-        
-        console.error('Detailed images API error:', error);
       }
     };
     
     fetchImages();
-    
-    // Clean up function
-    return () => {
-      // Cancel any pending requests if component unmounts
-    };
-  }, [retryCount]); // Add retryCount to dependencies for retry functionality
-  
-  // Function to retry fetching data
+  }, [retryCount]);
+
   const handleRetry = () => {
     setRetryCount(prevCount => prevCount + 1);
   };
-  
-  // Render loading, error states or content
+
+  // Render video carousel
+  const renderVideoCarousel = () => {
+    return (
+      <Slider {...carouselSettings}>
+        {videos.map(video => (
+          <div key={video.id} className="px-2">
+            <div className="card h-100">
+              <video 
+                src={video.video} 
+                className="card-img-top"
+                controls
+                style={{ height: '200px', objectFit: 'cover' }}
+              >
+                Your browser does not support the video tag.
+              </video>
+              <div className="card-body">
+                <h5 className="card-title">Video {video.id}</h5>
+                <p className="card-text">
+                  Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    );
+  };
+
+  // Render image carousel
+  const renderImageCarousel = () => {
+    return (
+      <Slider {...carouselSettings}>
+        {images.map(image => (
+          <div key={image.id} className="px-2">
+            <div className="card h-100">
+              <img 
+                src={image.image} 
+                alt={`Gallery image ${image.id}`}
+                className="card-img-top"
+                style={{ height: '200px', objectFit: 'cover' }}
+              />
+              <div className="card-body">
+                <h5 className="card-title">Image {image.id}</h5>
+                <p className="card-text">
+                  Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    );
+  };
+
+  // Render video section
   const renderVideoSection = () => {
     if (videoLoading) {
       return (
@@ -163,34 +221,16 @@ const MediaGallery = () => {
       );
     }
     
-    // Render video content here
     return (
-      <div className="row">
-        {videos.map(video => (
-          <div key={video.id} className="col-md-4 mb-4">
-            {/* Video card content */}
-            <div className="card h-100">
-              <video 
-                src={video.video} 
-                className="card-img-top"
-                controls
-                style={{ maxHeight: '200px', objectFit: 'cover' }}
-              >
-                Your browser does not support the video tag.
-              </video>
-              <div className="card-body">
-                <h5 className="card-title">Video {video.id}</h5>
-                <p className="card-text">
-                  Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <Row>
+        <Col xs={12}>
+          {renderVideoCarousel()}
+        </Col>
+      </Row>
     );
   };
   
+  // Render image section
   const renderImageSection = () => {
     if (imageLoading) {
       return (
@@ -228,41 +268,28 @@ const MediaGallery = () => {
       );
     }
     
-    // Render image content here
     return (
-      <div className="row">
-        {images.map(image => (
-          <div key={image.id} className="col-md-4 mb-4">
-            {/* Image card content */}
-            <div className="card h-100">
-              <img 
-                src={image.image} 
-                alt={`Gallery image ${image.id}`}
-                className="card-img-top"
-                style={{ height: '200px', objectFit: 'cover' }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">Image {image.id}</h5>
-                <p className="card-text">
-                  Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <Row>
+        <Col xs={12}>
+          {renderImageCarousel()}
+        </Col>
+      </Row>
     );
   };
   
   return (
     <div className="container my-5">
-      <h2 className="mb-4">Our Video Gallery</h2>
-      {renderVideoSection()}
+      <Row>
+        <Col lg={6} xl={6} className="mb-5">
+          <h2 className="mb-4">Video Gallery</h2>
+          {renderVideoSection()}
+        </Col>
+        <Col lg={6} xl={6} className="mb-5">
+          <h2 className="mb-4">Photo Gallery</h2>
+          {renderImageSection()}
+        </Col>
+      </Row>
       
-      <h2 className="mb-4 mt-5">Our Photo Gallery</h2>
-      {renderImageSection()}
-      
-      {/* Show overall retry button if both have errors */}
       {videoError && imageError && (
         <div className="text-center my-4">
           <button 
