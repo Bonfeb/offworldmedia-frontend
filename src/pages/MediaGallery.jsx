@@ -1,10 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { Alert, Spinner, Row, Col } from 'react-bootstrap';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import API from '../api';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Alert, Spinner, Row, Col } from "react-bootstrap";
+import {
+  Alert,
+  Spinner,
+  Button,
+  IconButton,
+  Row,
+  Col,
+  Image as BootstrapImage,
+} from "react-bootstrap";
+import { Alert, IconButton, Button, Dialog,
+  DialogContent,
+  DialogActions, } from "@mui/material";
+import {
+  Edit as EditIcon,
+  Fullscreen as FullscreenIcon,
+  FullscreenExit as FullscreenExitIcon,
+  Close as CloseIcon,
+} from "@mui/icons-material";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import API from "../api";
 
 // Constants
 const MAX_RESULTS = 10;
@@ -83,48 +101,54 @@ const MediaGallery = () => {
   };
 
   useEffect(() => {
-      setNav1(slider1.current);
-      setNav2(slider2.current);
-    }, []);
+    setNav1(slider1.current);
+    setNav2(slider2.current);
+  }, []);
 
   // Fetch Videos
   useEffect(() => {
     const fetchVideos = async () => {
       setVideoLoading(true);
       setVideoError(null);
-      
+
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
-        const response = await API.get('/videos/', {
-          signal: controller.signal
+
+        const response = await API.get("/videos/", {
+          signal: controller.signal,
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!Array.isArray(response.data)) {
-          throw new Error('Invalid response format from videos API');
+          throw new Error("Invalid response format from videos API");
         }
-        
+
         setVideos(response.data);
         setVideoLoading(false);
       } catch (error) {
         setVideoLoading(false);
-        
+
         if (axios.isCancel(error)) {
-          setVideoError('Request timed out. Please try again.');
+          setVideoError("Request timed out. Please try again.");
         } else if (error.response) {
           const status = error.response.status;
-          setVideoError(`Server error (${status}): ${error.response.data?.message || 'Unknown error'}`);
+          setVideoError(
+            `Server error (${status}): ${
+              error.response.data?.message || "Unknown error"
+            }`
+          );
         } else if (error.request) {
-          setVideoError('Network error. Please check your connection and try again.');
+          setVideoError(
+            "Network error. Please check your connection and try again."
+          );
         } else {
           setVideoError(`Error fetching videos: ${error.message}`);
         }
       }
     };
-    
+
     fetchVideos();
   }, [retryCount]);
 
@@ -133,44 +157,50 @@ const MediaGallery = () => {
     const fetchImages = async () => {
       setImageLoading(true);
       setImageError(null);
-      
+
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
-        const response = await API.get('/images/', {
-          signal: controller.signal
+
+        const response = await API.get("/images/", {
+          signal: controller.signal,
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!Array.isArray(response.data)) {
-          throw new Error('Invalid response format from images API');
+          throw new Error("Invalid response format from images API");
         }
-        
+
         setImages(response.data);
         setImageLoading(false);
       } catch (error) {
         setImageLoading(false);
-        
+
         if (axios.isCancel(error)) {
-          setImageError('Request timed out. Please try again.');
+          setImageError("Request timed out. Please try again.");
         } else if (error.response) {
           const status = error.response.status;
-          setImageError(`Server error (${status}): ${error.response.data?.message || 'Unknown error'}`);
+          setImageError(
+            `Server error (${status}): ${
+              error.response.data?.message || "Unknown error"
+            }`
+          );
         } else if (error.request) {
-          setImageError('Network error. Please check your connection and try again.');
+          setImageError(
+            "Network error. Please check your connection and try again."
+          );
         } else {
           setImageError(`Error fetching images: ${error.message}`);
         }
       }
     };
-    
+
     fetchImages();
   }, [retryCount]);
 
   const handleRetry = () => {
-    setRetryCount(prevCount => prevCount + 1);
+    setRetryCount((prevCount) => prevCount + 1);
   };
 
   // Render video section
@@ -266,7 +296,7 @@ const MediaGallery = () => {
       </>
     );
   };
-  
+
   // Render image section
   const renderImageSection = () => {
     if (imageLoading) {
@@ -351,7 +381,7 @@ const MediaGallery = () => {
       </>
     );
   };
-  
+
   return (
     <div className="container my-5">
       <Row>
@@ -364,13 +394,77 @@ const MediaGallery = () => {
           {renderImageSection()}
         </Col>
       </Row>
-      
+
+      {/* Fullscreen Image Viewer */}
+      <Dialog
+        open={!!fullscreenImage}
+        onClose={handleCloseFullscreen}
+        maxWidth="lg"
+        fullScreen={isFullscreen}
+        fullWidth
+      >
+        <DialogContent>
+          {fullscreenImage && (
+            <div className="text-center">
+              <BootstrapImage
+                src={fullscreenImage.image}
+                alt="Fullscreen view"
+                fluid
+                style={{
+                  maxHeight: "80vh",
+                  width: "auto",
+                  maxWidth: "100%",
+                }}
+              />
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <IconButton onClick={toggleFullscreen} color="primary" sx={{ mr: 2 }}>
+            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={handleCloseFullscreen} color="primary">
+            <CloseIcon />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* Fullscreen Video Viewer */}
+      <Dialog
+        open={!!fullscreenVideo}
+        onClose={handleCloseFullscreen}
+        maxWidth="lg"
+        fullScreen={isFullscreen}
+        fullWidth
+      >
+        <DialogContent>
+          {fullscreenVideo && (
+            <div className="text-center">
+              <video
+                src={fullscreenVideo.video}
+                controls
+                autoPlay
+                style={{
+                  maxHeight: "80vh",
+                  width: "100%",
+                }}
+              />
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <IconButton onClick={toggleFullscreen} color="primary" sx={{ mr: 2 }}>
+            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+          </IconButton>
+          <IconButton onClick={handleCloseFullscreen} color="primary">
+            <CloseIcon />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
+
       {videoError && imageError && (
         <div className="text-center my-4">
-          <button 
-            className="btn btn-primary btn-lg" 
-            onClick={handleRetry}
-          >
+          <button className="btn btn-primary btn-lg" onClick={handleRetry}>
             Retry Loading All Content
           </button>
         </div>
