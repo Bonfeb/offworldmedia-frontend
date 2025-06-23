@@ -604,7 +604,7 @@ const Media = () => {
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <h2 className="mb-3 mb-md-0 text-center">Our Media Gallery</h2>
+        <h2 className="mb-3 mb-md-0 text-center">Media Gallery Management</h2>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-add">
             <i className="bi bi-plus-circle me-1"></i> Add Media
@@ -621,13 +621,13 @@ const Media = () => {
       </div>
 
       <Row>
-        <Col xs={12} md={12} lg={6} className="mb-5">
+        <Col xs={12} md={12} lg={6} xl={6} className="mb-5">
           <h3 className="mb-3 text-center">Videos</h3>
           <div className="video-carousel-container">
             {renderVideoSection()}
           </div>
         </Col>
-        <Col xs={12} md={12} lg={6}>
+        <Col xs={12} md={12} lg={6} xl={6} className="mb-5">
           <h3 className="mb-3 text-center">Images</h3>
           <div className="image-carousel-container">
             {renderImageSection()}

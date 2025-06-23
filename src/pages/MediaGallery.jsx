@@ -20,27 +20,66 @@ const MediaGallery = () => {
   const [imageError, setImageError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
 
+  // Carousel sync states
+  const [nav1, setNav1] = useState(null);
+  const [nav2, setNav2] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slider1 = useRef(null);
+  const slider2 = useRef(null);
+
   // Carousel settings for different screen sizes
   const carouselSettings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
+    slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
+    adaptiveHeight: true,
+    asNavFor: nav2,
+    ref: slider1,
+    beforeChange: (current, next) => setCurrentSlide(next),
     responsive: [
       {
-        breakpoint: 992, // lg and below
+        breakpoint: 768,
         settings: {
-          slidesToShow: 1,
-        }
+          arrows: false,
+        },
+      },
+    ],
+  };
+
+  const thumbnailSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: Math.min(5, videos.length || images.length),
+    slidesToScroll: 1,
+    focusOnSelect: true,
+    centerMode: true,
+    centerPadding: "0px",
+    asNavFor: nav1,
+    ref: slider2,
+    responsive: [
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: Math.min(4, videos.length || images.length),
+        },
       },
       {
-        breakpoint: 1200, // xl and above
+        breakpoint: 768,
         settings: {
-          slidesToShow: 3,
-        }
-      }
-    ]
+          slidesToShow: Math.min(3, videos.length || images.length),
+        },
+      },
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow: Math.min(2, videos.length || images.length),
+        },
+      },
+    ],
   };
 
   // Fetch Videos
@@ -129,60 +168,6 @@ const MediaGallery = () => {
     setRetryCount(prevCount => prevCount + 1);
   };
 
-  // Render video carousel
-  const renderVideoCarousel = () => {
-    return (
-      <Slider {...carouselSettings}>
-        {videos.map(video => (
-          <div key={video.id} className="px-2">
-            <div className="card h-100">
-              <video 
-                src={video.video} 
-                className="card-img-top"
-                controls
-                style={{ height: '200px', objectFit: 'cover' }}
-              >
-                Your browser does not support the video tag.
-              </video>
-              <div className="card-body">
-                <h5 className="card-title">Video {video.id}</h5>
-                <p className="card-text">
-                  Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Slider>
-    );
-  };
-
-  // Render image carousel
-  const renderImageCarousel = () => {
-    return (
-      <Slider {...carouselSettings}>
-        {images.map(image => (
-          <div key={image.id} className="px-2">
-            <div className="card h-100">
-              <img 
-                src={image.image} 
-                alt={`Gallery image ${image.id}`}
-                className="card-img-top"
-                style={{ height: '200px', objectFit: 'cover' }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">Image {image.id}</h5>
-                <p className="card-text">
-                  Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Slider>
-    );
-  };
-
   // Render video section
   const renderVideoSection = () => {
     if (videoLoading) {
@@ -195,24 +180,21 @@ const MediaGallery = () => {
         </div>
       );
     }
-    
+
     if (videoError) {
       return (
         <Alert variant="danger" className="my-3">
           <Alert.Heading>Video Loading Error</Alert.Heading>
           <p>{videoError}</p>
           <div className="d-flex justify-content-end">
-            <button 
-              className="btn btn-outline-danger" 
-              onClick={handleRetry}
-            >
+            <Button variant="outline-danger" onClick={handleRetry}>
               Retry Loading Videos
-            </button>
+            </Button>
           </div>
         </Alert>
       );
     }
-    
+
     if (videos.length === 0) {
       return (
         <Alert variant="info" className="my-3">
@@ -220,13 +202,63 @@ const MediaGallery = () => {
         </Alert>
       );
     }
-    
+
     return (
-      <Row>
-        <Col xs={12}>
-          {renderVideoCarousel()}
-        </Col>
-      </Row>
+      <>
+        {/* Main Videos Carousel */}
+        <Slider {...mainCarouselSettings}>
+          {videos.map((video) => (
+            <div key={video.id} className="video-slide-container">
+              <div className="position-relative">
+                <video
+                  src={video.video}
+                  className="w-100"
+                  controls
+                  style={{
+                    maxHeight: "400px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Your browser does not support the video tag.
+                </video>
+                <div className="position-absolute top-0 end-0 p-2">
+                  <IconButton
+                    onClick={() => handleEditVideoClick(video)}
+                    size="small"
+                    sx={{
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(0, 0, 0, 0.1)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                      marginRight: 1,
+                    }}
+                  >
+                    <EditIcon fontSize="small" color="primary" />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleVideoFullscreen(video)}
+                    size="small"
+                    sx={{
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(0, 0, 0, 0.1)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                    }}
+                  >
+                    <FullscreenIcon fontSize="small" color="primary" />
+                  </IconButton>
+                </div>
+              </div>
+              <div className="text-center mt-3 p-3 bg-light rounded">
+                <p className="mb-0 text-muted">
+                  Uploaded: {new Date(video.uploaded_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          ))}
+        </Slider>
+      </>
     );
   };
   
@@ -242,24 +274,21 @@ const MediaGallery = () => {
         </div>
       );
     }
-    
+
     if (imageError) {
       return (
         <Alert variant="danger" className="my-3">
           <Alert.Heading>Image Loading Error</Alert.Heading>
           <p>{imageError}</p>
           <div className="d-flex justify-content-end">
-            <button 
-              className="btn btn-outline-danger" 
-              onClick={handleRetry}
-            >
+            <Button variant="outline-danger" onClick={handleRetry}>
               Retry Loading Images
-            </button>
+            </Button>
           </div>
         </Alert>
       );
     }
-    
+
     if (images.length === 0) {
       return (
         <Alert variant="info" className="my-3">
@@ -267,13 +296,54 @@ const MediaGallery = () => {
         </Alert>
       );
     }
-    
+
     return (
-      <Row>
-        <Col xs={12}>
-          {renderImageCarousel()}
-        </Col>
-      </Row>
+      <>
+        {/* Main Images Carousel */}
+        <Slider {...mainCarouselSettings}>
+          {images.map((image) => (
+            <div key={image.id} className="image-slide-container">
+              <div className="position-relative">
+                <BootstrapImage
+                  src={image.image}
+                  alt={`Gallery image ${image.id}`}
+                  fluid
+                  rounded
+                  style={{
+                    maxHeight: "400px",
+                    width: "100%",
+                    objectFit: "contain",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleImageFullscreen(image)}
+                />
+                <div className="position-absolute top-0 end-0 p-2">
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditImageClick(image);
+                    }}
+                    size="small"
+                    sx={{
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(0, 0, 0, 0.1)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                    }}
+                  >
+                    <EditIcon fontSize="small" color="primary" />
+                  </IconButton>
+                </div>
+              </div>
+              <div className="text-center mt-3 p-3 bg-light rounded">
+                <p className="mb-0 text-muted">
+                  Uploaded: {new Date(image.uploaded_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          ))}
+        </Slider>
+      </>
     );
   };
   
