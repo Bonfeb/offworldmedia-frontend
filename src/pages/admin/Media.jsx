@@ -344,9 +344,7 @@ const Media = () => {
     formData.append("video", selectedVideoFile);
 
     try {
-      await API.put(`/video/${selectedVideo.id}/`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await API.put(`/video/${selectedVideo.id}/`, formData);
       await fetchVideos(); // Refresh videos after update
       setShowUpdateVideoModal(false);
       setSelectedVideoFile(null);
@@ -595,7 +593,7 @@ const Media = () => {
 
   return (
     <div className="container my-5">
-      <div className="d-flex justify-content-center align-items-center mb-4 flex-wrap">
+      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
         <h2 className="mb-3 mb-md-0 text-center">Media Gallery Management</h2>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-add">

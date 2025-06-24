@@ -65,6 +65,7 @@ const MediaGallery = () => {
     asNavFor: nav2,
     ref: slider1,
     beforeChange: (current, next) => setCurrentSlide(next),
+
   };
 
   const thumbnailSettings = {
@@ -381,12 +382,12 @@ const MediaGallery = () => {
 
   return (
     <div className="container my-5">
-      <Row className="justify-content-center">
-        <Col lg={6} xl={6} className="mb-5 d-flex flex-column align-items-center text-center">
+      <Row>
+        <Col lg={6} xl={6} className="mb-5">
           <h2 className="mb-4">Video Gallery</h2>
           {renderVideoSection()}
         </Col>
-        <Col lg={6} xl={6} className="mb-5 d-flex flex-column align-items-center text-center">
+        <Col lg={6} xl={6} className="mb-5">
           <h2 className="mb-4">Photo Gallery</h2>
           {renderImageSection()}
         </Col>
