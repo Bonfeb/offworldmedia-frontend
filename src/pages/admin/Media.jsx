@@ -103,14 +103,6 @@ const Media = () => {
     asNavFor: nav2,
     ref: slider1,
     beforeChange: (current, next) => setCurrentSlide(next),
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          arrows: false,
-        },
-      },
-    ],
   };
 
   // Thumbnail carousel settings
@@ -299,9 +291,7 @@ const Media = () => {
     formData.append("video", selectedVideoFile);
 
     try {
-      await API.post("/videos/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await API.post("/videos/", formData);
       await fetchVideos(); // Refresh videos after upload
       setShowAddVideoModal(false);
       setSelectedVideoFile(null);
@@ -603,35 +593,53 @@ const Media = () => {
 
   return (
     <div className="container my-5">
-      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <h2 className="mb-3 mb-md-0 text-center">Media Gallery Management</h2>
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-add">
-            <i className="bi bi-plus-circle me-1"></i> Add Media
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setShowAddImageModal(true)}>
-              Add Image
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowAddVideoModal(true)}>
-              Add Video
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+      <div className="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        {/* Left: Dropdown */}
+        <div className="mb-2 mb-md-0">
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-add">
+              <i className="bi bi-plus-circle me-1"></i> Add Media
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => setShowAddImageModal(true)}>
+                Add Image
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setShowAddVideoModal(true)}>
+                Add Video
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+
+        {/* Center: Heading */}
+        <div className="flex-grow-1 text-center">
+          <h2 className="mb-0">Media Gallery Management</h2>
+        </div>
+
+        {/* Right: empty placeholder for spacing (optional) */}
+        <div className="invisible" style={{ width: "170px" }}></div>
       </div>
 
-      <Row>
-        <Col xs={12} md={12} lg={6} xl={6} className="mb-5">
+      <Row className="justify-content-center">
+        <Col
+          xs={12}
+          md={12}
+          lg={6}
+          xl={6}
+          className="mb-5 d-flex flex-column align-items-center text-center"
+        >
           <h3 className="mb-3 text-center">Videos</h3>
-          <div className="video-carousel-container">
-            {renderVideoSection()}
-          </div>
+          <div className="video-carousel-container">{renderVideoSection()}</div>
         </Col>
-        <Col xs={12} md={12} lg={6} xl={6} className="mb-5">
+        <Col
+          xs={12}
+          md={12}
+          lg={6}
+          xl={6}
+          className="mb-5 d-flex flex-column align-items-center text-center"
+        >
           <h3 className="mb-3 text-center">Images</h3>
-          <div className="image-carousel-container">
-            {renderImageSection()}
-          </div>
+          <div className="image-carousel-container">{renderImageSection()}</div>
         </Col>
       </Row>
 

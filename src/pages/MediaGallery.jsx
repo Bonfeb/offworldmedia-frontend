@@ -65,14 +65,6 @@ const MediaGallery = () => {
     asNavFor: nav2,
     ref: slider1,
     beforeChange: (current, next) => setCurrentSlide(next),
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          arrows: false,
-        },
-      },
-    ],
   };
 
   const thumbnailSettings = {
@@ -374,23 +366,6 @@ const MediaGallery = () => {
                   }}
                   onClick={() => handleImageFullscreen(image)}
                 />
-                <div className="position-absolute top-0 end-0 p-2">
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditImageClick(image);
-                    }}
-                    size="small"
-                    sx={{
-                      backgroundColor: "rgba(255, 255, 255, 0.9)",
-                      backdropFilter: "blur(10px)",
-                      border: "1px solid rgba(0, 0, 0, 0.1)",
-                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                    }}
-                  >
-                    <EditIcon fontSize="small" color="primary" />
-                  </IconButton>
-                </div>
               </div>
               <div className="text-center mt-3 p-3 bg-light rounded">
                 <p className="mb-0 text-muted">
@@ -406,12 +381,12 @@ const MediaGallery = () => {
 
   return (
     <div className="container my-5">
-      <Row>
-        <Col lg={6} xl={6} className="mb-5">
+      <Row className="justify-content-center">
+        <Col lg={6} xl={6} className="mb-5 d-flex flex-column align-items-center text-center">
           <h2 className="mb-4">Video Gallery</h2>
           {renderVideoSection()}
         </Col>
-        <Col lg={6} xl={6} className="mb-5">
+        <Col lg={6} xl={6} className="mb-5 d-flex flex-column align-items-center text-center">
           <h2 className="mb-4">Photo Gallery</h2>
           {renderImageSection()}
         </Col>
