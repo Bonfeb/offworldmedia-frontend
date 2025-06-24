@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import {
   Container,
   Row,
@@ -31,6 +32,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import API from "../../api";
 
 const AdminTeam = () => {
@@ -326,15 +328,31 @@ const AdminTeam = () => {
       <Box
         className="admin-team-header"
         sx={{
-          textAlign: "center",
+          display: "flex",
+          position: 'relative',
+          alignItems: "center",
+          justifyContent: "space-between",
           mb: 4,
           px: isMobile ? 2 : 0,
         }}
       >
+      <Button
+          component={Link}
+          to="/admin-dashboard"
+          startIcon={<ArrowBackIcon />}
+          variant="outlined"
+          sx={{ mb: 2 }}
+        >
+          Back to Dashboard
+        </Button>
+
         <Typography
           variant="h4"
           component="h1"
           sx={{
+            position: "absolute",
+            left: '50%',
+            transform: 'translateX(-50%)',
             color: "#2c3e50",
             fontWeight: "bold",
             fontSize: isMobile ? "1.75rem" : "2.25rem",

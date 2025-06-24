@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   Alert,
@@ -26,10 +27,12 @@ import {
   FullscreenExit as FullscreenExitIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import API from "../../api";
+import { useNavigate } from "react-router-dom";
 
 // Constants
 const MAX_RESULTS = 10;
@@ -77,6 +80,8 @@ const Media = () => {
   const [addVideoLoading, setAddVideoLoading] = useState(false);
   const [updateImageLoading, setUpdateImageLoading] = useState(false);
   const [updateVideoLoading, setUpdateVideoLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // Snackbar states
   const [snackbar, setSnackbar] = useState({
@@ -594,6 +599,15 @@ const Media = () => {
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <Button
+          component={Link}
+          to="/admin-dashboard"
+          startIcon={<ArrowBackIcon />}
+          variant="outlined"
+          sx={{ mb: 2 }}
+        >
+          Back to Dashboard
+        </Button>
         <h2 className="mb-3 mb-md-0 text-center">Media Gallery Management</h2>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-add">
