@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Card, Button, Container, Row, Col, Pagination, Modal, Form } from 'react-bootstrap';
-import { Avatar, Badge, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { Avatar, Paper, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
 import emailjs from '@emailjs/browser';
 import API from '../../api';
+import { Message } from '@mui/icons-material';
 
 const AdminMessages = () => {
   const [messages, setMessages] = useState([]);
@@ -129,7 +132,52 @@ const AdminMessages = () => {
 
   return (
     <Container className="mt-4 mb-5">
-      <h2 className="mb-4">User Messages</h2>
+      {/* Header Section */}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          mb: 3,
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(10px)",
+          borderRadius: 3,
+        }}
+      >
+        <Row className="align-items-center justify-content-between flex-wrap">
+          {/* Back to Dashboard Button */}
+          <Col xs={12} sm="auto" className="mb-2 mb-sm-0">
+            <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+              <Button
+                variant="outline-primary"
+                className="d-flex align-items-center gap-2"
+                style={{
+                  borderRadius: "25px",
+                  padding: "10px 20px",
+                  border: "2px solid #007bff",
+                  fontWeight: "600",
+                }}
+              >
+                <DashboardIcon fontSize="small" />
+                Back to Dashboard
+              </Button>
+            </Link>
+          </Col>
+
+          {/* Title: Messages Management */}
+          <Col xs={12} sm="auto" className="text-sm-end mb-2 mb-sm-0">
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <Message sx={{ fontSize: 32, color: "#667eea" }} />
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{ fontWeight: 700, color: "#2c3e50", mb: 0 }}
+              >
+                Messages Management
+              </Typography>
+            </div>
+          </Col>
+        </Row>
+      </Paper>
 
       {(error || messages.length === 0) ? (
         <Card className="mb-3 p-3 text-center" style={{ borderRadius: '12px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>

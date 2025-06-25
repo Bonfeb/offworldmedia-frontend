@@ -20,14 +20,18 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
+  Paper,
+  Typography,
 } from "@mui/material";
+import Slider from "@mui/material";
 import {
   Edit as EditIcon,
   Fullscreen as FullscreenIcon,
   FullscreenExit as FullscreenExitIcon,
   Close as CloseIcon,
+  PermMediaIcon as MediaIcon,
 } from "@mui/icons-material";
-import {Dashboard as DashboardIcon} from '@mui/icons-material';
+import { Dashboard as DashboardIcon } from "@mui/icons-material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -598,37 +602,69 @@ const Media = () => {
 
   return (
     <div className="container my-5">
-      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
-          <Button
-            variant="outline-primary"
-            className="d-flex align-items-center gap-2"
-            style={{
-              borderRadius: "25px",
-              padding: "10px 20px",
-              border: "2px solid #007bff",
-              fontWeight: "600",
-            }}
-          >
-            <DashboardIcon fontSize="small" />
-            Back to Dashboard
-          </Button>
-        </Link>
-        <h2 className="mb-3 mb-md-0 text-center">Media Gallery Management</h2>
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-add">
-            <i className="bi bi-plus-circle me-1"></i> Add Media
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setShowAddImageModal(true)}>
-              Add Image
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setShowAddVideoModal(true)}>
-              Add Video
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+      {/* Header Section */}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          mb: 3,
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(10px)",
+          borderRadius: 3,
+        }}
+      >
+        <Row className="align-items-center justify-content-between flex-wrap">
+          {/* Back to Dashboard Button */}
+          <Col xs={12} sm="auto" className="mb-2 mb-sm-0">
+            <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+              <Button
+                variant="outline-primary"
+                className="d-flex align-items-center gap-2"
+                style={{
+                  borderRadius: "25px",
+                  padding: "10px 20px",
+                  border: "2px solid #007bff",
+                  fontWeight: "600",
+                }}
+              >
+                <DashboardIcon fontSize="small" />
+                Back to Dashboard
+              </Button>
+            </Link>
+          </Col>
+
+          {/* Title: Media Management */}
+          <Col xs={12} sm="auto" className="text-center mb-2 mb-sm-0">
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <MediaIcon sx={{ fontSize: 32, color: "#667eea" }} />
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{ fontWeight: 700, color: "#2c3e50", mb: 0 }}
+              >
+                Media Management
+              </Typography>
+            </div>
+          </Col>
+
+          {/* Dropdown: Add Media */}
+          <Col xs={12} sm="auto" className="text-sm-end text-center">
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-add">
+                <i className="bi bi-plus-circle me-1"></i> Add Media
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setShowAddImageModal(true)}>
+                  Add Image
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setShowAddVideoModal(true)}>
+                  Add Video
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+        </Row>
+      </Paper>
 
       <Row className="justify-content-center">
         <Col xs={12} md={12} lg={6} xl={6} className="mb-5 ">

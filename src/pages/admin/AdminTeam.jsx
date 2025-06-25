@@ -32,7 +32,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import { Dashboard as DashboardIcon } from "@mui/icons-material";
+import { Dashboard as DashboardIcon, Group } from "@mui/icons-material";
 import API from "../../api";
 
 const AdminTeam = () => {
@@ -325,57 +325,65 @@ const AdminTeam = () => {
 
   return (
     <Container fluid={isMobile} className="admin-team-container px-md-4">
-      <Box
-        className="admin-team-header"
+      {/* Header Section */}
+      <Paper
+        elevation={0}
         sx={{
-          display: "flex",
-          position: "relative",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 4,
-          px: isMobile ? 2 : 0,
+          p: 3,
+          mb: 3,
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(10px)",
+          borderRadius: 3,
         }}
       >
-        <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
-          <Button
-            variant="outline-primary"
-            className="d-flex align-items-center gap-2"
-            style={{
-              borderRadius: "25px",
-              padding: "10px 20px",
-              border: "2px solid #007bff",
-              fontWeight: "600",
-            }}
-          >
-            <DashboardIcon fontSize="small" />
-            Back to Dashboard
-          </Button>
-        </Link>
+        <Row className="align-items-center justify-content-between flex-wrap">
+          {/* Back to Dashboard Button */}
+          <Col xs={12} sm="auto" className="mb-2 mb-sm-0">
+            <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+              <Button
+                variant="outline-primary"
+                className="d-flex align-items-center gap-2"
+                style={{
+                  borderRadius: "25px",
+                  padding: "10px 20px",
+                  border: "2px solid #007bff",
+                  fontWeight: "600",
+                }}
+              >
+                <DashboardIcon fontSize="small" />
+                Back to Dashboard
+              </Button>
+            </Link>
+          </Col>
 
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            color: "#2c3e50",
-            fontWeight: "bold",
-            fontSize: isMobile ? "1.75rem" : "2.25rem",
-          }}
-        >
-          Team Members
-        </Typography>
-        <Button
-          variant="primary"
-          onClick={handleAddNewMember}
-          disabled={loading}
-          className="mt-3"
-          size={isMobile ? "sm" : "md"}
-        >
-          Add New Member
-        </Button>
-      </Box>
+          {/* Title: Team Management */}
+          <Col xs={12} sm="auto" className="text-center mb-2 mb-sm-0">
+            <div className="d-flex align-items-center justify-content-center gap-2">
+              <Group sx={{ fontSize: 32, color: "#667eea" }} />
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{ fontWeight: 700, color: "#2c3e50", mb: 0 }}
+              >
+                Team Management
+              </Typography>
+            </div>
+          </Col>
+
+          {/* Dropdown: Add Media */}
+          <Col xs={12} sm="auto" className="text-sm-end text-center">
+            <Button
+              variant="primary"
+              onClick={handleAddNewMember}
+              disabled={loading}
+              className="mt-3"
+              size={isMobile ? "sm" : "md"}
+            >
+              Add New Member
+            </Button>
+          </Col>
+        </Row>
+      </Paper>
 
       {error && (
         <Alert severity="error" className="mb-4 mx-2">
