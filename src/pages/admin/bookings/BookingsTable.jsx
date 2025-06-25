@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Dashboard as DashboardIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -110,15 +110,21 @@ const BookingsTable = ({ bookings, onUpdate, onDelete, loading, bookingType = "p
       borderColor: 'divider'
     }}>
       <Box sx={{ p: 2, display: 'flex', gap: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-        <Button
-          component={Link}
-          to="/admin-dashboard"
-          startIcon={<ArrowBackIcon />}
-          variant="outlined"
-          sx={{ mb: 2 }}
-        >
-          Back to Dashboard
-        </Button>
+        <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+                <Button
+                  variant="outline-primary"
+                  className="d-flex align-items-center gap-2"
+                  style={{
+                    borderRadius: "25px",
+                    padding: "10px 20px",
+                    border: "2px solid #007bff",
+                    fontWeight: "600",
+                  }}
+                >
+                  <DashboardIcon fontSize="small" />
+                  Back to Dashboard
+                </Button>
+              </Link>
         <Button
           component={Link}
           to="/admin-dashboard/all-bookings"

@@ -27,7 +27,7 @@ import {
   FullscreenExit as FullscreenExitIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import {Dashboard as DashboardIcon} from '@mui/icons-material';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -599,15 +599,21 @@ const Media = () => {
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <Button
-          component={Link}
-          to="/admin-dashboard"
-          startIcon={<ArrowBackIcon />}
-          variant="outlined"
-          sx={{ mb: 2 }}
-        >
-          Back to Dashboard
-        </Button>
+        <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+          <Button
+            variant="outline-primary"
+            className="d-flex align-items-center gap-2"
+            style={{
+              borderRadius: "25px",
+              padding: "10px 20px",
+              border: "2px solid #007bff",
+              fontWeight: "600",
+            }}
+          >
+            <DashboardIcon fontSize="small" />
+            Back to Dashboard
+          </Button>
+        </Link>
         <h2 className="mb-3 mb-md-0 text-center">Media Gallery Management</h2>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-add">
@@ -626,11 +632,15 @@ const Media = () => {
 
       <Row className="justify-content-center">
         <Col xs={12} md={12} lg={6} xl={6} className="mb-5 ">
-          <h3 className="mb-5 d-flex flex-column align-items-center text-center">Videos</h3>
+          <h3 className="mb-5 d-flex flex-column align-items-center text-center">
+            Videos
+          </h3>
           <div className="video-carousel-container">{renderVideoSection()}</div>
         </Col>
         <Col xs={12} md={12} lg={6} xl={6} className="mb-5">
-          <h3 className="mb-5 d-flex flex-column align-items-center text-center">Images</h3>
+          <h3 className="mb-5 d-flex flex-column align-items-center text-center">
+            Images
+          </h3>
           <div className="image-carousel-container">{renderImageSection()}</div>
         </Col>
       </Row>

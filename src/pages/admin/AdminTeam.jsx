@@ -25,14 +25,14 @@ import {
   DialogContent,
   DialogTitle,
   DialogContentText,
-  Slide
+  Slide,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Dashboard as DashboardIcon } from "@mui/icons-material";
 import API from "../../api";
 
 const AdminTeam = () => {
@@ -329,30 +329,36 @@ const AdminTeam = () => {
         className="admin-team-header"
         sx={{
           display: "flex",
-          position: 'relative',
+          position: "relative",
           alignItems: "center",
           justifyContent: "space-between",
           mb: 4,
           px: isMobile ? 2 : 0,
         }}
       >
-      <Button
-          component={Link}
-          to="/admin-dashboard"
-          startIcon={<ArrowBackIcon />}
-          variant="outlined"
-          sx={{ mb: 2 }}
-        >
-          Back to Dashboard
-        </Button>
+        <Link to="/admin-dashboard" style={{ textDecoration: "none" }}>
+          <Button
+            variant="outline-primary"
+            className="d-flex align-items-center gap-2"
+            style={{
+              borderRadius: "25px",
+              padding: "10px 20px",
+              border: "2px solid #007bff",
+              fontWeight: "600",
+            }}
+          >
+            <DashboardIcon fontSize="small" />
+            Back to Dashboard
+          </Button>
+        </Link>
 
         <Typography
           variant="h4"
           component="h1"
           sx={{
             position: "absolute",
-            left: '50%',
-            transform: 'translateX(-50%)',
+            left: "50%",
+            transform: "translateX(-50%)",
             color: "#2c3e50",
             fontWeight: "bold",
             fontSize: isMobile ? "1.75rem" : "2.25rem",
@@ -609,7 +615,7 @@ const AdminTeam = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-      
+
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialog.open}
