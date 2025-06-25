@@ -15,7 +15,7 @@ import {
   Typography,
   IconButton,
   Avatar,
-  Tooltip,
+  Paper,
   Snackbar,
   Alert,
   useMediaQuery,
