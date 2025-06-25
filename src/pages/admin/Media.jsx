@@ -23,7 +23,6 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import Slider from "@mui/material";
 import {
   Edit as EditIcon,
   Fullscreen as FullscreenIcon,
