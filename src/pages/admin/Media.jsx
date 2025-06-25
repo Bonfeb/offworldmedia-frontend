@@ -28,8 +28,8 @@ import {
   Fullscreen as FullscreenIcon,
   FullscreenExit as FullscreenExitIcon,
   Close as CloseIcon,
-  PermMediaIcon as MediaIcon,
 } from "@mui/icons-material";
+import { PermMedia } from "@mui/icons-material";
 import { Dashboard as DashboardIcon } from "@mui/icons-material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
@@ -635,7 +635,7 @@ const Media = () => {
           {/* Title: Media Management */}
           <Col xs={12} sm="auto" className="text-center mb-2 mb-sm-0">
             <div className="d-flex align-items-center justify-content-center gap-2">
-              <MediaIcon sx={{ fontSize: 32, color: "#667eea" }} />
+              <PermMedia sx={{ fontSize: 32, color: "#667eea" }} />
               <Typography
                 variant="h4"
                 component="h1"
