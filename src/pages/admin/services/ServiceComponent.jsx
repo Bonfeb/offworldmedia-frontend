@@ -26,6 +26,10 @@ const ServiceComponent = ({ category, title }) => {
     image: null,
   });
   
+  // Loading states for update and delete operations
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
   // Alert states
   const [alertConfig, setAlertConfig] = useState({
     open: false,
@@ -82,6 +86,7 @@ const ServiceComponent = ({ category, title }) => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedService(null);
+    setIsUpdating(false); // Reset updating state when closing modal
   };
 
   const handleOpenDeleteModal = (service) => {
@@ -92,6 +97,7 @@ const ServiceComponent = ({ category, title }) => {
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
     setSelectedService(null);
+    setIsDeleting(false); // Reset deleting state when closing modal
   };
 
   const handleInputChange = (e) => {
@@ -111,6 +117,7 @@ const ServiceComponent = ({ category, title }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsUpdating(true); // Start loading state
 
     try {
       const formDataToSend = new FormData();
@@ -143,11 +150,15 @@ const ServiceComponent = ({ category, title }) => {
         error: err.response?.data || err.message
       });
       showAlert("Failed to Update service. Please try again.", "error");
+    } finally {
+      setIsUpdating(false); // End loading state
     }
   };
 
   const handleDelete = async () => {
     if (selectedService) {
+      setIsDeleting(true); // Start loading state
+      
       try {
         const response = await API.delete(`/service/${selectedService.id}/`, {
           withCredentials: true,
@@ -169,6 +180,8 @@ const ServiceComponent = ({ category, title }) => {
           error: err.response?.data || err.message
         });
         showAlert("Failed to Delete service. Please try again.", "error");
+      } finally {
+        setIsDeleting(false); // End loading state
       }
     }
   };
@@ -279,6 +292,7 @@ const ServiceComponent = ({ category, title }) => {
                 onChange={handleInputChange}
                 required
                 readOnly
+                disabled={isUpdating}
               />
             </Form.Group>
 
@@ -291,6 +305,7 @@ const ServiceComponent = ({ category, title }) => {
                 value={formData.description}
                 onChange={handleInputChange}
                 required
+                disabled={isUpdating}
               />
             </Form.Group>
 
@@ -303,6 +318,7 @@ const ServiceComponent = ({ category, title }) => {
                 value={formData.price}
                 onChange={handleInputChange}
                 required
+                disabled={isUpdating}
               />
             </Form.Group>
 
@@ -312,17 +328,37 @@ const ServiceComponent = ({ category, title }) => {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
+                disabled={isUpdating}
               />
             </Form.Group>
 
             <div className="d-flex justify-content-end mt-4">
-              <Button type="submit" variant="success">
-                Save Changes
+              <Button 
+                type="submit" 
+                variant="success"
+                disabled={isUpdating}
+              >
+                {isUpdating ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Updating...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
               </Button>
               <Button
                 variant="secondary"
                 onClick={handleCloseModal}
                 className="ms-2"
+                disabled={isUpdating}
               >
                 Cancel
               </Button>
@@ -341,11 +377,33 @@ const ServiceComponent = ({ category, title }) => {
           cannot be undone.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+          <Button 
+            variant="secondary" 
+            onClick={handleCloseDeleteModal}
+            disabled={isDeleting}
+          >
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
+          <Button 
+            variant="danger" 
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Deleting...
+              </>
+            ) : (
+              'Delete'
+            )}
           </Button>
         </Modal.Footer>
       </Modal>

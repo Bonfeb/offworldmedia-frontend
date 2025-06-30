@@ -11,6 +11,8 @@ import {
   Table,
   Alert,
   Modal,
+  Form,
+  Spinner,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -31,11 +33,26 @@ const UserDashboard = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFailureModal, setShowFailureModal] = useState(false);
   const [showPermissionError, setShowPermissionError] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingServiceId, setBookingServiceId] = useState(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [cancelBookingId, setCancelBookingId] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateBookingId, setUpdateBookingId] = useState(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [removeLoading, setRemoveLoading] = useState(false);
+  const [removeServiceId, setRemoveServiceId] = useState(null);
+
+  const [paymentData, setPaymentData] = useState({
+    bookingId: null,
+    phoneNumber: "",
+    amount: "",
+  });
 
   const [modalData, setModalData] = useState({});
   const navigate = useNavigate();
+  
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -85,9 +102,16 @@ const UserDashboard = () => {
     setShowCancelModal(true);
   };
 
-  const handleConfirmRemove = async () => {
-    setShowRemoveModal(false);
+  const handleShowPaymentModal = (booking) => {
+    setPaymentData({
+      bookingId: booking.id,
+      phoneNumber: "",
+      amount: "",
+    });
+    setShowPaymentModal(true);
+  };
 
+  const handleConfirmRemove = async () => {
     console.log("🚀 Debug: modalData object:", modalData);
     console.log("🚀 Debug: modalData.id:", modalData?.service);
     console.log("🚀 Debug: modalData.service.id:", modalData?.service?.id);
@@ -97,6 +121,9 @@ const UserDashboard = () => {
       return;
     }
 
+    setRemoveLoading(true);
+    setRemoveServiceId(modalData.service.id);
+    
     try {
       const serviceId = modalData.service.id;
       console.log(`Attempting to remove service ID: ${serviceId}`);
@@ -104,14 +131,18 @@ const UserDashboard = () => {
       setCart(response.data.cart);
       fetchUserDashboard();
       console.log("🚀 Updated Cart Data in State:", cart);
+      setShowRemoveModal(false);
+      toast.success("Item removed from cart successfully!");
     } catch (error) {
       console.error("Error removing item from cart:", error);
+      toast.error("Failed to remove item from cart. Please try again.");
+    } finally {
+      setRemoveLoading(false);
+      setRemoveServiceId(null);
     }
   };
 
   const handleConfirmCancel = async () => {
-    setShowCancelModal(false); // Close the modal
-
     // Debugging: Log the modalData object and its properties
     console.log("🚀 Debug: modalData object:", modalData);
     console.log("🚀 Debug: modalData.booking:", modalData?.booking);
@@ -127,6 +158,9 @@ const UserDashboard = () => {
       return;
     }
 
+    setCancelLoading(true);
+    setCancelBookingId(modalData.booking.id);
+
     try {
       const bookingId = modalData.booking.id;
       console.log(`Attempting to cancel booking ID: ${bookingId}`);
@@ -139,6 +173,7 @@ const UserDashboard = () => {
 
       // Show success message
       toast.success("Booking cancelled successfully!");
+      setShowCancelModal(false);
 
       // Refresh the dashboard to get updated data
       await fetchUserDashboard();
@@ -153,6 +188,9 @@ const UserDashboard = () => {
       } else {
         toast.error("Failed to cancel booking. Please try again.");
       }
+    } finally {
+      setCancelLoading(false);
+      setCancelBookingId(null);
     }
   };
 
@@ -170,6 +208,8 @@ const UserDashboard = () => {
     }
 
     setBookingLoading(true);
+    setBookingServiceId(serviceId);
+    
     try {
       console.log("Looking for service_id:", serviceId);
       const cartItem = cart.find((item) => item.service === serviceId);
@@ -262,12 +302,68 @@ const UserDashboard = () => {
       setShowFailureModal(true);
     } finally {
       setBookingLoading(false);
+      setBookingServiceId(null);
     }
   };
 
   const handleToUpdateBooking = (booking, serviceId) => {
     console.log("Updating booking:", booking);
+    setUpdateLoading(true);
+    setUpdateBookingId(booking.id);
     navigate(`/event-details/${serviceId}/${booking.id}`);
+  };
+
+  const handlePayBooking = async () => {
+    const { bookingId, phoneNumber, amount } = paymentData;
+    
+    if (!phoneNumber || !amount) {
+      toast.error("Please fill in all payment details");
+      return;
+    }
+
+    // Validate phone number format (basic validation)
+    const phoneRegex = /^(\+254|0)[0-9]{9}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      toast.error("Please enter a valid phone number (e.g., +254712345678 or 0712345678)");
+      return;
+    }
+
+    // Validate amount
+    if (isNaN(amount) || parseFloat(amount) <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    setPaymentLoading(true);
+    console.log("Initiating payment for booking ID:", bookingId);
+
+    try {
+      const res = await API.get('/stkpush/', {
+        params: {
+          booking: bookingId,
+          phone_number: phoneNumber,
+          amount: parseFloat(amount),
+        },
+        withCredentials: true,
+      });
+      
+      toast.success("STK Push Sent! Please check your phone to complete the payment.");
+      console.log("STK Push Response:", res.data);
+      setShowPaymentModal(false);
+      setPaymentData({ bookingId: null, phoneNumber: "", amount: "" });
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      toast.error("Failed to initiate payment. Please try again.");
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
+  const handlePaymentInputChange = (field, value) => {
+    setPaymentData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   return (
@@ -316,8 +412,23 @@ const UserDashboard = () => {
                       variant="danger"
                       size="sm"
                       onClick={() => handleShowRemoveModal(item)}
+                      disabled={removeLoading && removeServiceId === item.service}
                     >
-                      Remove
+                      {removeLoading && removeServiceId === item.service ? (
+                        <>
+                          <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="me-2"
+                          />
+                          Removing...
+                        </>
+                      ) : (
+                        "Remove"
+                      )}
                     </Button>
                     <span className="mx-2">
                       <Button
@@ -334,14 +445,17 @@ const UserDashboard = () => {
                         }
                       >
                         {bookingLoading && bookingServiceId === item.service ? (
-                          <span>
-                            <span
-                              className="spinner-border spinner-border-sm me-2"
+                          <>
+                            <Spinner
+                              as="span"
+                              animation="border"
+                              size="sm"
                               role="status"
                               aria-hidden="true"
-                            ></span>
+                              className="me-2"
+                            />
                             Booking...
-                          </span>
+                          </>
                         ) : (
                           "Book"
                         )}
@@ -359,20 +473,23 @@ const UserDashboard = () => {
         <Col>
           <Card className="shadow-sm">
             <Card.Body>
-              <Tab.Container defaultActiveKey="pending">
+              <Tab.Container defaultActiveKey="unpaid">
                 <Nav variant="tabs" className="d-flex justify-content-between">
                   <Nav.Item>
-                    <Nav.Link eventKey="pending">Pending</Nav.Link>
+                    <Nav.Link eventKey="unpaid">Unpaid</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link eventKey="paid">Paid</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
                     <Nav.Link eventKey="completed">Completed</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="cancelled">Cancelled</Nav.Link>
+                    <Nav.Link eventKey="cancelled">Cancelled</Nav.Link> 
                   </Nav.Item>
                 </Nav>
                 <Tab.Content className="mt-3">
-                  {["pending", "completed", "cancelled"].map((status) => (
+                  {["unpaid", "paid", "completed", "cancelled"].map((status) => (
                     <Tab.Pane eventKey={status} key={status}>
                       <Card className="mb-2">
                         <Card.Body>
@@ -402,30 +519,66 @@ const UserDashboard = () => {
                                     <td className="text-muted">
                                       <i>{booking.event_location}</i>
                                     </td>
-                                    {status === "pending" ? (
+                                    {status === "unpaid" ? (
                                       <td>
                                         <Button
-                                          className="btn-sm btn-danger"
+                                          className="btn-sm btn-danger me-2"
                                           onClick={() =>
                                             handleShowCancelModal(booking)
                                           }
+                                          disabled={cancelLoading && cancelBookingId === booking.id}
                                         >
-                                          Cancel
+                                          {cancelLoading && cancelBookingId === booking.id ? (
+                                            <>
+                                              <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                                className="me-1"
+                                              />
+                                              Cancelling...
+                                            </>
+                                          ) : (
+                                            "Cancel"
+                                          )}
                                         </Button>
-                                        <span className="mx-3">
-                                          <Button
-                                            variant="warning"
-                                            size="sm"
-                                            onClick={() =>
-                                              handleToUpdateBooking(
-                                                booking,
-                                                booking.service.id
-                                              )
-                                            }
-                                          >
-                                            Update
-                                          </Button>
-                                        </span>
+                                        <Button
+                                          variant="warning"
+                                          size="sm"
+                                          className="me-2"
+                                          onClick={() => handleShowPaymentModal(booking)}
+                                        >
+                                          Pay
+                                        </Button>
+                                        <Button
+                                          variant="info"
+                                          size="sm"
+                                          onClick={() =>
+                                            handleToUpdateBooking(
+                                              booking,
+                                              booking.service.id
+                                            )
+                                          }
+                                          disabled={updateLoading && updateBookingId === booking.id}
+                                        >
+                                          {updateLoading && updateBookingId === booking.id ? (
+                                            <>
+                                              <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                                className="me-1"
+                                              />
+                                              Updating...
+                                            </>
+                                          ) : (
+                                            "Update"
+                                          )}
+                                        </Button>
                                       </td>
                                     ) : (
                                       <td>
@@ -458,6 +611,7 @@ const UserDashboard = () => {
         </Col>
       </Row>
 
+      {/* Remove Modal */}
       <Modal show={showRemoveModal} onHide={() => setShowRemoveModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Remove</Modal.Title>
@@ -469,12 +623,31 @@ const UserDashboard = () => {
           <Button variant="secondary" onClick={() => setShowRemoveModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleConfirmRemove}>
-            Confirm
+          <Button 
+            variant="danger" 
+            onClick={handleConfirmRemove}
+            disabled={removeLoading}
+          >
+            {removeLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Removing...
+              </>
+            ) : (
+              "Confirm"
+            )}
           </Button>
         </Modal.Footer>
       </Modal>
 
+      {/* Cancel Modal */}
       <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Cancel</Modal.Title>
@@ -484,12 +657,99 @@ const UserDashboard = () => {
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleConfirmCancel}>
-            Confirm
+          <Button 
+            variant="danger" 
+            onClick={handleConfirmCancel}
+            disabled={cancelLoading}
+          >
+            {cancelLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Cancelling...
+              </>
+            ) : (
+              "Confirm"
+            )}
           </Button>
         </Modal.Footer>
       </Modal>
 
+      {/* Payment Modal */}
+      <Modal show={showPaymentModal} onHide={() => setShowPaymentModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Payment Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Phone Number</Form.Label>
+              <Form.Control
+                type="tel"
+                placeholder="Enter phone number (e.g., +254712345678 or 0712345678)"
+                value={paymentData.phoneNumber}
+                onChange={(e) => handlePaymentInputChange('phoneNumber', e.target.value)}
+                disabled={paymentLoading}
+              />
+              <Form.Text className="text-muted">
+                Enter your M-Pesa phone number
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Amount (KSH)</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter amount"
+                value={paymentData.amount}
+                onChange={(e) => handlePaymentInputChange('amount', e.target.value)}
+                min="1"
+                disabled={paymentLoading}
+              />
+              <Form.Text className="text-muted">
+                Enter the amount to pay
+              </Form.Text>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button 
+            variant="secondary" 
+            onClick={() => setShowPaymentModal(false)}
+            disabled={paymentLoading}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="success" 
+            onClick={handlePayBooking}
+            disabled={paymentLoading}
+          >
+            {paymentLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Processing Payment...
+              </>
+            ) : (
+              "Pay Now"
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Success Modal */}
       <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Booking Successful</Modal.Title>
@@ -502,6 +762,7 @@ const UserDashboard = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Failure Modal */}
       <Modal show={showFailureModal} onHide={() => setShowFailureModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Booking Failed</Modal.Title>
@@ -516,6 +777,7 @@ const UserDashboard = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Permission Error Modal */}
       <Modal
         show={showPermissionError}
         onHide={() => setShowPermissionError(false)}
