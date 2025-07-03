@@ -160,7 +160,14 @@ const BookingModals = ({
         status: createFormValues.status,
       };
       console.log("Payload: ", payload);
-      await API.post("/admin-dashboard/", payload);
+      await API.post("/admin-dashboard/", payload, 
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
       onCreateConfirm(payload);
       onCreateClose();
       refreshData();
