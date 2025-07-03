@@ -6,7 +6,7 @@ const NewService = ({ show, handleClose, refreshServices }) => {
   const [formData, setFormData] = useState({
     name: "",
     category: "video",
-    audio_category: "", // Add this
+    audio_category: "",
     description: "",
     price: "",
     image: null,
