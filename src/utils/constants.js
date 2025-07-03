@@ -20,9 +20,10 @@ export const formatBookings = (bookings) => {
   };
 
   export const BOOKING_STATUS = {
-    PENDING: 'pending',
+    UNPAID: 'unpaid',
+    PAID: 'paid',
     COMPLETED: 'completed',
-    CANCELLED: 'canceled'
+    CANCELLED: 'cancelled'
   };
 
   export const handleUpdate = (booking, bookings, setSelectedBooking, setUpdateModalOpen) => {

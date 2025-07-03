@@ -22,7 +22,8 @@ import API from "../api";
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState({
-    pending: [],
+    unpaid: [],
+    paid: [],
     completed: [],
     cancelled: [],
   });
@@ -71,7 +72,7 @@ const UserDashboard = () => {
       const response = await API.get("/userdashboard/", {
         withCredentials: true,
       });
-      //console.log("Full API Response:", JSON.stringify(response.data, null, 2)); // Debugging
+      console.log("Full API Response:", JSON.stringify(response.data, null, 2));
 
       const updatedCart = response.data.cart.map((item) => ({
         ...item,
@@ -106,14 +107,14 @@ const UserDashboard = () => {
     setPaymentData({
       bookingId: booking.id,
       phoneNumber: "",
-      amount: "",
+      amount: booking.service.price || "", // Pre-fill with service price if available
     });
     setShowPaymentModal(true);
   };
 
   const handleConfirmRemove = async () => {
     console.log("🚀 Debug: modalData object:", modalData);
-    console.log("🚀 Debug: modalData.id:", modalData?.service);
+    console.log("🚀 Debug: modalData.service:", modalData?.service);
     console.log("🚀 Debug: modalData.service.id:", modalData?.service?.id);
 
     if (!modalData?.service?.id) {
@@ -143,17 +144,12 @@ const UserDashboard = () => {
   };
 
   const handleConfirmCancel = async () => {
-    // Debugging: Log the modalData object and its properties
     console.log("🚀 Debug: modalData object:", modalData);
     console.log("🚀 Debug: modalData.booking:", modalData?.booking);
     console.log("🚀 Debug: modalData.booking.id:", modalData?.booking?.id);
 
-    // Check if the booking ID is valid
     if (!modalData?.booking?.id) {
-      console.error(
-        "Error: booking id is undefined or modalData is not properly set"
-      );
-      // Show an error message to the user
+      console.error("Error: booking id is undefined or modalData is not properly set");
       toast.error("Unable to cancel booking. Please try again.");
       return;
     }
@@ -165,22 +161,17 @@ const UserDashboard = () => {
       const bookingId = modalData.booking.id;
       console.log(`Attempting to cancel booking ID: ${bookingId}`);
 
-      // Make a DELETE request to the backend to cancel the booking
       const response = await API.delete(`/booking/${bookingId}/`, {
         withCredentials: true,
       });
       console.log("🚀 API Response after deletion:", response.data);
 
-      // Show success message
       toast.success("Booking cancelled successfully!");
       setShowCancelModal(false);
-
-      // Refresh the dashboard to get updated data
       await fetchUserDashboard();
     } catch (error) {
       console.error("Error canceling booking:", error);
 
-      // Handle different error types
       if (error.response && error.response.status === 403) {
         setShowPermissionError(true);
       } else if (error.response && error.response.status === 404) {
@@ -211,7 +202,6 @@ const UserDashboard = () => {
     setBookingServiceId(serviceId);
     
     try {
-      console.log("Looking for service_id:", serviceId);
       const cartItem = cart.find((item) => item.service === serviceId);
 
       if (!cartItem) {
@@ -219,9 +209,9 @@ const UserDashboard = () => {
         throw new Error("SERVICE_NOT_IN_CART");
       }
 
-      const { event_date, event_location, event_time, service_id } = cartItem;
+      const { event_date, event_location, event_time } = cartItem;
       console.log("Cart item found:", {
-        service_id,
+        service_id: serviceId,
         event_date,
         event_location,
         event_time,
@@ -233,10 +223,15 @@ const UserDashboard = () => {
         throw new Error("MISSING_EVENT_DETAILS");
       }
 
-      // Send minimal data - backend should get the rest from cart
+      // Send booking data with unpaid status (matching model default)
       const response = await API.post(
         `/booking/${serviceId}/`,
-        { status: "pending" }, // Only send what's not in cart
+        { 
+          status: "unpaid",
+          event_date,
+          event_time,
+          event_location
+        },
         { withCredentials: true }
       );
 
@@ -258,6 +253,9 @@ const UserDashboard = () => {
         admin_email: response.data.admin_emails || ["bonfebdevs@gmail.com"],
       };
 
+      // Note: EmailJS import is missing in original code - you'll need to import it
+      // import emailjs from '@emailjs/browser';
+
       const toastId = toast.loading("Notifying admins...");
 
       try {
@@ -276,27 +274,24 @@ const UserDashboard = () => {
           closeButton: true,
         });
 
-        setSuccessMessage(
-          "Service booked successfully! A confirmation has been sent to your email."
-        );
+        setSuccessMessage("Service booked successfully! A confirmation has been sent to your email.");
         setShowSuccessModal(true);
         fetchUserDashboard();
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
         toast.error("Booking successful but admin notification failed");
-        setSuccessMessage(
-          "Service booked successfully, but email confirmation failed to send."
-        );
+        setSuccessMessage("Service booked successfully, but email confirmation failed to send.");
+        setShowSuccessModal(true);
+        fetchUserDashboard();
       }
     } catch (error) {
       console.error("Booking error:", error.message, error.response?.data);
 
-      const errorMessage =
-        {
-          SERVICE_NOT_IN_CART: "Service not found in your cart",
-          MISSING_EVENT_DETAILS: "Incomplete event details",
-          UNEXPECTED_RESPONSE: "Unexpected server response",
-        }[error.message] || "Booking failed - please try again";
+      const errorMessage = {
+        SERVICE_NOT_IN_CART: "Service not found in your cart",
+        MISSING_EVENT_DETAILS: "Incomplete event details",
+        UNEXPECTED_RESPONSE: "Unexpected server response",
+      }[error.message] || "Booking failed - please try again";
 
       toast.error(errorMessage);
       setShowFailureModal(true);
@@ -351,6 +346,9 @@ const UserDashboard = () => {
       console.log("STK Push Response:", res.data);
       setShowPaymentModal(false);
       setPaymentData({ bookingId: null, phoneNumber: "", amount: "" });
+      
+      // Refresh dashboard to update booking status
+      await fetchUserDashboard();
     } catch (error) {
       console.error("Error initiating payment:", error);
       toast.error("Failed to initiate payment. Please try again.");
@@ -371,8 +369,7 @@ const UserDashboard = () => {
       fluid
       className="mt-4 py-4"
       style={{
-        background:
-          "linear-gradient(to right,rgb(82, 68, 68),rgb(112, 106, 102), rgb(97, 58, 58))",
+        background: "linear-gradient(to right,rgb(82, 68, 68),rgb(112, 106, 102), rgb(97, 58, 58))",
         minHeight: "100vh",
       }}
     >
@@ -386,10 +383,7 @@ const UserDashboard = () => {
             ) : (
               <ListGroup>
                 {cart.map((item, index) => (
-                  <ListGroup.Item
-                    key={index}
-                    className="d-flex align-items-center"
-                  >
+                  <ListGroup.Item key={index} className="d-flex align-items-center">
                     <img
                       src={item.service_image}
                       alt={item.service_name}
@@ -416,14 +410,7 @@ const UserDashboard = () => {
                     >
                       {removeLoading && removeServiceId === item.service ? (
                         <>
-                          <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                            className="me-2"
-                          />
+                          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                           Removing...
                         </>
                       ) : (
@@ -440,20 +427,11 @@ const UserDashboard = () => {
                           console.log("Booking service ID:", item.service);
                           handleBookService(item.service);
                         }}
-                        disabled={
-                          bookingLoading && bookingServiceId === item.service
-                        }
+                        disabled={bookingLoading && bookingServiceId === item.service}
                       >
                         {bookingLoading && bookingServiceId === item.service ? (
                           <>
-                            <Spinner
-                              as="span"
-                              animation="border"
-                              size="sm"
-                              role="status"
-                              aria-hidden="true"
-                              className="me-2"
-                            />
+                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                             Booking...
                           </>
                         ) : (
@@ -485,7 +463,7 @@ const UserDashboard = () => {
                     <Nav.Link eventKey="completed">Completed</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link eventKey="cancelled">Cancelled</Nav.Link> 
+                    <Nav.Link eventKey="cancelled">Cancelled</Nav.Link>
                   </Nav.Item>
                 </Nav>
                 <Tab.Content className="mt-3">
@@ -494,9 +472,7 @@ const UserDashboard = () => {
                       <Card className="mb-2">
                         <Card.Body>
                           {bookings?.[status]?.length === 0 ? (
-                            <p className="text-muted text-center">
-                              No bookings found.
-                            </p>
+                            <p className="text-muted text-center">No bookings found.</p>
                           ) : (
                             <Table striped hover responsive>
                               <thead>
@@ -504,6 +480,7 @@ const UserDashboard = () => {
                                   <th>#</th>
                                   <th>Service Name</th>
                                   <th>Event Date</th>
+                                  <th>Event Time</th>
                                   <th>Event Location</th>
                                   <th>Action</th>
                                 </tr>
@@ -517,27 +494,21 @@ const UserDashboard = () => {
                                       <i>{booking.event_date}</i>
                                     </td>
                                     <td className="text-muted">
+                                      <i>{booking.event_time}</i>
+                                    </td>
+                                    <td className="text-muted">
                                       <i>{booking.event_location}</i>
                                     </td>
                                     {status === "unpaid" ? (
                                       <td>
                                         <Button
                                           className="btn-sm btn-danger me-2"
-                                          onClick={() =>
-                                            handleShowCancelModal(booking)
-                                          }
+                                          onClick={() => handleShowCancelModal(booking)}
                                           disabled={cancelLoading && cancelBookingId === booking.id}
                                         >
                                           {cancelLoading && cancelBookingId === booking.id ? (
                                             <>
-                                              <Spinner
-                                                as="span"
-                                                animation="border"
-                                                size="sm"
-                                                role="status"
-                                                aria-hidden="true"
-                                                className="me-1"
-                                              />
+                                              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-1" />
                                               Cancelling...
                                             </>
                                           ) : (
@@ -555,24 +526,12 @@ const UserDashboard = () => {
                                         <Button
                                           variant="info"
                                           size="sm"
-                                          onClick={() =>
-                                            handleToUpdateBooking(
-                                              booking,
-                                              booking.service.id
-                                            )
-                                          }
+                                          onClick={() => handleToUpdateBooking(booking, booking.service.id)}
                                           disabled={updateLoading && updateBookingId === booking.id}
                                         >
                                           {updateLoading && updateBookingId === booking.id ? (
                                             <>
-                                              <Spinner
-                                                as="span"
-                                                animation="border"
-                                                size="sm"
-                                                role="status"
-                                                aria-hidden="true"
-                                                className="me-1"
-                                              />
+                                              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-1" />
                                               Updating...
                                             </>
                                           ) : (
@@ -584,12 +543,7 @@ const UserDashboard = () => {
                                       <td>
                                         <Button
                                           className="btn-sm btn-success"
-                                          onClick={() =>
-                                            console.log(
-                                              "View Details",
-                                              booking.id
-                                            )
-                                          }
+                                          onClick={() => console.log("View Details", booking.id)}
                                         >
                                           View Details
                                         </Button>
@@ -616,28 +570,15 @@ const UserDashboard = () => {
         <Modal.Header closeButton>
           <Modal.Title>Confirm Remove</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to remove this item from your cart?
-        </Modal.Body>
+        <Modal.Body>Are you sure you want to remove this item from your cart?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowRemoveModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="danger" 
-            onClick={handleConfirmRemove}
-            disabled={removeLoading}
-          >
+          <Button variant="danger" onClick={handleConfirmRemove} disabled={removeLoading}>
             {removeLoading ? (
               <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                 Removing...
               </>
             ) : (
@@ -657,21 +598,10 @@ const UserDashboard = () => {
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="danger" 
-            onClick={handleConfirmCancel}
-            disabled={cancelLoading}
-          >
+          <Button variant="danger" onClick={handleConfirmCancel} disabled={cancelLoading}>
             {cancelLoading ? (
               <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                 Cancelling...
               </>
             ) : (
@@ -697,9 +627,7 @@ const UserDashboard = () => {
                 onChange={(e) => handlePaymentInputChange('phoneNumber', e.target.value)}
                 disabled={paymentLoading}
               />
-              <Form.Text className="text-muted">
-                Enter your M-Pesa phone number
-              </Form.Text>
+              <Form.Text className="text-muted">Enter your M-Pesa phone number</Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Amount (KSH)</Form.Label>
@@ -711,35 +639,18 @@ const UserDashboard = () => {
                 min="1"
                 disabled={paymentLoading}
               />
-              <Form.Text className="text-muted">
-                Enter the amount to pay
-              </Form.Text>
+              <Form.Text className="text-muted">Enter the amount to pay</Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button 
-            variant="secondary" 
-            onClick={() => setShowPaymentModal(false)}
-            disabled={paymentLoading}
-          >
+          <Button variant="secondary" onClick={() => setShowPaymentModal(false)} disabled={paymentLoading}>
             Cancel
           </Button>
-          <Button 
-            variant="success" 
-            onClick={handlePayBooking}
-            disabled={paymentLoading}
-          >
+          <Button variant="success" onClick={handlePayBooking} disabled={paymentLoading}>
             {paymentLoading ? (
               <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                 Processing Payment...
               </>
             ) : (
@@ -767,9 +678,7 @@ const UserDashboard = () => {
         <Modal.Header closeButton>
           <Modal.Title>Booking Failed</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          There was an issue booking your service. Please try again.
-        </Modal.Body>
+        <Modal.Body>There was an issue booking your service. Please try again.</Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={() => setShowFailureModal(false)}>
             OK
@@ -778,25 +687,17 @@ const UserDashboard = () => {
       </Modal>
 
       {/* Permission Error Modal */}
-      <Modal
-        show={showPermissionError}
-        onHide={() => setShowPermissionError(false)}
-        centered
-      >
+      <Modal show={showPermissionError} onHide={() => setShowPermissionError(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Permission Denied</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p className="text-danger">
-            You do not have permission to delete this booking. Only the booking
-            owner or an admin can delete it.
+            You do not have permission to delete this booking. Only the booking owner or an admin can delete it.
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowPermissionError(false)}
-          >
+          <Button variant="secondary" onClick={() => setShowPermissionError(false)}>
             Close
           </Button>
         </Modal.Footer>
