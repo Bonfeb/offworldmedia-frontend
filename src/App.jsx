@@ -27,7 +27,6 @@ import AdminServices from "./pages/admin/AdminServices";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import "./assets/css/AdminDashboard.css";
 import AdminUsers from "./pages/admin/AdminUsers";
-import PendingBookings from "./pages/admin/bookings/PendingBookings";
 import CancelledBookings from "./pages/admin/bookings/CancelledBookings";
 import CompletedBookings from "./pages/admin/bookings/CompletedBookings";
 import AdminReviews from "./pages/admin/AdminReviews";
@@ -42,6 +41,8 @@ import AllBookings from "./pages/admin/bookings/AllBookings";
 import MediaGallery from "./pages/MediaGallery";
 import AllReviews from "./pages/AllReviews";
 import Media from "./pages/admin/Media";
+import UnpaidBookings from "./pages/admin/bookings/UnpaidBookings";
+import PaidBookings from "./pages/admin/bookings/PaidBookings";
 
 function App() {
   return (
@@ -96,7 +97,8 @@ function App() {
                 index
                 element={<></>}
               />
-              <Route path="pending-bookings" element={ <PendingBookings /> } />
+              <Route path="unpaid-bookings" element={ <UnpaidBookings /> } />
+              <Route path="paid-bookings" element={ <PaidBookings /> } />
               <Route path="completed-bookings" element={ <CompletedBookings /> } />
               <Route path="cancelled-bookings" element={ <CancelledBookings /> } />
               <Route path="all-bookings" element={ <AllBookings /> } />

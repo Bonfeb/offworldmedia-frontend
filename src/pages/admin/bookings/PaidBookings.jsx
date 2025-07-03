@@ -19,8 +19,8 @@ import {
   handleUpdateConfirm,
 } from "../../../utils/constants";
 
-const PendingBookings = () => {
-  const [pendingBookings, setPendingBookings] = useState([]);
+const PaidBookings = () => {
+  const [paidBookings, setPaidBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({
@@ -38,11 +38,11 @@ const PendingBookings = () => {
   const loadBookings = async () => {
     try {
       setLoading(true);
-      // Make sure we're requesting PENDING status, not canceled
+      // Make sure we're requesting PAID status, not canceled
       const response = await API.get("/admin-dashboard/", {
         params: {
           action: "bookings",
-          status: BOOKING_STATUS.PENDING,
+          status: BOOKING_STATUS.PAID,
         },
       });
       // Debug the response
@@ -51,10 +51,10 @@ const PendingBookings = () => {
       let bookings = response.data || [];
       let formattedBookings = formatBookings(bookings)
       
-      setPendingBookings(formattedBookings);
+      setPaidBookings(formattedBookings);
       setError(null);
     } catch (err) {
-      console.error("Failed to load pending bookings", err);
+      console.error("Failed to load paid bookings", err);
       setError("Failed to load bookings. Please try again later.");
     } finally {
       setLoading(false);
@@ -66,11 +66,11 @@ const PendingBookings = () => {
   }, []);
 
   const handleEditClick = (booking) => {
-    handleUpdate(booking, pendingBookings, setSelectedBooking, setUpdateModalOpen);
+    handleUpdate(booking, paidBookings, setSelectedBooking, setUpdateModalOpen);
   };
 
   const handleDeleteClick = (booking) => {
-    handleDelete(booking, pendingBookings, setSelectedBooking, setDeleteModalOpen);
+    handleDelete(booking, paidBookings, setSelectedBooking, setDeleteModalOpen);
   };
 
   const handleConfirmUpdate = (updatedBooking) => {
@@ -86,8 +86,8 @@ const PendingBookings = () => {
   const handleConfirmDelete = (booking) => {
     handleDeleteConfirm(
       booking,
-      pendingBookings,
-      setPendingBookings,
+      paidBookings,
+      setPaidBookings,
       setNotification,
       setDeleteModalOpen,
       setSubmitting
@@ -102,7 +102,7 @@ const PendingBookings = () => {
     <Container maxWidth="xl">
       <Box sx={{ my: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Pending Bookings
+          Paid Bookings
         </Typography>
 
         {error && (
@@ -112,8 +112,8 @@ const PendingBookings = () => {
         )}
 
         <BookingsTable
-          bookings={pendingBookings}
-          bookingType="pending"
+          bookings={paidBookings}
+          bookingType="paid"
           onUpdate={handleEditClick}
           onDelete={handleDeleteClick}
           loading={loading}
@@ -149,4 +149,4 @@ const PendingBookings = () => {
   );
 };
 
-export default PendingBookings;
+export default PaidBookings;

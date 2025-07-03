@@ -245,10 +245,12 @@ const AdminDashboard = () => {
     const displayStatus =
       booking.status === "completed"
         ? "Completed"
-        : booking.status === "pending"
-        ? "Pending"
-        : booking.status === "canceled"
-        ? "Canceled"
+        : booking.status === "unpaid"
+        ? "Unpaid"
+        : booking.status === "paid"
+        ? "Paid"
+        : booking.status === "cancelled"
+        ? "Cancelled"
         : booking.status;
 
     return (
@@ -287,7 +289,7 @@ const AdminDashboard = () => {
               backgroundColor:
                 displayStatus === "Completed"
                   ? "#48bb78"
-                  : displayStatus === "Pending"
+                  : displayStatus === "Unpaid"
                   ? "#f6ad55"
                   : "#f56565",
               fontSize: "11px",
@@ -522,19 +524,19 @@ const AdminDashboard = () => {
         <Nav className="flex-column mt-2">
           <Nav.Link
             as={NavLink}
-            to="/admin-dashboard/pending-bookings"
+            to="/admin-dashboard/unpaid-bookings"
             className="text-light py-2"
             onClick={handleNavItemClick}
           >
-            <FontAwesomeIcon icon={faClock} className="me-3" /> Pending
+            <FontAwesomeIcon icon={faClock} className="me-3" /> Unpaid
           </Nav.Link>
           <Nav.Link
             as={NavLink}
-            to="/admin-dashboard/cancelled-bookings"
+            to="/admin-dashboard/paid-bookings"
             className="text-light py-2"
             onClick={handleNavItemClick}
           >
-            <FontAwesomeIcon icon={faTimesCircle} className="me-3" /> Cancelled
+            <FontAwesomeIcon icon={faClock} className="me-3" /> Paid
           </Nav.Link>
           <Nav.Link
             as={NavLink}
@@ -542,7 +544,15 @@ const AdminDashboard = () => {
             className="text-light py-2"
             onClick={handleNavItemClick}
           >
-            <FontAwesomeIcon icon={faCheckCircle} className="me-3" /> Completed
+            <FontAwesomeIcon icon={faTimesCircle} className="me-3" /> Completed
+          </Nav.Link>
+          <Nav.Link
+            as={NavLink}
+            to="/admin-dashboard/cancelled-bookings"
+            className="text-light py-2"
+            onClick={handleNavItemClick}
+          >
+            <FontAwesomeIcon icon={faCheckCircle} className="me-3" /> Cancelled
           </Nav.Link>
         </Nav>
 
@@ -741,9 +751,17 @@ const AdminDashboard = () => {
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faClock}
-                      value={dashboardData?.pending_bookings || 0}
-                      label="Pending Bookings"
+                      value={dashboardData?.unpaid_bookings || 0}
+                      label="Unpaid Bookings"
                       color="#f6ad55"
+                    />
+                  </Col>
+                  <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
+                    <StatsCard
+                      icon={faClock}
+                      value={dashboardData?.paid_bookings || 0}
+                      label="Paid Bookings"
+                      color="#48bb78"
                     />
                   </Col>
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
@@ -842,14 +860,14 @@ const AdminDashboard = () => {
                                   borderRadius: "3px",
                                 }}
                               ></div>
-                              <Typography variant="body2">Completed</Typography>
+                              <Typography variant="body2">Paid</Typography>
                             </div>
                             <Typography
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
                               {Math.round(
-                                (dashboardData.stats?.completed_bookings /
+                                (dashboardData.stats?.paid_bookings /
                                   dashboardData.stats?.total_bookings) *
                                   100 || 0
                               )}
@@ -867,14 +885,39 @@ const AdminDashboard = () => {
                                   borderRadius: "3px",
                                 }}
                               ></div>
-                              <Typography variant="body2">Pending</Typography>
+                              <Typography variant="body2">Unpaid</Typography>
                             </div>
                             <Typography
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
                               {Math.round(
-                                (dashboardData.stats?.pending_bookings /
+                                (dashboardData.stats?.unpaid_bookings /
+                                  dashboardData.stats?.total_bookings) *
+                                  100 || 0
+                              )}
+                              %
+                            </Typography>
+                          </div>
+                          <div className="d-flex justify-content-between align-items-center mb-3">
+                            <div className="d-flex align-items-center">
+                              <div
+                                className="me-2"
+                                style={{
+                                  width: "15px",
+                                  height: "15px",
+                                  backgroundColor: "#f6ad55",
+                                  borderRadius: "3px",
+                                }}
+                              ></div>
+                              <Typography variant="body2">Unpaid</Typography>
+                            </div>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "bold" }}
+                            >
+                              {Math.round(
+                                (dashboardData.stats?.completed_bookings /
                                   dashboardData.stats?.total_bookings) *
                                   100 || 0
                               )}
