@@ -319,41 +319,6 @@ const BookingModals = ({
                 </Select>
               </FormControl>
             </Grid>
-
-            {/* Audio Subcategory Field - Show only when Audio Service is selected */}
-            {isAudioCategory && (
-              <Grid item xs={12} sm={6} key="create-audio-subcategory-grid">
-                <FormControl fullWidth>
-                  <InputLabel id="create-audio-subcategory-label">
-                    Audio Subcategory
-                  </InputLabel>
-                  <Select
-                    labelId="create-audio-subcategory-label"
-                    value={createFormValues.audio_category || ""}
-                    label="Audio Subcategory"
-                    onChange={(e) =>
-                      handleCreateInputChange("audio_category", e.target.value)
-                    }
-                  >
-                    {[
-                      { value: "beat_making", label: "Beat Making" },
-                      { value: "sound_recording", label: "Sound Recording" },
-                      { value: "mixing", label: "Mixing" },
-                      { value: "mastering", label: "Mastering" },
-                      { value: "music_video", label: "Music Video Production" },
-                    ].map((opt) => (
-                      <MenuItem
-                        key={`create-audio-${opt.value}`}
-                        value={opt.value}
-                      >
-                        {opt.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
-
             <Grid item xs={12} sm={6} key="create-date-grid">
               <DatePicker
                 label="Event Date"
