@@ -159,7 +159,7 @@ const BookingModals = ({
         event_location: createFormValues.event_location,
         status: createFormValues.status,
       };
-      console.log("Payload: ", payload)
+      console.log("Payload: ", payload);
       await API.post("/admin-dashboard/", payload);
       onCreateConfirm(payload);
       onCreateClose();
@@ -199,7 +199,7 @@ const BookingModals = ({
         status: updateBooking.status || "pending",
         audio_category: updateBooking.audio_category || "",
       };
-      console.log("Payload and Selected Booking:", payload, selectedBooking)
+      console.log("Payload and Selected Booking:", payload, selectedBooking);
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
@@ -319,6 +319,41 @@ const BookingModals = ({
                 </Select>
               </FormControl>
             </Grid>
+
+            {/* Audio Subcategory Field - Show only when Audio Service is selected */}
+            {isAudioCategory && (
+              <Grid item xs={12} sm={6} key="create-audio-subcategory-grid">
+                <FormControl fullWidth>
+                  <InputLabel id="create-audio-subcategory-label">
+                    Audio Subcategory
+                  </InputLabel>
+                  <Select
+                    labelId="create-audio-subcategory-label"
+                    value={createFormValues.audio_category || ""}
+                    label="Audio Subcategory"
+                    onChange={(e) =>
+                      handleCreateInputChange("audio_category", e.target.value)
+                    }
+                  >
+                    {[
+                      { value: "beat_making", label: "Beat Making" },
+                      { value: "sound_recording", label: "Sound Recording" },
+                      { value: "mixing", label: "Mixing" },
+                      { value: "mastering", label: "Mastering" },
+                      { value: "music_video", label: "Music Video Production" },
+                    ].map((opt) => (
+                      <MenuItem
+                        key={`create-audio-${opt.value}`}
+                        value={opt.value}
+                      >
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+
             <Grid item xs={12} sm={6} key="create-date-grid">
               <DatePicker
                 label="Event Date"
@@ -350,20 +385,23 @@ const BookingModals = ({
                 <InputLabel id="create-status-label">Status</InputLabel>
                 <Select
                   labelId="create-status-label"
-                  value={createFormValues.status}
+                  value={createFormValues.status || "unpaid"}
                   label="Status"
                   onChange={(e) =>
                     handleCreateInputChange("status", e.target.value)
                   }
                 >
-                  <MenuItem value="pending" key="create-status-pending">
-                    Pending
+                  <MenuItem value="unpaid" key="create-status-unpaid">
+                    Unpaid
                   </MenuItem>
-                  <MenuItem value="cancelled" key="create-status-cancelled">
-                    Cancelled
+                  <MenuItem value="paid" key="create-status-paid">
+                    Paid
                   </MenuItem>
                   <MenuItem value="completed" key="create-status-completed">
                     Completed
+                  </MenuItem>
+                  <MenuItem value="cancelled" key="create-status-cancelled">
+                    Cancelled
                   </MenuItem>
                 </Select>
               </FormControl>

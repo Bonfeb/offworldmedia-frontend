@@ -906,11 +906,11 @@ const AdminDashboard = () => {
                                 style={{
                                   width: "15px",
                                   height: "15px",
-                                  backgroundColor: "#f6ad55",
+                                  backgroundColor: "#48bb78",
                                   borderRadius: "3px",
                                 }}
                               ></div>
-                              <Typography variant="body2">Unpaid</Typography>
+                              <Typography variant="body2">Completed</Typography>
                             </div>
                             <Typography
                               variant="body2"
