@@ -27,6 +27,7 @@
   z-index: 1030;
   height: 100vh;
   flex-shrink: 0;
+  position: relative;
   /* Custom scrollbar styling for better appearance */
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.3) transparent;
@@ -66,8 +67,10 @@
   top: 0;
   background-color: #12151f;
   z-index: 10;
+  flex-shrink: 0;
 }
 
+/* Sidebar Navigation sections */
 .sidebar .nav-header {
   color: #6c757d;
   font-size: 12px;
@@ -76,6 +79,7 @@
   margin-top: 1rem;
   /* Prevent text selection for better UX */
   user-select: none;
+  flex-shrink: 0;
 }
 
 .sidebar .nav-link {
@@ -86,6 +90,7 @@
   margin: 0 0.5rem;
   /* Ensure nav links don't get cut off during scrolling */
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .sidebar .nav-link:hover, 
@@ -106,6 +111,127 @@
   flex-direction: column;
   min-height: 100%;
   padding-bottom: 1rem; /* Add some bottom padding */
+}
+
+/* Mobile overlay for sidebar */
+.mobile-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1025;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-sidebar-overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1199.98px) {
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 1040;
+    transform: translateX(-100%);
+    width: 260px;
+    min-width: 260px;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .sidebar.closed {
+    transform: translateX(-100%);
+    width: 260px; /* Maintain width for animation */
+    min-width: 260px;
+  }
+  
+  /* Enhanced scrollbar for mobile */
+  .sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+  }
+  
+  .sidebar .nav-link {
+    padding: 0.875rem 1rem;
+    font-size: 14px;
+  }
+  
+  .sidebar .nav-header {
+    padding: 1rem;
+    font-size: 11px;
+  }
+  
+  .sidebar .profile-section {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .sidebar {
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 320px;
+  }
+  
+  .sidebar .nav-link {
+    padding: 1rem;
+    font-size: 15px;
+  }
+  
+  .sidebar .nav-header {
+    padding: 1rem;
+    font-size: 12px;
+  }
+  
+  /* Larger touch targets for mobile */
+  .sidebar .nav-link .icon {
+    width: 24px;
+    margin-right: 1rem;
+  }
+}
+
+/* Animation classes */
+.sidebar-enter {
+  transform: translateX(-100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-exit {
+  transform: translateX(0);
+}
+
+.sidebar-exit-active {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
 }
 
 /* Main Content Area */

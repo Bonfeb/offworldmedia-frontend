@@ -37,6 +37,7 @@ import { Card, Box, Typography, CircularProgress, Badge } from "@mui/material";
 import NewService from "./services/NewService";
 import BookingModals from "./bookings/BookingModals";
 import BookingNotification from "./bookings/BookingNotification";
+import { set } from "lodash";
 
 const AdminDashboard = () => {
   const { userProfilePic, firstName, lastName, logout, user } =
@@ -53,6 +54,7 @@ const AdminDashboard = () => {
   const [showNotificationDropdown, setShowNotificationDropdown] =
     useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const [showMobileOverlay, setShowMobileOverlay] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -63,8 +65,10 @@ const AdminDashboard = () => {
       setIsMobileView(mobile);
       if (mobile) {
         setSidebarOpen(false);
+        setShowMobileOverlay(false);
       } else {
         setSidebarOpen(true);
+        setShowMobileOverlay(false);
       }
     };
 
@@ -72,17 +76,23 @@ const AdminDashboard = () => {
     handleResize();
 
     // Add event listener
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Close sidebar when clicking a nav item on mobile
   const handleNavItemClick = () => {
     if (isMobileView) {
       setSidebarOpen(false);
+      setShowMobileOverlay(false);
     }
+  };
+
+  const handleOverlayClick = () => {
+    setSidebarOpen(false);
+    setShowMobileOverlay(false);
   };
 
   useEffect(() => {
@@ -149,6 +159,9 @@ const AdminDashboard = () => {
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+    if (isMobileView) {
+      setShowMobileOverlay(!sidebarOpen);
+    }
   };
 
   // Format date function
@@ -395,226 +408,249 @@ const AdminDashboard = () => {
       className="d-flex"
       style={{ minHeight: "100vh", backgroundColor: "#1a1d2b" }}
     >
+      {/* Mobile Overlay */}
+      {isMobileView && (
+        <div
+          className={`mobile-sidebar-overlay ${
+            showMobileOverlay ? "show" : ""
+          }`}
+          onClick={handleOverlayClick}
+        />
+      )}
+
       {/* Sidebar */}
       <div
         className={`sidebar ${sidebarOpen ? "open" : "closed"}`}
         style={{
-          width: sidebarOpen ? "240px" : "0",
-          minWidth: sidebarOpen ? "240px" : "0",
+          width: isMobileView
+            ? sidebarOpen
+              ? "280px"
+              : "0"
+            : sidebarOpen
+            ? "240px"
+            : "0",
+          minWidth: isMobileView
+            ? sidebarOpen
+              ? "280px"
+              : "0"
+            : sidebarOpen
+            ? "240px"
+            : "0",
           backgroundColor: "#12151f",
           color: "#fff",
           transition: "all 0.3s ease",
-          overflow: "hidden",
+          overflow: sidebarOpen ? "auto" : "hidden",
           boxShadow: "2px 0 5px rgba(0,0,0,0.2)",
           position: isMobileView ? "fixed" : "relative",
-          zIndex: 1000,
+          zIndex: isMobileView ? 1040 : 1000,
           height: "100vh",
+          transform: isMobileView
+            ? sidebarOpen
+              ? "translateX(0)"
+              : "translateX(-100%)"
+            : "none",
         }}
       >
-        <div className="text-center p-3">
-          <Typography
-            variant="h6"
-            component="div"
-            className="text-light my-3"
-            style={{ fontWeight: "bold" }}
-          >
-            BOOKING ADMIN
-          </Typography>
-
-          <Dropdown>
-            <Dropdown.Toggle
-              variant="link"
-              className="text-decoration-none p-0"
+        <div className="sidebar-content">
+          <div className="profile-section">
+            <Typography
+              variant="h6"
+              component="div"
+              className="text-light my-3"
+              style={{ fontWeight: "bold" }}
             >
-              <div className="position-relative d-inline-block">
-                <Image
-                  src={userProfilePic || "/default-profile.png"}
-                  roundedCircle
-                  width="40"
-                  height="40"
-                  className="mb-2"
-                  alt="User profile"
-                />
-                <span
-                  className="position-absolute bottom-0 end-0 bg-success rounded-circle"
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    border: "2px solid #12151f",
-                  }}
-                ></span>
-              </div>
-              <div className="text-light" style={{ fontSize: "14px" }}>
-                {firstName} {lastName}
-                <div style={{ fontSize: "12px", opacity: 0.8 }}>Admin</div>
-              </div>
-            </Dropdown.Toggle>
-            <Dropdown.Menu
-              style={{
-                backgroundColor: "#1a1d2b",
-                border: "1px solid #2e3347",
-              }}
-            >
-              <Dropdown.Item as={NavLink} to="/profile" className="text-light" onClick={handleNavItemClick}>
-                View Profile
-              </Dropdown.Item>
-              <Dropdown.Item onClick={handleLogout} className="text-light">
-                Logout
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+              BOOKING ADMIN
+            </Typography>
 
-        <div
-          className="mt-3 px-2"
-          style={{ color: "#6c757d", fontSize: "12px", letterSpacing: "1px" }}
-        >
-          DASHBOARD
-        </div>
-        <Nav className="flex-column mt-2">
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard"
-            end
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faChartPie} className="me-3" /> Dashboard
-          </Nav.Link>
-        </Nav>
-        <div
-          className="mt-4 px-2"
-          style={{ color: "#6c757d", fontSize: "12px", letterSpacing: "1px" }}
-        >
-          SERVICES
-        </div>
-        <Nav className="flex-column mt-2">
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/video-recording"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faClock} className="me-3" /> Video
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/audio-recording"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faTimesCircle} className="me-3" /> Audio
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/photo-shooting"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faCheckCircle} className="me-3" /> Photo
-          </Nav.Link>
-        </Nav>
+            <Dropdown>
+              <Dropdown.Toggle
+                variant="link"
+                className="text-decoration-none p-0"
+              >
+                <div className="position-relative d-inline-block">
+                  <Image
+                    src={userProfilePic || "/default-profile.png"}
+                    roundedCircle
+                    width="40"
+                    height="40"
+                    className="mb-2"
+                    alt="User profile"
+                  />
+                  <span
+                    className="position-absolute bottom-0 end-0 bg-success rounded-circle"
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      border: "2px solid #12151f",
+                    }}
+                  />
+                </div>
+                <div className="text-light" style={{ fontSize: "14px" }}>
+                  {firstName} {lastName}
+                  <div style={{ fontSize: "12px", opacity: 0.8 }}>Admin</div>
+                </div>
+              </Dropdown.Toggle>
+              <Dropdown.Menu
+                style={{
+                  backgroundColor: "#1a1d2b",
+                  border: "1px solid #2e3347",
+                }}
+              >
+                <Dropdown.Item
+                  as={NavLink}
+                  to="/profile"
+                  className="text-light"
+                  onClick={handleNavItemClick}
+                >
+                  View Profile
+                </Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout} className="text-light">
+                  Logout
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
 
-        <div
-          className="mt-4 px-2"
-          style={{ color: "#6c757d", fontSize: "12px", letterSpacing: "1px" }}
-        >
-          BOOKINGS
-        </div>
-        <Nav className="flex-column mt-2">
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/unpaid-bookings"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faClock} className="me-3" /> Unpaid
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/paid-bookings"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faClock} className="me-3" /> Paid
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/completed-bookings"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faTimesCircle} className="me-3" /> Completed
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/cancelled-bookings"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faCheckCircle} className="me-3" /> Cancelled
-          </Nav.Link>
-        </Nav>
+          {/* Navigation Content */}
+          <div style={{ flex: 1, overflowY: "auto", paddingBottom: "1rem" }}>
+            <div className="nav-header">DASHBOARD</div>
+            <Nav className="flex-column">
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard"
+                end
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faChartPie} className="icon" /> Dashboard
+              </Nav.Link>
+            </Nav>
 
-        <div
-          className="mt-4 px-2"
-          style={{ color: "#6c757d", fontSize: "12px", letterSpacing: "1px" }}
-        >
-          MANAGEMENT
+            <div className="nav-header">SERVICES</div>
+            <Nav className="flex-column">
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/video-recording"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faClock} className="icon" /> Video
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/audio-recording"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faTimesCircle} className="icon" /> Audio
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/photo-shooting"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faCheckCircle} className="icon" /> Photo
+              </Nav.Link>
+            </Nav>
+
+            <div className="nav-header">BOOKINGS</div>
+            <Nav className="flex-column">
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/unpaid-bookings"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faClock} className="icon" /> Unpaid
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/paid-bookings"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faClock} className="icon" /> Paid
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/completed-bookings"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faTimesCircle} className="icon" />{" "}
+                Completed
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/cancelled-bookings"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faCheckCircle} className="icon" />{" "}
+                Cancelled
+              </Nav.Link>
+            </Nav>
+
+            <div className="nav-header">MANAGEMENT</div>
+            <Nav className="flex-column">
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/team-members"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faUserGroup} className="icon" /> Team
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/media"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faSliders} className="icon" /> Media
+              </Nav.Link>
+              <hr style={{ color: "yellowgreen", margin: "1rem 0.5rem" }} />
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/users"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faUser} className="icon" /> Users
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/reviews"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faStar} className="icon" /> Reviews
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/admin-dashboard/messages"
+                className="text-light"
+                onClick={handleNavItemClick}
+              >
+                <FontAwesomeIcon icon={faEnvelope} className="icon" /> Messages
+              </Nav.Link>
+            </Nav>
+          </div>
         </div>
-        <Nav className="flex-column mt-2">
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/team-members"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faUserGroup} className="me-4" /> Team
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/media"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faSliders} className="me-4" /> Media
-          </Nav.Link>
-          <hr style={{ color: "yellowgreen" }} />
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/users"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faUser} className="me-3" /> Users
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/reviews"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faStar} className="me-3" /> Reviews
-          </Nav.Link>
-          <Nav.Link
-            as={NavLink}
-            to="/admin-dashboard/messages"
-            className="text-light py-2"
-            onClick={handleNavItemClick}
-          >
-            <FontAwesomeIcon icon={faEnvelope} className="me-3" /> Messages
-          </Nav.Link>
-        </Nav>
       </div>
 
       {/* Main Content */}
-      <div 
-        className="main-content" 
-        style={{ 
-          flex: 1, 
+      <div
+        className="main-content"
+        style={{
+          flex: 1,
           overflow: "auto",
-          width: isMobileView ? "100%" : `calc(100% - ${sidebarOpen ? "240px" : "0px"})`,
-          transition: "margin 0.3s ease"
+          width: isMobileView
+            ? "100%"
+            : `calc(100% - ${sidebarOpen ? "240px" : "0px"})`,
+          transition: "width 0.3s ease",
+          marginLeft: isMobileView ? "0" : "0",
         }}
       >
         <Navbar
@@ -627,7 +663,7 @@ const AdminDashboard = () => {
         >
           <Container fluid className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
-              <button 
+              <button
                 className="btn btn-dark me-2 d-lg-none"
                 onClick={toggleSidebar}
               >
@@ -697,7 +733,10 @@ const AdminDashboard = () => {
                 </Dropdown.Menu>
               </Dropdown>
               <div className="d-flex align-items-center">
-                <span className="mx-2 text-light d-none d-sm-block" style={{ cursor: "pointer" }}>
+                <span
+                  className="mx-2 text-light d-none d-sm-block"
+                  style={{ cursor: "pointer" }}
+                >
                   <FontAwesomeIcon icon={faEnvelope} />
                 </span>
                 <span
@@ -719,7 +758,10 @@ const AdminDashboard = () => {
                   className="ms-3 d-none d-sm-block"
                   alt="User profile"
                 />
-                <FontAwesomeIcon icon={faAngleDown} className="d-none d-sm-block" />
+                <FontAwesomeIcon
+                  icon={faAngleDown}
+                  className="d-none d-sm-block"
+                />
               </div>
             </div>
           </Container>
