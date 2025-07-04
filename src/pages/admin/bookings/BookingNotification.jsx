@@ -202,9 +202,11 @@ const getStatusColor = (status) => {
   switch (status) {
     case "completed":
       return "success";
-    case "pending":
+    case "paid":
+      return "primary";
+    case "unpaid":
       return "warning";
-    case "canceled":
+    case "cancelled":
       return "danger";
     default:
       return "secondary";

@@ -49,7 +49,7 @@ const BookingModals = ({
     event_date: null,
     event_time: null,
     event_location: "",
-    status: "pending",
+    status: "unpaid",
   });
 
   const [users, setUsers] = useState([]);
@@ -115,7 +115,7 @@ const BookingModals = ({
           ? new Date(`2000-01-01T${updateBooking.eventTime}`)
           : null,
         event_location: updateBooking.location || "",
-        status: updateBooking.status || "pending",
+        status: updateBooking.status || "uunpaid",
         audio_category: updateBooking.audio_category || "",
       });
     } else {
@@ -126,7 +126,7 @@ const BookingModals = ({
         event_date: null,
         event_time: null,
         event_location: "",
-        status: "pending",
+        status: "unpaid",
         audio_category: "",
       });
     }
@@ -203,7 +203,7 @@ const BookingModals = ({
           ? new Date(`2000-01-01T${updateBooking.eventTime}`)
           : null,
         event_location: updateBooking.location || "",
-        status: updateBooking.status || "pending",
+        status: updateBooking.status || "unpaid",
         audio_category: updateBooking.audio_category || "",
       };
       console.log("Payload and Selected Booking:", payload, selectedBooking);
@@ -529,14 +529,17 @@ const BookingModals = ({
                     handleUpdateInputChange("status", e.target.value)
                   }
                 >
-                  <MenuItem value="pending" key="update-status-pending">
-                    Pending
+                  <MenuItem value="unpaid" key="update-status-unpaid">
+                    Unpaid
                   </MenuItem>
-                  <MenuItem value="cancelled" key="update-status-cancelled">
-                    Cancelled
+                  <MenuItem value="paid" key="update-status-paid">
+                    Paid
                   </MenuItem>
                   <MenuItem value="completed" key="update-status-completed">
                     Completed
+                  </MenuItem>
+                  <MenuItem value="cancelled" key="update-status-cancelled">
+                    Cancelled
                   </MenuItem>
                 </Select>
               </FormControl>

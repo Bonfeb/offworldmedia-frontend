@@ -127,10 +127,10 @@ function Row({ booking, onEdit, onDelete }) {
   // Status color mapping
   const getStatusColor = (status) => {
     switch (status) {
-      case "pending":
+      case "unpaid":
         return "warning";
-      case "confirmed":
-        return "success";
+      case "paid":
+        return "primary";
       case "completed":
         return "success";
       case "cancelled":
@@ -528,9 +528,9 @@ export default function AllBookings() {
                     size="small"
                   >
                     <MenuItem value="">All</MenuItem>
-                    <MenuItem value="confirmed">Confirmed</MenuItem>
-                    <MenuItem value="pending">Pending</MenuItem>
-                    <MenuItem value="canceled">Cancelled</MenuItem>
+                    <MenuItem value="paid">Paid</MenuItem>
+                    <MenuItem value="unpaid">Unpaid</MenuItem>
+                    <MenuItem value="cancelled">Cancelled</MenuItem>
                     <MenuItem value="completed">Completed</MenuItem>
                   </TextField>
                 </Grid>
