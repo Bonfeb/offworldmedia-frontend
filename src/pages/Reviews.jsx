@@ -108,9 +108,7 @@ function Reviews({ reviews }) {
         <p className="text-center">
           See what the hype is all about and check out our Yelp to see
           <Link
-            to="all-reviews"
-            target="_blank"
-            rel="noopener noreferrer"
+            to="/all-reviews"
             className="text-white text-decoration-underline"
           >
             {" "}

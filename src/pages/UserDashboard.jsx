@@ -239,6 +239,8 @@ const UserDashboard = () => {
         throw new Error("UNEXPECTED_RESPONSE");
       }
 
+      await fetchUserDashboard();
+
       // Handle success case
       const emailData = {
         service_name: cartItem.service_name || "Service",
