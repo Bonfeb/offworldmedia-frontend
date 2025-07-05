@@ -47,8 +47,11 @@ const PaidBookings = () => {
       });
       // Debug the response
       console.log("API Response:", response.data);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
       let bookings = response.data || [];
+      console.log('Total bookings received:', bookings.length);
       let formattedBookings = formatBookings(bookings)
       
       setPaidBookings(formattedBookings);

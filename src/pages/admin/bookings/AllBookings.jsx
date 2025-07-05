@@ -316,6 +316,7 @@ export default function AllBookings() {
     event_location: "",
     status: "",
   });
+
   const [searchLoading, setSearchLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -632,7 +633,7 @@ export default function AllBookings() {
         onCreateConfirm={handleCreateConfirm}
         onUpdateConfirm={handleUpdateConfirm}
         onDeleteConfirm={handleDeleteConfirm}
-        bookingToUpdate={selectedBooking}
+        updateBooking={selectedBooking}
         refreshData={refreshData}
       />
     </>
