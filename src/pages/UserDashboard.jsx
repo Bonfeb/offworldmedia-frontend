@@ -331,7 +331,7 @@ const UserDashboard = () => {
 
     // Validate phone number format (basic validation)
     console.log("📞 Validating phone number:", phoneNumber);
-    const phoneRegex = /^(\+254|0)[0-9]{9}$/;
+    const phoneRegex = /^(\+2547)[0-9]{8}$/;
     console.log("📞 Phone regex:", phoneRegex);
     if (!phoneRegex.test(phoneNumber)) {
       toast.error(
@@ -365,7 +365,7 @@ const UserDashboard = () => {
         },
         withCredentials: true,
       });
-      const res = await API.get("/stkpush/", {
+      const res = await API.post("/stkpush/", {
         params: {
           booking: bookingId,
           phone_number: phoneNumber,
