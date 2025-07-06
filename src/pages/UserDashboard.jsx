@@ -331,7 +331,7 @@ const UserDashboard = () => {
 
     // Validate phone number format (basic validation)
     console.log("📞 Validating phone number:", phoneNumber);
-    const phoneRegex = /^(\+2547)[0-9]{8}$/;
+    const phoneRegex = /^\2547[0-9]{8}$/;
     console.log("📞 Phone regex:", phoneRegex);
     if (!phoneRegex.test(phoneNumber)) {
       toast.error(
