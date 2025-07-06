@@ -319,7 +319,7 @@ const UserDashboard = () => {
 
   const handlePayBooking = async () => {
     const { bookingId, phoneNumber, amount } = paymentData;
-
+    console.log("📦 Pay button clicked");
     if (!phoneNumber || !amount) {
       console.log("❌ Validation failed: Missing phone number or amount");
       console.log("📱 Phone number:", phoneNumber || "MISSING");
@@ -331,7 +331,7 @@ const UserDashboard = () => {
 
     // Validate phone number format (basic validation)
     console.log("📞 Validating phone number:", phoneNumber);
-    const phoneRegex = /^\2547[0-9]{8}$/;
+    const phoneRegex = /^2547[0-9]{8}$/;
     console.log("📞 Phone regex:", phoneRegex);
     if (!phoneRegex.test(phoneNumber)) {
       toast.error(
@@ -357,22 +357,25 @@ const UserDashboard = () => {
       console.log("🌐 Making API call to /stkpush/...");
       console.log("📡 API request details:", {
         url: "/stkpush/",
-        method: "GET",
-        params: {
+        method: "POST",
+        data: {
           booking: bookingId,
           phone_number: phoneNumber,
           amount: parsedAmount,
         },
         withCredentials: true,
       });
-      const res = await API.post("/stkpush/", {
-        params: {
+      const res = await API.post(
+        "/stkpush/",
+        {
           booking: bookingId,
           phone_number: phoneNumber,
           amount: parseFloat(amount),
         },
-        withCredentials: true,
-      });
+        {
+          withCredentials: true,
+        }
+      );
 
       console.log("✅ API call successful!");
       console.log("📤 STK Push Response:", res.data);
