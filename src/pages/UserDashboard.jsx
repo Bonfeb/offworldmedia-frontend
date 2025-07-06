@@ -361,7 +361,7 @@ const UserDashboard = () => {
         data: {
           booking: bookingId,
           phone_number: phoneNumber,
-          amount: parsedAmount,
+          amount: amount,
         },
         withCredentials: true,
       });
