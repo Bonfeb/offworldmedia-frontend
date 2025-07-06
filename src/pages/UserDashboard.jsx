@@ -53,7 +53,7 @@ const UserDashboard = () => {
 
   const [modalData, setModalData] = useState({});
   const navigate = useNavigate();
-  
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -124,7 +124,7 @@ const UserDashboard = () => {
 
     setRemoveLoading(true);
     setRemoveServiceId(modalData.service.id);
-    
+
     try {
       const serviceId = modalData.service.id;
       console.log(`Attempting to remove service ID: ${serviceId}`);
@@ -149,7 +149,9 @@ const UserDashboard = () => {
     console.log("🚀 Debug: modalData.booking.id:", modalData?.booking?.id);
 
     if (!modalData?.booking?.id) {
-      console.error("Error: booking id is undefined or modalData is not properly set");
+      console.error(
+        "Error: booking id is undefined or modalData is not properly set"
+      );
       toast.error("Unable to cancel booking. Please try again.");
       return;
     }
@@ -200,7 +202,7 @@ const UserDashboard = () => {
 
     setBookingLoading(true);
     setBookingServiceId(serviceId);
-    
+
     try {
       const cartItem = cart.find((item) => item.service === serviceId);
 
@@ -226,11 +228,11 @@ const UserDashboard = () => {
       // Send booking data with unpaid status (matching model default)
       const response = await API.post(
         `/booking/${serviceId}/`,
-        { 
+        {
           status: "unpaid",
           event_date,
           event_time,
-          event_location
+          event_location,
         },
         { withCredentials: true }
       );
@@ -276,24 +278,29 @@ const UserDashboard = () => {
           closeButton: true,
         });
 
-        setSuccessMessage("Service booked successfully! A confirmation has been sent to your email.");
+        setSuccessMessage(
+          "Service booked successfully! A confirmation has been sent to your email."
+        );
         setShowSuccessModal(true);
         fetchUserDashboard();
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
         toast.error("Booking successful but admin notification failed");
-        setSuccessMessage("Service booked successfully, but email confirmation failed to send.");
+        setSuccessMessage(
+          "Service booked successfully, but email confirmation failed to send."
+        );
         setShowSuccessModal(true);
         fetchUserDashboard();
       }
     } catch (error) {
       console.error("Booking error:", error.message, error.response?.data);
 
-      const errorMessage = {
-        SERVICE_NOT_IN_CART: "Service not found in your cart",
-        MISSING_EVENT_DETAILS: "Incomplete event details",
-        UNEXPECTED_RESPONSE: "Unexpected server response",
-      }[error.message] || "Booking failed - please try again";
+      const errorMessage =
+        {
+          SERVICE_NOT_IN_CART: "Service not found in your cart",
+          MISSING_EVENT_DETAILS: "Incomplete event details",
+          UNEXPECTED_RESPONSE: "Unexpected server response",
+        }[error.message] || "Booking failed - please try again";
 
       toast.error(errorMessage);
       setShowFailureModal(true);
@@ -312,30 +319,53 @@ const UserDashboard = () => {
 
   const handlePayBooking = async () => {
     const { bookingId, phoneNumber, amount } = paymentData;
-    
+
     if (!phoneNumber || !amount) {
+      console.log("❌ Validation failed: Missing phone number or amount");
+      console.log("📱 Phone number:", phoneNumber || "MISSING");
+      console.log("💰 Amount:", amount || "MISSING");
       toast.error("Please fill in all payment details");
       return;
     }
+    console.log("Field Validation Passed");
 
     // Validate phone number format (basic validation)
+    console.log("📞 Validating phone number:", phoneNumber);
     const phoneRegex = /^(\+254|0)[0-9]{9}$/;
+    console.log("📞 Phone regex:", phoneRegex);
     if (!phoneRegex.test(phoneNumber)) {
-      toast.error("Please enter a valid phone number (e.g., +254712345678 or 0712345678)");
+      toast.error(
+        "Please enter a valid phone number (e.g., +254712345678 or 0712345678)"
+      );
       return;
     }
+    console.log("📞 Phone number validation passed");
 
     // Validate amount
+    console.log("💰 Validating amount:", amount);
     if (isNaN(amount) || parseFloat(amount) <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
+    console.log("💰 Amount validation passed");
 
+    console.log("Setting payment loading state to true");
     setPaymentLoading(true);
     console.log("Initiating payment for booking ID:", bookingId);
 
     try {
-      const res = await API.get('/stkpush/', {
+      console.log("🌐 Making API call to /stkpush/...");
+      console.log("📡 API request details:", {
+        url: "/stkpush/",
+        method: "GET",
+        params: {
+          booking: bookingId,
+          phone_number: phoneNumber,
+          amount: parsedAmount,
+        },
+        withCredentials: true,
+      });
+      const res = await API.get("/stkpush/", {
         params: {
           booking: bookingId,
           phone_number: phoneNumber,
@@ -343,26 +373,43 @@ const UserDashboard = () => {
         },
         withCredentials: true,
       });
-      
-      toast.success("STK Push Sent! Please check your phone to complete the payment.");
+
+      console.log("✅ API call successful!");
+      console.log("📤 STK Push Response:", res.data);
+      console.log("📊 Response status:", res.status);
+      console.log("📋 Response headers:", res.headers);
+      toast.success(
+        "STK Push Sent! Please check your phone to complete the payment."
+      );
       console.log("STK Push Response:", res.data);
       setShowPaymentModal(false);
       setPaymentData({ bookingId: null, phoneNumber: "", amount: "" });
-      
+
       // Refresh dashboard to update booking status
+      console.log("🔄 Refreshing user dashboard to update booking status");
       await fetchUserDashboard();
+      console.log("✅ Dashboard refreshed successfully");
     } catch (error) {
       console.error("Error initiating payment:", error);
+      console.error("🚨 Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        config: error.config,
+      });
       toast.error("Failed to initiate payment. Please try again.");
     } finally {
+      console.log("Setting payment loading state to false");
       setPaymentLoading(false);
+      console.log("🏁 handlePayBooking function completed");
     }
   };
 
   const handlePaymentInputChange = (field, value) => {
-    setPaymentData(prev => ({
+    setPaymentData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -371,7 +418,8 @@ const UserDashboard = () => {
       fluid
       className="mt-4 py-4"
       style={{
-        background: "linear-gradient(to right,rgb(82, 68, 68),rgb(112, 106, 102), rgb(97, 58, 58))",
+        background:
+          "linear-gradient(to right,rgb(82, 68, 68),rgb(112, 106, 102), rgb(97, 58, 58))",
         minHeight: "100vh",
       }}
     >
@@ -385,7 +433,10 @@ const UserDashboard = () => {
             ) : (
               <ListGroup>
                 {cart.map((item, index) => (
-                  <ListGroup.Item key={index} className="d-flex align-items-center">
+                  <ListGroup.Item
+                    key={index}
+                    className="d-flex align-items-center"
+                  >
                     <img
                       src={item.service_image}
                       alt={item.service_name}
@@ -408,11 +459,20 @@ const UserDashboard = () => {
                       variant="danger"
                       size="sm"
                       onClick={() => handleShowRemoveModal(item)}
-                      disabled={removeLoading && removeServiceId === item.service}
+                      disabled={
+                        removeLoading && removeServiceId === item.service
+                      }
                     >
                       {removeLoading && removeServiceId === item.service ? (
                         <>
-                          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                          <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="me-2"
+                          />
                           Removing...
                         </>
                       ) : (
@@ -429,11 +489,20 @@ const UserDashboard = () => {
                           console.log("Booking service ID:", item.service);
                           handleBookService(item.service);
                         }}
-                        disabled={bookingLoading && bookingServiceId === item.service}
+                        disabled={
+                          bookingLoading && bookingServiceId === item.service
+                        }
                       >
                         {bookingLoading && bookingServiceId === item.service ? (
                           <>
-                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                            <Spinner
+                              as="span"
+                              animation="border"
+                              size="sm"
+                              role="status"
+                              aria-hidden="true"
+                              className="me-2"
+                            />
                             Booking...
                           </>
                         ) : (
@@ -469,97 +538,137 @@ const UserDashboard = () => {
                   </Nav.Item>
                 </Nav>
                 <Tab.Content className="mt-3">
-                  {["unpaid", "paid", "completed", "cancelled"].map((status) => (
-                    <Tab.Pane eventKey={status} key={status}>
-                      <Card className="mb-2">
-                        <Card.Body>
-                          {bookings?.[status]?.length === 0 ? (
-                            <p className="text-muted text-center">No bookings found.</p>
-                          ) : (
-                            <Table striped hover responsive>
-                              <thead>
-                                <tr>
-                                  <th>#</th>
-                                  <th>Service Name</th>
-                                  <th>Event Date</th>
-                                  <th>Event Time</th>
-                                  <th>Event Location</th>
-                                  <th>Action</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {bookings[status].map((booking, index) => (
-                                  <tr key={booking.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{booking.service.name}</td>
-                                    <td className="text-muted">
-                                      <i>{booking.event_date}</i>
-                                    </td>
-                                    <td className="text-muted">
-                                      <i>{booking.event_time}</i>
-                                    </td>
-                                    <td className="text-muted">
-                                      <i>{booking.event_location}</i>
-                                    </td>
-                                    {status === "unpaid" ? (
-                                      <td>
-                                        <Button
-                                          className="btn-sm btn-danger me-2"
-                                          onClick={() => handleShowCancelModal(booking)}
-                                          disabled={cancelLoading && cancelBookingId === booking.id}
-                                        >
-                                          {cancelLoading && cancelBookingId === booking.id ? (
-                                            <>
-                                              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-1" />
-                                              Cancelling...
-                                            </>
-                                          ) : (
-                                            "Cancel"
-                                          )}
-                                        </Button>
-                                        <Button
-                                          variant="warning"
-                                          size="sm"
-                                          className="me-2"
-                                          onClick={() => handleShowPaymentModal(booking)}
-                                        >
-                                          Pay
-                                        </Button>
-                                        <Button
-                                          variant="info"
-                                          size="sm"
-                                          onClick={() => handleToUpdateBooking(booking, booking.service.id)}
-                                          disabled={updateLoading && updateBookingId === booking.id}
-                                        >
-                                          {updateLoading && updateBookingId === booking.id ? (
-                                            <>
-                                              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-1" />
-                                              Updating...
-                                            </>
-                                          ) : (
-                                            "Update"
-                                          )}
-                                        </Button>
-                                      </td>
-                                    ) : (
-                                      <td>
-                                        <Button
-                                          className="btn-sm btn-success"
-                                          onClick={() => console.log("View Details", booking.id)}
-                                        >
-                                          View Details
-                                        </Button>
-                                      </td>
-                                    )}
+                  {["unpaid", "paid", "completed", "cancelled"].map(
+                    (status) => (
+                      <Tab.Pane eventKey={status} key={status}>
+                        <Card className="mb-2">
+                          <Card.Body>
+                            {bookings?.[status]?.length === 0 ? (
+                              <p className="text-muted text-center">
+                                No bookings found.
+                              </p>
+                            ) : (
+                              <Table striped hover responsive>
+                                <thead>
+                                  <tr>
+                                    <th>#</th>
+                                    <th>Service Name</th>
+                                    <th>Event Date</th>
+                                    <th>Event Time</th>
+                                    <th>Event Location</th>
+                                    <th>Action</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </Table>
-                          )}
-                        </Card.Body>
-                      </Card>
-                    </Tab.Pane>
-                  ))}
+                                </thead>
+                                <tbody>
+                                  {bookings[status].map((booking, index) => (
+                                    <tr key={booking.id}>
+                                      <td>{index + 1}</td>
+                                      <td>{booking.service.name}</td>
+                                      <td className="text-muted">
+                                        <i>{booking.event_date}</i>
+                                      </td>
+                                      <td className="text-muted">
+                                        <i>{booking.event_time}</i>
+                                      </td>
+                                      <td className="text-muted">
+                                        <i>{booking.event_location}</i>
+                                      </td>
+                                      {status === "unpaid" ? (
+                                        <td>
+                                          <Button
+                                            className="btn-sm btn-danger me-2"
+                                            onClick={() =>
+                                              handleShowCancelModal(booking)
+                                            }
+                                            disabled={
+                                              cancelLoading &&
+                                              cancelBookingId === booking.id
+                                            }
+                                          >
+                                            {cancelLoading &&
+                                            cancelBookingId === booking.id ? (
+                                              <>
+                                                <Spinner
+                                                  as="span"
+                                                  animation="border"
+                                                  size="sm"
+                                                  role="status"
+                                                  aria-hidden="true"
+                                                  className="me-1"
+                                                />
+                                                Cancelling...
+                                              </>
+                                            ) : (
+                                              "Cancel"
+                                            )}
+                                          </Button>
+                                          <Button
+                                            variant="warning"
+                                            size="sm"
+                                            className="me-2"
+                                            onClick={() =>
+                                              handleShowPaymentModal(booking)
+                                            }
+                                          >
+                                            Pay
+                                          </Button>
+                                          <Button
+                                            variant="info"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleToUpdateBooking(
+                                                booking,
+                                                booking.service.id
+                                              )
+                                            }
+                                            disabled={
+                                              updateLoading &&
+                                              updateBookingId === booking.id
+                                            }
+                                          >
+                                            {updateLoading &&
+                                            updateBookingId === booking.id ? (
+                                              <>
+                                                <Spinner
+                                                  as="span"
+                                                  animation="border"
+                                                  size="sm"
+                                                  role="status"
+                                                  aria-hidden="true"
+                                                  className="me-1"
+                                                />
+                                                Updating...
+                                              </>
+                                            ) : (
+                                              "Update"
+                                            )}
+                                          </Button>
+                                        </td>
+                                      ) : (
+                                        <td>
+                                          <Button
+                                            className="btn-sm btn-success"
+                                            onClick={() =>
+                                              console.log(
+                                                "View Details",
+                                                booking.id
+                                              )
+                                            }
+                                          >
+                                            View Details
+                                          </Button>
+                                        </td>
+                                      )}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </Table>
+                            )}
+                          </Card.Body>
+                        </Card>
+                      </Tab.Pane>
+                    )
+                  )}
                 </Tab.Content>
               </Tab.Container>
             </Card.Body>
@@ -572,15 +681,28 @@ const UserDashboard = () => {
         <Modal.Header closeButton>
           <Modal.Title>Confirm Remove</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to remove this item from your cart?</Modal.Body>
+        <Modal.Body>
+          Are you sure you want to remove this item from your cart?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowRemoveModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleConfirmRemove} disabled={removeLoading}>
+          <Button
+            variant="danger"
+            onClick={handleConfirmRemove}
+            disabled={removeLoading}
+          >
             {removeLoading ? (
               <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
                 Removing...
               </>
             ) : (
@@ -600,10 +722,21 @@ const UserDashboard = () => {
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleConfirmCancel} disabled={cancelLoading}>
+          <Button
+            variant="danger"
+            onClick={handleConfirmCancel}
+            disabled={cancelLoading}
+          >
             {cancelLoading ? (
               <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
                 Cancelling...
               </>
             ) : (
@@ -626,10 +759,14 @@ const UserDashboard = () => {
                 type="tel"
                 placeholder="Enter phone number (e.g., +254712345678 or 0712345678)"
                 value={paymentData.phoneNumber}
-                onChange={(e) => handlePaymentInputChange('phoneNumber', e.target.value)}
+                onChange={(e) =>
+                  handlePaymentInputChange("phoneNumber", e.target.value)
+                }
                 disabled={paymentLoading}
               />
-              <Form.Text className="text-muted">Enter your M-Pesa phone number</Form.Text>
+              <Form.Text className="text-muted">
+                Enter your M-Pesa phone number
+              </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Amount (KSH)</Form.Label>
@@ -637,22 +774,41 @@ const UserDashboard = () => {
                 type="number"
                 placeholder="Enter amount"
                 value={paymentData.amount}
-                onChange={(e) => handlePaymentInputChange('amount', e.target.value)}
+                onChange={(e) =>
+                  handlePaymentInputChange("amount", e.target.value)
+                }
                 min="1"
                 disabled={paymentLoading}
               />
-              <Form.Text className="text-muted">Enter the amount to pay</Form.Text>
+              <Form.Text className="text-muted">
+                Enter the amount to pay
+              </Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPaymentModal(false)} disabled={paymentLoading}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowPaymentModal(false)}
+            disabled={paymentLoading}
+          >
             Cancel
           </Button>
-          <Button variant="success" onClick={handlePayBooking} disabled={paymentLoading}>
+          <Button
+            variant="success"
+            onClick={handlePayBooking}
+            disabled={paymentLoading}
+          >
             {paymentLoading ? (
               <>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
                 Processing Payment...
               </>
             ) : (
@@ -680,7 +836,9 @@ const UserDashboard = () => {
         <Modal.Header closeButton>
           <Modal.Title>Booking Failed</Modal.Title>
         </Modal.Header>
-        <Modal.Body>There was an issue booking your service. Please try again.</Modal.Body>
+        <Modal.Body>
+          There was an issue booking your service. Please try again.
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={() => setShowFailureModal(false)}>
             OK
@@ -689,17 +847,25 @@ const UserDashboard = () => {
       </Modal>
 
       {/* Permission Error Modal */}
-      <Modal show={showPermissionError} onHide={() => setShowPermissionError(false)} centered>
+      <Modal
+        show={showPermissionError}
+        onHide={() => setShowPermissionError(false)}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Permission Denied</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p className="text-danger">
-            You do not have permission to delete this booking. Only the booking owner or an admin can delete it.
+            You do not have permission to delete this booking. Only the booking
+            owner or an admin can delete it.
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPermissionError(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowPermissionError(false)}
+          >
             Close
           </Button>
         </Modal.Footer>
