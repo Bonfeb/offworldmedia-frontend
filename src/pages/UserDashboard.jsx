@@ -368,7 +368,7 @@ const UserDashboard = () => {
       const res = await API.post(
         "/stkpush/",
         {
-          booking: bookingId,
+          booking_id: bookingId,
           phone_number: phoneNumber,
           amount: parseFloat(amount),
         },
