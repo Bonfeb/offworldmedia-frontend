@@ -366,7 +366,7 @@ const UserDashboard = () => {
         withCredentials: true,
       });
       const res = await API.post(
-        "/stk-push/",
+        "/https://offworldmedia-backend.onrender.com/stk-push/",
         {
           booking_id: bookingId,
           phone_number: phoneNumber,
