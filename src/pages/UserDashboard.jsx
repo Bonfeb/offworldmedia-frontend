@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import API from "../api";
+import axios from "axios";
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
@@ -365,7 +366,7 @@ const UserDashboard = () => {
         },
         withCredentials: true,
       });
-      const res = await API.post(
+      const res = await axios.post(
         "/https://offworldmedia-backend.onrender.com/stk-push/",
         {
           booking_id: bookingId,
