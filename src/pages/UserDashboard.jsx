@@ -366,7 +366,7 @@ const UserDashboard = () => {
         withCredentials: true,
       });
       const res = await API.post(
-        "/stk-push",
+        "/stk-push/",
         {
           booking_id: bookingId,
           phone_number: phoneNumber,
