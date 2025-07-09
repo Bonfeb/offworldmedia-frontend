@@ -356,7 +356,7 @@ const UserDashboard = () => {
     try {
       console.log("🌐 Making API call to /stkpush/...");
       console.log("📡 API request details:", {
-        url: "/stkpush/",
+        url: "/stk-push/",
         method: "POST",
         data: {
           booking: bookingId,
@@ -366,7 +366,7 @@ const UserDashboard = () => {
         withCredentials: true,
       });
       const res = await API.post(
-        "/stkpush/",
+        "/stk-push",
         {
           booking_id: bookingId,
           phone_number: phoneNumber,
@@ -812,7 +812,7 @@ const UserDashboard = () => {
                   aria-hidden="true"
                   className="me-2"
                 />
-                Processing Payment...
+                Check your phone to enter Mpesa PIN...
               </>
             ) : (
               "Pay Now"
