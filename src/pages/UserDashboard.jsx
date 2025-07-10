@@ -47,7 +47,7 @@ const UserDashboard = () => {
   const [removeServiceId, setRemoveServiceId] = useState(null);
   const [snackbar, setSnackbar] = useState({
     show: true,
-    message,
+    message: "",
     type: "success",
   });
 
