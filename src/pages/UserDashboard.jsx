@@ -52,7 +52,7 @@ const UserDashboard = () => {
     type: "success",
   });
 
-  const token = sessionStorage.getitem("accessToken")
+  const token = sessionStorage.getItem("accessToken")
 
   const [paymentData, setPaymentData] = useState({
     bookingId: null,
