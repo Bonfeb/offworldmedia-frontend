@@ -45,6 +45,11 @@ const UserDashboard = () => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
   const [removeServiceId, setRemoveServiceId] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    show: true,
+    message,
+    type: "success",
+  });
 
   const [paymentData, setPaymentData] = useState({
     bookingId: null,
@@ -59,6 +64,23 @@ const UserDashboard = () => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
+  const showSnackbar = (message, type = "success") => {
+    setSnackbar({
+      show: true,
+      message,
+      type,
+    });
+  };
+
+  const closeSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, show: false }));
+  };
+
+  const delay = type === "success" ? 60000 : 5000;
+  setTimeout(() => {
+    setSnackbar((prev) => ({ ...prev, show: false }));
+  }, delay);
 
   useEffect(() => {
     fetchUserDashboard();
@@ -417,6 +439,40 @@ const UserDashboard = () => {
     }));
   };
 
+  const CustomSnackbar = ({ show, message, type, onClose }) => {
+    if (!show) return null;
+
+    const bgColor = type === "success" ? "bg-success" : "bg-danger";
+    const icon = type === "success" ? "✅" : "❌";
+
+    return (
+      <div
+        className={`position-fixed top-0 start-50 translate-middle-x mt-3 ${bgColor} text-white px-4 py-3 rounded shadow-lg`}
+        style={{
+          zIndex: 9999,
+          minWidth: "300px",
+          maxWidth: "500px",
+          animation: show ? "slideDown 0.3s ease-out" : "slideUp 0.3s ease-out",
+        }}
+      >
+        <div className="d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center">
+            <span className="me-2" style={{ fontSize: "1.2rem" }}>
+              {icon}
+            </span>
+            <span>{message}</span>
+          </div>
+          <button
+            type="button"
+            className="btn-close btn-close-white"
+            onClick={onClose}
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Container
       fluid
@@ -679,6 +735,14 @@ const UserDashboard = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Snackbar for notifications */}
+      <CustomSnackbar
+        show={snackbar.show}
+        message={snackbar.message}
+        type={snackbar.type}
+        onClose={closeSnackbar}
+      />
 
       {/* Remove Modal */}
       <Modal show={showRemoveModal} onHide={() => setShowRemoveModal(false)}>
