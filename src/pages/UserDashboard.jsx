@@ -52,6 +52,8 @@ const UserDashboard = () => {
     type: "success",
   });
 
+  const token = sessionStorage.getitem("accessToken")
+
   const [paymentData, setPaymentData] = useState({
     bookingId: null,
     phoneNumber: "",
@@ -396,7 +398,9 @@ const UserDashboard = () => {
           amount: parseFloat(amount),
         },
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
