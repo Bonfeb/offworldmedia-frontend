@@ -47,7 +47,7 @@ const UserDashboard = () => {
   const [removeLoading, setRemoveLoading] = useState(false);
   const [removeServiceId, setRemoveServiceId] = useState(null);
   const [snackbar, setSnackbar] = useState({
-    show: true,
+    show: false,
     message: "",
     type: "success",
   });
@@ -389,7 +389,7 @@ const UserDashboard = () => {
         withCredentials: true,
       });
       const res = await axios.post(
-        "/https://offworldmedia-backend.onrender.com/stk-push/",
+        "https://offworldmedia-backend.onrender.com/stk-push/",
         {
           booking_id: bookingId,
           phone_number: phoneNumber,
