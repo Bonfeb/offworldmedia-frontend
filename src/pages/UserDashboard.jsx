@@ -17,6 +17,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import emailjs from "@emailjs/browser";
 import API from "../api";
 import axios from "axios";
 
@@ -71,16 +72,14 @@ const UserDashboard = () => {
       message,
       type,
     });
+    setTimeout(() => {
+    setSnackbar((prev) => ({ ...prev, show: false }));
+  }, type === "success" ? 60000 : 5000);
   };
 
   const closeSnackbar = () => {
     setSnackbar((prev) => ({ ...prev, show: false }));
   };
-
-  const delay = type === "success" ? 60000 : 5000;
-  setTimeout(() => {
-    setSnackbar((prev) => ({ ...prev, show: false }));
-  }, delay);
 
   useEffect(() => {
     fetchUserDashboard();
@@ -284,6 +283,7 @@ const UserDashboard = () => {
       // import emailjs from '@emailjs/browser';
 
       const toastId = toast.loading("Notifying admins...");
+      showSnackbar("Booking successful! Notifying admins...", "success");
 
       try {
         await emailjs.send(
@@ -308,7 +308,7 @@ const UserDashboard = () => {
         fetchUserDashboard();
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
-        toast.error("Booking successful but admin notification failed");
+        showSnackbar("Booking successful but admin notification failed", "danger");
         setSuccessMessage(
           "Service booked successfully, but email confirmation failed to send."
         );
@@ -325,7 +325,7 @@ const UserDashboard = () => {
           UNEXPECTED_RESPONSE: "Unexpected server response",
         }[error.message] || "Booking failed - please try again";
 
-      toast.error(errorMessage);
+      showSnackbar(errorMessage, "danger");
       setShowFailureModal(true);
     } finally {
       setBookingLoading(false);
@@ -357,8 +357,8 @@ const UserDashboard = () => {
     const phoneRegex = /^2547[0-9]{8}$/;
     console.log("📞 Phone regex:", phoneRegex);
     if (!phoneRegex.test(phoneNumber)) {
-      toast.error(
-        "Please enter a valid phone number (e.g., +254712345678 or 0712345678)"
+      showSnackbar(
+        "Please enter a valid phone number (e.g., 254712345678)", "danger"
       );
       return;
     }
@@ -404,7 +404,7 @@ const UserDashboard = () => {
       console.log("📤 STK Push Response:", res.data);
       console.log("📊 Response status:", res.status);
       console.log("📋 Response headers:", res.headers);
-      toast.success(
+      showSnackbar(
         "STK Push Sent! Please check your phone to complete the payment."
       );
       console.log("STK Push Response:", res.data);
@@ -424,7 +424,7 @@ const UserDashboard = () => {
         statusText: error.response?.statusText,
         config: error.config,
       });
-      toast.error("Failed to initiate payment. Please try again.");
+      showSnackbar("Failed to initiate payment. Please try again.", "danger");
     } finally {
       console.log("Setting payment loading state to false");
       setPaymentLoading(false);
