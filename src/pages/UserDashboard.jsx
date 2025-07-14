@@ -390,12 +390,15 @@ const UserDashboard = () => {
         },
         withCredentials: true,
       });
-      const res = await axios.post(
-        "https://offworldmedia-backend.onrender.com/stk-push/",
+      const res = await API.post(
+        "/stk-push/",
         {
           booking_id: bookingId,
           phone_number: phoneNumber,
           amount: parseFloat(amount),
+        },
+        {
+          withCredentials: true
         },
         {
           headers: {
