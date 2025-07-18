@@ -62,6 +62,9 @@ const AdminTeam = () => {
     name: "",
     role: "",
     bio: "",
+    facebook_link: "",
+    twitter_link: "",
+    instagram_link: "",
     profile_pic: null,
   });
 
@@ -96,6 +99,9 @@ const AdminTeam = () => {
       name: member.name,
       role: member.role,
       bio: member.bio,
+      facebook_link: member.facebook_link,
+      instagram_link: member.instagram_link,
+      twitter_link: member.twitter_link,
       profile_pic: null, // We don't set the existing image here as we can't pre-fill file inputs
     });
     setShowModal(true);
@@ -233,11 +239,17 @@ const AdminTeam = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("bio", formData.bio);
+    formDataToSend.append("facebook_link", formData.facebook_link);
+    formDataToSend.append("twitter_link", formData.twitter_link);
+    formDataToSend.append("instagram_link", formData.instagram_link);
     console.log("Basic form data appended:", {
       name: formData.name,
       role: formData.role,
       bio: formData.bio,
       profile_pic: formData.profile_pic,
+      facebook_link: formData.facebook_link,
+      instagram_link: formData.instagram_link,
+      twitter_limk: formData.twitter_link,
     });
 
     // Validate profile picture
@@ -462,23 +474,46 @@ const AdminTeam = () => {
                 <Card.Body className="text-center d-flex flex-column">
                   <Card.Title className="member-name">{member.name}</Card.Title>
                   <Card.Text className="member-bio flex-grow-1">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore.
+                    {member.bio}
                   </Card.Text>
                   <Card.Text className="member-role text-muted">
                     {member.role}
                   </Card.Text>
 
                   <div className="social-icons">
-                    <IconButton size={isMobile ? "small" : "medium"}>
-                      <FacebookIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton size={isMobile ? "small" : "medium"}>
-                      <TwitterIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton size={isMobile ? "small" : "medium"}>
-                      <InstagramIcon fontSize="small" />
-                    </IconButton>
+                    {member.facebook_link && (
+                      <IconButton
+                        size={isMobile ? "small" : "medium"}
+                        component="a"
+                        href={member.facebook_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FacebookIcon fontSize="small" />
+                      </IconButton>
+                    )}
+                    {member.twitter_link && (
+                      <IconButton
+                        size={isMobile ? "small" : "medium"}
+                        component="a"
+                        href={member.twitter_link}
+                        target="_blank"
+                        rel="nooperner noreferrer"
+                      >
+                        <TwitterIcon fontSize="small" />
+                      </IconButton>
+                    )}
+                    {member.instagram_link && (
+                      <IconButton
+                        size={isMobile ? "small" : "medium"}
+                        component="a"
+                        href={member.instagram_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <InstagramIcon fontSize="small" />
+                      </IconButton>
+                    )}
                   </div>
 
                   <div className="action-buttons mt-2">
@@ -574,6 +609,52 @@ const AdminTeam = () => {
                   </small>
                 </div>
               )}
+            </Form.Group>
+
+            {/* Social Media Links Section */}
+            <hr />
+            <h6 className="mb-3">Social Media Links (Optional)</h6>
+
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <FacebookIcon fontSize="small" className="me-2" />
+                Facebook Link
+              </Form.Label>
+              <Form.Control
+                type="url"
+                name="facebook_link"
+                value={formData.facebook_link || ""}
+                onChange={handleInputChange}
+                placeholder="https://facebook.com/username"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <TwitterIcon fontSize="small" className="me-2" />
+                Twitter Link
+              </Form.Label>
+              <Form.Control
+                type="url"
+                name="twitter_link"
+                value={formData.twitter_link || ""}
+                onChange={handleInputChange}
+                placeholder="https://twitter.com/username"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <InstagramIcon fontSize="small" className="me-2" />
+                Instagram Link
+              </Form.Label>
+              <Form.Control
+                type="url"
+                name="instagram_link"
+                value={formData.instagram_link || ""}
+                onChange={handleInputChange}
+                placeholder="https://instagram.com/username"
+              />
             </Form.Group>
 
             <Button

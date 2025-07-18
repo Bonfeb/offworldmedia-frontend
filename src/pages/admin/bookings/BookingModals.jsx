@@ -235,7 +235,7 @@ const BookingModals = ({
     try {
       setIsLoading(true);
       await API.delete(
-        `/admin-dashboard/${selectedBooking.id}?type=booking&confirm=true`
+        `/admin-booking/${selectedBooking.id}?type=booking&confirm=true`
       );
       onDeleteConfirm(selectedBooking);
       onDeleteClose();
