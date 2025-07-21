@@ -29,21 +29,13 @@ function Home() {
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [authAlert, setAuthAlert] = useState(false);
+  const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
 
   // Timer ref for video carousel
   const videoTimerRef = useRef(null);
-
-  const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
-  const CHANNEL_ID = import.meta.env.VITE_YOUR_CHANNEL_ID;
-  const MAX_RESULTS = 3;
   const VIDEO_DISPLAY_DURATION = 120000; // 2 minutes in milliseconds
-
-  const imageContext = import.meta.glob("../assets/images/*.jpg", {
-    eager: true,
-  });
-  const carouselImages = Object.values(imageContext).map((img) => img.default);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -107,48 +99,29 @@ function Home() {
     }
   }, [groupedServices, activeCategory]);
 
+  // Fetch Videos from Backend
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const response = await API.get("/videos/", {
+          withCredentials: true,
+        });
 
-        const response = await axios.get(
-          `https://www.googleapis.com/youtube/v3/search`,
-          {
-            params: {
-              key: YOUTUBE_API_KEY,
-              channelId: CHANNEL_ID,
-              part: "snippet",
-              maxResults: MAX_RESULTS,
-              order: "date",
-            },
-            signal: controller.signal,
-          }
-        );
-
-        clearTimeout(timeoutId);
-
-        if (!response.data || !response.data.items) {
-          throw new Error("Invalid response format from YouTube API");
+        if (!response.data) {
+          throw new Error("No data received from server");
         }
 
-        setVideos(response.data.items);
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          console.error("YouTube API request timed out");
-        } else if (error.response) {
-          const status = error.response.status;
-          console.error(
-            `YouTube API error (${status}): ${
-              error.response.data?.error?.message || "Unknown error"
-            }`
-          );
-        } else if (error.request) {
-          console.error("Network error when fetching YouTube videos");
+        // Videos are already ordered by newest first from backend
+        if (Array.isArray(response.data)) {
+          setVideos(response.data);
+        } else if (response.data.videos && Array.isArray(response.data.videos)) {
+          setVideos(response.data.videos);
         } else {
-          console.error("Error fetching YouTube videos:", error.message);
+          console.warn("Expected videos array not found in response");
+          setVideos([]);
         }
+      } catch (error) {
+        console.error("Error fetching videos:", error);
         // Set empty videos array to prevent UI errors
         setVideos([]);
       }
@@ -170,7 +143,6 @@ function Home() {
         setActiveVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
       }, VIDEO_DISPLAY_DURATION);
     }
-
     // Cleanup timer on unmount or when activeVideoIndex changes
     return () => {
       if (videoTimerRef.current) {
@@ -178,6 +150,37 @@ function Home() {
       }
     };
   }, [activeVideoIndex, videos.length]);
+
+  //Fetch Images from Backend
+    useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await API.get("/images/", {
+          withCredentials: true,
+        });
+
+        if (!response.data) {
+          throw new Error("No data received from server");
+        }
+
+        // Images are already ordered by newest first from backend
+        if (Array.isArray(response.data)) {
+          setImages(response.data);
+        } else if (response.data.images && Array.isArray(response.data.images)) {
+          setImages(response.data.images);
+        } else {
+          console.warn("Expected images array not found in response");
+          setImages([]);
+        }
+      } catch (error) {
+        console.error("Error fetching images:", error);
+        // Set empty images array to prevent UI errors
+        setImages([]);
+      }
+    };
+
+    fetchImages();
+  }, []);
 
   const handleFillEventDetails = (serviceId) => {
     if (!isAuthenticated) {
@@ -668,13 +671,16 @@ function Home() {
             <Col lg={6}>
               <div className="carousel-container shadow rounded overflow-hidden">
                 <Carousel fade indicators={true} className="showcase-carousel">
-                  {carouselImages.length > 0 ? (
-                    carouselImages.map((image, index) => (
-                      <Carousel.Item key={index}>
+                  {images.length > 0 ? (
+                    images.map((image, index) => (
+                      <Carousel.Item key={image.id || index}>
                         <img
                           className="d-block w-100 carousel-image"
-                          src={image}
+                          src={image.image || image.url}
                           alt={`Slide ${index + 1}`}
+                          style={{ 
+                            height: "400px", 
+                            objectFit: "cover" }}
                         />
                       </Carousel.Item>
                     ))
@@ -692,23 +698,26 @@ function Home() {
               </div>
             </Col>
 
-            {/* Right Column - YouTube Video Carousel */}
+            {/* Right Column - Video Carousel */}
             <Col lg={6}>
               <div className="videos-container">
                 <div className="youtube-video-carousel position-relative shadow rounded overflow-hidden">
                   {videos.length > 0 ? (
                     <>
                       <div className="youtube-video-container">
-                        <iframe
-                          className="youtube-iframe"
-                          width="100%"
+                        <video 
+                          className="w-100"
                           height="350"
-                          src={`https://www.youtube.com/embed/${videos[activeVideoIndex]?.id.videoId}?autoplay=1&mute=0`}
-                          title={videos[activeVideoIndex]?.snippet.title}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
+                          controls
+                          style={{ objectFit: "cover" }}
+                          key={videos[activeVideoIndex]?.id}
+                          >
+                            <source 
+                            src={videos[activeVideoIndex]?.video || videos[activeVideoIndex]?.url}
+                            type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
                       </div>
 
                       {/* Video Navigation Controls */}
