@@ -329,7 +329,7 @@ function Home() {
                                         <Card.Img
                                           variant="top"
                                           src={service.image}
-                                          alt={service.name}
+                                          alt={}
                                           style={{
                                             height: "200px",
                                             objectFit: "cover",
@@ -355,7 +355,7 @@ function Home() {
                                             color: "#1a1a1a",
                                           }}
                                         >
-                                          {service.name}
+                                          {}
                                         </Card.Title>
 
                                         <Card.Text

@@ -269,7 +269,7 @@ const UserDashboard = () => {
 
       // Handle success case
       const emailData = {
-        service_name: cartItem.service_name || "Service",
+        service_category: cartItem.service_category || "Service",
         customer_name: user.name || "Customer",
         customer_email: user.email,
         booking_id: response.data.booking_id || "N/A",
@@ -506,14 +506,14 @@ const UserDashboard = () => {
                   >
                     <img
                       src={item.service_image}
-                      alt={item.service_name}
+                      alt={item.service_category}
                       width="50"
                       height="50"
                       className="me-3 rounded"
                       style={{ objectFit: "cover" }}
                     />
                     <div className="flex-grow-1">
-                      <strong>{item.service_name}</strong>
+                      <strong>{item.service_category}</strong>
                       <p className="mb-0">KSH {item.service_price}</p>
                     </div>
                     <div className="flex-grow-1">
@@ -630,7 +630,7 @@ const UserDashboard = () => {
                                   {bookings[status].map((booking, index) => (
                                     <tr key={booking.id}>
                                       <td>{index + 1}</td>
-                                      <td>{booking.service.name}</td>
+                                      <td>{booking.service.category}</td>
                                       <td className="text-muted">
                                         <i>{booking.event_date}</i>
                                       </td>

@@ -319,7 +319,7 @@ const BookingModals = ({
                         key={`create-service-${service.id}`}
                         value={service.id}
                       >
-                        {service.name}
+                        {service.category}
                       </MenuItem>
                     ))
                   )}
@@ -455,7 +455,7 @@ const BookingModals = ({
                         key={`update-service-${service.id}`}
                         value={service.id}
                       >
-                        {service.name}
+                        {service.category}
                       </MenuItem>
                     ))
                   )}

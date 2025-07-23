@@ -49,7 +49,7 @@ const BookingNotification = ({ showDropdown, setShowDropdown }) => {
               <div style={{ color: "yellow", wordBreak: "break-word" }}>
                 <strong style={{ color: "red" }}>New Booking!</strong>
                 <div>
-                  {booking.user.username} booked {booking.service.name}
+                  {booking.user.username} booked {booking.service.category}
                 </div>
                 <small>
                   {new Date(booking.created_at).toLocaleTimeString()}
@@ -173,7 +173,7 @@ const BookingNotification = ({ showDropdown, setShowDropdown }) => {
                     className="me-2 mt-1 text-primary"
                   />
                   <div>
-                    <div className="fw-bold">{booking.service.name}</div>
+                    <div className="fw-bold">{booking.service.category}</div>
                     <div>
                       Status:{" "}
                       <span

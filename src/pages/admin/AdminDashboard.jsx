@@ -288,7 +288,7 @@ const AdminDashboard = () => {
           </div>
           <div>
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              {booking.service?.name || "Unknown Service"}
+              {booking.service?.category || "Unknown Service"}
             </Typography>
             <Typography variant="caption" sx={{ color: "#aaa" }}>
               {booking.user?.username || "Unknown User"} •{" "}

@@ -75,7 +75,7 @@ const ServiceComponent = ({ category, title }) => {
   const handleOpenModal = (service) => {
     setSelectedService(service);
     setFormData({
-      name: service.name,
+      name: service.category,
       description: service.description,
       price: service.price,
       image: service.image,
@@ -135,7 +135,7 @@ const ServiceComponent = ({ category, title }) => {
       });
 
       console.log("✅ Service Updated Successfully:", {
-        service: selectedService.name,
+        service: selectedService.category,
         id: selectedService.id,
         response: response.data
       });
@@ -145,7 +145,7 @@ const ServiceComponent = ({ category, title }) => {
       fetchServices();
     } catch (err) {
       console.error("❌ Error updating service:", {
-        service: selectedService?.name,
+        service: selectedService?.category,
         id: selectedService?.id,
         error: err.response?.data || err.message
       });
@@ -165,7 +165,7 @@ const ServiceComponent = ({ category, title }) => {
         });
         
         console.log("✅ Service Deleted Successfully:", {
-          service: selectedService.name,
+          service: selectedService.category,
           id: selectedService.id,
           response: response.data
         });
@@ -175,7 +175,7 @@ const ServiceComponent = ({ category, title }) => {
         fetchServices();
       } catch (err) {
         console.error("❌ Error deleting service:", {
-          service: selectedService?.name,
+          service: selectedService?.category,
           id: selectedService?.id,
           error: err.response?.data || err.message
         });
@@ -238,13 +238,13 @@ const ServiceComponent = ({ category, title }) => {
                 <Col md={5} className="text-center">
                   <Card.Img
                     src={service.image}
-                    alt={service.name}
+                    alt={service.category}
                     style={{ maxHeight: "250px", objectFit: "cover" }}
                   />
                 </Col>
                 <Col md={7}>
                   <Card.Body>
-                    <Card.Title className="fw-bold">{service.name}</Card.Title>
+                    <Card.Title className="fw-bold">{service.category}</Card.Title>
                     <hr />
                     <h5 className="text-primary">
                       KSH {parseFloat(service.price).toFixed(2)}
@@ -373,7 +373,7 @@ const ServiceComponent = ({ category, title }) => {
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete "{selectedService?.name}"? This action
+          Are you sure you want to delete "{selectedService?.category}"? This action
           cannot be undone.
         </Modal.Body>
         <Modal.Footer>

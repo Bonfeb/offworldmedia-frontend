@@ -214,7 +214,7 @@ function Reviews({ reviews }) {
                       key={service.id}
                       value={service.id ? service.id.toString() : ""}
                     >
-                      {service.name}
+                      {service.category}
                     </option>
                   ))
                 ) : (

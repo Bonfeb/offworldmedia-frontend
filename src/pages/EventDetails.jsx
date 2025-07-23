@@ -337,7 +337,7 @@ const EventDetails = () => {
                     <Box sx={{ position: "relative" }}>
                       <img
                         src={serviceData?.image}
-                        alt={serviceData?.name}
+                        alt={serviceData?.category}
                         style={{
                           width: "100%",
                           height: "200px",
@@ -363,7 +363,7 @@ const EventDetails = () => {
                       variant="h4"
                       sx={{ color: "white", mb: 2, fontWeight: 600 }}
                     >
-                      {serviceData?.name}
+                      {serviceData?.category}
                     </Typography>
                     <Box
                       sx={{

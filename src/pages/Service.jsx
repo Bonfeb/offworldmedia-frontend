@@ -165,7 +165,7 @@ function Service() {
                 component="img"
                 height="200"
                 image={service.image}
-                alt={service.name}
+                alt={service.category}
                 sx={{
                   objectFit: "cover",
                   borderRadius: "12px 12px 0 0",
@@ -182,7 +182,7 @@ function Service() {
                     fontSize: { xs: "1.2rem", md: "1.4rem" },
                   }}
                 >
-                  {service.name}
+                  {service.category}
                 </Typography>
                 <Typography
                   variant="body2"

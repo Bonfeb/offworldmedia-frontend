@@ -155,7 +155,7 @@ function Row({ booking, onEdit, onDelete }) {
         <TableCell component="th" scope="row">
           {booking.user?.username || booking.user}
         </TableCell>
-        <TableCell>{booking.service?.name || booking.service}</TableCell>
+        <TableCell>{booking.service?.category || booking.service}</TableCell>
         <TableCell>
           {format(new Date(booking.event_date), "MMM dd, yyyy")}
         </TableCell>

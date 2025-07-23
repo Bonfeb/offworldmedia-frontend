@@ -376,7 +376,7 @@ const AdminReviews = () => {
                           {review.user.username}
                         </Typography>
                         <small className="text-muted">
-                          {review.service.name}
+                          {review.service.category}
                         </small>
                       </Box>
                       <Rating value={review.rating} readOnly precision={0.5} />
