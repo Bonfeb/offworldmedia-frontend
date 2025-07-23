@@ -16,7 +16,6 @@ import {
 } from "react-bootstrap";
 import { Paper, Typography, Box, Chip } from "@mui/material";
 import API from "../api";
-import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 function Home() {
@@ -329,7 +328,7 @@ function Home() {
                                         <Card.Img
                                           variant="top"
                                           src={service.image}
-                                          alt={}
+                                          alt={service.category}
                                           style={{
                                             height: "200px",
                                             objectFit: "cover",
