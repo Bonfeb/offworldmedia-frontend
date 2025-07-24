@@ -20,7 +20,6 @@ const ServiceComponent = ({ category, title }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [formData, setFormData] = useState({
-    name: "",
     description: "",
     price: "",
     image: null,
@@ -75,7 +74,6 @@ const ServiceComponent = ({ category, title }) => {
   const handleOpenModal = (service) => {
     setSelectedService(service);
     setFormData({
-      name: service.category,
       description: service.description,
       price: service.price,
       image: service.image,
@@ -121,7 +119,6 @@ const ServiceComponent = ({ category, title }) => {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("price", formData.price);
 
@@ -283,19 +280,6 @@ const ServiceComponent = ({ category, title }) => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>Service Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                readOnly
-                disabled={isUpdating}
-              />
-            </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control

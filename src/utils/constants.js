@@ -84,8 +84,9 @@ export const formatBookings = (bookings) => {
   
   export const SERVICE_CATEGORIES = {
     AUDIO: 'audio',
-    VIDEO: 'video',
-    PHOTO: 'photo'
+    GRAPHIC: 'graphic',
+    PHOTO_VIDEO: 'photo-video',
+    BROADCASTING: 'broadcasting',
   };
 
   export const handleServiceChange = (e, service, setService) => {

@@ -4,7 +4,6 @@ import API from "../../../api";
 
 const NewService = ({ show, handleClose, refreshServices }) => {
   const [formData, setFormData] = useState({
-    name: "",
     category: "video",
     audio_category: "",
     description: "",
@@ -25,17 +24,15 @@ const NewService = ({ show, handleClose, refreshServices }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name == "category"){
+    if (name === "category") {
       setFormData((prev) => ({
         ...prev,
         category: value,
         audio_category: value === "audio" ? prev.audio_category : "",
       }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    else{
-        setFormData((prev) => ({ ...prev, [name]: value }));
-      }
   };
 
   const handleFileChange = (e) => {
@@ -93,15 +90,6 @@ const NewService = ({ show, handleClose, refreshServices }) => {
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Service Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              required
-              onChange={handleChange}
-            />
-          </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Category</Form.Label>
             <Form.Select
