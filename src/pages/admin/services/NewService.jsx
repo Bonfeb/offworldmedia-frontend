@@ -97,9 +97,10 @@ const NewService = ({ show, handleClose, refreshServices }) => {
               value={formData.category}
               onChange={handleChange}
             >
-              <option value="video">Video Recording</option>
-              <option value="audio">Audio Recording</option>
-              <option value="photo">Photo Shooting</option>
+              <option value="phot-video">Photo & Video Shooting</option>
+              <option value="audio">Music Production</option>
+              <option value="graphic">Graphic Designing</option>
+              <option value="broadcasting">Digital Broadcasting</option>
             </Form.Select>
           </Form.Group>
 
