@@ -31,9 +31,6 @@ import CancelledBookings from "./pages/admin/bookings/CancelledBookings";
 import CompletedBookings from "./pages/admin/bookings/CompletedBookings";
 import AdminReviews from "./pages/admin/AdminReviews";
 import AdminMessages from "./pages/admin/AdminMessages";
-import VideoRecording from "./pages/admin/services/VideoRecording";
-import AudioRecording from "./pages/admin/services/AudioRecording";
-import PhotoShooting from "./pages/admin/services/PhotoShooting";
 import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import AdminTeam from "./pages/admin/AdminTeam";
@@ -103,9 +100,6 @@ function App() {
               <Route path="cancelled-bookings" element={ <CancelledBookings /> } />
               <Route path="all-bookings" element={ <AllBookings /> } />
               <Route path="services" element={ <AdminServices /> } />
-              <Route path="video-recording" element={ <VideoRecording /> } />
-              <Route path="audio-recording" element={ <AudioRecording /> } />
-              <Route path="photo-shooting" element={ <PhotoShooting /> } />
               <Route path="users" element={ <AdminUsers /> } />
               <Route path="reviews" element={<AdminReviews/>} />
               <Route path="media" element={<Media/>} />

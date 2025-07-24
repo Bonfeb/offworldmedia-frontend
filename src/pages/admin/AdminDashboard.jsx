@@ -530,27 +530,11 @@ const AdminDashboard = () => {
             <Nav className="flex-column">
               <Nav.Link
                 as={NavLink}
-                to="/admin-dashboard/video-recording"
+                to="/admin-dashboard/services"
                 className="text-light"
                 onClick={handleNavItemClick}
               >
-                <FontAwesomeIcon icon={faClock} className="icon" /> Video
-              </Nav.Link>
-              <Nav.Link
-                as={NavLink}
-                to="/admin-dashboard/audio-recording"
-                className="text-light"
-                onClick={handleNavItemClick}
-              >
-                <FontAwesomeIcon icon={faTimesCircle} className="icon" /> Audio
-              </Nav.Link>
-              <Nav.Link
-                as={NavLink}
-                to="/admin-dashboard/photo-shooting"
-                className="text-light"
-                onClick={handleNavItemClick}
-              >
-                <FontAwesomeIcon icon={faCheckCircle} className="icon" /> Photo
+                <FontAwesomeIcon icon={faClock} className="icon" /> Services
               </Nav.Link>
             </Nav>
 
