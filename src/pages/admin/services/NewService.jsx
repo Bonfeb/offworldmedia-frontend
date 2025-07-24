@@ -4,7 +4,7 @@ import API from "../../../api";
 
 const NewService = ({ show, handleClose, refreshServices }) => {
   const [formData, setFormData] = useState({
-    category: "video",
+    category: "photo-video",
     audio_category: "",
     description: "",
     price: "",
@@ -97,7 +97,7 @@ const NewService = ({ show, handleClose, refreshServices }) => {
               value={formData.category}
               onChange={handleChange}
             >
-              <option value="phot-video">Photo & Video Shooting</option>
+              <option value="photo-video">Photo & Video Shooting</option>
               <option value="audio">Music Production</option>
               <option value="graphic">Graphic Designing</option>
               <option value="broadcasting">Digital Broadcasting</option>
