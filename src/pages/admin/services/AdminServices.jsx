@@ -23,7 +23,7 @@ import {
   Palette,
   Radio,
 } from "lucide-react";
-import API from "../../api";
+import API from "../../../api";
 
 const AdminServices = () => {
   const [services, setServices] = useState([]);
