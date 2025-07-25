@@ -102,19 +102,29 @@ const AdminServices = () => {
       const response = await API.get("/services/", {
         withCredentials: true,
       });
-      setServices(response.data);
-      console.log(`📋 Fetched ${response.data.length} services`);
+      
+      // Ensure response.data is an array
+      const servicesData = Array.isArray(response.data) ? response.data : [];
+      setServices(servicesData);
+      console.log(`📋 Fetched ${servicesData.length} services`);
       setLoading(false);
     } catch (err) {
       console.error("❌ Failed to load services:", {
         error: err.response?.data || err.message,
       });
       setError("Failed to load services. Please try again later.");
+      setServices([]); // Ensure services is always an array
       setLoading(false);
     }
   };
 
   const filterServices = () => {
+    // Ensure services is an array before filtering
+    if (!Array.isArray(services)) {
+      setFilteredServices([]);
+      return;
+    }
+
     let filtered = services;
 
     // Filter by category
@@ -128,10 +138,13 @@ const AdminServices = () => {
     if (searchTerm.trim()) {
       filtered = filtered.filter(
         (service) =>
-          service.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          service.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (service.price && 
+            service.price
+              .toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())) ||
+          (service.category &&
+            service.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
           (service.audio_category &&
             audioSubcategories[service.audio_category]
               ?.toLowerCase()
@@ -160,9 +173,9 @@ const AdminServices = () => {
   const handleOpenModal = (service) => {
     setSelectedService(service);
     setFormData({
-      description: service.description,
-      price: service.price,
-      image: service.image,
+      description: service.description || "",
+      price: service.price || "",
+      image: service.image || null,
       audio_category: service.audio_category || "",
     });
     setShowModal(true);
@@ -346,7 +359,7 @@ const AdminServices = () => {
               <Search size={20} />
             </InputGroup.Text>
             <FormControl
-              placeholder="Search services by description, category, or subcategory..."
+              placeholder="Search services by category, subcategory or price..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ fontSize: "1rem" }}
@@ -364,7 +377,7 @@ const AdminServices = () => {
               style={{ fontSize: "1rem" }}
             >
               <option value="all">All Categories</option>
-              <option value="photo-video">Photo & Video</option>
+              <option value="photo-video">Photo & Video Shooting</option>
               <option value="audio">Music Production</option>
               <option value="graphic">Graphic Design</option>
               <option value="broadcasting">Digital Broadcasting</option>
@@ -374,7 +387,7 @@ const AdminServices = () => {
       </Row>
 
       {/* Services Grid */}
-      {filteredServices.length === 0 ? (
+      {!Array.isArray(filteredServices) || filteredServices.length === 0 ? (
         <div className="text-center py-5">
           <div className="mb-4">
             <Search size={64} className="text-muted" />
@@ -463,7 +476,7 @@ const AdminServices = () => {
 
                           <div className="mb-3">
                             <h3 className="text-primary fw-bold mb-0">
-                              KSH {parseFloat(service.price).toLocaleString()}
+                              KSH {service.price ? parseFloat(service.price).toLocaleString() : '0'}
                             </h3>
                           </div>
                         </div>
@@ -472,9 +485,9 @@ const AdminServices = () => {
                           className="text-muted mb-4"
                           style={{ fontSize: "0.95rem", lineHeight: "1.6" }}
                         >
-                          {service.description.length > 120
+                          {service.description && service.description.length > 120
                             ? `${service.description.substring(0, 120)}...`
-                            : service.description}
+                            : service.description || 'No description available'}
                         </Card.Text>
 
                         <div className="d-flex gap-2 flex-wrap">
@@ -661,7 +674,7 @@ const AdminServices = () => {
                   </div>
                 )}
               <div className="text-muted mt-2">
-                KSH {parseFloat(selectedService.price).toLocaleString()}
+                KSH {selectedService.price ? parseFloat(selectedService.price).toLocaleString() : '0'}
               </div>
             </div>
           )}
