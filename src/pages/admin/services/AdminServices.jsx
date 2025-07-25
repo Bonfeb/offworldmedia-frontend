@@ -22,10 +22,13 @@ import {
   Camera,
   Palette,
   Radio,
+  ArrowLeft,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import API from "../../../api";
 
 const AdminServices = () => {
+  const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,16 +96,19 @@ const AdminServices = () => {
     fetchServices();
   }, []);
 
+  // Remove the automatic filtering on mount - only show all services initially
   useEffect(() => {
-    filterServices();
-  }, [services, searchTerm, filterCategory]);
+    if (services.length > 0) {
+      setFilteredServices(services);
+    }
+  }, [services]);
 
   const fetchServices = async () => {
     try {
       const response = await API.get("/services/", {
         withCredentials: true,
       });
-      
+
       // Ensure response.data is an array
       const servicesData = Array.isArray(response.data) ? response.data : [];
       setServices(servicesData);
@@ -118,8 +124,8 @@ const AdminServices = () => {
     }
   };
 
-  const filterServices = () => {
-    // Ensure services is an array before filtering
+  // New search function that only runs when explicitly called
+  const handleSearch = () => {
     if (!Array.isArray(services)) {
       setFilteredServices([]);
       return;
@@ -134,25 +140,39 @@ const AdminServices = () => {
       );
     }
 
-    // Filter by search term
+    // Filter by search term (only category, audio_category, or price)
     if (searchTerm.trim()) {
-      filtered = filtered.filter(
-        (service) =>
-          (service.price && 
-            service.price
-              .toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())) ||
-          (service.category &&
-            service.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (service.audio_category &&
-            audioSubcategories[service.audio_category]
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase()))
-      );
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter((service) => {
+        // Search by price
+        const priceMatch =
+          service.price &&
+          service.price.toString().toLowerCase().includes(searchLower);
+
+        // Search by category
+        const categoryMatch =
+          service.category &&
+          service.category.toLowerCase().includes(searchLower);
+
+        // Search by audio subcategory
+        const audioMatch =
+          service.audio_category &&
+          audioSubcategories[service.audio_category]
+            ?.toLowerCase()
+            .includes(searchLower);
+
+        return priceMatch || categoryMatch || audioMatch;
+      });
     }
 
     setFilteredServices(filtered);
+  };
+
+  // Handle Enter key press for search
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   const showAlert = (message, severity) => {
@@ -284,6 +304,10 @@ const AdminServices = () => {
     return <IconComponent size={24} />;
   };
 
+  const handleBackToDashboard = () => {
+    navigate("/admin-dashboard/");
+  };
+
   if (loading) {
     return (
       <Container
@@ -325,10 +349,28 @@ const AdminServices = () => {
     <Container fluid className="py-4 px-3">
       {/* Header Section */}
       <div className="text-center mb-5">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <Button
+            variant="outline-primary"
+            size="lg"
+            onClick={handleBackToDashboard}
+            className="d-flex align-items-center px-4 py-2"
+            style={{
+              borderRadius: "50px",
+              fontWeight: "600",
+              border: "2px solid #0d6efd",
+            }}
+          >
+            <ArrowLeft size={20} className="me-2" />
+            BACK TO DASHBOARD
+          </Button>
+          <div style={{ width: "200px" }}></div> {/* Spacer for centering */}
+        </div>
+
         <h1 className="display-4 fw-bold text-primary mb-3">
-          🎯 Service Management Dashboard
+          Service Management
         </h1>
-        <p className="lead text-muted">
+        <p className="lead text-muted text-secondary">
           Manage all your creative services in one place
         </p>
       </div>
@@ -353,20 +395,26 @@ const AdminServices = () => {
 
       {/* Search and Filter Section */}
       <Row className="mb-4">
-        <Col lg={8} md={12} className="mb-3">
+        <Col lg={6} md={12} className="mb-3">
           <InputGroup size="lg">
-            <InputGroup.Text>
-              <Search size={20} />
-            </InputGroup.Text>
             <FormControl
-              placeholder="Search services by category, subcategory or price..."
+              placeholder="Search by category, audio subcategory, or price..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleKeyPress}
               style={{ fontSize: "1rem" }}
             />
+            <Button
+              variant="primary"
+              onClick={handleSearch}
+              className="d-flex align-items-center px-3"
+            >
+              <Search size={20} className="me-1" />
+              Search
+            </Button>
           </InputGroup>
         </Col>
-        <Col lg={4} md={12}>
+        <Col lg={6} md={12}>
           <InputGroup size="lg">
             <InputGroup.Text>
               <Filter size={20} />
@@ -392,8 +440,8 @@ const AdminServices = () => {
           <div className="mb-4">
             <Search size={64} className="text-muted" />
           </div>
-          <h3 className="text-muted">No services found</h3>
-          <p className="text-muted">
+          <h3 className="text-secondary">No services found</h3>
+          <p className="text-secondary">
             {searchTerm || filterCategory !== "all"
               ? "Try adjusting your search or filter criteria"
               : "No services have been added yet"}
@@ -476,7 +524,10 @@ const AdminServices = () => {
 
                           <div className="mb-3">
                             <h3 className="text-primary fw-bold mb-0">
-                              KSH {service.price ? parseFloat(service.price).toLocaleString() : '0'}
+                              KSH{" "}
+                              {service.price
+                                ? parseFloat(service.price).toLocaleString()
+                                : "0"}
                             </h3>
                           </div>
                         </div>
@@ -485,9 +536,10 @@ const AdminServices = () => {
                           className="text-muted mb-4"
                           style={{ fontSize: "0.95rem", lineHeight: "1.6" }}
                         >
-                          {service.description && service.description.length > 120
+                          {service.description &&
+                          service.description.length > 120
                             ? `${service.description.substring(0, 120)}...`
-                            : service.description || 'No description available'}
+                            : service.description || "No description available"}
                         </Card.Text>
 
                         <div className="d-flex gap-2 flex-wrap">
@@ -674,7 +726,10 @@ const AdminServices = () => {
                   </div>
                 )}
               <div className="text-muted mt-2">
-                KSH {selectedService.price ? parseFloat(selectedService.price).toLocaleString() : '0'}
+                KSH{" "}
+                {selectedService.price
+                  ? parseFloat(selectedService.price).toLocaleString()
+                  : "0"}
               </div>
             </div>
           )}
