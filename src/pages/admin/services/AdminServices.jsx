@@ -110,7 +110,7 @@ const AdminServices = () => {
       });
 
       // Ensure response.data is an array
-      const servicesData = Array.isArray(response.data) ? response.data : [];
+      const servicesData = Array.isArray(response.data?.services) ? response.data.services : [];
       setServices(servicesData);
       console.log(`📋 Fetched ${servicesData.length} services`);
       setLoading(false);
