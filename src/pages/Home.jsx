@@ -312,33 +312,24 @@ function Home() {
                             </h3>
                           </div>
 
-                          {/* Updated Grid Layout - Full width on large screens */}
-                          <Row className="g-4">
+                          {/* Updated Grid Layout - Fluid full width cards */}
+                          <div className="w-100">
                             {groupedServices[category][subcategory].map(
                               (service) => (
-                                <Col
+                                <div
                                   key={service.id}
-                                  xs={12}
-                                  sm={12}
-                                  md={6}
-                                  lg={12}
-                                  xl={12}
-                                  xxl={6}
+                                  className="w-100 mb-4"
                                 >
                                   <motion.div
                                     whileHover={{ y: -10 }}
                                     transition={{ duration: 0.3 }}
+                                    className="w-100"
                                   >
-                                    <Card className="service-card h-100 shadow-sm border-0">
-                                      <Row className="g-0 h-100">
+                                    <Card className="service-card shadow-sm border-0 w-100" style={{ minHeight: "200px" }}>
+                                      <Row className="g-0 h-100 w-100 mx-0">
                                         {/* Card Image - Takes up part of the card on larger screens */}
                                         {service.image && (
-                                          <Col
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                            className="d-flex"
-                                          >
+                                          <Col xs={12} md={4} lg={3} xl={3} className="d-flex p-0">
                                             <Card.Img
                                               src={service.image}
                                               alt={service.category}
@@ -346,34 +337,23 @@ function Home() {
                                                 height: "200px",
                                                 width: "100%",
                                                 objectFit: "cover",
-                                                borderTopLeftRadius:
-                                                  "calc(0.25rem - 1px)",
-                                                borderBottomLeftRadius: {
-                                                  xs: "0",
-                                                  md: "calc(0.25rem - 1px)",
-                                                },
-                                                borderTopRightRadius: {
-                                                  xs: "calc(0.25rem - 1px)",
-                                                  md: "0",
-                                                },
+                                                borderTopLeftRadius: "calc(0.25rem - 1px)",
+                                                borderBottomLeftRadius: "calc(0.25rem - 1px)",
+                                                borderTopRightRadius: "0",
+                                                borderBottomRightRadius: "0"
                                               }}
-                                              className="h-100"
+                                              className="h-100 w-100"
                                             />
                                           </Col>
                                         )}
 
                                         {/* Card Content */}
-                                        <Col
-                                          md={service.image ? 8 : 12}
-                                          lg={service.image ? 9 : 12}
-                                          xl={service.image ? 9 : 12}
-                                        >
-                                          <Card.Body className="d-flex flex-column p-4 h-100">
+                                        <Col xs={12} md={service.image ? 8 : 12} lg={service.image ? 9 : 12} xl={service.image ? 9 : 12} className="d-flex p-0">
+                                          <Card.Body className="d-flex flex-column w-100 p-4 position-relative">
                                             {/* Price Chip */}
-                                            <div
-                                              className="price-badge mb-3"
+                                            <div 
+                                              className="price-badge mb-3 position-absolute"
                                               style={{
-                                                position: "absolute",
                                                 top: "15px",
                                                 right: "15px",
                                                 backgroundColor: "#007bff",
@@ -382,7 +362,7 @@ function Home() {
                                                 borderRadius: "20px",
                                                 fontSize: "0.9rem",
                                                 fontWeight: "600",
-                                                zIndex: 10,
+                                                zIndex: 10
                                               }}
                                             >
                                               KSH {service.price}
@@ -395,31 +375,29 @@ function Home() {
                                                 fontWeight: "600",
                                                 color: "#1a1a1a",
                                                 marginTop: "40px", // Space for price badge
+                                                paddingRight: "120px" // Space for price badge
                                               }}
                                             >
                                               {service.name}
                                             </Card.Title>
 
                                             <Card.Text
-                                              className="service-card-description mb-4"
+                                              className="service-card-description mb-4 flex-grow-1"
                                               style={{
                                                 color: "#666",
-                                                flexGrow: 1,
                                                 fontSize: "1rem",
-                                                lineHeight: "1.6",
+                                                lineHeight: "1.6"
                                               }}
                                             >
                                               {service.description}
                                             </Card.Text>
 
-                                            <div className="d-flex justify-content-end">
+                                            <div className="d-flex justify-content-end align-items-end">
                                               <Button
                                                 variant="primary"
                                                 className="book-now-btn"
                                                 onClick={() =>
-                                                  handleFillEventDetails(
-                                                    service.id
-                                                  )
+                                                  handleFillEventDetails(service.id)
                                                 }
                                                 style={{
                                                   backgroundColor: "#007bff",
@@ -431,20 +409,14 @@ function Home() {
                                                   transition: "all 0.3s ease",
                                                 }}
                                                 onMouseOver={(e) => {
-                                                  e.currentTarget.style.backgroundColor =
-                                                    "#0056b3";
-                                                  e.currentTarget.style.borderColor =
-                                                    "#0056b3";
-                                                  e.currentTarget.style.transform =
-                                                    "translateY(-2px)";
+                                                  e.currentTarget.style.backgroundColor = "#0056b3";
+                                                  e.currentTarget.style.borderColor = "#0056b3";
+                                                  e.currentTarget.style.transform = "translateY(-2px)";
                                                 }}
                                                 onMouseOut={(e) => {
-                                                  e.currentTarget.style.backgroundColor =
-                                                    "#007bff";
-                                                  e.currentTarget.style.borderColor =
-                                                    "#007bff";
-                                                  e.currentTarget.style.transform =
-                                                    "translateY(0)";
+                                                  e.currentTarget.style.backgroundColor = "#007bff";
+                                                  e.currentTarget.style.borderColor = "#007bff";
+                                                  e.currentTarget.style.transform = "translateY(0)";
                                                 }}
                                               >
                                                 Book Now
@@ -455,10 +427,10 @@ function Home() {
                                       </Row>
                                     </Card>
                                   </motion.div>
-                                </Col>
+                                </div>
                               )
                             )}
-                          </Row>
+                          </div>
                         </div>
                       )
                     )}
