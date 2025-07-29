@@ -113,7 +113,10 @@ function Home() {
         // Videos are already ordered by newest first from backend
         if (Array.isArray(response.data)) {
           setVideos(response.data);
-        } else if (response.data.videos && Array.isArray(response.data.videos)) {
+        } else if (
+          response.data.videos &&
+          Array.isArray(response.data.videos)
+        ) {
           setVideos(response.data.videos);
         } else {
           console.warn("Expected videos array not found in response");
@@ -151,7 +154,7 @@ function Home() {
   }, [activeVideoIndex, videos.length]);
 
   //Fetch Images from Backend
-    useEffect(() => {
+  useEffect(() => {
     const fetchImages = async () => {
       try {
         const response = await API.get("/images/", {
@@ -165,7 +168,10 @@ function Home() {
         // Images are already ordered by newest first from backend
         if (Array.isArray(response.data)) {
           setImages(response.data);
-        } else if (response.data.images && Array.isArray(response.data.images)) {
+        } else if (
+          response.data.images &&
+          Array.isArray(response.data.images)
+        ) {
           setImages(response.data.images);
         } else {
           console.warn("Expected images array not found in response");
@@ -306,7 +312,7 @@ function Home() {
                             </h3>
                           </div>
 
-                          {/* Updated Grid Layout */}
+                          {/* Updated Grid Layout - Full width on large screens */}
                           <Row className="g-4">
                             {groupedServices[category][subcategory].map(
                               (service) => (
@@ -314,90 +320,139 @@ function Home() {
                                   key={service.id}
                                   xs={12}
                                   sm={12}
-                                  md={12}
-                                  lg={4}
-                                  xl={4}
+                                  md={6}
+                                  lg={12}
+                                  xl={12}
+                                  xxl={6}
                                 >
                                   <motion.div
                                     whileHover={{ y: -10 }}
                                     transition={{ duration: 0.3 }}
                                   >
                                     <Card className="service-card h-100 shadow-sm border-0">
-                                      {/* Card Image */}
-                                      {service.image && (
-                                        <Card.Img
-                                          variant="top"
-                                          src={service.image}
-                                          alt={service.category}
-                                          style={{
-                                            height: "200px",
-                                            objectFit: "cover",
-                                            borderTopLeftRadius:
-                                              "calc(0.25rem - 1px)",
-                                            borderTopRightRadius:
-                                              "calc(0.25rem - 1px)",
-                                          }}
-                                        />
-                                      )}
+                                      <Row className="g-0 h-100">
+                                        {/* Card Image - Takes up part of the card on larger screens */}
+                                        {service.image && (
+                                          <Col
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                            className="d-flex"
+                                          >
+                                            <Card.Img
+                                              src={service.image}
+                                              alt={service.category}
+                                              style={{
+                                                height: "200px",
+                                                width: "100%",
+                                                objectFit: "cover",
+                                                borderTopLeftRadius:
+                                                  "calc(0.25rem - 1px)",
+                                                borderBottomLeftRadius: {
+                                                  xs: "0",
+                                                  md: "calc(0.25rem - 1px)",
+                                                },
+                                                borderTopRightRadius: {
+                                                  xs: "calc(0.25rem - 1px)",
+                                                  md: "0",
+                                                },
+                                              }}
+                                              className="h-100"
+                                            />
+                                          </Col>
+                                        )}
 
-                                      {/* Price Chip */}
-                                      <div className="price-badge">
-                                        KSH {service.price}
-                                      </div>
-
-                                      <Card.Body className="d-flex flex-column p-4">
-                                        <Card.Title
-                                          className="service-card-title mb-3"
-                                          style={{
-                                            fontSize: "1.25rem",
-                                            fontWeight: "600",
-                                            color: "#1a1a1a",
-                                          }}
+                                        {/* Card Content */}
+                                        <Col
+                                          md={service.image ? 8 : 12}
+                                          lg={service.image ? 9 : 12}
+                                          xl={service.image ? 9 : 12}
                                         >
-                                          {}
-                                        </Card.Title>
+                                          <Card.Body className="d-flex flex-column p-4 h-100">
+                                            {/* Price Chip */}
+                                            <div
+                                              className="price-badge mb-3"
+                                              style={{
+                                                position: "absolute",
+                                                top: "15px",
+                                                right: "15px",
+                                                backgroundColor: "#007bff",
+                                                color: "white",
+                                                padding: "8px 16px",
+                                                borderRadius: "20px",
+                                                fontSize: "0.9rem",
+                                                fontWeight: "600",
+                                                zIndex: 10,
+                                              }}
+                                            >
+                                              KSH {service.price}
+                                            </div>
 
-                                        <Card.Text
-                                          className="service-card-description mb-4"
-                                          style={{
-                                            color: "#666",
-                                            flexGrow: 1,
-                                            fontSize: "0.95rem",
-                                          }}
-                                        >
-                                          {service.description}
-                                        </Card.Text>
+                                            <Card.Title
+                                              className="service-card-title mb-3"
+                                              style={{
+                                                fontSize: "1.5rem",
+                                                fontWeight: "600",
+                                                color: "#1a1a1a",
+                                                marginTop: "40px", // Space for price badge
+                                              }}
+                                            >
+                                              {service.name}
+                                            </Card.Title>
 
-                                        <Button
-                                          variant="primary"
-                                          className="mt-auto book-now-btn"
-                                          onClick={() =>
-                                            handleFillEventDetails(service.id)
-                                          }
-                                          style={{
-                                            backgroundColor: "#007bff",
-                                            borderColor: "#007bff",
-                                            borderRadius: "30px",
-                                            padding: "8px 20px",
-                                            fontWeight: "500",
-                                            transition: "all 0.3s ease",
-                                          }}
-                                          onMouseOver={(e) => {
-                                            e.currentTarget.style.backgroundColor =
-                                              "#0056b3";
-                                            e.currentTarget.style.borderColor =
-                                              "#0056b3";
-                                          }}
-                                          onMouseOut={(e) => {
-                                            e.currentTarget.style.backgroundColor =
-                                              "#007bff";
-                                            e.currentTarget.style.borderColor =
-                                              "#007bff";
-                                          }}
-                                        >
-                                          Book Now
-                                        </Button>
-                                      </Card.Body>
+                                            <Card.Text
+                                              className="service-card-description mb-4"
+                                              style={{
+                                                color: "#666",
+                                                flexGrow: 1,
+                                                fontSize: "1rem",
+                                                lineHeight: "1.6",
+                                              }}
+                                            >
+                                              {service.description}
+                                            </Card.Text>
+
+                                            <div className="d-flex justify-content-end">
+                                              <Button
+                                                variant="primary"
+                                                className="book-now-btn"
+                                                onClick={() =>
+                                                  handleFillEventDetails(
+                                                    service.id
+                                                  )
+                                                }
+                                                style={{
+                                                  backgroundColor: "#007bff",
+                                                  borderColor: "#007bff",
+                                                  borderRadius: "30px",
+                                                  padding: "12px 30px",
+                                                  fontWeight: "500",
+                                                  fontSize: "1rem",
+                                                  transition: "all 0.3s ease",
+                                                }}
+                                                onMouseOver={(e) => {
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#0056b3";
+                                                  e.currentTarget.style.borderColor =
+                                                    "#0056b3";
+                                                  e.currentTarget.style.transform =
+                                                    "translateY(-2px)";
+                                                }}
+                                                onMouseOut={(e) => {
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#007bff";
+                                                  e.currentTarget.style.borderColor =
+                                                    "#007bff";
+                                                  e.currentTarget.style.transform =
+                                                    "translateY(0)";
+                                                }}
+                                              >
+                                                Book Now
+                                              </Button>
+                                            </div>
+                                          </Card.Body>
+                                        </Col>
+                                      </Row>
                                     </Card>
                                   </motion.div>
                                 </Col>
@@ -677,9 +732,10 @@ function Home() {
                           className="d-block w-100 carousel-image"
                           src={image.image || image.url}
                           alt={`Slide ${index + 1}`}
-                          style={{ 
-                            height: "400px", 
-                            objectFit: "cover" }}
+                          style={{
+                            height: "400px",
+                            objectFit: "cover",
+                          }}
                         />
                       </Carousel.Item>
                     ))
@@ -704,19 +760,22 @@ function Home() {
                   {videos.length > 0 ? (
                     <>
                       <div className="youtube-video-container">
-                        <video 
+                        <video
                           className="w-100"
                           height="350"
                           controls
                           style={{ objectFit: "cover" }}
                           key={videos[activeVideoIndex]?.id}
-                          >
-                            <source 
-                            src={videos[activeVideoIndex]?.video || videos[activeVideoIndex]?.url}
+                        >
+                          <source
+                            src={
+                              videos[activeVideoIndex]?.video ||
+                              videos[activeVideoIndex]?.url
+                            }
                             type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
+                          />
+                          Your browser does not support the video tag.
+                        </video>
                       </div>
 
                       {/* Video Navigation Controls */}
