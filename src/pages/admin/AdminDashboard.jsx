@@ -114,11 +114,11 @@ const AdminDashboard = () => {
           timeoutPromise,
         ]);
 
-        const { recent_bookings, recent_reviews, recent_messages, stats } =
+        const { recent_bookings, recent_reviews, recent_messages, stats, percentages } =
           response.data;
 
-        console.log("Dashboard stats response:", stats);
-        setDashboardData(stats);
+        console.log("Dashboard stats response:", stats, percentages);
+        setDashboardData({stats, percentages});
 
         console.log("Recent bookings:", recent_bookings);
         setRecentBookings(recent_bookings?.slice(0, 2) || []);
