@@ -788,7 +788,7 @@ const AdminDashboard = () => {
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faCalendarAlt}
-                      value={dashboardData?.total_bookings || 0}
+                      value={dashboardData.stats?.total_bookings || 0}
                       label="Total Bookings"
                       color="#4299e1"
                     />
@@ -796,7 +796,7 @@ const AdminDashboard = () => {
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faClock}
-                      value={dashboardData?.unpaid_bookings || 0}
+                      value={dashboardData.stats?.unpaid_bookings || 0}
                       label="Unpaid Bookings"
                       color="#f6ad55"
                     />
@@ -804,7 +804,7 @@ const AdminDashboard = () => {
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faClock}
-                      value={dashboardData?.paid_bookings || 0}
+                      value={dashboardData.stats?.paid_bookings || 0}
                       label="Paid Bookings"
                       color="#48bb78"
                     />
@@ -812,7 +812,7 @@ const AdminDashboard = () => {
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faCheckCircle}
-                      value={dashboardData?.completed_bookings || 0}
+                      value={dashboardData.stats?.completed_bookings || 0}
                       label="Completed Bookings"
                       color="#48bb78"
                     />
@@ -820,7 +820,7 @@ const AdminDashboard = () => {
                   <Col xl={3} lg={6} md={6} sm={12} className="mb-3">
                     <StatsCard
                       icon={faTimesCircle}
-                      value={dashboardData?.cancelled_bookings || 0}
+                      value={dashboardData.stats?.cancelled_bookings || 0}
                       label="Cancelled Bookings"
                       color="#f56565"
                     />
