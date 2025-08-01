@@ -43,7 +43,21 @@ const AdminDashboard = () => {
   const { userProfilePic, firstName, lastName, logout, user } =
     useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData, setDashboardData] = useState({
+    stats: {
+      total_bookings: 0,
+      unpaid_bookings: 0,
+      paid_bookings: 0,
+      completed_bookings: 0,
+      cancelled_bookings: 0,
+    },
+    percentages: {
+      paid: 0,
+      unpaid: 0,
+      completed: 0,
+      cancelled: 0,
+    },
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recentBookings, setRecentBookings] = useState([]);
@@ -114,11 +128,16 @@ const AdminDashboard = () => {
           timeoutPromise,
         ]);
 
-        const { recent_bookings, recent_reviews, recent_messages, stats, percentages } =
-          response.data;
+        const {
+          recent_bookings,
+          recent_reviews,
+          recent_messages,
+          stats,
+          percentages,
+        } = response.data;
 
         console.log("Dashboard stats response:", stats, percentages);
-        setDashboardData({stats, percentages});
+        setDashboardData({ stats, percentages });
 
         console.log("Recent bookings:", recent_bookings);
         setRecentBookings(recent_bookings?.slice(0, 2) || []);
@@ -892,8 +911,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {dashboardData.percentages?.paid || 0}
-                              %
+                              {dashboardData.percentages?.paid || 0}%
                             </Typography>
                           </div>
                           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -913,8 +931,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {dashboardData.percentages?.unpaid || 0}
-                              %
+                              {dashboardData.percentages?.unpaid || 0}%
                             </Typography>
                           </div>
                           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -934,8 +951,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {dashboardData.percentages?.completed || 0}
-                              %
+                              {dashboardData.percentages?.completed || 0}%
                             </Typography>
                           </div>
                           <div className="d-flex justify-content-between align-items-center">
@@ -955,8 +971,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {dashboardData.percentages?.cancelled || 0}
-                              %
+                              {dashboardData.percentages?.cancelled || 0}%
                             </Typography>
                           </div>
                         </div>
