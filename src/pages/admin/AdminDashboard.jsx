@@ -892,11 +892,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {Math.round(
-                                (dashboardData.stats?.paid_bookings /
-                                  dashboardData.stats?.total_bookings) *
-                                  100 || 0
-                              )}
+                              {dashboardData.percentages?.paid || 0}
                               %
                             </Typography>
                           </div>
@@ -917,11 +913,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {Math.round(
-                                (dashboardData.stats?.unpaid_bookings /
-                                  dashboardData.stats?.total_bookings) *
-                                  100 || 0
-                              )}
+                              {dashboardData.percentages?.unpaid || 0}
                               %
                             </Typography>
                           </div>
@@ -942,11 +934,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {Math.round(
-                                (dashboardData.stats?.completed_bookings /
-                                  dashboardData.stats?.total_bookings) *
-                                  100 || 0
-                              )}
+                              {dashboardData.percentages?.completed || 0}
                               %
                             </Typography>
                           </div>
@@ -967,11 +955,7 @@ const AdminDashboard = () => {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {Math.round(
-                                (dashboardData.stats?.cancelled_bookings /
-                                  dashboardData.stats?.total_bookings) *
-                                  100 || 0
-                              )}
+                              {dashboardData.percentages?.cancelled || 0}
                               %
                             </Typography>
                           </div>
