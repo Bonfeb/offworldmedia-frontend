@@ -822,8 +822,9 @@ function Home() {
                         </div>
 
                         <Typography variant="caption" className="video-title">
-                          {videos[activeVideoIndex]?.snippet.title || videos[activeVideoIndex]?.title || videos[activeVideoIndex]?.name ||
-                            "Video Title"}
+                          {videos[activeVideoIndex]?.uploaded_at ?
+                            new Date(videos[activeVideoIndex]?.uploaded_at).toLocaleDateString() :
+                            "Uploaded Date Not Available"}
                         </Typography>
                       </div>
                     </>
