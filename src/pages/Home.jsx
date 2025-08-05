@@ -822,7 +822,7 @@ function Home() {
                         </div>
 
                         <Typography variant="caption" className="video-title">
-                          {videos[activeVideoIndex]?.snippet.title ||
+                          {videos[activeVideoIndex]?.snippet.title || videos[activeVideoIndex]?.title || videos[activeVideoIndex]?.name ||
                             "Video Title"}
                         </Typography>
                       </div>
