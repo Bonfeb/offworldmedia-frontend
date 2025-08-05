@@ -26,6 +26,7 @@ import {
   Badge as BadgeIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
+  Download as DownloadIcon
 } from "@mui/icons-material";
 import {
   IconButton,
@@ -39,6 +40,7 @@ import {
   Typography,
   Fade,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import API from "../../api";
 
@@ -70,6 +72,7 @@ const AdminUsers = () => {
     page: 1,
     rowsPerPage: 10,
   });
+  const [pdfLoading, setPdfLoading] = useState(false);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -116,6 +119,22 @@ const AdminUsers = () => {
     setLoading(true);
     fetchUsers().then(() => setLoading(false));
   }, [filters, pagination]);
+
+  const handleChangePage = (event, newPage) => {
+    setPagination((prev) => ({
+      ...prev,
+      page: newPage + 1,
+    }));
+    console.log("Page changed to:", newPage + 1);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPagination((prev) => ({
+      ...prev,
+      rowsPerPage: parseInt(event.target.value, 10),
+      page: 1,
+    }));
+  };
 
   const handleTempFilterChange = (e) => {
     const { name, value } = e.target;
@@ -236,11 +255,9 @@ const AdminUsers = () => {
   };
 
   const handleDeleteConfirm = async () => {
-    setIsDeleting(true)
+    setIsDeleting(true);
     try {
-      await API.delete(
-        `/admin-user/${currentUser.id}/`
-      );
+      await API.delete(`/admin-user/${currentUser.id}/`);
       fetchUsers();
       setShowDeleteModal(false);
       setSnackbar({
@@ -255,8 +272,49 @@ const AdminUsers = () => {
         message: "Failed to delete user. Please try again.",
         severity: "error",
       });
-    } finally{
-      setIsDeleting(false)
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    try {
+      const response = await API.get(
+        `/admin-dashboard/?${queryParams.toString()}&pdf=true`,
+        {
+          responseType: "blob",
+        }
+      );
+      const disposition = response.headers.get("content-disposition");
+
+      const filename = disposition;
+      if (disposition && disposition.includes("filename=")) {
+        filename = disposition.split("filename=")[1].replace(/"/g, "");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      setSnackbar({
+        open: true,
+        message: "PDF downloaded successfully!",
+        severity: "success",
+      });
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
+      setSnackbar({
+        open: true,
+        message: "Failed to download PDF. Please try again.",
+        severity: "error",
+      });
     }
   };
 
@@ -491,6 +549,40 @@ const AdminUsers = () => {
             background: "rgba(255, 255, 255, 0.98)",
           }}
         >
+          <Box
+            sx={{
+              p: 2,
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              variant="contained"
+              startIcon={
+                pdfLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <DownloadIcon />
+                )
+              }
+              onClick={handleDownloadPdf}
+              disabled={pdfLoading || users.length === 0}
+              sx={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                },
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: 600,
+              }}
+            >
+              {pdfLoading ? "Generating PDF..." : "Download PDF"}
+            </Button>
+          </Box>
+
           {tableLoading ? (
             <Box sx={{ p: 4, textAlign: "center" }}>
               <Spinner
@@ -973,7 +1065,10 @@ const AdminUsers = () => {
                                                       <tr key={booking.id}>
                                                         <td>{index + 1}</td>
                                                         <td>
-                                                          {booking.service?.category}
+                                                          {
+                                                            booking.service
+                                                              ?.category
+                                                          }
                                                         </td>
                                                         <td>
                                                           {
