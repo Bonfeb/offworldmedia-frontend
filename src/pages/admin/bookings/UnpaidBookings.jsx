@@ -227,15 +227,15 @@ const UnpaidBookings = () => {
       defaultFilename: "Offworldmedia_Unpaid_Bookings.pdf",
     }).then((res) => {
       if (res.success) {
-        Snackbar({
+        setSnackbar({
           open: true,
           message: "PDF downloaded successfully",
           severity: "success",
         });
       } else {
-        Snackbar({
+        setSnackbar({
           open: true,
-          message: "Failed to download PDF",
+          message: res.message || "Failed to download PDF",
           severity: "error",
         });
       }

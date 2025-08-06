@@ -26,6 +26,7 @@ import {
   handleDeleteConfirm,
   downloadBookingsPdf,
 } from "../../../utils/constants";
+import { set } from "lodash";
 
 const CompletedBookings = () => {
   const [completedBookings, setCompletedBookings] = useState([]);
@@ -250,13 +251,13 @@ const CompletedBookings = () => {
       defaultFilename: "Offworldmedia_Completed_Bookings.pdf",
     }).then((res) => {
       if (res.success) {
-        Snackbar({
+        setSnackbar({
           open: true,
           message: "PDF downloaded successfully",
           severity: "success",
         });
       } else {
-        Snackbar({
+        setSnackbar({
           open: true,
           message: "Failed to download PDF",
           severity: "error",
