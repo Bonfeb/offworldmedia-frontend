@@ -30,10 +30,10 @@ const PaidBookings = () => {
   const [paidBookings, setPaidBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [notification, setNotification] = useState({
+  const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    severity: "info",
+    severity: "success",
   });
 
   // Add state for modals
@@ -59,7 +59,7 @@ const PaidBookings = () => {
   const loadBookings = async () => {
     try {
       setLoading(true);
-      
+
       // Prepare API parameters
       const params = {
         action: "bookings",
@@ -80,14 +80,14 @@ const PaidBookings = () => {
       }
 
       const response = await API.get("/admin-dashboard/", { params });
-      
+
       console.log("API Response:", response.data);
-      console.log('Response status:', response.status);
-      
+      console.log("Response status:", response.status);
+
       // Handle paginated response
       let bookings = [];
       let totalCount = 0;
-      
+
       if (response.data.results) {
         // If response is paginated with results array
         bookings = response.data.results;
@@ -98,15 +98,15 @@ const PaidBookings = () => {
         totalCount = bookings.length;
       }
 
-      console.log('Total bookings received:', bookings.length);
-      console.log('Total count:', totalCount);
-      
+      console.log("Total bookings received:", bookings.length);
+      console.log("Total count:", totalCount);
+
       const formattedBookings = formatBookings(bookings);
-      
+
       setPaidBookings(formattedBookings);
-      setPagination(prev => ({
+      setPagination((prev) => ({
         ...prev,
-        totalCount: totalCount
+        totalCount: totalCount,
       }));
       setError(null);
     } catch (err) {
@@ -121,17 +121,24 @@ const PaidBookings = () => {
     loadBookings();
   }, [pagination.page, pagination.rowsPerPage]);
 
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
+
   // Handle filter input changes
   const handleFilterChange = (field) => (event) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [field]: event.target.value
+      [field]: event.target.value,
     }));
   };
 
   // Handle search submission
   const handleSearch = () => {
-    setPagination(prev => ({ ...prev, page: 0 })); // Reset to first page
+    setPagination((prev) => ({ ...prev, page: 0 })); // Reset to first page
     loadBookings();
   };
 
@@ -142,7 +149,7 @@ const PaidBookings = () => {
       service: "",
       event_location: "",
     });
-    setPagination(prev => ({ ...prev, page: 0 }));
+    setPagination((prev) => ({ ...prev, page: 0 }));
     // Trigger search with cleared filters
     setTimeout(() => {
       loadBookings();
@@ -151,17 +158,17 @@ const PaidBookings = () => {
 
   // Handle pagination changes
   const handlePageChange = (event, newPage) => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
-      page: newPage
+      page: newPage,
     }));
   };
 
   const handleRowsPerPageChange = (event) => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
       rowsPerPage: parseInt(event.target.value, 10),
-      page: 0
+      page: 0,
     }));
   };
 
@@ -177,25 +184,21 @@ const PaidBookings = () => {
     handleUpdateConfirm(
       updatedBooking,
       loadBookings,
-      setNotification,
+      setSnackbar,
       setUpdateModalOpen,
       setSubmitting
     );
   };
-  
+
   const handleConfirmDelete = (booking) => {
     handleDeleteConfirm(
       booking,
       paidBookings,
       setPaidBookings,
-      setNotification,
+      setSnackbar,
       setDeleteModalOpen,
       setSubmitting
     );
-  };
-
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
   };
 
   const handleDownloadPdf = () => {
@@ -205,22 +208,25 @@ const PaidBookings = () => {
         status: BOOKING_STATUS.PAID,
         username: filters.username,
         service: filters.service,
-        event_location: filters.event_location
+        event_location: filters.event_location,
       },
-      pagination: { page: pagination.page, rowsPerPage: pagination.rowsPerPage },
-      defaultFilename: "Offworldmedia_Paid_Bookings.pdf"
+      pagination: {
+        page: pagination.page,
+        rowsPerPage: pagination.rowsPerPage,
+      },
+      defaultFilename: "Offworldmedia_Paid_Bookings.pdf",
     }).then((res) => {
       if (res.success) {
         Snackbar({
           open: true,
           message: "PDF downloaded successfully",
-          severity: "success"
+          severity: "success",
         });
       } else {
         Snackbar({
           open: true,
           message: res.message || "Failed to download PDF",
-          severity: "error"
+          severity: "error",
         });
       }
     });
@@ -250,7 +256,7 @@ const PaidBookings = () => {
                 fullWidth
                 label="Username"
                 value={filters.username}
-                onChange={handleFilterChange('username')}
+                onChange={handleFilterChange("username")}
                 size="small"
                 placeholder="Search by username..."
               />
@@ -260,7 +266,7 @@ const PaidBookings = () => {
                 fullWidth
                 label="Service"
                 value={filters.service}
-                onChange={handleFilterChange('service')}
+                onChange={handleFilterChange("service")}
                 size="small"
                 placeholder="Search by service..."
               />
@@ -270,13 +276,13 @@ const PaidBookings = () => {
                 fullWidth
                 label="Event Location"
                 value={filters.event_location}
-                onChange={handleFilterChange('event_location')}
+                onChange={handleFilterChange("event_location")}
                 size="small"
                 placeholder="Search by location..."
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 <Button
                   variant="contained"
                   startIcon={<Search />}
@@ -297,9 +303,9 @@ const PaidBookings = () => {
               </Box>
             </Grid>
           </Grid>
-          
+
           {/* Download PDF Button */}
-          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="outlined"
               startIcon={<GetApp />}
@@ -314,11 +320,9 @@ const PaidBookings = () => {
         {/* Results Summary */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" color="textSecondary">
-            {loading ? (
-              "Loading..."
-            ) : (
-              `Showing ${paidBookings.length} of ${pagination.totalCount} paid bookings`
-            )}
+            {loading
+              ? "Loading..."
+              : `Showing ${paidBookings.length} of ${pagination.totalCount} paid bookings`}
           </Typography>
         </Box>
 
@@ -363,16 +367,16 @@ const PaidBookings = () => {
       />
 
       <Snackbar
-        open={notification.open}
+        open={snackbar.open}
         autoHideDuration={6000}
-        onClose={handleCloseNotification}
+        onClose={handleSnackbarClose}
       >
         <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
           sx={{ width: "100%" }}
         >
-          {notification.message}
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Container>

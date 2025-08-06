@@ -31,19 +31,17 @@ const CancelledBookings = () => {
   const [cancelledBookings, setCancelledBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [notification, setNotification] = useState({
-    open: false,
-    message: "",
-    severity: "info",
-  });
-
+  const [snackbar, setSnackbar] = useState({
+      open: false,
+      message: "",
+      severity: "success",
+    });
   // Search and pagination state
   const [filters, setFilters] = useState({
     username: "",
     service: "",
     event_location: "",
   });
-  
   const [pagination, setPagination] = useState({
     page: 0,
     rowsPerPage: 10,
@@ -123,6 +121,13 @@ const CancelledBookings = () => {
     loadBookings();
   }, []);
 
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({
+      ...prev,
+      open: false
+    }));
+  };
+
   // Handle filter changes with debouncing
   const handleFilterChange = (filterName, value) => {
     const newFilters = { ...filters, [filterName]: value };
@@ -200,7 +205,7 @@ const CancelledBookings = () => {
     handleUpdateConfirm(
       updatedBooking,
       () => loadBookings(filters, pagination), // Reload with current filters and pagination
-      setNotification,
+      setSnackbar,
       setUpdateModalOpen,
       setSubmitting
     );
@@ -210,15 +215,11 @@ const CancelledBookings = () => {
       booking,
       cancelledBookings,
       setCancelledBookings,
-      setNotification,
+      setSnackbar,
       setDeleteModalOpen,
       setSubmitting,
       () => loadBookings(filters, pagination) // Reload after delete
     );
-
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
-  };
 
   const handleDownloadPdf = () => {
     downloadBookingsPdf({
@@ -233,13 +234,13 @@ const CancelledBookings = () => {
       defaultFilename: "Offworldmedia_Cancelled_Bookings.pdf"
     }).then((res) => {
       if (res.success) {
-        Snackbar({
+        setSnackbar({
           open: true,
           message: "PDF downloaded successfully",
           severity: "success"
         });
       } else {
-        Snackbar({
+        setSnackbar({
           open: true,
           message: "Failed to download PDF",
           severity: "error"
@@ -443,16 +444,16 @@ const CancelledBookings = () => {
       />
 
       <Snackbar
-        open={notification.open}
+        open={snackbar.open}
         autoHideDuration={6000}
-        onClose={handleCloseNotification}
+        onClose={handleSnackbarClose}
       >
         <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
           sx={{ width: "100%" }}
         >
-          {notification.message}
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Container>

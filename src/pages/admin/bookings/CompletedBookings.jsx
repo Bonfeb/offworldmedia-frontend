@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Alert, 
+import {
+  Container,
+  Typography,
+  Box,
+  Alert,
   Snackbar,
   Paper,
   TextField,
@@ -11,7 +11,7 @@ import {
   Button,
   TablePagination,
   IconButton,
-  InputAdornment
+  InputAdornment,
 } from "@mui/material";
 import { Search, Clear, GetApp } from "@mui/icons-material";
 import BookingsTable from "./BookingsTable";
@@ -24,17 +24,17 @@ import {
   handleUpdate,
   handleUpdateConfirm,
   handleDeleteConfirm,
-  downloadBookingsPdf
+  downloadBookingsPdf,
 } from "../../../utils/constants";
 
 const CompletedBookings = () => {
   const [completedBookings, setCompletedBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [notification, setNotification] = useState({
+  const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    severity: "info",
+    severity: "success",
   });
 
   // Search and pagination state
@@ -43,7 +43,7 @@ const CompletedBookings = () => {
     service: "",
     event_location: "",
   });
-  
+
   const [pagination, setPagination] = useState({
     page: 0,
     rowsPerPage: 10,
@@ -59,67 +59,77 @@ const CompletedBookings = () => {
   // Debounced search
   const [searchTimeout, setSearchTimeout] = useState(null);
 
-  const loadBookings = useCallback(async (searchFilters = filters, paginationParams = pagination) => {
-    try {
-      setLoading(true);
-      
-      // Prepare API parameters
-      const params = {
-        action: "bookings",
-        status: BOOKING_STATUS.COMPLETED,
-        page: paginationParams.page + 1, // Django uses 1-based pagination
-        page_size: paginationParams.rowsPerPage,
-      };
+  const loadBookings = useCallback(
+    async (searchFilters = filters, paginationParams = pagination) => {
+      try {
+        setLoading(true);
 
-      // Add search filters (excluding empty values)
-      Object.entries(searchFilters).forEach(([key, value]) => {
-        if (value && value.trim()) {
-          params[key] = value.trim();
+        // Prepare API parameters
+        const params = {
+          action: "bookings",
+          status: BOOKING_STATUS.COMPLETED,
+          page: paginationParams.page + 1, // Django uses 1-based pagination
+          page_size: paginationParams.rowsPerPage,
+        };
+
+        // Add search filters (excluding empty values)
+        Object.entries(searchFilters).forEach(([key, value]) => {
+          if (value && value.trim()) {
+            params[key] = value.trim();
+          }
+        });
+
+        const response = await API.get("/admin-dashboard/", { params });
+
+        console.log("API Response:", response.data);
+
+        // Handle both paginated and non-paginated responses
+        let bookings, totalCount;
+
+        if (response.data.results) {
+          // Paginated response
+          bookings = response.data.results || [];
+          totalCount = response.data.count || 0;
+        } else {
+          // Non-paginated response (fallback)
+          bookings = response.data || [];
+          totalCount = bookings.length;
         }
-      });
 
-      const response = await API.get("/admin-dashboard/", { params });
+        console.log("Total bookings received:", bookings.length);
+        console.log("Total count:", totalCount);
 
-      console.log("API Response:", response.data);
-      
-      // Handle both paginated and non-paginated responses
-      let bookings, totalCount;
-      
-      if (response.data.results) {
-        // Paginated response
-        bookings = response.data.results || [];
-        totalCount = response.data.count || 0;
-      } else {
-        // Non-paginated response (fallback)
-        bookings = response.data || [];
-        totalCount = bookings.length;
+        const formattedBookings = formatBookings(bookings);
+        setCompletedBookings(formattedBookings);
+
+        // Update pagination with total count
+        setPagination((prev) => ({
+          ...prev,
+          totalCount: totalCount,
+        }));
+
+        setError(null);
+      } catch (err) {
+        console.error("Failed to load completed bookings", err);
+        setError("Failed to load bookings. Please try again later.");
+      } finally {
+        setLoading(false);
       }
-
-      console.log('Total bookings received:', bookings.length);
-      console.log('Total count:', totalCount);
-      
-      const formattedBookings = formatBookings(bookings);
-      setCompletedBookings(formattedBookings);
-      
-      // Update pagination with total count
-      setPagination(prev => ({
-        ...prev,
-        totalCount: totalCount
-      }));
-      
-      setError(null);
-    } catch (err) {
-      console.error("Failed to load completed bookings", err);
-      setError("Failed to load bookings. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  }, [filters, pagination]);
+    },
+    [filters, pagination]
+  );
 
   // Initial load
   useEffect(() => {
     loadBookings();
   }, []);
+
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
 
   // Handle filter changes with debouncing
   const handleFilterChange = (filterName, value) => {
@@ -159,11 +169,11 @@ const CompletedBookings = () => {
       event_location: "",
     };
     setFilters(clearedFilters);
-    
+
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
-    
+
     const resetPagination = { ...pagination, page: 0 };
     setPagination(resetPagination);
     loadBookings(clearedFilters, resetPagination);
@@ -181,7 +191,7 @@ const CompletedBookings = () => {
     const newPagination = {
       ...pagination,
       rowsPerPage: newRowsPerPage,
-      page: 0 // Reset to first page when changing page size
+      page: 0, // Reset to first page when changing page size
     };
     setPagination(newPagination);
     loadBookings(filters, newPagination);
@@ -189,16 +199,26 @@ const CompletedBookings = () => {
 
   // Modal handlers
   const handleEditClick = (booking) =>
-    handleUpdate(booking, completedBookings, setSelectedBooking, setUpdateModalOpen);
+    handleUpdate(
+      booking,
+      completedBookings,
+      setSelectedBooking,
+      setUpdateModalOpen
+    );
 
   const handleDeleteClick = (booking) =>
-    handleDelete(booking, completedBookings, setSelectedBooking, setDeleteModalOpen);
+    handleDelete(
+      booking,
+      completedBookings,
+      setSelectedBooking,
+      setDeleteModalOpen
+    );
 
   const handleConfirmUpdate = (updatedBooking) =>
     handleUpdateConfirm(
       updatedBooking,
       () => loadBookings(filters, pagination), // Reload with current filters and pagination
-      setNotification,
+      setSnackbar,
       setUpdateModalOpen,
       setSubmitting
     );
@@ -208,15 +228,11 @@ const CompletedBookings = () => {
       booking,
       completedBookings,
       setCompletedBookings,
-      setNotification,
+      setSnackbar,
       setDeleteModalOpen,
       setSubmitting,
       () => loadBookings(filters, pagination) // Reload after delete
     );
-
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
-  };
 
   const handleDownloadPdf = () => {
     downloadBookingsPdf({
@@ -225,38 +241,50 @@ const CompletedBookings = () => {
         status: BOOKING_STATUS.COMPLETED,
         username: filters.username,
         service: filters.service,
-        event_location: filters.event_location
+        event_location: filters.event_location,
       },
-      pagination: { page: pagination.page, rowsPerPage: pagination.rowsPerPage },
-      defaultFilename: "Offworldmedia_Completed_Bookings.pdf"
+      pagination: {
+        page: pagination.page,
+        rowsPerPage: pagination.rowsPerPage,
+      },
+      defaultFilename: "Offworldmedia_Completed_Bookings.pdf",
     }).then((res) => {
       if (res.success) {
         Snackbar({
           open: true,
           message: "PDF downloaded successfully",
-          severity: "success"
+          severity: "success",
         });
       } else {
         Snackbar({
           open: true,
           message: "Failed to download PDF",
-          severity: "error"
+          severity: "error",
         });
       }
     });
   };
 
   // Check if any filters are active
-  const hasActiveFilters = Object.values(filters).some(value => value && value.trim());
+  const hasActiveFilters = Object.values(filters).some(
+    (value) => value && value.trim()
+  );
 
   return (
     <Container maxWidth="xl">
       <Box sx={{ my: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
           <Typography variant="h4" component="h1">
             Completed Bookings
           </Typography>
-          
+
           <Button
             variant="outlined"
             startIcon={<GetApp />}
@@ -278,14 +306,14 @@ const CompletedBookings = () => {
           <Typography variant="h6" gutterBottom>
             Search & Filter
           </Typography>
-          
+
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
                 label="Username"
                 value={filters.username}
-                onChange={(e) => handleFilterChange('username', e.target.value)}
+                onChange={(e) => handleFilterChange("username", e.target.value)}
                 placeholder="Search by username..."
                 size="small"
                 InputProps={{
@@ -293,22 +321,22 @@ const CompletedBookings = () => {
                     <InputAdornment position="end">
                       <IconButton
                         size="small"
-                        onClick={() => handleFilterChange('username', '')}
+                        onClick={() => handleFilterChange("username", "")}
                       >
                         <Clear fontSize="small" />
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
                 label="Service"
                 value={filters.service}
-                onChange={(e) => handleFilterChange('service', e.target.value)}
+                onChange={(e) => handleFilterChange("service", e.target.value)}
                 placeholder="Search by service..."
                 size="small"
                 InputProps={{
@@ -316,22 +344,24 @@ const CompletedBookings = () => {
                     <InputAdornment position="end">
                       <IconButton
                         size="small"
-                        onClick={() => handleFilterChange('service', '')}
+                        onClick={() => handleFilterChange("service", "")}
                       >
                         <Clear fontSize="small" />
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
                 label="Event Location"
                 value={filters.event_location}
-                onChange={(e) => handleFilterChange('event_location', e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange("event_location", e.target.value)
+                }
                 placeholder="Search by location..."
                 size="small"
                 InputProps={{
@@ -339,18 +369,18 @@ const CompletedBookings = () => {
                     <InputAdornment position="end">
                       <IconButton
                         size="small"
-                        onClick={() => handleFilterChange('event_location', '')}
+                        onClick={() => handleFilterChange("event_location", "")}
                       >
                         <Clear fontSize="small" />
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6} md={3}>
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 <Button
                   variant="contained"
                   startIcon={<Search />}
@@ -360,7 +390,7 @@ const CompletedBookings = () => {
                 >
                   Search
                 </Button>
-                
+
                 {hasActiveFilters && (
                   <Button
                     variant="outlined"
@@ -377,11 +407,20 @@ const CompletedBookings = () => {
           </Grid>
 
           {/* Results summary */}
-          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="body2" color="text.secondary">
-              {loading ? 'Loading...' : `Showing ${completedBookings.length} of ${pagination.totalCount} completed bookings`}
+              {loading
+                ? "Loading..."
+                : `Showing ${completedBookings.length} of ${pagination.totalCount} completed bookings`}
             </Typography>
-            
+
             {hasActiveFilters && (
               <Typography variant="body2" color="primary">
                 Filters active
@@ -399,7 +438,7 @@ const CompletedBookings = () => {
             onDelete={handleDeleteClick}
             loading={loading}
           />
-          
+
           {/* Pagination */}
           <TablePagination
             component="div"
@@ -415,11 +454,11 @@ const CompletedBookings = () => {
             }
             sx={{
               borderTop: 1,
-              borderColor: 'divider',
-              '.MuiTablePagination-toolbar': {
+              borderColor: "divider",
+              ".MuiTablePagination-toolbar": {
                 paddingLeft: 2,
                 paddingRight: 2,
-              }
+              },
             }}
           />
         </Paper>
@@ -437,16 +476,16 @@ const CompletedBookings = () => {
       />
 
       <Snackbar
-        open={notification.open}
+        open={snackbar.open}
         autoHideDuration={6000}
-        onClose={handleCloseNotification}
+        onClose={handleSnackbarClose}
       >
         <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
           sx={{ width: "100%" }}
         >
-          {notification.message}
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Container>
