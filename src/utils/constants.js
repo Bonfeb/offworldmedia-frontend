@@ -122,4 +122,52 @@ export const formatBookings = (bookings) => {
   };
   
 
+  export const downloadBookingsPdf = async ({
+    endpoint,
+    filters = {},
+    pagination = {},
+    defaultFileName = 'Offworldmedia_Bookings.pdf'
+  }) => {
+    try {
+      const queryParams = new URLSearchParams();
+
+    // Add filters dynamically
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) queryParams.append(key, filters[key]);
+    });
+
+    // Add pagination
+    if (pagination.page) queryParams.append("page", pagination.page);
+    if (pagination.rowsPerPage) queryParams.append("page_size", pagination.rowsPerPage);
+
+    // Always request PDF
+    queryParams.append("pdf", "true");
+
+    const response = await API.get(
+      `${endpoint}?${queryParams.toString()}`,
+      { responseType: "blob" }
+    );
+
+    let filename = defaultFileName;
+    const disposition = response.headers["content-disposition"];
+    if (disposition && disposition.includes("filename=")) {
+      filename = disposition.split("filename=")[1].replace(/"/g, "");
+    }
+
+    // Create blob URL
+    const url = window.URL.createObjectURL(response.data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+
+    return { success: true };
+  } catch (err) {
+    console.error("Error downloading PDF:", err);
+    return { success: false, error: err };
+    }
+  }
   
