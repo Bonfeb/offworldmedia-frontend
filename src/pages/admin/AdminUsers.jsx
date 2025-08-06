@@ -91,7 +91,7 @@ const AdminUsers = () => {
       if (filters.username) queryParams.append("username", filters.username);
       if (filters.email) queryParams.append("email", filters.email);
       queryParams.append("page", pagination.page);
-      queryParams.append("limit", pagination.rowsPerPage);
+      queryParams.append("page_size", pagination.rowsPerPage);
 
       console.log("Fetching users with params:", queryParams.toString());
       const response = await API.get(
