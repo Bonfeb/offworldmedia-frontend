@@ -213,7 +213,7 @@ const UnpaidBookings = () => {
 
   const handleDownloadPdf = () => {
     downloadBookingsPdf({
-      endpoint: "/admin-dashboard/bookings",
+      endpoint: "/admin-dashboard/",
       filters: {
         status: BOOKING_STATUS.UNPAID,
         username: filters.username,

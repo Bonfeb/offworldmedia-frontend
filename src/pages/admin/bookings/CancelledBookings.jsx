@@ -223,7 +223,7 @@ const CancelledBookings = () => {
 
   const handleDownloadPdf = () => {
     downloadBookingsPdf({
-      endpoint: "/admin-dashboard/bookings",
+      endpoint: "/admin-dashboard/",
       filters: {
         status: BOOKING_STATUS.CANCELLED,
         username: filters.username,
