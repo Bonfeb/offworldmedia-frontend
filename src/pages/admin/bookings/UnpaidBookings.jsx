@@ -202,6 +202,7 @@ const UnpaidBookings = () => {
     downloadBookingsPdf({
       endpoint: "/admin-dashboard/unpaid-bookings",
       filters: {
+        status: BOOKING_STATUS.UNPAID,
         username: filters.username,
         service: filters.service,
         event_location: filters.event_location

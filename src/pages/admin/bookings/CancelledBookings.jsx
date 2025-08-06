@@ -224,6 +224,7 @@ const CancelledBookings = () => {
     downloadBookingsPdf({
       endpoint: "/admin-dashboard/cancelled-bookings",
       filters: {
+        status: BOOKING_STATUS.CANCELLED,
         username: filters.username,
         service: filters.service,
         event_location: filters.event_location

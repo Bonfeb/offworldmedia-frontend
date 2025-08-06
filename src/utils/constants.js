@@ -155,7 +155,7 @@ export const formatBookings = (bookings) => {
     }
 
     // Create blob URL
-    const url = window.URL.createObjectURL(response.data);
+    const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = filename;

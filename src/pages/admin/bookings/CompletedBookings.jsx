@@ -222,6 +222,7 @@ const CompletedBookings = () => {
     downloadBookingsPdf({
       endpoint: "/admin-dashboard/completed-bookings",
       filters: {
+        status: BOOKING_STATUS.COMPLETED,
         username: filters.username,
         service: filters.service,
         event_location: filters.event_location

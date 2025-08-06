@@ -202,6 +202,7 @@ const PaidBookings = () => {
     downloadBookingsPdf({
       endpoint: "/admin-dashboard/paid-bookings",
       filters: {
+        status: BOOKING_STATUS.PAID,
         username: filters.username,
         service: filters.service,
         event_location: filters.event_location
