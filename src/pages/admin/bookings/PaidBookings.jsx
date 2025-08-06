@@ -209,6 +209,20 @@ const PaidBookings = () => {
       },
       pagination: { page: pagination.page, rowsPerPage: pagination.rowsPerPage },
       defaultFilename: "Offworldmedia_Paid_Bookings.pdf"
+    }).then((res) => {
+      if (res.success) {
+        Snackbar({
+          open: true,
+          message: "PDF downloaded successfully",
+          severity: "success"
+        });
+      } else {
+        Snackbar({
+          open: true,
+          message: res.message || "Failed to download PDF",
+          severity: "error"
+        });
+      }
     });
   };
 
