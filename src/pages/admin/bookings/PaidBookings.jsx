@@ -204,7 +204,7 @@ const PaidBookings = () => {
 
   const handleDownloadPdf = () => {
     downloadBookingsPdf({
-      endpoint: "/admin-dashboard/paid-bookings",
+      endpoint: "/admin-dashboard/bookings",
       filters: {
         status: BOOKING_STATUS.PAID,
         username: filters.username,
