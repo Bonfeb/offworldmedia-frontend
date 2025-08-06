@@ -26,7 +26,7 @@ import {
   Badge as BadgeIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
-  Download as DownloadIcon
+  Download as DownloadIcon,
 } from "@mui/icons-material";
 import {
   IconButton,
@@ -278,45 +278,62 @@ const AdminUsers = () => {
   };
 
   const handleDownloadPdf = async () => {
-    try {
-      const response = await API.get(
-        `/admin-dashboard/?${queryParams.toString()}&pdf=true`,
-        {
-          responseType: "blob",
-        }
-      );
-      const disposition = response.headers.get("content-disposition");
+  try {
+    const queryParams = new URLSearchParams({ action: "users" });
 
-      const filename = disposition;
-      if (disposition && disposition.includes("filename=")) {
-        filename = disposition.split("filename=")[1].replace(/"/g, "");
-      }
+    // Append filters
+    if (filters.username) queryParams.append("username", filters.username);
+    if (filters.email) queryParams.append("email", filters.email);
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+    // Match backend param names
+    queryParams.append("page", pagination.page);
+    queryParams.append("page_size", pagination.rowsPerPage);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
+    // Force PDF generation
+    queryParams.append("pdf", "true");
 
-      setSnackbar({
-        open: true,
-        message: "PDF downloaded successfully!",
-        severity: "success",
-      });
-    } catch (err) {
-      console.error("Error downloading PDF:", err);
-      setSnackbar({
-        open: true,
-        message: "Failed to download PDF. Please try again.",
-        severity: "error",
-      });
+    // Axios request
+    const response = await API.get(
+      `/admin-dashboard/?${queryParams.toString()}`,
+      { responseType: "blob" }
+    );
+
+    // Extract filename from header
+    let filename = "users.pdf";
+    const disposition = response.headers["content-disposition"];
+    if (disposition && disposition.includes("filename=")) {
+      filename = disposition.split("filename=")[1].replace(/"/g, "");
     }
-  };
+
+    // Create blob URL
+    const blob = response.data; // already a Blob because of responseType: 'blob'
+    const url = window.URL.createObjectURL(blob);
+
+    // Trigger download
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+
+    setSnackbar({
+      open: true,
+      message: "PDF downloaded successfully!",
+      severity: "success",
+    });
+  } catch (err) {
+    console.error("Error downloading PDF:", err);
+    setSnackbar({
+      open: true,
+      message: "Failed to download PDF. Please try again.",
+      severity: "error",
+    });
+  }
+ };
 
   const toggleRowExpansion = async (userId) => {
     const newExpandedRows = { ...expandedRows };
@@ -579,7 +596,7 @@ const AdminUsers = () => {
                 fontWeight: 600,
               }}
             >
-              {pdfLoading ? "Generating PDF..." : "Download PDF"}
+              {pdfLoading ? "Generating PDF..." : "Download Users PDF"}
             </Button>
           </Box>
 
