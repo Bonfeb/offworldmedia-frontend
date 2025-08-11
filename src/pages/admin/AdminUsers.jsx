@@ -98,10 +98,15 @@ const AdminUsers = () => {
         `/admin-dashboard/?${queryParams.toString()}`
       );
 
-      const usersData = response.data.results || response.data || [];
-      if (!Array.isArray(usersData)) {
-        throw new Error("Unexpected API response format");
+      let usersData;
+      if (Array.isArray(response.data.results)){
+        usersData = response.data.results;
+      } else if(response.data.user) {
+        usersData = [response.data.user];
+      } else {
+        usersData = [];
       }
+      console.log("API response for users:", response.data);
       setUsers(usersData);
       setError(null);
     } catch (err) {
