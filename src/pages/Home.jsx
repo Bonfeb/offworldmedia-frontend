@@ -902,9 +902,12 @@ function Home() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                style={{ marginTop: "3rem" }}
+                style={{ marginTop: "3rem", width: "100%" }}
               >
-                <div className="d-flex justify-content-center">
+                <div
+                  className="d-flex justify-content-center"
+                  style={{ width: "100%" }}
+                >
                   <a
                     href="#payment-info"
                     className="red-banner-tag-hero"
@@ -912,39 +915,56 @@ function Home() {
                       position: "relative",
                       display: "inline-block",
                       background:
-                        "linear-gradient(135deg, #724408ff 0%, #724408ff 100%)",
+                        "linear-gradient(135deg, #388e3c 0%, #689f38 100%)", // Green gradient
                       color: "white",
                       textDecoration: "none",
                       padding: "20px 50px",
                       fontWeight: "bold",
                       textAlign: "center",
-                      minWidth: "280px",
+                      width: "100%",
+                      maxWidth: "100%",
                       lineHeight: "1.4",
-                      boxShadow: "0 4px 15px rgba(231, 76, 60, 0.3)",
+                      boxShadow: "0 4px 15px rgba(56, 142, 60, 0.3)", // Green shadow
                       transition: "all 0.3s ease",
-                      borderRadius: "0", // flat edges
+                      borderRadius: "0",
+                      boxSizing: "border-box",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.background =
-                        "linear-gradient(135deg, #c0392b 0%, #a93226 100%)";
+                        "linear-gradient(135deg, #fbc02d 0%, #ffa000 100%)"; // Yellow gradient on hover
+                      e.target.style.color = "#333"; // Darker text for better contrast
                       e.target.style.transform = "translateY(-2px)";
                       e.target.style.boxShadow =
-                        "0 6px 20px rgba(231, 76, 60, 0.4)";
+                        "0 6px 20px rgba(251, 192, 45, 0.4)"; // Yellow shadow
+                      // Change folded edges to yellow
+                      Array.from(e.target.children).forEach((child) => {
+                        if (child.style.background === "#b53224") {
+                          child.style.background = "#e69138";
+                        }
+                      });
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.background =
-                        "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)";
+                        "linear-gradient(135deg, #388e3c 0%, #689f38 100%)"; // Revert to green
+                      e.target.style.color = "white";
                       e.target.style.transform = "translateY(0)";
                       e.target.style.boxShadow =
-                        "0 4px 15px rgba(231, 76, 60, 0.3)";
+                        "0 4px 15px rgba(56, 142, 60, 0.3)";
+                      // Revert folded edges to original color
+                      Array.from(e.target.children).forEach((child) => {
+                        if (child.style.background === "#e69138") {
+                          child.style.background = "#2e7d32";
+                        }
+                      });
                     }}
                   >
                     <span
                       style={{
                         display: "block",
-                        fontSize: "16px",
+                        fontSize: "clamp(14px, 3vw, 16px)",
                         fontWeight: "600",
                         marginBottom: "5px",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       Buy Goods & Services
@@ -952,36 +972,37 @@ function Home() {
                     <span
                       style={{
                         display: "block",
-                        fontSize: "18px",
+                        fontSize: "clamp(16px, 3.5vw, 18px)",
                         fontWeight: "700",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       Till Number: 1234567
                     </span>
 
-                    {/* Left folded edge */}
+                    {/* Left folded edge - changed to darker green */}
                     <span
                       style={{
                         position: "absolute",
-                        left: "-20px",
+                        left: "-10px",
                         top: "0",
                         bottom: "0",
                         width: "20px",
-                        background: "#b53224",
+                        background: "#2e7d32", // Darker green
                         transform: "skewY(-20deg)",
                         borderRadius: "3px 0 0 3px",
                       }}
                     />
 
-                    {/* Right folded edge */}
+                    {/* Right folded edge - changed to darker green */}
                     <span
                       style={{
                         position: "absolute",
-                        right: "-20px",
+                        right: "-10px",
                         top: "0",
                         bottom: "0",
                         width: "20px",
-                        background: "#b53224",
+                        background: "#2e7d32", // Darker green
                         transform: "skewY(20deg)",
                         borderRadius: "0 3px 3px 0",
                       }}
