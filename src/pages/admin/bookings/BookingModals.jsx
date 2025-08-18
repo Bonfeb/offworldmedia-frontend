@@ -197,12 +197,12 @@ const BookingModals = ({
         user_id: updateFormValues.user_id || "",
         service_id: updateFormValues.service_id || "",
         event_date: updateFormValues.event_date
-          ? new Date(updateFormValues.event_date)
+          ? new Date(updateFormValues.event_date).toISOString().split("T")[0]
           : null,
         event_time: updateFormValues.event_time
-          ? new Date(`2000-01-01T${updateFormValues.event_time}`)
+          ? updateFormValues.event_time + ":00"
           : null,
-        event_location: updateFormValues.location || "",
+        event_location: updateFormValues.event_location || "",
         status: updateFormValues.status || "unpaid",
         audio_category: updateFormValues.audio_category || "",
       };
