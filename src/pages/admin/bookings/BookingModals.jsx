@@ -194,17 +194,17 @@ const BookingModals = ({
     try {
       setIsLoading(true);
       const payload = {
-        user_id: updateBooking.user_id || "",
-        service_id: updateBooking.service_id || "",
-        event_date: updateBooking.eventDate
-          ? new Date(updateBooking.eventDate)
+        user_id: updateFormValues.user_id || "",
+        service_id: updateFormValues.service_id || "",
+        event_date: updateFormValues.event_date
+          ? new Date(updateFormValues.event_date)
           : null,
-        event_time: updateBooking.eventTime
-          ? new Date(`2000-01-01T${updateBooking.eventTime}`)
+        event_time: updateFormValues.event_time
+          ? new Date(`2000-01-01T${updateFormValues.event_time}`)
           : null,
-        event_location: updateBooking.location || "",
-        status: updateBooking.status || "unpaid",
-        audio_category: updateBooking.audio_category || "",
+        event_location: updateFormValues.location || "",
+        status: updateFormValues.status || "unpaid",
+        audio_category: updateFormValues.audio_category || "",
       };
       console.log("Payload and Selected Booking:", payload, selectedBooking);
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
