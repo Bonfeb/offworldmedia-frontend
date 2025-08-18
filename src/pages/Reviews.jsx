@@ -51,8 +51,8 @@ function Reviews({ reviews }) {
   useEffect(() => {
     API.get("/services/")
       .then((response) => {
-        console.log("Fetched services:", response.data);
-        setServices(response.data);
+        console.log("Fetched services:", response.data.services);
+        setServices(response.data.services || []);
       })
       .catch((error) => console.error("Error fetching services:", error));
   }, []);
@@ -117,64 +117,60 @@ function Reviews({ reviews }) {
         </p>
         <Row className="m-0">
           <Carousel interval={5000} pause="hover">
-            {chunkReviews(reviewList, 3).map(
-              (chunk, chunkIndex) => (
-                <Carousel.Item key={chunkIndex}>
-                  <Row className="justify-content-center m-0">
-                    {chunk.map((review, index) => (
-                      <Col key={index} md={4} className="mb-4">
-                        <Card className="review-card">
-                          <Card.Body>
-                            <div className="user-info d-flex align-items-center">
-                              <img
-                                src={review.user?.profile_pic}
-                                alt={review.user?.username}
-                                className="user-image me-2"
-                                style={{
-                                  width: "50px",
-                                  height: "50px",
-                                  borderRadius: "50%",
-                                }}
+            {chunkReviews(reviewList, 3).map((chunk, chunkIndex) => (
+              <Carousel.Item key={chunkIndex}>
+                <Row className="justify-content-center m-0">
+                  {chunk.map((review, index) => (
+                    <Col key={index} md={4} className="mb-4">
+                      <Card className="review-card">
+                        <Card.Body>
+                          <div className="user-info d-flex align-items-center">
+                            <img
+                              src={review.user?.profile_pic}
+                              alt={review.user?.username}
+                              className="user-image me-2"
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                            <Card.Title className="user-name">
+                              {review.user?.username}
+                            </Card.Title>
+                          </div>
+
+                          <Card.Subtitle className="service-name">
+                            Service: <i>{review.service_details?.name}</i>
+                          </Card.Subtitle>
+
+                          <div className="rating-stars mt-2">
+                            {[...Array(5)].map((_, i) => (
+                              <FontAwesomeIcon
+                                key={i}
+                                icon={
+                                  i < review.rating ? solidStar : regularStar
+                                }
+                                className="text-warning"
                               />
-                              <Card.Title className="user-name">
-                                {review.user?.username}
-                              </Card.Title>
-                            </div>
+                            ))}
+                          </div>
 
-                            <Card.Subtitle className="service-name">
-                              Service: <i>{review.service_details?.name}</i>
-                            </Card.Subtitle>
+                          <Card.Text className="review-comment">
+                            {review.comment}
+                          </Card.Text>
 
-                            <div className="rating-stars mt-2">
-                              {[...Array(5)].map((_, i) => (
-                                <FontAwesomeIcon
-                                  key={i}
-                                  icon={
-                                    i < review.rating ? solidStar : regularStar
-                                  }
-                                  className="text-warning"
-                                />
-                              ))}
-                            </div>
-
-                            <Card.Text className="review-comment">
-                              {review.comment}
-                            </Card.Text>
-
-                            <p className="text-muted mb-0">
-                              <strong>Reviewed At:</strong>{" "}
-                              <i>
-                                {new Date(review.created_at).toDateString()}
-                              </i>
-                            </p>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
-                </Carousel.Item>
-              )
-            )}
+                          <p className="text-muted mb-0">
+                            <strong>Reviewed At:</strong>{" "}
+                            <i>{new Date(review.created_at).toDateString()}</i>
+                          </p>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              </Carousel.Item>
+            ))}
           </Carousel>
         </Row>
       </Row>
@@ -185,7 +181,7 @@ function Reviews({ reviews }) {
           background:
             "linear-gradient(to right, rgb(54, 61, 73), rgb(32, 2, 65))",
           border: "1px solid rgba(255, 255, 255, 0.3)",
-          paddingBottom: "20px"
+          paddingBottom: "20px",
         }}
       >
         <legend className="text-center fw-bold text-light px-3">
@@ -214,7 +210,7 @@ function Reviews({ reviews }) {
                       key={service.id}
                       value={service.id ? service.id.toString() : ""}
                     >
-                      {service.category}
+                      {service.category || "Uncategorized Service"}
                     </option>
                   ))
                 ) : (
