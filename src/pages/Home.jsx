@@ -910,101 +910,98 @@ function Home() {
                 >
                   <a
                     href="#payment-info"
-                    className="red-banner-tag-hero"
                     style={{
                       position: "relative",
-                      display: "inline-block",
-                      background:
-                        "linear-gradient(135deg, #388e3c 0%, #689f38 100%)", // Green gradient
+                      display: "block",
+                      background: "#1B5E20", // Dark green background
                       color: "white",
                       textDecoration: "none",
-                      padding: "20px 50px",
+                      padding: "20px",
                       fontWeight: "bold",
                       textAlign: "center",
                       width: "100%",
-                      maxWidth: "100%",
                       lineHeight: "1.4",
-                      boxShadow: "0 4px 15px rgba(56, 142, 60, 0.3)", // Green shadow
+                      boxShadow: "0 4px 15px rgba(27, 94, 32, 0.3)",
                       transition: "all 0.3s ease",
                       borderRadius: "0",
                       boxSizing: "border-box",
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background =
-                        "linear-gradient(135deg, #fbc02d 0%, #ffa000 100%)"; // Yellow gradient on hover
-                      e.target.style.color = "#333"; // Darker text for better contrast
-                      e.target.style.transform = "translateY(-2px)";
-                      e.target.style.boxShadow =
-                        "0 6px 20px rgba(251, 192, 45, 0.4)"; // Yellow shadow
-                      // Change folded edges to yellow
-                      Array.from(e.target.children).forEach((child) => {
-                        if (child.style.background === "#b53224") {
-                          child.style.background = "#e69138";
-                        }
+                      e.currentTarget.style.background = "#2E7D32"; // Lighter green on hover
+                      e.currentTarget.style.boxShadow =
+                        "0 6px 20px rgba(46, 125, 50, 0.4)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      // Update folded edges
+                      const edges =
+                        e.currentTarget.querySelectorAll(".folded-edge");
+                      edges.forEach((edge) => {
+                        edge.style.background = "#1B5E20"; // Dark green edges on hover
                       });
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.background =
-                        "linear-gradient(135deg, #388e3c 0%, #689f38 100%)"; // Revert to green
-                      e.target.style.color = "white";
-                      e.target.style.transform = "translateY(0)";
-                      e.target.style.boxShadow =
-                        "0 4px 15px rgba(56, 142, 60, 0.3)";
-                      // Revert folded edges to original color
-                      Array.from(e.target.children).forEach((child) => {
-                        if (child.style.background === "#e69138") {
-                          child.style.background = "#2e7d32";
-                        }
+                      e.currentTarget.style.background = "#1B5E20";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 15px rgba(27, 94, 32, 0.3)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      // Revert folded edges
+                      const edges =
+                        e.currentTarget.querySelectorAll(".folded-edge");
+                      edges.forEach((edge) => {
+                        edge.style.background = "#2E7D32"; // Lighter green edges normally
                       });
                     }}
                   >
-                    <span
-                      style={{
-                        display: "block",
-                        fontSize: "clamp(14px, 3vw, 16px)",
-                        fontWeight: "600",
-                        marginBottom: "5px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Buy Goods & Services
-                    </span>
-                    <span
-                      style={{
-                        display: "block",
-                        fontSize: "clamp(16px, 3.5vw, 18px)",
-                        fontWeight: "700",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Till Number: 1234567
-                    </span>
+                    <div style={{ position: "relative", zIndex: 1 }}>
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "clamp(14px, 3vw, 16px)",
+                          fontWeight: "600",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        Buy Goods & Services
+                      </span>
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "clamp(16px, 3.5vw, 18px)",
+                          fontWeight: "700",
+                        }}
+                      >
+                        Till Number: 4323716
+                      </span>
+                    </div>
 
-                    {/* Left folded edge - changed to darker green */}
+                    {/* Left folded edge */}
                     <span
+                      className="folded-edge"
                       style={{
                         position: "absolute",
                         left: "-10px",
                         top: "0",
                         bottom: "0",
                         width: "20px",
-                        background: "#2e7d32", // Darker green
+                        background: "#2E7D32", // Lighter green edge
                         transform: "skewY(-20deg)",
                         borderRadius: "3px 0 0 3px",
+                        transition: "background 0.3s ease",
                       }}
                     />
 
-                    {/* Right folded edge - changed to darker green */}
+                    {/* Right folded edge */}
                     <span
+                      className="folded-edge"
                       style={{
                         position: "absolute",
                         right: "-10px",
                         top: "0",
                         bottom: "0",
                         width: "20px",
-                        background: "#2e7d32", // Darker green
+                        background: "#2E7D32", // Lighter green edge
                         transform: "skewY(20deg)",
                         borderRadius: "0 3px 3px 0",
+                        transition: "background 0.3s ease",
                       }}
                     />
                   </a>
