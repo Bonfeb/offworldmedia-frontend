@@ -915,14 +915,14 @@ function Home() {
                         "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)",
                       color: "white",
                       textDecoration: "none",
-                      padding: "20px 40px 20px 25px",
+                      padding: "20px 50px",
                       fontWeight: "bold",
                       textAlign: "center",
-                      boxShadow: "0 4px 15px rgba(231, 76, 60, 0.3)",
-                      transition: "all 0.3s ease",
-                      borderRadius: "8px 0 0 8px",
                       minWidth: "280px",
                       lineHeight: "1.4",
+                      boxShadow: "0 4px 15px rgba(231, 76, 60, 0.3)",
+                      transition: "all 0.3s ease",
+                      borderRadius: "0", // flat edges
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.background =
@@ -959,17 +959,31 @@ function Home() {
                       Till Number: 1234567
                     </span>
 
-                    {/* Arrow pointing right */}
-                    <div
+                    {/* Left folded edge */}
+                    <span
                       style={{
                         position: "absolute",
-                        top: "50%",
-                        right: "-15px",
-                        transform: "translateY(-50%)",
-                        width: "0",
-                        height: "0",
-                        border: "25px solid transparent",
-                        borderLeft: "15px solid #c0392b",
+                        left: "-20px",
+                        top: "0",
+                        bottom: "0",
+                        width: "20px",
+                        background: "#b53224",
+                        transform: "skewY(-20deg)",
+                        borderRadius: "3px 0 0 3px",
+                      }}
+                    />
+
+                    {/* Right folded edge */}
+                    <span
+                      style={{
+                        position: "absolute",
+                        right: "-20px",
+                        top: "0",
+                        bottom: "0",
+                        width: "20px",
+                        background: "#b53224",
+                        transform: "skewY(20deg)",
+                        borderRadius: "0 3px 3px 0",
                       }}
                     />
                   </a>
