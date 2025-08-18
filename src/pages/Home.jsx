@@ -316,20 +316,26 @@ function Home() {
                           <div className="w-100">
                             {groupedServices[category][subcategory].map(
                               (service) => (
-                                <div
-                                  key={service.id}
-                                  className="w-100 mb-4"
-                                >
+                                <div key={service.id} className="w-100 mb-4">
                                   <motion.div
                                     whileHover={{ y: -10 }}
                                     transition={{ duration: 0.3 }}
                                     className="w-100"
                                   >
-                                    <Card className="service-card shadow-sm border-0 w-100" style={{ minHeight: "200px" }}>
+                                    <Card
+                                      className="service-card shadow-sm border-0 w-100"
+                                      style={{ minHeight: "200px" }}
+                                    >
                                       <Row className="g-0 h-100 w-100 mx-0">
                                         {/* Card Image - Takes up part of the card on larger screens */}
                                         {service.image && (
-                                          <Col xs={12} md={4} lg={3} xl={3} className="d-flex p-0">
+                                          <Col
+                                            xs={12}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                            className="d-flex p-0"
+                                          >
                                             <Card.Img
                                               src={service.image}
                                               alt={service.category}
@@ -337,10 +343,12 @@ function Home() {
                                                 height: "200px",
                                                 width: "100%",
                                                 objectFit: "cover",
-                                                borderTopLeftRadius: "calc(0.25rem - 1px)",
-                                                borderBottomLeftRadius: "calc(0.25rem - 1px)",
+                                                borderTopLeftRadius:
+                                                  "calc(0.25rem - 1px)",
+                                                borderBottomLeftRadius:
+                                                  "calc(0.25rem - 1px)",
                                                 borderTopRightRadius: "0",
-                                                borderBottomRightRadius: "0"
+                                                borderBottomRightRadius: "0",
                                               }}
                                               className="h-100 w-100"
                                             />
@@ -348,10 +356,16 @@ function Home() {
                                         )}
 
                                         {/* Card Content */}
-                                        <Col xs={12} md={service.image ? 8 : 12} lg={service.image ? 9 : 12} xl={service.image ? 9 : 12} className="d-flex p-0">
+                                        <Col
+                                          xs={12}
+                                          md={service.image ? 8 : 12}
+                                          lg={service.image ? 9 : 12}
+                                          xl={service.image ? 9 : 12}
+                                          className="d-flex p-0"
+                                        >
                                           <Card.Body className="d-flex flex-column w-100 p-4 position-relative">
                                             {/* Price Chip */}
-                                            <div 
+                                            <div
                                               className="price-badge mb-3 position-absolute"
                                               style={{
                                                 top: "15px",
@@ -362,7 +376,7 @@ function Home() {
                                                 borderRadius: "20px",
                                                 fontSize: "0.9rem",
                                                 fontWeight: "600",
-                                                zIndex: 10
+                                                zIndex: 10,
                                               }}
                                             >
                                               KSH {service.price}
@@ -375,7 +389,7 @@ function Home() {
                                                 fontWeight: "600",
                                                 color: "#1a1a1a",
                                                 marginTop: "40px", // Space for price badge
-                                                paddingRight: "120px" // Space for price badge
+                                                paddingRight: "120px", // Space for price badge
                                               }}
                                             >
                                               {service.name}
@@ -386,7 +400,7 @@ function Home() {
                                               style={{
                                                 color: "#666",
                                                 fontSize: "1rem",
-                                                lineHeight: "1.6"
+                                                lineHeight: "1.6",
                                               }}
                                             >
                                               {service.description}
@@ -397,7 +411,9 @@ function Home() {
                                                 variant="primary"
                                                 className="book-now-btn"
                                                 onClick={() =>
-                                                  handleFillEventDetails(service.id)
+                                                  handleFillEventDetails(
+                                                    service.id
+                                                  )
                                                 }
                                                 style={{
                                                   backgroundColor: "#007bff",
@@ -409,14 +425,20 @@ function Home() {
                                                   transition: "all 0.3s ease",
                                                 }}
                                                 onMouseOver={(e) => {
-                                                  e.currentTarget.style.backgroundColor = "#0056b3";
-                                                  e.currentTarget.style.borderColor = "#0056b3";
-                                                  e.currentTarget.style.transform = "translateY(-2px)";
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#0056b3";
+                                                  e.currentTarget.style.borderColor =
+                                                    "#0056b3";
+                                                  e.currentTarget.style.transform =
+                                                    "translateY(-2px)";
                                                 }}
                                                 onMouseOut={(e) => {
-                                                  e.currentTarget.style.backgroundColor = "#007bff";
-                                                  e.currentTarget.style.borderColor = "#007bff";
-                                                  e.currentTarget.style.transform = "translateY(0)";
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#007bff";
+                                                  e.currentTarget.style.borderColor =
+                                                    "#007bff";
+                                                  e.currentTarget.style.transform =
+                                                    "translateY(0)";
                                                 }}
                                               >
                                                 Book Now
@@ -822,9 +844,11 @@ function Home() {
                         </div>
 
                         <Typography variant="caption" className="video-title">
-                          {videos[activeVideoIndex]?.uploaded_at ?
-                            new Date(videos[activeVideoIndex]?.uploaded_at).toLocaleDateString() :
-                            "Uploaded Date Not Available"}
+                          {videos[activeVideoIndex]?.uploaded_at
+                            ? new Date(
+                                videos[activeVideoIndex]?.uploaded_at
+                              ).toLocaleDateString()
+                            : "Uploaded Date Not Available"}
                         </Typography>
                       </div>
                     </>
@@ -872,6 +896,85 @@ function Home() {
                 needs, from photography to video production, ensuring
                 high-quality results for your projects.
               </Typography>
+
+              {/* Payment Banner in Hero Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                style={{ marginTop: "3rem" }}
+              >
+                <div className="d-flex justify-content-center">
+                  <a
+                    href="#payment-info"
+                    className="red-banner-tag-hero"
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      background:
+                        "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)",
+                      color: "white",
+                      textDecoration: "none",
+                      padding: "20px 40px 20px 25px",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      boxShadow: "0 4px 15px rgba(231, 76, 60, 0.3)",
+                      transition: "all 0.3s ease",
+                      borderRadius: "8px 0 0 8px",
+                      minWidth: "280px",
+                      lineHeight: "1.4",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background =
+                        "linear-gradient(135deg, #c0392b 0%, #a93226 100%)";
+                      e.target.style.transform = "translateY(-2px)";
+                      e.target.style.boxShadow =
+                        "0 6px 20px rgba(231, 76, 60, 0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background =
+                        "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)";
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow =
+                        "0 4px 15px rgba(231, 76, 60, 0.3)";
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      Buy Goods & Services
+                    </span>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "18px",
+                        fontWeight: "700",
+                      }}
+                    >
+                      Till Number: 1234567
+                    </span>
+
+                    {/* Arrow pointing right */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "-15px",
+                        transform: "translateY(-50%)",
+                        width: "0",
+                        height: "0",
+                        border: "25px solid transparent",
+                        borderLeft: "15px solid #c0392b",
+                      }}
+                    />
+                  </a>
+                </div>
+              </motion.div>
             </Col>
           </Row>
 
