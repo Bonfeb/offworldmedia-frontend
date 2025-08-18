@@ -912,7 +912,7 @@ function Home() {
                       position: "relative",
                       display: "inline-block",
                       background:
-                        "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)",
+                        "linear-gradient(135deg, #724408ff 0%, #724408ff 100%)",
                       color: "white",
                       textDecoration: "none",
                       padding: "20px 50px",
