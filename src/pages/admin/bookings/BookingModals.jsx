@@ -211,7 +211,7 @@ const BookingModals = ({
         event_time:
           updateFormValues.event_time !== null &&
           updateFormValues.event_time !== ""
-            ? updateFormValues.event_time + ":00"
+            ? new Date(updateFormValues.event_time).toTimeString().split("")[0]
             : selectedBooking.event_time,
 
         event_location:
@@ -224,12 +224,6 @@ const BookingModals = ({
           updateFormValues.status !== "" && updateFormValues.status !== null
             ? updateFormValues.status
             : selectedBooking.status,
-
-        audio_category:
-          updateFormValues.audio_category !== "" &&
-          updateFormValues.audio_category !== null
-            ? updateFormValues.audio_category
-            : selectedBooking.audio_category || null,
       };
 
       console.log("Payload and Selected Booking:", payload, selectedBooking);
