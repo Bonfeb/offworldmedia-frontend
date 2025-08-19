@@ -160,14 +160,12 @@ const BookingModals = ({
         status: createFormValues.status,
       };
       console.log("Payload: ", payload);
-      await API.post("/admin-dashboard/", payload, 
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      await API.post("/admin-dashboard/", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
       onCreateConfirm(payload);
       onCreateClose();
       refreshData();
@@ -194,19 +192,48 @@ const BookingModals = ({
     try {
       setIsLoading(true);
       const payload = {
-        user_id: updateFormValues.user_id || "",
-        service_id: updateFormValues.service_id || "",
-        event_date: updateFormValues.event_date
-          ? new Date(updateFormValues.event_date).toISOString().split("T")[0]
-          : null,
-        event_time: updateFormValues.event_time
-          ? updateFormValues.event_time + ":00"
-          : null,
-        event_location: updateFormValues.event_location || "",
-        status: updateFormValues.status || "unpaid",
-        audio_category: updateFormValues.audio_category || "",
+        user_id:
+          updateFormValues.user_id !== "" && updateFormValues.user_id !== null
+            ? updateFormValues.user_id
+            : selectedBooking.user?.id,
+
+        service_id:
+          updateFormValues.service_id !== "" &&
+          updateFormValues.service_id !== null
+            ? updateFormValues.service_id
+            : selectedBooking?.service.id,
+
+        event_date:
+          updateFormValues.event_date !== null
+            ? new Date(updateFormValues.event_date).toISOString().split("T")[0]
+            : selectedBooking.event_date,
+
+        event_time:
+          updateFormValues.event_time !== null &&
+          updateFormValues.event_time !== ""
+            ? updateFormValues.event_time + ":00"
+            : selectedBooking.event_time,
+
+        event_location:
+          updateFormValues.event_location !== "" &&
+          updateFormValues.event_location !== null
+            ? updateFormValues.event_location
+            : selectedBooking.event_location,
+
+        status:
+          updateFormValues.status !== "" && updateFormValues.status !== null
+            ? updateFormValues.status
+            : selectedBooking.status,
+
+        audio_category:
+          updateFormValues.audio_category !== "" &&
+          updateFormValues.audio_category !== null
+            ? updateFormValues.audio_category
+            : selectedBooking.audio_category || null,
       };
+
       console.log("Payload and Selected Booking:", payload, selectedBooking);
+      
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
