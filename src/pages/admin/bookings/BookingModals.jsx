@@ -10,6 +10,7 @@ import {
   MenuItem,
   Grid,
 } from "@mui/material";
+import { parse, format } from "date-fns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
@@ -18,6 +19,7 @@ import {
   handleDeleteConfirm,
   handleUpdateConfirm,
 } from "../../../utils/constants";
+import { update } from "lodash";
 
 const BookingModals = ({
   createOpen,
@@ -40,7 +42,6 @@ const BookingModals = ({
     event_time: null,
     event_location: "",
     status: "",
-    audio_category: "",
   });
 
   const [createFormValues, setCreateFormValues] = useState({
@@ -211,7 +212,10 @@ const BookingModals = ({
         event_time:
           updateFormValues.event_time !== null &&
           updateFormValues.event_time !== ""
-            ? new Date(updateFormValues.event_time).toTimeString().split("")[0]
+            ? new format(
+              parse(updateFormValues.event_time, "HH:mm:ss", new Date()),
+              "HH:mm:ss"
+            )
             : selectedBooking.event_time,
 
         event_location:
@@ -224,10 +228,16 @@ const BookingModals = ({
           updateFormValues.status !== "" && updateFormValues.status !== null
             ? updateFormValues.status
             : selectedBooking.status,
+
+        audio_category:
+          updateFormValues.audio_category !== "" &&
+          updateFormValues.audio_category !== null
+            ? updateFormValues.audio_category
+            : selectedBooking.audio_category,
       };
 
       console.log("Payload and Selected Booking:", payload, selectedBooking);
-      
+
       await API.put(`/admin-booking/${selectedBooking.id}/`, payload, {
         withCredentials: true,
       });
