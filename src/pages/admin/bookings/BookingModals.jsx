@@ -212,10 +212,12 @@ const BookingModals = ({
         event_time:
           updateFormValues.event_time !== null &&
           updateFormValues.event_time !== ""
-            ? new format(
-              parse(updateFormValues.event_time, "HH:mm:ss", new Date()),
-              "HH:mm:ss"
-            )
+            ? isDate(updateFormValues.event_time)
+              ? format(updateFormValues.event_time, "HH:mm:ss") // Handle Date object
+              : format(
+                  parse(updateFormValues.event_time, "hh:mm a", new Date()), // Handle AM/PM string
+                  "HH:mm:ss"
+                )
             : selectedBooking.event_time,
 
         event_location:
