@@ -10,7 +10,7 @@ import {
   MenuItem,
   Grid,
 } from "@mui/material";
-import { parse, format } from "date-fns";
+import { parse, isDate, format } from "date-fns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
@@ -213,9 +213,9 @@ const BookingModals = ({
           updateFormValues.event_time !== null &&
           updateFormValues.event_time !== ""
             ? isDate(updateFormValues.event_time)
-              ? format(updateFormValues.event_time, "HH:mm:ss") // Handle Date object
+              ? format(updateFormValues.event_time, "HH:mm:ss")
               : format(
-                  parse(updateFormValues.event_time, "hh:mm a", new Date()), // Handle AM/PM string
+                  parse(updateFormValues.event_time, "hh:mm a", new Date()),
                   "HH:mm:ss"
                 )
             : selectedBooking.event_time,
