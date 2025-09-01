@@ -1,5 +1,12 @@
 import { Container } from "react-bootstrap";
-import { Box, Typography, IconButton, Paper, Grid, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Paper,
+  Grid,
+  Divider,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,12 +30,6 @@ const Footer = () => {
     { icon: faInstagram, url: instagram },
     { icon: faTiktok, url: tiktok },
     { icon: faYoutube, url: youtube },
-  ];
-
-  const footerLinks = [
-    { label: "Privacy Policy", url: "/privacy" },
-    { label: "Terms of Service", url: "/terms" },
-    { label: "Contact Us", url: "/contactus" },
   ];
 
   return (
@@ -80,36 +81,6 @@ const Footer = () => {
                   >
                     <FontAwesomeIcon icon={social.icon} size="lg" />
                   </IconButton>
-                ))}
-              </Box>
-            </Grid>
-
-            {/* Divider */}
-            <Grid item xs={12} sx={{ my: 2 }}>
-              <Divider sx={{ bgcolor: "rgba(255, 255, 255, 0.2)" }} />
-            </Grid>
-
-            {/* Additional Links */}
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 3, flexWrap: "wrap" }}>
-                {footerLinks.map((link, index) => (
-                  <Typography
-                    key={index}
-                    variant="body2"
-                    component={Link}
-                    to={link.url}
-                    sx={{
-                      color: "#4682B4",
-                      textDecoration: "none",
-                      "&:hover": {
-                        color: "#F59E0B",
-                        textDecoration: "underline",
-                      },
-                      fontSize: { xs: "0.85rem", md: "0.9rem" },
-                    }}
-                  >
-                    {link.label}
-                  </Typography>
                 ))}
               </Box>
             </Grid>

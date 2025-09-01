@@ -13,7 +13,7 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Paper, Typography, Box, Grid} from "@mui/material";
+import { Paper, Typography, Box, Grid } from "@mui/material";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 
@@ -505,8 +505,10 @@ function Home() {
             alignItems: "center",
             justifyContent: "center",
             color: "white",
-            background:
-              "linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--accent-blue) 100%)",
+            backgroundImage:
+              'linear-gradient(rgba(0, 0, 0,0.7), rgba(0, 0, 0, 0.5)), url("/OWM Icon.ico")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
             textAlign: "center",
             padding: { xs: "2rem 1rem", md: "3rem 2rem" },
             position: "relative",
