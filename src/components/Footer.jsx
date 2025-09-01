@@ -46,34 +46,6 @@ const Footer = () => {
       <Box py={{ xs: 4, md: 6 }}>
         <Container>
           <Grid container spacing={3} alignItems="center">
-            {/* Brand and Copyright */}
-            <Grid item xs={12} md={6} sx={{ textAlign: { xs: "center", md: "left" } }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: "bold",
-                  color: "#FFFFFF",
-                  mb: 1,
-                  fontSize: { xs: "1.2rem", md: "1.5rem" },
-                }}
-              >
-                Off World Media Africa
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "#4682B4",
-                  fontSize: { xs: "0.85rem", md: "0.9rem" },
-                }}
-              >
-                © {new Date().getFullYear()}{" "}
-                <Box component="span" sx={{ color: "#F59E0B" }}>
-                  Off World Media Africa
-                </Box>
-                . All Rights Reserved.
-              </Typography>
-            </Grid>
-
             {/* Social Links */}
             <Grid
               item
