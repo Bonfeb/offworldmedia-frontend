@@ -8,13 +8,12 @@ import {
   Container,
   Spinner,
   Alert,
-  Image,
   Button,
   Card,
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Paper, Typography, Box, Chip } from "@mui/material";
+import { Paper, Typography, Box, Grid} from "@mui/material";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 
