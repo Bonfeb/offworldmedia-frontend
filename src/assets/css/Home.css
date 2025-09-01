@@ -326,6 +326,7 @@ section {
   max-width: 100%;
   padding: 0;
 }
+
 /* Service Cards */
 .service-card {
   background: var(--card-bg); /* Changed from white to dark blue */
