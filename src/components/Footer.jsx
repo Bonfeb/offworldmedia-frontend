@@ -58,7 +58,16 @@ const Footer = () => {
                 mt: { xs: 2, md: 0 },
               }}
             >
-              <Box sx={{ display: "flex", gap: 1.5 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: { xs: 1.5, sm: 2 },
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
                 {socialLinks.map((social, index) => (
                   <IconButton
                     key={index}

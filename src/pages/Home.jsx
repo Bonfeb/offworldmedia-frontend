@@ -493,14 +493,15 @@ function Home() {
             lg: "row",
           },
           minHeight: "100vh",
+          height: "100vh",
         }}
       >
         {/* Hero Section */}
         <Box
           className="hero-section"
           sx={{
-            flex: { lg: 1 },
-            minHeight: { xs: "50vh", sm: "60vh", md: "70vh", lg: "100vh" },
+            flex: 1,
+            height: { xs: "50vh", lg: "100%" },
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -516,11 +517,28 @@ function Home() {
           }}
           id="home"
         >
-          <Container maxWidth="md">
+          <Container
+            maxWidth={false}
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Typography
                 variant="h2"
@@ -636,16 +654,15 @@ function Home() {
         <Box
           className="about-section"
           sx={{
-            flex: { lg: 1 },
+            flex: 1,
+            height: { xs: "50vh", lg: "100%" },
             background:
               "linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%)",
-            minHeight: { xs: "auto", lg: "100vh" },
             display: "flex",
             alignItems: "center",
             color: "var(--text-on-dark)",
             position: "relative",
-            padding: { xs: "3rem 1rem", md: "5rem 2rem" },
-            width: "100%",
+            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
             "&::before": {
               content: '""',
               position: "absolute",
@@ -655,11 +672,20 @@ function Home() {
               height: "8px",
               background:
                 "linear-gradient(to right, var(--primary-blue), var(--secondary-blue))",
-              display: { lg: "none" }, // Hide the top border on large screens when side-by-side
+              display: { lg: "none" },
             },
           }}
         >
-          <Container maxWidth={false} sx={{ width: "100%", maxWidth: "100%" }}>
+          <Container
+            maxWidth={false}
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Box
               component={Paper}
               elevation={0}
@@ -672,6 +698,10 @@ function Home() {
                 color: "var(--text-on-dark)",
                 width: "100%",
                 height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                overflow: "auto",
               }}
             >
               <Typography
@@ -702,7 +732,11 @@ function Home() {
                 and digital broadcasting.
               </Typography>
 
-              <Grid container spacing={3} sx={{ marginTop: "1rem" }}>
+              <Grid
+                container
+                spacing={3}
+                sx={{ marginTop: "1rem", flexGrow: 1 }}
+              >
                 <Grid item xs={12} md={6}>
                   <Box
                     component={Paper}
@@ -714,6 +748,8 @@ function Home() {
                       height: "100%",
                       transition: "transform 0.3s ease, box-shadow 0.3s ease",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
+                      display: "flex",
+                      flexDirection: "column",
                       "&:hover": {
                         transform: "translateY(-5px)",
                         boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
@@ -735,7 +771,10 @@ function Home() {
                     >
                       Vision
                     </Typography>
-                    <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.6, flexGrow: 1 }}
+                    >
                       To be a transformative force in global media, revealing
                       the essence of life and capturing the heartbeat through
                       photography, film, music and digital broadcasting.
@@ -754,6 +793,8 @@ function Home() {
                       height: "100%",
                       transition: "transform 0.3s ease, box-shadow 0.3s ease",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
+                      display: "flex",
+                      flexDirection: "column",
                       "&:hover": {
                         transform: "translateY(-5px)",
                         boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
@@ -775,7 +816,10 @@ function Home() {
                     >
                       Mission
                     </Typography>
-                    <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.6, flexGrow: 1 }}
+                    >
                       To create powerful visuals and authentic sounds that
                       inspire, resonate and move both hearts and minds.
                     </Typography>
@@ -786,7 +830,7 @@ function Home() {
           </Container>
         </Box>
       </Box>
-
+      
       {/* Studio Work Showcase */}
       <Box
         className="showcase-section"
