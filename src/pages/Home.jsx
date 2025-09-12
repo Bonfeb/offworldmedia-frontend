@@ -13,7 +13,7 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Paper, Typography, Box, Grid, Chip } from "@mui/material";
+import { Paper, Typography, Box, Grid } from "@mui/material";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 
@@ -42,10 +42,12 @@ function Home() {
           withCredentials: true,
         });
 
+        // Check if response data exists
         if (!response.data) {
           throw new Error("No data received from server");
         }
 
+        // Set services and groupedServices safely
         if (Array.isArray(response.data.services)) {
           setServices(response.data.services);
         } else {
@@ -53,11 +55,14 @@ function Home() {
           setServices([]);
         }
 
+        // Handle grouped_services safely
         if (
           response.data.grouped_services &&
           typeof response.data.grouped_services === "object"
         ) {
           setGroupedServices(response.data.grouped_services);
+
+          // Set the first category as active if available
           const categories = Object.keys(response.data.grouped_services);
           if (categories.length > 0) {
             setActiveCategory(categories[0]);
@@ -73,6 +78,8 @@ function Home() {
         setError(
           `Failed to load services. ${error.message || "Unknown error"}`
         );
+
+        // Set empty data to prevent UI errors
         setServices([]);
         setGroupedServices({});
       } finally {
@@ -82,6 +89,7 @@ function Home() {
     fetchServices();
   }, []);
 
+  // Set the active category when groupedServices changes
   useEffect(() => {
     const categories = Object.keys(groupedServices);
     if (categories.length > 0 && !activeCategory) {
@@ -89,6 +97,7 @@ function Home() {
     }
   }, [groupedServices, activeCategory]);
 
+  // Fetch Videos from Backend
   useEffect(() => {
     const fetchVideos = async () => {
       try {
@@ -100,6 +109,7 @@ function Home() {
           throw new Error("No data received from server");
         }
 
+        // Videos are already ordered by newest first from backend
         if (Array.isArray(response.data)) {
           setVideos(response.data);
         } else if (
@@ -113,6 +123,7 @@ function Home() {
         }
       } catch (error) {
         console.error("Error fetching videos:", error);
+        // Set empty videos array to prevent UI errors
         setVideos([]);
       }
     };
@@ -120,16 +131,20 @@ function Home() {
     fetchVideos();
   }, []);
 
+  // Video carousel timer effect
   useEffect(() => {
     if (videos.length > 0) {
+      // Clear any existing timer
       if (videoTimerRef.current) {
         clearTimeout(videoTimerRef.current);
       }
 
+      // Set a new timer
       videoTimerRef.current = setTimeout(() => {
         setActiveVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
       }, VIDEO_DISPLAY_DURATION);
     }
+    // Cleanup timer on unmount or when activeVideoIndex changes
     return () => {
       if (videoTimerRef.current) {
         clearTimeout(videoTimerRef.current);
@@ -137,6 +152,7 @@ function Home() {
     };
   }, [activeVideoIndex, videos.length]);
 
+  //Fetch Images from Backend
   useEffect(() => {
     const fetchImages = async () => {
       try {
@@ -148,6 +164,7 @@ function Home() {
           throw new Error("No data received from server");
         }
 
+        // Images are already ordered by newest first from backend
         if (Array.isArray(response.data)) {
           setImages(response.data);
         } else if (
@@ -161,6 +178,7 @@ function Home() {
         }
       } catch (error) {
         console.error("Error fetching images:", error);
+        // Set empty images array to prevent UI errors
         setImages([]);
       }
     };
@@ -168,10 +186,22 @@ function Home() {
     fetchImages();
   }, []);
 
+  const handleFillEventDetails = (serviceId) => {
+    if (!isAuthenticated) {
+      setAuthAlert(true);
+      setTimeout(() => setAuthAlert(false), 5000);
+      navigate("/login");
+      return;
+    }
+    navigate(`/event-details/${serviceId}`);
+  };
+
+  // Function to format category name for display
   const formatCategoryName = (category) => {
     return category.charAt(0).toUpperCase() + category.slice(1);
   };
 
+  // Function to format subcategory name for display
   const formatSubcategoryName = (subcategory) => {
     if (!subcategory) return "";
     return subcategory
@@ -180,6 +210,7 @@ function Home() {
       .join(" ");
   };
 
+  // Loading spinner component
   const LoadingSpinner = () => (
     <div className="text-center py-5">
       <Spinner animation="border" role="status" variant="primary">
@@ -189,6 +220,7 @@ function Home() {
     </div>
   );
 
+  // Manual video navigation
   const goToPrevVideo = () => {
     if (videoTimerRef.current) {
       clearTimeout(videoTimerRef.current);
@@ -205,6 +237,8 @@ function Home() {
     setActiveVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
   };
 
+  // Services section rendering function
+  // Update the renderServicesSection function with this improved card layout
   const renderServicesSection = () => {
     if (loading) {
       return <LoadingSpinner />;
@@ -238,6 +272,7 @@ function Home() {
           </Alert>
         )}
 
+        {/* Category Tabs */}
         <div className="service-tabs-container">
           {Object.keys(groupedServices).length > 0 ? (
             <Tab.Container
@@ -263,6 +298,7 @@ function Home() {
               <Tab.Content>
                 {Object.keys(groupedServices).map((category) => (
                   <Tab.Pane eventKey={category} key={category}>
+                    {/* Subcategory sections */}
                     {Object.keys(groupedServices[category]).map(
                       (subcategory) => (
                         <div
@@ -275,61 +311,147 @@ function Home() {
                             </h3>
                           </div>
 
-                          <Grid container spacing={3}>
+                          {/* Updated Grid Layout - Fluid full width cards */}
+                          <div className="w-100">
                             {groupedServices[category][subcategory].map(
                               (service) => (
-                                <Grid
-                                  item
-                                  xs={12}
-                                  md={6}
-                                  lg={4}
-                                  key={service.id}
-                                >
+                                <div key={service.id} className="w-100 mb-4">
                                   <motion.div
-                                    whileHover={{ y: -5 }}
-                                    transition={{ duration: 0.2 }}
+                                    whileHover={{ y: -10 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="w-100"
                                   >
-                                    <Card className="service-card h-100 shadow-sm border-0">
-                                      {service.image && (
-                                        <Card.Img
-                                          variant="top"
-                                          src={service.image}
-                                          alt={service.name}
-                                          style={{
-                                            height: "200px",
-                                            objectFit: "cover",
-                                          }}
-                                        />
-                                      )}
-                                      <Card.Body className="d-flex flex-column">
-                                        <div className="d-flex justify-content-between align-items-start mb-2">
-                                          <Card.Title className="service-card-title">
-                                            {service.name}
-                                          </Card.Title>
-                                          <Chip
-                                            label={`KSH ${service.price}`}
-                                            color="primary"
-                                            size="small"
-                                          />
-                                        </div>
-                                        <Card.Text className="service-card-description flex-grow-1">
-                                          {service.description}
-                                        </Card.Text>
-                                        <div className="mt-2">
-                                          <small className="text-muted">
-                                            Category:{" "}
-                                            {formatCategoryName(
-                                              service.category
-                                            )}
-                                          </small>
-                                        </div>
-                                      </Card.Body>
+                                    <Card
+                                      className="service-card shadow-sm border-0 w-100"
+                                      style={{ minHeight: "200px" }}
+                                    >
+                                      <Row className="g-0 h-100 w-100 mx-0">
+                                        {/* Card Image - Takes up part of the card on larger screens */}
+                                        {service.image && (
+                                          <Col
+                                            xs={12}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                            className="d-flex p-0"
+                                          >
+                                            <Card.Img
+                                              src={service.image}
+                                              alt={service.category}
+                                              style={{
+                                                height: "200px",
+                                                width: "100%",
+                                                objectFit: "cover",
+                                                borderTopLeftRadius:
+                                                  "calc(0.25rem - 1px)",
+                                                borderBottomLeftRadius:
+                                                  "calc(0.25rem - 1px)",
+                                                borderTopRightRadius: "0",
+                                                borderBottomRightRadius: "0",
+                                              }}
+                                              className="h-100 w-100"
+                                            />
+                                          </Col>
+                                        )}
+
+                                        {/* Card Content */}
+                                        <Col
+                                          xs={12}
+                                          md={service.image ? 8 : 12}
+                                          lg={service.image ? 9 : 12}
+                                          xl={service.image ? 9 : 12}
+                                          className="d-flex p-0"
+                                        >
+                                          <Card.Body className="d-flex flex-column w-100 p-4 position-relative">
+                                            {/* Price Chip */}
+                                            <div
+                                              className="price-badge mb-3 position-absolute"
+                                              style={{
+                                                top: "15px",
+                                                right: "15px",
+                                                backgroundColor: "#007bff",
+                                                color: "white",
+                                                padding: "8px 16px",
+                                                borderRadius: "20px",
+                                                fontSize: "0.9rem",
+                                                fontWeight: "600",
+                                                zIndex: 10,
+                                              }}
+                                            >
+                                              KSH {service.price}
+                                            </div>
+
+                                            <Card.Title
+                                              className="service-card-title mb-3"
+                                              style={{
+                                                fontSize: "1.5rem",
+                                                fontWeight: "600",
+                                                color: "#1a1a1a",
+                                                marginTop: "40px", // Space for price badge
+                                                paddingRight: "120px", // Space for price badge
+                                              }}
+                                            >
+                                              {service.name}
+                                            </Card.Title>
+
+                                            <Card.Text
+                                              className="service-card-description mb-4 flex-grow-1"
+                                              style={{
+                                                color: "#666",
+                                                fontSize: "1rem",
+                                                lineHeight: "1.6",
+                                              }}
+                                            >
+                                              {service.description}
+                                            </Card.Text>
+
+                                            <div className="d-flex justify-content-end align-items-end">
+                                              <Button
+                                                variant="primary"
+                                                className="book-now-btn"
+                                                onClick={() =>
+                                                  handleFillEventDetails(
+                                                    service.id
+                                                  )
+                                                }
+                                                style={{
+                                                  backgroundColor: "#007bff",
+                                                  borderColor: "#007bff",
+                                                  borderRadius: "30px",
+                                                  padding: "12px 30px",
+                                                  fontWeight: "500",
+                                                  fontSize: "1rem",
+                                                  transition: "all 0.3s ease",
+                                                }}
+                                                onMouseOver={(e) => {
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#0056b3";
+                                                  e.currentTarget.style.borderColor =
+                                                    "#0056b3";
+                                                  e.currentTarget.style.transform =
+                                                    "translateY(-2px)";
+                                                }}
+                                                onMouseOut={(e) => {
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#007bff";
+                                                  e.currentTarget.style.borderColor =
+                                                    "#007bff";
+                                                  e.currentTarget.style.transform =
+                                                    "translateY(0)";
+                                                }}
+                                              >
+                                                Book Now
+                                              </Button>
+                                            </div>
+                                          </Card.Body>
+                                        </Col>
+                                      </Row>
                                     </Card>
                                   </motion.div>
-                                </Grid>
+                                </div>
                               )
                             )}
-                          </Grid>
+                          </div>
                         </div>
                       )
                     )}
@@ -360,55 +482,79 @@ function Home() {
 
   return (
     <div className="home-page">
-      {/* Hero Section */}
+      {/* Main Container for Side-by-Side Layout */}
       <Box
         sx={{
-          background:
-            "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
-          minHeight: "100vh",
           display: "flex",
-          alignItems: "center",
-          color: "white",
-          position: "relative",
-          overflow: "hidden",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: `
-              radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
-              radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
-              linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.03) 50%, transparent 51%)
-            `,
-            backgroundSize: "100% 100%, 100% 100%, 30px 30px",
-            zIndex: 0,
+          flexDirection: {
+            xs: "column",
+            sm: "column",
+            md: "column",
+            lg: "row",
           },
+          minHeight: "100vh",
+          height: "100vh",
         }}
-        id="home"
       >
-        <Container>
-          <Box sx={{ position: "relative", zIndex: 1 }}>
+        {/* Hero Section */}
+        <Box
+          className="hero-section"
+          sx={{
+            flex: 1,
+            height: { xs: "50vh", lg: "100%" },
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            backgroundImage:
+              'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url("/OWM Icon.ico")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            textAlign: "center",
+            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
+            position: "relative",
+            overflow: "hidden",
+          }}
+          id="home"
+        >
+          <Container
+            maxWidth={false}
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Typography
                 variant="h2"
                 component="h1"
                 gutterBottom
+                className="hero-title"
                 sx={{
                   fontWeight: 700,
-                  fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
-                  marginBottom: "1rem",
-                  background: "linear-gradient(45deg, #fff, #a8d8ea)",
-                  backgroundClip: "text",
-                  textFillColor: "transparent",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  fontSize: {
+                    xs: "2rem",
+                    sm: "2.5rem",
+                    md: "3.5rem",
+                    lg: "2.8rem",
+                  },
+                  marginBottom: { xs: "1rem", md: "1.5rem" },
+                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 }}
               >
                 Offworld Media
@@ -417,9 +563,15 @@ function Home() {
                 variant="h5"
                 component="p"
                 gutterBottom
+                className="hero-subtitle"
                 sx={{
                   mb: { xs: 2, md: 4 },
-                  fontSize: { xs: "1.2rem", md: "1.5rem" },
+                  fontSize: {
+                    xs: "1rem",
+                    sm: "1.2rem",
+                    md: "1.5rem",
+                    lg: "1.25rem",
+                  },
                   maxWidth: "600px",
                   margin: "0 auto",
                   lineHeight: 1.5,
@@ -431,10 +583,10 @@ function Home() {
               <Box
                 sx={{
                   display: "flex",
-                  gap: 2,
+                  gap: { xs: 1, md: 2 },
                   justifyContent: "center",
                   flexDirection: { xs: "column", sm: "row" },
-                  marginTop: { xs: "2rem", md: "3rem" },
+                  marginTop: { xs: "1rem", md: "2rem" },
                 }}
               >
                 <motion.div
@@ -445,10 +597,10 @@ function Home() {
                   <Button
                     onClick={() => navigate("/services")}
                     sx={{
-                      backgroundColor: "#4cc9f0",
-                      color: "#1a1a2e",
+                      backgroundColor: "#007bff",
+                      color: "white",
                       border: "none",
-                      padding: "12px 30px",
+                      padding: "12px 24px",
                       borderRadius: "30px",
                       fontWeight: 600,
                       textTransform: "uppercase",
@@ -456,9 +608,9 @@ function Home() {
                       width: { xs: "100%", sm: "auto" },
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#2a9d8f",
+                        backgroundColor: "#28a745",
                         transform: "translateY(-3px)",
-                        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
+                        boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
                       },
                     }}
                   >
@@ -472,11 +624,11 @@ function Home() {
                 >
                   <Button
                     onClick={() => navigate("/contactus")}
-                    variant="outlined"
                     sx={{
+                      backgroundColor: "#007bff",
                       color: "white",
-                      borderColor: "white",
-                      padding: "12px 30px",
+                      border: "none",
+                      padding: "12px 24px",
                       borderRadius: "30px",
                       fontWeight: 600,
                       textTransform: "uppercase",
@@ -484,11 +636,9 @@ function Home() {
                       width: { xs: "100%", sm: "auto" },
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        borderColor: "#4cc9f0",
-                        color: "#4cc9f0",
+                        backgroundColor: "#28a745",
                         transform: "translateY(-3px)",
-                        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
+                        boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
                       },
                     }}
                   >
@@ -497,497 +647,605 @@ function Home() {
                 </motion.div>
               </Box>
             </motion.div>
-          </Box>
-        </Container>
-      </Box>
+          </Container>
+        </Box>
 
-      {/* About Section */}
-      <Box
-        sx={{
-          py: { xs: 6, md: 10 },
-          backgroundColor: "#f8f9fa",
-          position: "relative",
-        }}
-      >
-        <Container>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
+        {/* About Section */}
+        <Box
+          className="about-section"
+          sx={{
+            flex: 1,
+            height: { xs: "50vh", lg: "100%" },
+            background:
+              "linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%)",
+            display: "flex",
+            alignItems: "center",
+            color: "var(--text-on-dark)",
+            position: "relative",
+            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "8px",
+              background:
+                "linear-gradient(to right, var(--primary-blue), var(--secondary-blue))",
+              display: { lg: "none" },
+            },
+          }}
+        >
+          <Container
+            maxWidth={false}
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Box
+              component={Paper}
+              elevation={0}
+              sx={{
+                background: "rgba(26, 49, 75, 0.7)",
+                borderRadius: "15px",
+                padding: { xs: "2rem", md: "2.5rem" },
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                color: "var(--text-on-dark)",
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                overflow: "auto",
+              }}
+            >
+              <Typography
+                variant="h2"
+                component="h2"
+                sx={{
+                  fontSize: { xs: "1.8rem", sm: "2rem", md: "2.25rem" },
+                  fontWeight: 700,
+                  marginBottom: "1.5rem",
+                  color: "var(--text-on-dark)",
+                  textAlign: "center",
+                }}
               >
-                <Typography
-                  variant="h3"
-                  component="h2"
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    color: "#1a1a2e",
-                    marginBottom: "2rem",
-                  }}
-                >
-                  Who We Are
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    marginBottom: "2rem",
-                    fontSize: "1.1rem",
-                    lineHeight: 1.7,
-                    color: "#495057",
-                  }}
-                >
-                  Offworld Media Africa is a business company specializing in
-                  photography, videography, music production, graphic designing
-                  and digital broadcasting.
-                </Typography>
+                Who We Are
+              </Typography>
 
-                <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-                  <Chip
-                    label="Photography"
-                    color="primary"
-                    variant="outlined"
-                  />
-                  <Chip
-                    label="Videography"
-                    color="primary"
-                    variant="outlined"
-                  />
-                  <Chip
-                    label="Music Production"
-                    color="primary"
-                    variant="outlined"
-                  />
-                  <Chip
-                    label="Graphic Design"
-                    color="primary"
-                    variant="outlined"
-                  />
-                  <Chip
-                    label="Digital Broadcasting"
-                    color="primary"
-                    variant="outlined"
-                  />
-                </Box>
-              </motion.div>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+              <Typography
+                variant="body1"
+                sx={{
+                  marginBottom: "2rem",
+                  textAlign: "center",
+                  fontSize: { xs: "1rem", md: "1.1rem" },
+                  lineHeight: 1.6,
+                }}
+              >
+                Offworld Media Africa is a business company specializing in
+                photography, videography, music production, graphic designing
+                and digital broadcasting.
+              </Typography>
+
+              <Grid
+                container
+                spacing={3}
+                sx={{ marginTop: "1rem", flexGrow: 1 }}
+              >
+                <Grid item xs={12} md={6}>
+                  <Box
+                    component={Paper}
+                    elevation={3}
+                    sx={{
+                      background: "rgba(13, 71, 161, 0.5)",
+                      borderRadius: "10px",
+                      padding: "1.5rem",
+                      height: "100%",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      display: "flex",
+                      flexDirection: "column",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
+                        background: "rgba(13, 71, 161, 0.7)",
+                      },
+                    }}
                   >
-                    <Paper
-                      elevation={2}
+                    <Typography
+                      variant="h4"
+                      component="h3"
                       sx={{
-                        padding: 3,
-                        height: "100%",
-                        background:
-                          "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
-                        color: "white",
-                        borderRadius: "12px",
+                        fontSize: { xs: "1.4rem", md: "1.8rem" },
+                        fontWeight: 600,
+                        color: "var(--text-on-dark)",
+                        marginBottom: "1rem",
+                        borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
+                        paddingBottom: "0.5rem",
                       }}
                     >
-                      <Typography
-                        variant="h5"
-                        component="h3"
-                        gutterBottom
-                        sx={{
-                          fontWeight: 600,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <Box component="span" sx={{ color: "#4cc9f0" }}>
-                          Vision
-                        </Box>
-                      </Typography>
-                      <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-                        To be a transformative force in global media, revealing
-                        the essence of life and capturing the heartbeat through
-                        photography, film, music and digital broadcasting.
-                      </Typography>
-                    </Paper>
-                  </motion.div>
+                      Vision
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.6, flexGrow: 1 }}
+                    >
+                      To be a transformative force in global media, revealing
+                      the essence of life and capturing the heartbeat through
+                      photography, film, music and digital broadcasting.
+                    </Typography>
+                  </Box>
                 </Grid>
-                <Grid item xs={12}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+
+                <Grid item xs={12} md={6}>
+                  <Box
+                    component={Paper}
+                    elevation={3}
+                    sx={{
+                      background: "rgba(13, 71, 161, 0.5)",
+                      borderRadius: "10px",
+                      padding: "1.5rem",
+                      height: "100%",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      display: "flex",
+                      flexDirection: "column",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
+                        background: "rgba(13, 71, 161, 0.7)",
+                      },
+                    }}
                   >
-                    <Paper
-                      elevation={2}
+                    <Typography
+                      variant="h4"
+                      component="h3"
                       sx={{
-                        padding: 3,
-                        height: "100%",
-                        background:
-                          "linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%)",
-                        color: "white",
-                        borderRadius: "12px",
+                        fontSize: { xs: "1.4rem", md: "1.8rem" },
+                        fontWeight: 600,
+                        color: "var(--text-on-dark)",
+                        marginBottom: "1rem",
+                        borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
+                        paddingBottom: "0.5rem",
                       }}
                     >
-                      <Typography
-                        variant="h5"
-                        component="h3"
-                        gutterBottom
-                        sx={{
-                          fontWeight: 600,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          color: "#4cc9f0",
-                        }}
-                      >
-                        Mission
-                      </Typography>
-                      <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-                        To create powerful visuals and authentic sounds that
-                        inspire, resonate and move both hearts and minds.
-                      </Typography>
-                    </Paper>
-                  </motion.div>
+                      Mission
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.6, flexGrow: 1 }}
+                    >
+                      To create powerful visuals and authentic sounds that
+                      inspire, resonate and move both hearts and minds.
+                    </Typography>
+                  </Box>
                 </Grid>
               </Grid>
-            </Grid>
-          </Grid>
-        </Container>
+            </Box>
+          </Container>
+        </Box>
       </Box>
 
-      {/* Services Section */}
-      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: "white" }}>
-        <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Typography
-              variant="h3"
-              component="h2"
-              gutterBottom
-              sx={{
-                fontWeight: 700,
-                color: "#1a1a2e",
-                textAlign: "center",
-                marginBottom: "1rem",
-              }}
-            >
-              Our Services
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                textAlign: "center",
-                maxWidth: "700px",
-                margin: "0 auto 3rem",
-                fontSize: "1.1rem",
-                color: "#495057",
-              }}
-            >
-              Explore our comprehensive range of professional media services
-              designed to meet all your creative needs.
-            </Typography>
-          </motion.div>
-
-          {renderServicesSection()}
-        </Container>
-      </Box>
-
-      {/* Gallery Section */}
+      {/* Studio Work Showcase */}
       <Box
+        className="showcase-section"
         sx={{
-          py: { xs: 6, md: 10 },
-          backgroundColor: "#f8f9fa",
+          background:
+            "linear-gradient(135deg, var(--dark-blue) 0%, var(--antique-blue) 100%)",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          padding: 0,
+          width: "100%",
         }}
       >
-        <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+        {/* Section Title */}
+        <Box
+          sx={{
+            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              fontWeight: 600,
+              fontSize: { xs: "1.8rem", sm: "2rem", md: "2.5rem" },
+              color: "var(--text-on-dark)",
+              marginBottom: 0,
+            }}
           >
-            <Typography
-              variant="h3"
-              component="h2"
-              gutterBottom
+            Offworld Media Gallery
+          </Typography>
+        </Box>
+
+        {/* Main Content Container */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: { xs: "column", lg: "row" },
+            width: "100%",
+            minHeight: "calc(100vh - 150px)",
+          }}
+        >
+          {/* Left Column - Image Carousel */}
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: { xs: "1rem", md: "2rem" },
+              minHeight: { xs: "50vh", lg: "100%" },
+            }}
+          >
+            <Box
               sx={{
-                fontWeight: 700,
-                color: "#1a1a2e",
-                textAlign: "center",
-                marginBottom: "3rem",
+                width: "100%",
+                height: { xs: "400px", md: "500px", lg: "600px" },
+                borderRadius: "15px",
+                overflow: "hidden",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
               }}
             >
-              Our Portfolio
-            </Typography>
-          </motion.div>
-
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
+              <Carousel
+                fade
+                indicators={true}
+                className="showcase-carousel h-100"
               >
-                <Typography
-                  variant="h5"
-                  component="h3"
-                  gutterBottom
-                  sx={{ fontWeight: 600, color: "#1a1a2e", mb: 2 }}
-                >
-                  Photo Gallery
-                </Typography>
-                <Box
-                  sx={{
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <Carousel fade indicators={true}>
-                    {images.length > 0 ? (
-                      images.map((image, index) => (
-                        <Carousel.Item key={image.id || index}>
-                          <img
-                            className="d-block w-100"
-                            src={image.image || image.url}
-                            alt={`Slide ${index + 1}`}
-                            style={{
-                              height: "400px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </Carousel.Item>
-                      ))
-                    ) : (
-                      <Carousel.Item>
-                        <Box
-                          sx={{
-                            height: "400px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: "#e9ecef",
-                          }}
-                        >
-                          <Typography variant="h6" sx={{ textAlign: "center" }}>
-                            No images available.
-                          </Typography>
-                        </Box>
-                      </Carousel.Item>
-                    )}
-                  </Carousel>
-                </Box>
-              </motion.div>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Typography
-                  variant="h5"
-                  component="h3"
-                  gutterBottom
-                  sx={{ fontWeight: 600, color: "#1a1a2e", mb: 2 }}
-                >
-                  Video Showcase
-                </Typography>
-                <Box
-                  sx={{
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-                    backgroundColor: "white",
-                  }}
-                >
-                  {videos.length > 0 ? (
-                    <>
-                      <Box sx={{ position: "relative" }}>
-                        <video
-                          className="w-100"
-                          controls
-                          style={{
-                            height: "400px",
-                            objectFit: "cover",
-                          }}
-                          key={videos[activeVideoIndex]?.id}
-                        >
-                          <source
-                            src={
-                              videos[activeVideoIndex]?.video ||
-                              videos[activeVideoIndex]?.url
-                            }
-                            type="video/mp4"
-                          />
-                          Your browser does not support the video tag.
-                        </video>
-                      </Box>
-
-                      <Box
-                        sx={{
-                          padding: "1rem",
-                          backgroundColor: "#f8f9fa",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
+                {images.length > 0 ? (
+                  images.map((image, index) => (
+                    <Carousel.Item key={image.id || index} className="h-100">
+                      <img
+                        className="d-block w-100 h-100"
+                        src={image.image || image.url}
+                        alt={`Slide ${index + 1}`}
+                        style={{
+                          objectFit: "cover",
+                          filter: "brightness(1.1) contrast(1.1)",
                         }}
-                      >
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
-                          <Button
-                            onClick={goToPrevVideo}
-                            size="small"
-                            sx={{
-                              backgroundColor: "#1a1a2e",
-                              color: "white",
-                              minWidth: "auto",
-                              "&:hover": {
-                                backgroundColor: "#0f3460",
-                              },
-                            }}
-                          >
-                            ← Prev
-                          </Button>
-
-                          <Box sx={{ display: "flex", gap: 0.5 }}>
-                            {videos.map((_, index) => (
-                              <Box
-                                key={index}
-                                sx={{
-                                  width: "10px",
-                                  height: "10px",
-                                  borderRadius: "50%",
-                                  backgroundColor:
-                                    index === activeVideoIndex
-                                      ? "#1a1a2e"
-                                      : "#ccc",
-                                  cursor: "pointer",
-                                  transition: "background-color 0.3s ease",
-                                  "&:hover": {
-                                    backgroundColor:
-                                      index === activeVideoIndex
-                                        ? "#0f3460"
-                                        : "#999",
-                                  },
-                                }}
-                                onClick={() => {
-                                  if (videoTimerRef.current) {
-                                    clearTimeout(videoTimerRef.current);
-                                  }
-                                  setActiveVideoIndex(index);
-                                }}
-                              />
-                            ))}
-                          </Box>
-
-                          <Button
-                            onClick={goToNextVideo}
-                            size="small"
-                            sx={{
-                              backgroundColor: "#1a1a2e",
-                              color: "white",
-                              minWidth: "auto",
-                              "&:hover": {
-                                backgroundColor: "#0f3460",
-                              },
-                            }}
-                          >
-                            Next →
-                          </Button>
-                        </Box>
-
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "#6c757d",
-                          }}
-                        >
-                          {activeVideoIndex + 1} of {videos.length}
-                        </Typography>
-                      </Box>
-                    </>
-                  ) : (
+                      />
+                    </Carousel.Item>
+                  ))
+                ) : (
+                  <Carousel.Item className="h-100">
                     <Box
                       sx={{
-                        height: "400px",
+                        height: "100%",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: "#e9ecef",
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        color: "var(--text-on-dark)",
                       }}
                     >
-                      <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        No videos available.
+                      <Typography variant="h4" sx={{ textAlign: "center" }}>
+                        No carousel images available.
                       </Typography>
                     </Box>
-                  )}
-                </Box>
-              </motion.div>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+                  </Carousel.Item>
+                )}
+              </Carousel>
+            </Box>
+          </Box>
 
-      {/* Payment Banner */}
-      <Box sx={{ py: 4, backgroundColor: "white" }}>
-        <Container>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          {/* Right Column - Video Carousel */}
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: { xs: "1rem", md: "2rem" },
+              minHeight: { xs: "50vh", lg: "100%" },
+            }}
           >
-            <Paper
-              elevation={3}
+            <Box
               sx={{
-                padding: 3,
-                background: "linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%)",
-                color: "white",
-                borderRadius: "12px",
-                textAlign: "center",
-                position: "relative",
+                width: "100%",
+                height: { xs: "400px", md: "500px", lg: "600px" },
+                borderRadius: "15px",
                 overflow: "hidden",
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundImage: `
-                    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
-                    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%)
-                  `,
-                },
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              <Typography
-                variant="h5"
-                component="h3"
-                gutterBottom
-                sx={{ fontWeight: 600, position: "relative" }}
-              >
-                Buy Goods & Services
-              </Typography>
-              <Typography
-                variant="h4"
-                component="p"
-                sx={{ fontWeight: 700, position: "relative" }}
-              >
-                Till Number: 4323716
-              </Typography>
-            </Paper>
-          </motion.div>
-        </Container>
+              {videos.length > 0 ? (
+                <>
+                  <Box sx={{ flex: 1, position: "relative" }}>
+                    <video
+                      className="w-100 h-100"
+                      controls
+                      style={{
+                        objectFit: "cover",
+                        filter: "brightness(1.1) contrast(1.1)",
+                      }}
+                      key={videos[activeVideoIndex]?.id}
+                    >
+                      <source
+                        src={
+                          videos[activeVideoIndex]?.video ||
+                          videos[activeVideoIndex]?.url
+                        }
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </Box>
+
+                  {/* Video Navigation Controls */}
+                  <Box
+                    sx={{
+                      padding: "1rem",
+                      backgroundColor: "rgba(0, 0, 0, 0.3)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Button
+                        onClick={goToPrevVideo}
+                        sx={{
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          minWidth: "auto",
+                          padding: "8px 16px",
+                          fontSize: "0.8rem",
+                          "&:hover": {
+                            backgroundColor: "#28a745",
+                          },
+                        }}
+                      >
+                        ← Prev
+                      </Button>
+
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
+                        {videos.map((_, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor:
+                                index === activeVideoIndex ? "#007bff" : "#ccc",
+                              cursor: "pointer",
+                              transition: "background-color 0.3s ease",
+                              "&:hover": {
+                                backgroundColor:
+                                  index === activeVideoIndex
+                                    ? "#0056b3"
+                                    : "#999",
+                              },
+                            }}
+                            onClick={() => {
+                              if (videoTimerRef.current) {
+                                clearTimeout(videoTimerRef.current);
+                              }
+                              setActiveVideoIndex(index);
+                            }}
+                          />
+                        ))}
+                      </Box>
+
+                      <Button
+                        onClick={goToNextVideo}
+                        sx={{
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          minWidth: "auto",
+                          padding: "8px 16px",
+                          fontSize: "0.8rem",
+                          "&:hover": {
+                            backgroundColor: "#28a745",
+                          },
+                        }}
+                      >
+                        Next →
+                      </Button>
+                    </Box>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.8)",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {videos[activeVideoIndex]?.uploaded_at
+                        ? new Date(
+                            videos[activeVideoIndex]?.uploaded_at
+                          ).toLocaleDateString()
+                        : "Date Not Available"}
+                    </Typography>
+                  </Box>
+                </>
+              ) : (
+                <Box
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "var(--text-on-dark)",
+                  }}
+                >
+                  <Typography variant="h5" sx={{ textAlign: "center" }}>
+                    No videos available at the moment.
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Divider */}
+        <Box sx={{ padding: "2rem", textAlign: "center" }}>
+          <Box
+            sx={{
+              width: "80%",
+              margin: "0 auto",
+              height: "4px",
+              background:
+                "linear-gradient(to right, var(--primary-blue), var(--antique-blue-light))",
+              borderRadius: "2px",
+              opacity: 0.8,
+            }}
+          />
+        </Box>
       </Box>
+
+      {/* Services Section - Updated with Categories and Subcategories */}
+      <section className="services-section py-5">
+        <Container fluid>
+          <Row className="justify-content-center mb-5">
+            <Col lg={8} className="text-center">
+              <Typography
+                variant="h2"
+                component="h2"
+                className="section-title mb-3"
+              >
+                We Offer Awesome Services
+              </Typography>
+
+              <Typography variant="subtitle1" className="section-subtitle">
+                Our premium services are designed to meet all your creative
+                needs, from photography to video production, ensuring
+                high-quality results for your projects.
+              </Typography>
+
+              {/* Payment Banner in Hero Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                style={{ marginTop: "3rem", width: "100%" }}
+              >
+                <div
+                  className="d-flex justify-content-center"
+                  style={{ width: "100%" }}
+                >
+                  <a
+                    href="#payment-info"
+                    style={{
+                      position: "relative",
+                      display: "block",
+                      background: "#1B5E20", // Dark green background
+                      color: "white",
+                      textDecoration: "none",
+                      padding: "20px",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      width: "100%",
+                      lineHeight: "1.4",
+                      boxShadow: "0 4px 15px rgba(27, 94, 32, 0.3)",
+                      transition: "all 0.3s ease",
+                      borderRadius: "0",
+                      boxSizing: "border-box",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#2E7D32"; // Lighter green on hover
+                      e.currentTarget.style.boxShadow =
+                        "0 6px 20px rgba(46, 125, 50, 0.4)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      // Update folded edges
+                      const edges =
+                        e.currentTarget.querySelectorAll(".folded-edge");
+                      edges.forEach((edge) => {
+                        edge.style.background = "#1B5E20"; // Dark green edges on hover
+                      });
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "#1B5E20";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 15px rgba(27, 94, 32, 0.3)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      // Revert folded edges
+                      const edges =
+                        e.currentTarget.querySelectorAll(".folded-edge");
+                      edges.forEach((edge) => {
+                        edge.style.background = "#2E7D32"; // Lighter green edges normally
+                      });
+                    }}
+                  >
+                    <div style={{ position: "relative", zIndex: 1 }}>
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "clamp(14px, 3vw, 16px)",
+                          fontWeight: "600",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        Buy Goods & Services
+                      </span>
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "clamp(16px, 3.5vw, 18px)",
+                          fontWeight: "700",
+                        }}
+                      >
+                        Till Number: 4323716
+                      </span>
+                    </div>
+
+                    {/* Left folded edge */}
+                    <span
+                      className="folded-edge"
+                      style={{
+                        position: "absolute",
+                        left: "-10px",
+                        top: "0",
+                        bottom: "0",
+                        width: "20px",
+                        background: "#2E7D32", // Lighter green edge
+                        transform: "skewY(-20deg)",
+                        borderRadius: "3px 0 0 3px",
+                        transition: "background 0.3s ease",
+                      }}
+                    />
+
+                    {/* Right folded edge */}
+                    <span
+                      className="folded-edge"
+                      style={{
+                        position: "absolute",
+                        right: "-10px",
+                        top: "0",
+                        bottom: "0",
+                        width: "20px",
+                        background: "#2E7D32", // Lighter green edge
+                        transform: "skewY(20deg)",
+                        borderRadius: "0 3px 3px 0",
+                        transition: "background 0.3s ease",
+                      }}
+                    />
+                  </a>
+                </div>
+              </motion.div>
+            </Col>
+          </Row>
+
+          {renderServicesSection()}
+        </Container>
+      </section>
     </div>
   );
 }
