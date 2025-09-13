@@ -491,7 +491,7 @@ function Home() {
             className="d-flex align-items-center justify-content-center p-0"
           >
             <div
-              className="hero-section w-100 h-100 d-flex align-items-center justify-content-center"
+              className="hero-section w-100 d-flex align-items-center justify-content-center"
               id="home"
             >
               <div

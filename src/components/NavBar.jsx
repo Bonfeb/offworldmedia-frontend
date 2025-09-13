@@ -56,11 +56,19 @@ function NavBar() {
     setAnchorEl(null);
   };
 
+  const handleOpenOffcanvas = () => {
+    setShowOffcanvas(true);
+  };
+
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+  };
+
   // Antique blue color palette
   const colors = {
-    antiqueBlue: "#4B5EAA",
-    blue: "#4682B4",
-    shadeBlue: "#6A8299",
+    antiqueBlue: "#021d33ff",
+    blue: "#021d33ff",
+    shadeBlue: "#021d33ff",
   };
 
   // Gradient style for the offcanvas
@@ -288,7 +296,7 @@ function NavBar() {
             color="inherit"
             aria-label="menu"
             sx={{ display: { xs: "flex", lg: "none" } }}
-            onClick={() => setShowOffcanvas(!showOffcanvas)}
+            onClick={handleOpenOffcanvas}
           >
             <MenuIcon />
           </IconButton>
@@ -300,7 +308,7 @@ function NavBar() {
         id="offcanvasNavbar"
         placement="end"
         show={showOffcanvas}
-        onHide={() => setShowOffcanvas(false)}
+        onHide={handleCloseOffcanvas}
         style={offcanvasStyle}
       >
         <Offcanvas.Header closeButton closeVariant="white">
