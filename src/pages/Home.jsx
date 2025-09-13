@@ -500,18 +500,18 @@ function Home() {
         <Box
           className="hero-section"
           sx={{
-            flex: 1,
-            height: { xs: "50vh", lg: "100%" },
+            flex: { xs: 1, lg: 0.6 },
+            height: { xs: "40vh", lg: "100%" },
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "white",
-            backgroundImage:
-              'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url("/OWM Icon.ico")',
+            //backgroundColor: "#2c3e50", // Dark grey-blue background
+            backgroundImage: `url("/OWM Icon.ico")`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             textAlign: "center",
-            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
+            padding: { xs: "1.5rem 1rem", md: "2rem 1.5rem" },
             position: "relative",
             overflow: "hidden",
           }}
@@ -548,13 +548,12 @@ function Home() {
                 sx={{
                   fontWeight: 700,
                   fontSize: {
-                    xs: "2rem",
-                    sm: "2.5rem",
-                    md: "3.5rem",
-                    lg: "2.8rem",
+                    xs: "1.8rem",
+                    sm: "2.2rem",
+                    md: "2.8rem",
+                    lg: "2.4rem",
                   },
-                  marginBottom: { xs: "1rem", md: "1.5rem" },
-                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  marginBottom: { xs: "0.8rem", md: "1.2rem" },
                 }}
               >
                 Offworld Media
@@ -565,14 +564,14 @@ function Home() {
                 gutterBottom
                 className="hero-subtitle"
                 sx={{
-                  mb: { xs: 2, md: 4 },
+                  mb: { xs: 1.5, md: 3 },
                   fontSize: {
-                    xs: "1rem",
-                    sm: "1.2rem",
-                    md: "1.5rem",
-                    lg: "1.25rem",
+                    xs: "0.9rem",
+                    sm: "1rem",
+                    md: "1.3rem",
+                    lg: "1.1rem",
                   },
-                  maxWidth: "600px",
+                  maxWidth: "500px",
                   margin: "0 auto",
                   lineHeight: 1.5,
                   opacity: 0.9,
@@ -583,10 +582,10 @@ function Home() {
               <Box
                 sx={{
                   display: "flex",
-                  gap: { xs: 1, md: 2 },
+                  gap: { xs: 1, md: 1.5 },
                   justifyContent: "center",
                   flexDirection: { xs: "column", sm: "row" },
-                  marginTop: { xs: "1rem", md: "2rem" },
+                  marginTop: { xs: "0.8rem", md: "1.5rem" },
                 }}
               >
                 <motion.div
@@ -597,18 +596,19 @@ function Home() {
                   <Button
                     onClick={() => navigate("/services")}
                     sx={{
-                      backgroundColor: "#007bff",
+                      backgroundColor: "#424242",
                       color: "white",
                       border: "none",
-                      padding: "12px 24px",
+                      padding: "10px 20px",
                       borderRadius: "30px",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       letterSpacing: "1px",
+                      fontSize: "0.8rem",
                       width: { xs: "100%", sm: "auto" },
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#28a745",
+                        backgroundColor: "#616161",
                         transform: "translateY(-3px)",
                         boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
                       },
@@ -625,18 +625,19 @@ function Home() {
                   <Button
                     onClick={() => navigate("/contactus")}
                     sx={{
-                      backgroundColor: "#007bff",
+                      backgroundColor: "#424242",
                       color: "white",
                       border: "none",
-                      padding: "12px 24px",
+                      padding: "10px 20px",
                       borderRadius: "30px",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       letterSpacing: "1px",
+                      fontSize: "0.8rem",
                       width: { xs: "100%", sm: "auto" },
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#28a745",
+                        backgroundColor: "#616161",
                         transform: "translateY(-3px)",
                         boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
                       },
@@ -650,17 +651,17 @@ function Home() {
           </Container>
         </Box>
 
+
         {/* About Section */}
         <Box
           className="about-section"
           sx={{
             flex: 1,
             height: { xs: "50vh", lg: "100%" },
-            background:
-              "linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%)",
+            background: "#37474f",
             display: "flex",
             alignItems: "center",
-            color: "var(--text-on-dark)",
+            color: "white",
             position: "relative",
             padding: { xs: "2rem 1rem", md: "3rem 2rem" },
             "&::before": {
@@ -669,9 +670,8 @@ function Home() {
               top: 0,
               left: 0,
               right: 0,
-              height: "8px",
-              background:
-                "linear-gradient(to right, var(--primary-blue), var(--secondary-blue))",
+              height: "6px",
+              background: "#455a64",
               display: { lg: "none" },
             },
           }}
@@ -695,7 +695,7 @@ function Home() {
                 padding: { xs: "2rem", md: "2.5rem" },
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
-                color: "var(--text-on-dark)",
+                color: "white",
                 width: "100%",
                 height: "100%",
                 display: "flex",
@@ -710,8 +710,8 @@ function Home() {
                 sx={{
                   fontSize: { xs: "1.8rem", sm: "2rem", md: "2.25rem" },
                   fontWeight: 700,
-                  marginBottom: "1.5rem",
-                  color: "var(--text-on-dark)",
+                  marginBottom: "1.2rem",
+                  color: "white",
                   textAlign: "center",
                 }}
               >
@@ -753,7 +753,7 @@ function Home() {
                       "&:hover": {
                         transform: "translateY(-5px)",
                         boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
-                        background: "rgba(13, 71, 161, 0.7)",
+                        background: "rgba(69, 90, 100, 0.9)",
                       },
                     }}
                   >
@@ -787,9 +787,9 @@ function Home() {
                     component={Paper}
                     elevation={3}
                     sx={{
-                      background: "rgba(13, 71, 161, 0.5)",
-                      borderRadius: "10px",
-                      padding: "1.5rem",
+                      background: "rgba(69, 90, 100, 0.7)",
+                      borderRadius: "8px",
+                      padding: "1.2rem",
                       height: "100%",
                       transition: "transform 0.3s ease, box-shadow 0.3s ease",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -798,7 +798,7 @@ function Home() {
                       "&:hover": {
                         transform: "translateY(-5px)",
                         boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
-                        background: "rgba(13, 71, 161, 0.7)",
+                        background: "rgba(69, 90, 100, 0.9)",
                       },
                     }}
                   >
@@ -806,12 +806,12 @@ function Home() {
                       variant="h4"
                       component="h3"
                       sx={{
-                        fontSize: { xs: "1.4rem", md: "1.8rem" },
+                        fontSize: { xs: "1.2rem", md: "1.4rem" },
                         fontWeight: 600,
                         color: "var(--text-on-dark)",
                         marginBottom: "1rem",
                         borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
-                        paddingBottom: "0.5rem",
+                        paddingBottom: "0.4rem",
                       }}
                     >
                       Mission
@@ -1241,7 +1241,7 @@ function Home() {
                 </div>
               </motion.div>
             </Col>
-          </Row>
+          </Row>re
 
           {renderServicesSection()}
         </Container>
