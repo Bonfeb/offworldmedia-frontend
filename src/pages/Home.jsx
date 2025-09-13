@@ -499,7 +499,7 @@ function Home() {
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
-                minHeight: "100%",
+                height: "100%",
                 width: "100%",
               }}
             >
@@ -802,7 +802,7 @@ function Home() {
             <div
               className="mx-auto mb-4"
               style={{
-                width: "100px",
+                width: "50%",
                 height: "2px",
                 backgroundColor: "#45463bff",
               }}
