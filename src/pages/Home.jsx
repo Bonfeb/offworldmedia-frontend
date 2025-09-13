@@ -483,7 +483,7 @@ function Home() {
   return (
     <div className="home-page">
       {/* Main Container for Side-by-Side Layout */}
-      <Container fluid className="p-0" style={{ backgroundColor:"#252d35ff" }}>
+      <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
         <Row className="g-0 min-vh-100">
           {/* Hero Section - Left Side */}
           <Col
@@ -574,7 +574,7 @@ function Home() {
           {/* About Section - Right Side */}
           <Col
             lg={6}
-            className="d-flex align-items-center justify-content-center p-4 p-lg-5 bg-light"
+            className="bg-dark text-white d-flex align-items-center justify-content-center p-4 p-lg-5 bg-light"
           >
             <div className="w-100">
               <h2 className="text-center fw-bold mb-4">Who We Are</h2>
@@ -619,10 +619,19 @@ function Home() {
       </Container>
 
       {/* Studio Work Showcase */}
-     <div className="bg-dark text-white py-5">
+      <div className="bg-dark text-white py-5">
         <Container>
           <h2 className="text-center fw-semibold mb-5">Gallery</h2>
-          <Divider className="mb-4" />
+          <div className="text-center mt-5">
+            <div
+              className="mx-auto"
+              style={{
+                height: "3px",
+                width: "80%",
+                backgroundColor: "#6c757d",
+              }}
+            ></div>
+          </div>
           <Row>
             {/* Image Carousel */}
             <Col lg={6} className="mb-5 mb-lg-0">
@@ -641,15 +650,20 @@ function Home() {
                     ))
                   ) : (
                     <Carousel.Item>
-                      <div className="d-flex align-items-center justify-content-center bg-secondary" style={{ height: "400px" }}>
-                        <p className="text-center m-0">No carousel images available.</p>
+                      <div
+                        className="d-flex align-items-center justify-content-center bg-secondary"
+                        style={{ height: "400px" }}
+                      >
+                        <p className="text-center m-0">
+                          No carousel images available.
+                        </p>
                       </div>
                     </Carousel.Item>
                   )}
                 </Carousel>
               </div>
             </Col>
-            
+
             {/* Video Carousel */}
             <Col lg={6}>
               <div className="rounded overflow-hidden shadow">
@@ -672,7 +686,7 @@ function Home() {
                         Your browser does not support the video tag.
                       </video>
                     </div>
-                    
+
                     {/* Video Navigation Controls */}
                     <div className="bg-secondary p-3 d-flex justify-content-between align-items-center">
                       <div className="d-flex align-items-center gap-2">
@@ -683,7 +697,7 @@ function Home() {
                         >
                           ← Prev
                         </Button>
-                        
+
                         <div className="d-flex gap-1">
                           {videos.map((_, index) => (
                             <div
@@ -692,7 +706,10 @@ function Home() {
                                 width: "10px",
                                 height: "10px",
                                 borderRadius: "50%",
-                                backgroundColor: index === activeVideoIndex ? "#424242" : "#ccc",
+                                backgroundColor:
+                                  index === activeVideoIndex
+                                    ? "#424242"
+                                    : "#ccc",
                                 cursor: "pointer",
                               }}
                               onClick={() => {
@@ -704,7 +721,7 @@ function Home() {
                             />
                           ))}
                         </div>
-                        
+
                         <Button
                           onClick={goToNextVideo}
                           size="sm"
@@ -713,7 +730,7 @@ function Home() {
                           Next →
                         </Button>
                       </div>
-                      
+
                       <small>
                         {videos[activeVideoIndex]?.uploaded_at
                           ? new Date(
@@ -724,23 +741,35 @@ function Home() {
                     </div>
                   </>
                 ) : (
-                  <div className="d-flex align-items-center justify-content-center bg-secondary" style={{ height: "400px" }}>
-                    <p className="text-center m-0">No videos available at the moment.</p>
+                  <div
+                    className="d-flex align-items-center justify-content-center bg-secondary"
+                    style={{ height: "400px" }}
+                  >
+                    <p className="text-center m-0">
+                      No videos available at the moment.
+                    </p>
                   </div>
                 )}
               </div>
             </Col>
           </Row>
-          
+
           <div className="text-center mt-5">
-            <div className="mx-auto" style={{ height: "3px", width: "80%", backgroundColor: "#6c757d" }}></div>
+            <div
+              className="mx-auto"
+              style={{
+                height: "3px",
+                width: "80%",
+                backgroundColor: "#6c757d",
+              }}
+            ></div>
           </div>
         </Container>
       </div>
 
       {/* Services Section - Updated with Categories and Subcategories */}
       <section className="services-section py-5">
-        <Container fluid>
+        <Container fluid className="bg-dark text-white py-5">
           <Row className="justify-content-center mb-5">
             <Col lg={8} className="text-center">
               <Typography
