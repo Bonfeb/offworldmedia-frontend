@@ -617,9 +617,23 @@ function Home() {
       {/* Studio Work Showcase */}
       <div className="bg-dark text-white py-5">
         <Container fluid className="px-4 px-lg-5">
-          <Divider className="mb-4" />
+          <div
+            className="mx-auto mb-4"
+            style={{
+              width: "100px",
+              height: "2px",
+              backgroundColor: "#45463bff",
+            }}
+          ></div>
           <h2 className="text-center fw-semibold mb-4">Gallery</h2>
-          <Divider className="mb-4" />
+          <div
+            className="mx-auto mb-4"
+            style={{
+              width: "100px",
+              height: "2px",
+              backgroundColor: "#45463bff",
+            }}
+          ></div>
           <Row>
             {/* Image Carousel */}
             <Col lg={6} className="mt-2 mb-5 mb-lg-0">
@@ -756,14 +770,28 @@ function Home() {
               >
                 We Offer Awesome Services
               </Typography>
-              <Divider className="mb-4" />
+              <div
+                className="mx-auto mb-4"
+                style={{
+                  width: "100px",
+                  height: "2px",
+                  backgroundColor: "#45463bff",
+                }}
+              ></div>
 
               <Typography variant="subtitle1" className="section-subtitle">
                 Our premium services are designed to meet all your creative
                 needs, from photography to video production, ensuring
                 high-quality results for your projects.
               </Typography>
-              <Divider className="mb-4" />
+              <div
+                className="mx-auto mb-4"
+                style={{
+                  width: "100px",
+                  height: "2px",
+                  backgroundColor: "#45463bff",
+                }}
+              ></div>
               {/* Payment Banner in Hero Section */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}

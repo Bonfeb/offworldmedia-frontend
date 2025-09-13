@@ -274,6 +274,9 @@ section {
   ); /* Changed background */
   position: relative;
 }
+.service-section {
+  margin-top: 0 !important;
+}
 
 .services-section .section-title {
   color: var(--text-on-dark);
