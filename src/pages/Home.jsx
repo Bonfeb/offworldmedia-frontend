@@ -496,7 +496,7 @@ function Home() {
                 backgroundImage: 'url("/OWM Icon.ico")',
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                minHeight: "50vh",
+                minHeight: "25vh",
               }}
               id="home"
             >
@@ -578,11 +578,13 @@ function Home() {
           >
             <div className="w-100">
               <h2 className="text-center fw-bold mb-4">Who We Are</h2>
+              <Divider className="mb-4" />
               <p className="text-center mb-5">
                 Offworld Media Africa is a business company specializing in
                 photography, videography, music production, graphic designing
                 and digital broadcasting.
               </p>
+              <Divider className="mb-4" />
 
               <Row>
                 <Col md={6} className="mb-4 mb-md-0">
@@ -620,21 +622,12 @@ function Home() {
 
       {/* Studio Work Showcase */}
       <div className="bg-dark text-white py-5">
-        <Container>
-          <h2 className="text-center fw-semibold mb-5">Gallery</h2>
-          <div className="text-center mt-5">
-            <div
-              className="mx-auto"
-              style={{
-                height: "3px",
-                width: "80%",
-                backgroundColor: "#6c757d",
-              }}
-            ></div>
-          </div>
+        <Container fluid className="px-4 px-lg-5">
+          <h2 className="text-center fw-semibold mb-4">Gallery</h2>
+          <Divider className="mb-4" />
           <Row>
             {/* Image Carousel */}
-            <Col lg={6} className="mb-5 mb-lg-0">
+            <Col lg={6} className="mt-2 mb-5 mb-lg-0">
               <div className="rounded overflow-hidden shadow">
                 <Carousel fade indicators>
                   {images.length > 0 ? (
@@ -898,7 +891,6 @@ function Home() {
               </motion.div>
             </Col>
           </Row>
-          re
           {renderServicesSection()}
         </Container>
       </section>
