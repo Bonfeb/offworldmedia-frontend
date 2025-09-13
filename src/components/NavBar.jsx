@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { Nav, Navbar, Offcanvas, Dropdown, Image } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assets/images/Logo.ico";
 import { AuthContext } from "../context/AuthContext";
@@ -14,15 +13,22 @@ import {
   MenuItem,
   Avatar,
   Container,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
 function NavBar() {
   const { isAuthenticated, userProfilePic, userGroups, logout } =
     useContext(AuthContext);
+
   const [showNavbar, setShowNavbar] = useState(true);
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,7 +49,7 @@ function NavBar() {
   };
 
   const handleNavItemClick = (path) => {
-    setShowOffcanvas(false);
+    setDrawerOpen(false);
     setAnchorEl(null);
     navigate(path);
   };
@@ -56,26 +62,19 @@ function NavBar() {
     setAnchorEl(null);
   };
 
-  const handleOpenOffcanvas = () => {
-    setShowOffcanvas(true);
-  };
-
-  const handleCloseOffcanvas = () => {
-    setShowOffcanvas(false);
-  };
-
-  // Antique blue color palette
   const colors = {
     antiqueBlue: "#021d33ff",
-    blue: "#021d33ff",
-    shadeBlue: "#021d33ff",
+    shadeBlue: "#043a66ff",
   };
 
-  // Gradient style for the offcanvas
-  const offcanvasStyle = {
-    background: `linear-gradient(to bottom, ${colors.antiqueBlue}, ${colors.blue}, ${colors.shadeBlue})`,
-    color: "white",
-  };
+  const menuItems = [
+    { text: "Home", path: "/" },
+    { text: "Team", path: "/team" },
+    { text: "Contact Us", path: "/contactus" },
+    { text: "Services", path: "/services" },
+    { text: "Gallery", path: "/media-gallery" },
+    { text: "Reviews", path: "/reviews" },
+  ];
 
   return (
     <AppBar
@@ -87,7 +86,7 @@ function NavBar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* Navbar Brand */}
+          {/* Brand */}
           <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
             <img
               src={Logo}
@@ -103,7 +102,6 @@ function NavBar() {
                 fontWeight: 700,
                 color: "white",
                 textDecoration: "none",
-                "&:hover": { color: colors.shadeBlue },
               }}
             >
               OffWorldMedia
@@ -112,94 +110,27 @@ function NavBar() {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* Desktop Navigation */}
+          {/* Desktop Nav */}
           <Box
             sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}
           >
-            <Button
-              component={Link}
-              to="/"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/")}
-            >
-              Home
-            </Button>
-            <Button
-              component={Link}
-              to="/team"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/team")}
-            >
-              Team
-            </Button>
-            <Button
-              component={Link}
-              to="/contactus"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/contactus")}
-            >
-              Contact Us
-            </Button>
-            <Button
-              component={Link}
-              to="/services"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/services")}
-            >
-              Services
-            </Button>
-            <Button
-              component={Link}
-              to="/media-gallery"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/media-gallery")}
-            >
-              Gallery
-            </Button>
-            <Button
-              component={Link}
-              to="/reviews"
-              sx={{
-                color: "white",
-                mx: 1,
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": { backgroundColor: colors.shadeBlue },
-              }}
-              onClick={() => handleNavItemClick("/reviews")}
-            >
-              Reviews
-            </Button>
+            {menuItems.map((item) => (
+              <Button
+                key={item.text}
+                component={Link}
+                to={item.path}
+                sx={{
+                  color: "white",
+                  mx: 1,
+                  textTransform: "none",
+                  fontSize: "1rem",
+                  "&:hover": { backgroundColor: colors.shadeBlue },
+                }}
+                onClick={() => handleNavItemClick(item.path)}
+              >
+                {item.text}
+              </Button>
+            ))}
 
             {!isAuthenticated ? (
               <>
@@ -249,10 +180,7 @@ function NavBar() {
                   open={Boolean(anchorEl)}
                   onClose={handleMenuClose}
                   PaperProps={{
-                    sx: {
-                      backgroundColor: colors.blue,
-                      color: "white",
-                    },
+                    sx: { backgroundColor: colors.antiqueBlue, color: "white" },
                   }}
                 >
                   <MenuItem
@@ -290,125 +218,84 @@ function NavBar() {
             )}
           </Box>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Icon */}
           <IconButton
             edge="end"
             color="inherit"
             aria-label="menu"
             sx={{ display: { xs: "flex", lg: "none" } }}
-            onClick={handleOpenOffcanvas}
+            onClick={() => setDrawerOpen(true)}
           >
             <MenuIcon />
           </IconButton>
         </Toolbar>
       </Container>
 
-      {/* Offcanvas Menu with Gradient Background */}
-      <Navbar.Offcanvas
-        id="offcanvasNavbar"
-        placement="end"
-        show={showOffcanvas}
-        onHide={handleCloseOffcanvas}
-        style={offcanvasStyle}
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: colors.antiqueBlue,
+            color: "white",
+            width: 250,
+          },
+        }}
       >
-        <Offcanvas.Header closeButton closeVariant="white">
-          <Offcanvas.Title className="mx-auto text-white">
-            OffWorldMedia
-          </Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body className="d-flex flex-column justify-content-start">
-          <Nav className="flex-column text-center mt-3">
-            <Nav.Link
-              onClick={() => handleNavItemClick("/")}
-              className="py-2 text-white"
-              style={{ fontSize: "1.1rem" }}
-            >
-              Home
-            </Nav.Link>
-            <Nav.Link
-              onClick={() => handleNavItemClick("/team")}
-              className="py-2 text-white"
-              style={{ fontSize: "1.1rem" }}
-            >
-              Team
-            </Nav.Link>
-            <Nav.Link
-              onClick={() => handleNavItemClick("/media-gallery")}
-              className="py-2 text-white"
-              style={{ fontSize: "1.1rem" }}
-            >
-              Gallery
-            </Nav.Link>
-            <Nav.Link
-              onClick={() => handleNavItemClick("/contactus")}
-              className="py-2 text-white"
-              style={{ fontSize: "1.1rem" }}
-            >
-              Contact Us
-            </Nav.Link>
-            <Nav.Link
-              onClick={() => handleNavItemClick("/reviews")}
-              className="py-2 text-white"
-              style={{ fontSize: "1.1rem" }}
-            >
-              Reviews
-            </Nav.Link>
+        <Box sx={{ textAlign: "center", p: 2 }}>
+          <Typography variant="h6">OffWorldMedia</Typography>
+        </Box>
+        <Divider sx={{ backgroundColor: "white" }} />
 
-            {!isAuthenticated ? (
-              <>
-                <Nav.Link
-                  onClick={() => handleNavItemClick("/register")}
-                  className="py-2 text-white"
-                  style={{ fontSize: "1.1rem" }}
+        <List>
+          {menuItems.map((item) => (
+            <ListItem
+              button
+              key={item.text}
+              onClick={() => handleNavItemClick(item.path)}
+            >
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+
+          {!isAuthenticated ? (
+            <>
+              <ListItem button onClick={() => handleNavItemClick("/register")}>
+                <ListItemText primary="Register" />
+              </ListItem>
+              <ListItem button onClick={() => handleNavItemClick("/login")}>
+                <ListItemText primary="Login" />
+              </ListItem>
+            </>
+          ) : (
+            <>
+              <ListItem button onClick={() => handleNavItemClick("/profile")}>
+                <ListItemText primary="My Profile" />
+              </ListItem>
+              {userGroups && userGroups.includes("admin") ? (
+                <ListItem
+                  button
+                  onClick={() => handleNavItemClick("/admin-dashboard")}
                 >
-                  Register
-                </Nav.Link>
-                <Nav.Link
-                  onClick={() => handleNavItemClick("/login")}
-                  className="py-2 text-white"
-                  style={{ fontSize: "1.1rem" }}
+                  <ListItemText primary="Admin Dashboard" />
+                </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  onClick={() => handleNavItemClick("/userdashboard")}
                 >
-                  Login
-                </Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link
-                  onClick={() => handleNavItemClick("/profile")}
-                  className="py-2 text-white"
-                  style={{ fontSize: "1.1rem" }}
-                >
-                  My Profile
-                </Nav.Link>
-                {userGroups && userGroups.includes("admin") ? (
-                  <Nav.Link
-                    onClick={() => handleNavItemClick("/admin-dashboard")}
-                    className="py-2 text-white"
-                    style={{ fontSize: "1.1rem" }}
-                  >
-                    Admin Dashboard
-                  </Nav.Link>
-                ) : (
-                  <Nav.Link
-                    onClick={() => handleNavItemClick("/userdashboard")}
-                    className="py-2 text-white"
-                    style={{ fontSize: "1.1rem" }}
-                  >
-                    My Dashboard
-                  </Nav.Link>
-                )}
-                <Nav.Link
-                  onClick={handleLogout}
-                  className="text-danger py-2"
-                  style={{ fontSize: "1.1rem" }}
-                >
-                  Logout
-                </Nav.Link>
-              </>
-            )}
-          </Nav>
-        </Offcanvas.Body>
-      </Navbar.Offcanvas>
+                  <ListItemText primary="My Dashboard" />
+                </ListItem>
+              )}
+              <ListItem button onClick={handleLogout}>
+                <ListItemText primary="Logout" sx={{ color: "#ff4d4f" }} />
+              </ListItem>
+            </>
+          )}
+        </List>
+      </Drawer>
     </AppBar>
   );
 }
