@@ -369,7 +369,7 @@ function Home() {
                                               style={{
                                                 top: "15px",
                                                 right: "15px",
-                                                backgroundColor: "#007bff",
+                                                backgroundColor: "#7f8806ff",
                                                 color: "white",
                                                 padding: "8px 16px",
                                                 borderRadius: "20px",
@@ -397,7 +397,7 @@ function Home() {
                                             <Card.Text
                                               className="service-card-description mb-4 flex-grow-1"
                                               style={{
-                                                color: "#666",
+                                                color: "rgba(247, 243, 243, 1)",
                                                 fontSize: "1rem",
                                                 lineHeight: "1.6",
                                               }}
@@ -406,7 +406,7 @@ function Home() {
                                             </Card.Text>
 
                                             <div className="d-flex justify-content-end align-items-end">
-                                              <Button
+                                              {/*<Button
                                                 variant="primary"
                                                 className="book-now-btn"
                                                 onClick={() =>
@@ -441,7 +441,7 @@ function Home() {
                                                 }}
                                               >
                                                 Book Now
-                                              </Button>
+                                              </Button>*/}
                                             </div>
                                           </Card.Body>
                                         </Col>
@@ -617,6 +617,7 @@ function Home() {
       {/* Studio Work Showcase */}
       <div className="bg-dark text-white py-5">
         <Container fluid className="px-4 px-lg-5">
+          <Divider className="mb-4" />
           <h2 className="text-center fw-semibold mb-4">Gallery</h2>
           <Divider className="mb-4" />
           <Row>
@@ -740,17 +741,6 @@ function Home() {
               </div>
             </Col>
           </Row>
-
-          <div className="text-center mt-5">
-            <div
-              className="mx-auto"
-              style={{
-                height: "3px",
-                width: "80%",
-                backgroundColor: "#6c757d",
-              }}
-            ></div>
-          </div>
         </Container>
       </div>
 
@@ -766,13 +756,14 @@ function Home() {
               >
                 We Offer Awesome Services
               </Typography>
+              <Divider className="mb-4" />
 
               <Typography variant="subtitle1" className="section-subtitle">
                 Our premium services are designed to meet all your creative
                 needs, from photography to video production, ensuring
                 high-quality results for your projects.
               </Typography>
-
+              <Divider className="mb-4" />
               {/* Payment Banner in Hero Section */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
