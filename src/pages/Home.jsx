@@ -489,10 +489,19 @@ function Home() {
           <Col
             lg={6}
             className="d-flex align-items-center justify-content-center p-0"
+            style={{ height: "100%" }}
           >
             <div
               className="hero-section w-100 d-flex align-items-center justify-content-center"
               id="home"
+              style={{
+                backgroundImage: 'url("/OWM Icon.ico")',
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                minHeight: "100%",
+                width: "100%",
+              }}
             >
               <div
                 className="text-center text-white p-3"
@@ -569,13 +578,14 @@ function Home() {
           <Col
             lg={6}
             className="bg-dark text-white d-flex align-items-center justify-content-center p-4 p-lg-5 bg-light"
+            style={{ height: "100%" }}
           >
             <div className="w-100">
               <h2 className="text-center fw-bold mb-4">Who We Are</h2>
               <div
                 className="mx-auto mb-4"
                 style={{
-                  width: "100px",
+                  width: "50%",
                   height: "2px",
                   backgroundColor: "#45463bff",
                 }}
@@ -585,7 +595,6 @@ function Home() {
                 photography, videography, music production, graphic designing
                 and digital broadcasting.
               </p>
-              <Divider className="mb-4" />
 
               <Row>
                 <Col md={6} className="mb-4 mb-md-0">
@@ -627,7 +636,7 @@ function Home() {
           <div
             className="mx-auto mb-4"
             style={{
-              width: "100px",
+              width: "50%",
               height: "2px",
               backgroundColor: "#45463bff",
             }}
@@ -636,7 +645,7 @@ function Home() {
           <div
             className="mx-auto mb-4"
             style={{
-              width: "100px",
+              width: "50%",
               height: "2px",
               backgroundColor: "#45463bff",
             }}
@@ -779,7 +788,7 @@ function Home() {
             <div
               className="mx-auto mb-4"
               style={{
-                width: "100px",
+                width: "50%",
                 height: "2px",
                 backgroundColor: "#45463bff",
               }}
