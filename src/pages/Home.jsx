@@ -305,11 +305,11 @@ function Home() {
                           key={subcategory}
                           className="subcategory-section mb-5"
                         >
-                          <div className="subcategory-header mb-4">
+                          {/*<div className="subcategory-header mb-4">
                             <h3 className="subcategory-title">
                               {formatSubcategoryName(subcategory)}
                             </h3>
-                          </div>
+                          </div>*/}
 
                           {/* Updated Grid Layout - Fluid full width cards */}
                           <div className="w-100">
@@ -391,7 +391,7 @@ function Home() {
                                                 paddingRight: "120px", // Space for price badge
                                               }}
                                             >
-                                              {service.name}
+                                              {service.category}
                                             </Card.Title>
 
                                             <Card.Text

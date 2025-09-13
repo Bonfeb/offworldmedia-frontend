@@ -45,7 +45,7 @@ const Footer = () => {
       }}
     >
       <Box py={{ xs: 4, md: 6 }}>
-        <Container>
+        <Container className="justify-content-center text-center">
           <Grid container spacing={3} alignItems="center">
             {/* Social Links */}
             <Grid
