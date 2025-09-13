@@ -585,7 +585,7 @@ function Home() {
             md={12}
             sm={12}
             xs={12}
-            className="bg-dark text-white d-flex align-items-center justify-content-center p-4 p-lg-5 bg-light"
+            className="d-flex align-items-center justify-content-center p-0"
             style={{ height: "100%" }}
           >
             <div className="w-100">

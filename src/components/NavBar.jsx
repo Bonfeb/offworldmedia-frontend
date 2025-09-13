@@ -239,7 +239,7 @@ function NavBar() {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
-          sx: {
+          sx: { '& .MuiDrawer-paper': {
             backgroundColor: colors.antiqueBlue,
             color: "white",
             width: 250,
@@ -248,6 +248,7 @@ function NavBar() {
             justifyContent: "center",
             alignItems: "center"
           },
+        },
         }}
       >
         <Box sx={{ textAlign: "center", p: 2 }}>
