@@ -492,12 +492,6 @@ function Home() {
           >
             <div
               className="hero-section w-100 h-100 d-flex align-items-center justify-content-center"
-              style={{
-                backgroundImage: 'url("/OWM Icon.ico")',
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                height: "25vh",
-              }}
               id="home"
             >
               <div
