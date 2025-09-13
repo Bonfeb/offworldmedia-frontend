@@ -391,9 +391,7 @@ function Home() {
                                                 paddingRight: "120px", // Space for price badge
                                               }}
                                             >
-                                              {service.formatCategoryName(
-                                                category
-                                              )}
+                                              {formatCategoryName(category)}
                                             </Card.Title>
 
                                             <Card.Text
