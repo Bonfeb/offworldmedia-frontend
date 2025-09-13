@@ -484,7 +484,7 @@ function Home() {
     <div className="home-page">
       {/* Main Container for Side-by-Side Layout */}
       <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
-        <Row className="g-0 align-items-stretch" style={{ minHeight: "30vh" }}>
+        <Row className="g-0 align-items-stretch" style={{ height: "30vh" }}>
           {/* Hero Section - Left Side */}
           <Col
             lg={6}
