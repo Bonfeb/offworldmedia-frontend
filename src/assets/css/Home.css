@@ -1,9 +1,11 @@
 /* Base Styles */
 .home-page {
   overflow-x: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #2c3e50;
-  background-color: var(--antique-blue-dark); /* Added background color to entire page */
+  background-color: var(
+    --antique-blue-dark
+  ); /* Added background color to entire page */
 }
 
 /* Color Variables */
@@ -26,17 +28,25 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--accent-blue) 100%); /* Changed gradient */
-  color: white;
-  padding: 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 0;
+  background-image: url("/OWM Icon.ico");
+  background-size: cover;
+  background-position: center;
+  height: 25vh;
+}
+@media (max-width: 768px) {
+  .hero-section {
+    height: 40vh; /* give more height on tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 50vh; /* give even more height on small phones */
+  }
 }
 
 .hero-section::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -52,7 +62,7 @@
   z-index: 1;
 }
 
-.hero-section Box{
+.hero-section Box {
   min-height: 70vh;
   padding: 3rem 1rem;
 }
@@ -105,20 +115,28 @@ section {
 
 /* About Section */
 .about-section {
-  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%); /* Changed background */
+  background: linear-gradient(
+    135deg,
+    var(--antique-blue-dark) 0%,
+    var(--antique-blue) 100%
+  ); /* Changed background */
   padding: 5rem 0;
   color: var(--text-on-dark);
   position: relative;
 }
 
 .about-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 8px;
-  background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+  background: linear-gradient(
+    to right,
+    var(--primary-blue),
+    var(--secondary-blue)
+  );
 }
 
 .about-content {
@@ -140,7 +158,8 @@ section {
   margin-top: 3rem;
 }
 
-.vision-box, .mission-box {
+.vision-box,
+.mission-box {
   background: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
   border-radius: 10px;
   padding: 1.5rem;
@@ -149,7 +168,8 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.vision-box:hover, .mission-box:hover {
+.vision-box:hover,
+.mission-box:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   background: rgba(13, 71, 161, 0.7); /* Darker on hover */
@@ -166,13 +186,17 @@ section {
 
 /* Showcase Section */
 .showcase-section {
-  background: linear-gradient(135deg, var(--dark-blue) 0%, var(--antique-blue) 100%); /* Changed background */
+  background: linear-gradient(
+    135deg,
+    var(--dark-blue) 0%,
+    var(--antique-blue) 100%
+  ); /* Changed background */
   padding: 5rem 0;
   position: relative;
 }
 
 .showcase-section::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -180,7 +204,11 @@ section {
   height: 4px;
   width: 80%;
   margin: 0 auto;
-  background: linear-gradient(to right, var(--antique-blue-light), var(--antique-blue));
+  background: linear-gradient(
+    to right,
+    var(--antique-blue-light),
+    var(--antique-blue)
+  );
 }
 
 .carousel-container {
@@ -240,7 +268,11 @@ section {
 /* Services Section */
 .services-section {
   padding: 5rem 0;
-  background: linear-gradient(135deg, var(--antique-blue-dark) 0%, var(--antique-blue) 100%); /* Changed background */
+  background: linear-gradient(
+    135deg,
+    var(--antique-blue-dark) 0%,
+    var(--antique-blue) 100%
+  ); /* Changed background */
   position: relative;
 }
 
@@ -299,7 +331,8 @@ section {
   text-align: center;
 }
 
-.category-tab:hover, .category-tab.active {
+.category-tab:hover,
+.category-tab.active {
   background-color: var(--primary-blue);
   color: white;
   transform: translateY(-2px);
@@ -369,7 +402,7 @@ section {
 }
 
 .service-card-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -458,7 +491,8 @@ section {
 }
 
 /* Custom carousel controls */
-.carousel-control-prev, .carousel-control-next {
+.carousel-control-prev,
+.carousel-control-next {
   width: 40px;
   height: 40px;
   background-color: var(--antique-blue);
@@ -490,15 +524,15 @@ section {
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.15rem;
   }
-  
+
   .carousel-image {
     height: 350px;
   }
-  
+
   .youtube-iframe {
     height: 220px;
   }
@@ -508,27 +542,30 @@ section {
   .hero-section {
     padding: 5rem 0;
   }
-  
+
   .hero-title {
     font-size: 2.2rem;
   }
-  
-  .about-section, .showcase-section, .services-section {
+
+  .about-section,
+  .showcase-section,
+  .services-section {
     padding: 4rem 0;
   }
-  
+
   .about-content {
     padding: 1.5rem;
   }
-  
-  .vision-box, .mission-box {
+
+  .vision-box,
+  .mission-box {
     padding: 1.2rem;
   }
-  
+
   .carousel-image {
     height: 300px;
   }
-  
+
   .youtube-iframe {
     height: 200px;
   }
@@ -539,32 +576,34 @@ section {
     font-size: 2rem;
     padding: 0 1rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
     padding: 0 1rem;
   }
-  
-  .about-section, .showcase-section, .services-section {
+
+  .about-section,
+  .showcase-section,
+  .services-section {
     padding: 3rem 0;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .box-title {
     font-size: 1.5rem;
   }
-  
+
   .carousel-image {
     height: 250px;
   }
-  
+
   .youtube-videos {
     margin-top: 2rem;
   }
-  
+
   .service-card {
     max-width: 350px;
     margin-left: auto;
@@ -576,45 +615,49 @@ section {
   .hero-section {
     padding: 4rem 1rem;
   }
-  
+
   .hero-title {
     font-size: 1.75rem;
   }
-  
+
   .hero-subtitle {
     font-size: 0.95rem;
   }
-  
+
   .hero-buttons .btn {
     padding: 0.5rem 1.5rem;
     font-size: 0.9rem;
   }
-  
-  .about-section, .showcase-section, .services-section {
+
+  .about-section,
+  .showcase-section,
+  .services-section {
     padding: 3rem 1rem;
   }
-  
+
   .section-title {
     font-size: 1.6rem;
   }
-  
+
   .subcategory-title {
     font-size: 1.3rem;
   }
-  
+
   .service-card-title {
     font-size: 1.1rem;
   }
-  
+
   .service-card-description {
     font-size: 0.85rem;
   }
-  
+
   .carousel-image {
     height: 200px;
   }
-  
-  .about-content, .vision-box, .mission-box {
+
+  .about-content,
+  .vision-box,
+  .mission-box {
     padding: 1rem;
   }
 }

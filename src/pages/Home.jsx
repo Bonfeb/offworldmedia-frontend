@@ -496,7 +496,7 @@ function Home() {
                 backgroundImage: 'url("/OWM Icon.ico")',
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                minHeight: "25vh",
+                height: "25vh",
               }}
               id="home"
             >
