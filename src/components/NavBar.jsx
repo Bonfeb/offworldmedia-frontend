@@ -104,7 +104,7 @@ function NavBar() {
                 textDecoration: "none",
               }}
             >
-              OffWorldMedia
+              OffWorld Media
             </Typography>
           </Box>
 
@@ -224,7 +224,9 @@ function NavBar() {
             color="inherit"
             aria-label="menu"
             sx={{ display: { xs: "flex", lg: "none" } }}
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => {
+              console.log("Menu Icon clicked");
+              setDrawerOpen(true);}}
           >
             <MenuIcon />
           </IconButton>
@@ -245,7 +247,7 @@ function NavBar() {
         }}
       >
         <Box sx={{ textAlign: "center", p: 2 }}>
-          <Typography variant="h6">OffWorldMedia</Typography>
+          <Typography variant="h6">OffWorld Media</Typography>
         </Box>
         <Divider sx={{ backgroundColor: "white" }} />
 
