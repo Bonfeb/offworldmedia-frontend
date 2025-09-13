@@ -13,7 +13,7 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Paper, Typography, Box, Grid } from "@mui/material";
+import { Paper, Typography, Box, Grid, Divider } from "@mui/material";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 
@@ -483,7 +483,7 @@ function Home() {
   return (
     <div className="home-page">
       {/* Main Container for Side-by-Side Layout */}
-      <Container fluid className="p-0">
+      <Container fluid className="p-0" style={{ backgroundColor:"#252d35ff" }}>
         <Row className="g-0 min-vh-100">
           {/* Hero Section - Left Side */}
           <Col
@@ -619,284 +619,124 @@ function Home() {
       </Container>
 
       {/* Studio Work Showcase */}
-      <Box
-        className="showcase-section"
-        sx={{
-          background:
-            "linear-gradient(135deg, var(--dark-blue) 0%, var(--antique-blue) 100%)",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          position: "relative",
-          padding: 0,
-          width: "100%",
-        }}
-      >
-        {/* Section Title */}
-        <Box
-          sx={{
-            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
-            textAlign: "center",
-          }}
-        >
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              fontWeight: 600,
-              fontSize: { xs: "1.8rem", sm: "2rem", md: "2.5rem" },
-              color: "var(--text-on-dark)",
-              marginBottom: 0,
-            }}
-          >
-            Offworld Media Gallery
-          </Typography>
-        </Box>
-
-        {/* Main Content Container */}
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: { xs: "column", lg: "row" },
-            width: "100%",
-            minHeight: "calc(100vh - 150px)",
-          }}
-        >
-          {/* Left Column - Image Carousel */}
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: { xs: "1rem", md: "2rem" },
-              minHeight: { xs: "50vh", lg: "100%" },
-            }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                height: { xs: "400px", md: "500px", lg: "600px" },
-                borderRadius: "15px",
-                overflow: "hidden",
-                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-              }}
-            >
-              <Carousel
-                fade
-                indicators={true}
-                className="showcase-carousel h-100"
-              >
-                {images.length > 0 ? (
-                  images.map((image, index) => (
-                    <Carousel.Item key={image.id || index} className="h-100">
-                      <img
-                        className="d-block w-100 h-100"
-                        src={image.image || image.url}
-                        alt={`Slide ${index + 1}`}
-                        style={{
-                          objectFit: "cover",
-                          filter: "brightness(1.1) contrast(1.1)",
-                        }}
-                      />
+     <div className="bg-dark text-white py-5">
+        <Container>
+          <h2 className="text-center fw-semibold mb-5">Gallery</h2>
+          <Divider className="mb-4" />
+          <Row>
+            {/* Image Carousel */}
+            <Col lg={6} className="mb-5 mb-lg-0">
+              <div className="rounded overflow-hidden shadow">
+                <Carousel fade indicators>
+                  {images.length > 0 ? (
+                    images.map((image, index) => (
+                      <Carousel.Item key={image.id || index}>
+                        <img
+                          className="d-block w-100"
+                          src={image.image || image.url}
+                          alt={`Slide ${index + 1}`}
+                          style={{ height: "400px", objectFit: "cover" }}
+                        />
+                      </Carousel.Item>
+                    ))
+                  ) : (
+                    <Carousel.Item>
+                      <div className="d-flex align-items-center justify-content-center bg-secondary" style={{ height: "400px" }}>
+                        <p className="text-center m-0">No carousel images available.</p>
+                      </div>
                     </Carousel.Item>
-                  ))
+                  )}
+                </Carousel>
+              </div>
+            </Col>
+            
+            {/* Video Carousel */}
+            <Col lg={6}>
+              <div className="rounded overflow-hidden shadow">
+                {videos.length > 0 ? (
+                  <>
+                    <div style={{ height: "340px" }}>
+                      <video
+                        className="w-100 h-100"
+                        controls
+                        style={{ objectFit: "cover" }}
+                        key={videos[activeVideoIndex]?.id}
+                      >
+                        <source
+                          src={
+                            videos[activeVideoIndex]?.video ||
+                            videos[activeVideoIndex]?.url
+                          }
+                          type="video/mp4"
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                    
+                    {/* Video Navigation Controls */}
+                    <div className="bg-secondary p-3 d-flex justify-content-between align-items-center">
+                      <div className="d-flex align-items-center gap-2">
+                        <Button
+                          onClick={goToPrevVideo}
+                          size="sm"
+                          variant="dark"
+                        >
+                          ← Prev
+                        </Button>
+                        
+                        <div className="d-flex gap-1">
+                          {videos.map((_, index) => (
+                            <div
+                              key={index}
+                              style={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: index === activeVideoIndex ? "#424242" : "#ccc",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => {
+                                if (videoTimerRef.current) {
+                                  clearTimeout(videoTimerRef.current);
+                                }
+                                setActiveVideoIndex(index);
+                              }}
+                            />
+                          ))}
+                        </div>
+                        
+                        <Button
+                          onClick={goToNextVideo}
+                          size="sm"
+                          variant="dark"
+                        >
+                          Next →
+                        </Button>
+                      </div>
+                      
+                      <small>
+                        {videos[activeVideoIndex]?.uploaded_at
+                          ? new Date(
+                              videos[activeVideoIndex]?.uploaded_at
+                            ).toLocaleDateString()
+                          : "Date Not Available"}
+                      </small>
+                    </div>
+                  </>
                 ) : (
-                  <Carousel.Item className="h-100">
-                    <Box
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        color: "var(--text-on-dark)",
-                      }}
-                    >
-                      <Typography variant="h4" sx={{ textAlign: "center" }}>
-                        No carousel images available.
-                      </Typography>
-                    </Box>
-                  </Carousel.Item>
+                  <div className="d-flex align-items-center justify-content-center bg-secondary" style={{ height: "400px" }}>
+                    <p className="text-center m-0">No videos available at the moment.</p>
+                  </div>
                 )}
-              </Carousel>
-            </Box>
-          </Box>
-
-          {/* Right Column - Video Carousel */}
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: { xs: "1rem", md: "2rem" },
-              minHeight: { xs: "50vh", lg: "100%" },
-            }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                height: { xs: "400px", md: "500px", lg: "600px" },
-                borderRadius: "15px",
-                overflow: "hidden",
-                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {videos.length > 0 ? (
-                <>
-                  <Box sx={{ flex: 1, position: "relative" }}>
-                    <video
-                      className="w-100 h-100"
-                      controls
-                      style={{
-                        objectFit: "cover",
-                        filter: "brightness(1.1) contrast(1.1)",
-                      }}
-                      key={videos[activeVideoIndex]?.id}
-                    >
-                      <source
-                        src={
-                          videos[activeVideoIndex]?.video ||
-                          videos[activeVideoIndex]?.url
-                        }
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  </Box>
-
-                  {/* Video Navigation Controls */}
-                  <Box
-                    sx={{
-                      padding: "1rem",
-                      backgroundColor: "rgba(0, 0, 0, 0.3)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Button
-                        onClick={goToPrevVideo}
-                        sx={{
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          minWidth: "auto",
-                          padding: "8px 16px",
-                          fontSize: "0.8rem",
-                          "&:hover": {
-                            backgroundColor: "#28a745",
-                          },
-                        }}
-                      >
-                        ← Prev
-                      </Button>
-
-                      <Box sx={{ display: "flex", gap: 0.5 }}>
-                        {videos.map((_, index) => (
-                          <Box
-                            key={index}
-                            sx={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor:
-                                index === activeVideoIndex ? "#007bff" : "#ccc",
-                              cursor: "pointer",
-                              transition: "background-color 0.3s ease",
-                              "&:hover": {
-                                backgroundColor:
-                                  index === activeVideoIndex
-                                    ? "#0056b3"
-                                    : "#999",
-                              },
-                            }}
-                            onClick={() => {
-                              if (videoTimerRef.current) {
-                                clearTimeout(videoTimerRef.current);
-                              }
-                              setActiveVideoIndex(index);
-                            }}
-                          />
-                        ))}
-                      </Box>
-
-                      <Button
-                        onClick={goToNextVideo}
-                        sx={{
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          minWidth: "auto",
-                          padding: "8px 16px",
-                          fontSize: "0.8rem",
-                          "&:hover": {
-                            backgroundColor: "#28a745",
-                          },
-                        }}
-                      >
-                        Next →
-                      </Button>
-                    </Box>
-
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.8)",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {videos[activeVideoIndex]?.uploaded_at
-                        ? new Date(
-                            videos[activeVideoIndex]?.uploaded_at
-                          ).toLocaleDateString()
-                        : "Date Not Available"}
-                    </Typography>
-                  </Box>
-                </>
-              ) : (
-                <Box
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    color: "var(--text-on-dark)",
-                  }}
-                >
-                  <Typography variant="h5" sx={{ textAlign: "center" }}>
-                    No videos available at the moment.
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Divider */}
-        <Box sx={{ padding: "2rem", textAlign: "center" }}>
-          <Box
-            sx={{
-              width: "80%",
-              margin: "0 auto",
-              height: "4px",
-              background:
-                "linear-gradient(to right, var(--primary-blue), var(--antique-blue-light))",
-              borderRadius: "2px",
-              opacity: 0.8,
-            }}
-          />
-        </Box>
-      </Box>
+              </div>
+            </Col>
+          </Row>
+          
+          <div className="text-center mt-5">
+            <div className="mx-auto" style={{ height: "3px", width: "80%", backgroundColor: "#6c757d" }}></div>
+          </div>
+        </Container>
+      </div>
 
       {/* Services Section - Updated with Categories and Subcategories */}
       <section className="services-section py-5">
