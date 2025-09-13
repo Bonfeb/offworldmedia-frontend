@@ -759,154 +759,152 @@ function Home() {
       </div>
 
       {/* Services Section - Updated with Categories and Subcategories */}
-      <section className="services-section py-5">
-        <Container fluid className="bg-dark text-white py-5">
-          <Row className="justify-content-center mb-5">
-            <Col lg={8} className="text-center">
-              <Typography
-                variant="h2"
-                component="h2"
-                className="section-title mb-3"
-              >
-                We Offer Awesome Services
-              </Typography>
-              <div
-                className="mx-auto mb-4"
-                style={{
-                  width: "100px",
-                  height: "2px",
-                  backgroundColor: "#45463bff",
-                }}
-              ></div>
+      <Container fluid className="bg-dark text-white py-5">
+        <Row className="justify-content-center mb-5">
+          <Col lg={8} className="text-center">
+            <Typography
+              variant="h2"
+              component="h2"
+              className="section-title mb-3"
+            >
+              We Offer Awesome Services
+            </Typography>
+            <div
+              className="mx-auto mb-4"
+              style={{
+                width: "100px",
+                height: "2px",
+                backgroundColor: "#45463bff",
+              }}
+            ></div>
 
-              <Typography variant="subtitle1" className="section-subtitle">
-                Our premium services are designed to meet all your creative
-                needs, from photography to video production, ensuring
-                high-quality results for your projects.
-              </Typography>
+            <Typography variant="subtitle1" className="section-subtitle">
+              Our premium services are designed to meet all your creative needs,
+              from photography to video production, ensuring high-quality
+              results for your projects.
+            </Typography>
+            <div
+              className="mx-auto mb-4"
+              style={{
+                width: "100px",
+                height: "2px",
+                backgroundColor: "#45463bff",
+              }}
+            ></div>
+            {/* Payment Banner in Hero Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              style={{ marginTop: "3rem", width: "100%" }}
+            >
               <div
-                className="mx-auto mb-4"
-                style={{
-                  width: "100px",
-                  height: "2px",
-                  backgroundColor: "#45463bff",
-                }}
-              ></div>
-              {/* Payment Banner in Hero Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                style={{ marginTop: "3rem", width: "100%" }}
+                className="d-flex justify-content-center"
+                style={{ width: "100%" }}
               >
-                <div
-                  className="d-flex justify-content-center"
-                  style={{ width: "100%" }}
+                <a
+                  href="#payment-info"
+                  style={{
+                    position: "relative",
+                    display: "block",
+                    background: "#1B5E20", // Dark green background
+                    color: "white",
+                    textDecoration: "none",
+                    padding: "20px",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    width: "100%",
+                    lineHeight: "1.4",
+                    boxShadow: "0 4px 15px rgba(27, 94, 32, 0.3)",
+                    transition: "all 0.3s ease",
+                    borderRadius: "0",
+                    boxSizing: "border-box",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#2E7D32"; // Lighter green on hover
+                    e.currentTarget.style.boxShadow =
+                      "0 6px 20px rgba(46, 125, 50, 0.4)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    // Update folded edges
+                    const edges =
+                      e.currentTarget.querySelectorAll(".folded-edge");
+                    edges.forEach((edge) => {
+                      edge.style.background = "#1B5E20"; // Dark green edges on hover
+                    });
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "#1B5E20";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 15px rgba(27, 94, 32, 0.3)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    // Revert folded edges
+                    const edges =
+                      e.currentTarget.querySelectorAll(".folded-edge");
+                    edges.forEach((edge) => {
+                      edge.style.background = "#2E7D32"; // Lighter green edges normally
+                    });
+                  }}
                 >
-                  <a
-                    href="#payment-info"
+                  <div style={{ position: "relative", zIndex: 1 }}>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "clamp(14px, 3vw, 16px)",
+                        fontWeight: "600",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      Buy Goods & Services
+                    </span>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "clamp(16px, 3.5vw, 18px)",
+                        fontWeight: "700",
+                      }}
+                    >
+                      Till Number: 4323716
+                    </span>
+                  </div>
+
+                  {/* Left folded edge */}
+                  <span
+                    className="folded-edge"
                     style={{
-                      position: "relative",
-                      display: "block",
-                      background: "#1B5E20", // Dark green background
-                      color: "white",
-                      textDecoration: "none",
-                      padding: "20px",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                      width: "100%",
-                      lineHeight: "1.4",
-                      boxShadow: "0 4px 15px rgba(27, 94, 32, 0.3)",
-                      transition: "all 0.3s ease",
-                      borderRadius: "0",
-                      boxSizing: "border-box",
+                      position: "absolute",
+                      left: "-10px",
+                      top: "0",
+                      bottom: "0",
+                      width: "20px",
+                      background: "#2E7D32", // Lighter green edge
+                      transform: "skewY(-20deg)",
+                      borderRadius: "3px 0 0 3px",
+                      transition: "background 0.3s ease",
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "#2E7D32"; // Lighter green on hover
-                      e.currentTarget.style.boxShadow =
-                        "0 6px 20px rgba(46, 125, 50, 0.4)";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      // Update folded edges
-                      const edges =
-                        e.currentTarget.querySelectorAll(".folded-edge");
-                      edges.forEach((edge) => {
-                        edge.style.background = "#1B5E20"; // Dark green edges on hover
-                      });
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "#1B5E20";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 15px rgba(27, 94, 32, 0.3)";
-                      e.currentTarget.style.transform = "translateY(0)";
-                      // Revert folded edges
-                      const edges =
-                        e.currentTarget.querySelectorAll(".folded-edge");
-                      edges.forEach((edge) => {
-                        edge.style.background = "#2E7D32"; // Lighter green edges normally
-                      });
-                    }}
-                  >
-                    <div style={{ position: "relative", zIndex: 1 }}>
-                      <span
-                        style={{
-                          display: "block",
-                          fontSize: "clamp(14px, 3vw, 16px)",
-                          fontWeight: "600",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        Buy Goods & Services
-                      </span>
-                      <span
-                        style={{
-                          display: "block",
-                          fontSize: "clamp(16px, 3.5vw, 18px)",
-                          fontWeight: "700",
-                        }}
-                      >
-                        Till Number: 4323716
-                      </span>
-                    </div>
+                  />
 
-                    {/* Left folded edge */}
-                    <span
-                      className="folded-edge"
-                      style={{
-                        position: "absolute",
-                        left: "-10px",
-                        top: "0",
-                        bottom: "0",
-                        width: "20px",
-                        background: "#2E7D32", // Lighter green edge
-                        transform: "skewY(-20deg)",
-                        borderRadius: "3px 0 0 3px",
-                        transition: "background 0.3s ease",
-                      }}
-                    />
-
-                    {/* Right folded edge */}
-                    <span
-                      className="folded-edge"
-                      style={{
-                        position: "absolute",
-                        right: "-10px",
-                        top: "0",
-                        bottom: "0",
-                        width: "20px",
-                        background: "#2E7D32", // Lighter green edge
-                        transform: "skewY(20deg)",
-                        borderRadius: "0 3px 3px 0",
-                        transition: "background 0.3s ease",
-                      }}
-                    />
-                  </a>
-                </div>
-              </motion.div>
-            </Col>
-          </Row>
-          {renderServicesSection()}
-        </Container>
-      </section>
+                  {/* Right folded edge */}
+                  <span
+                    className="folded-edge"
+                    style={{
+                      position: "absolute",
+                      right: "-10px",
+                      top: "0",
+                      bottom: "0",
+                      width: "20px",
+                      background: "#2E7D32", // Lighter green edge
+                      transform: "skewY(20deg)",
+                      borderRadius: "0 3px 3px 0",
+                      transition: "background 0.3s ease",
+                    }}
+                  />
+                </a>
+              </div>
+            </motion.div>
+          </Col>
+        </Row>
+        {renderServicesSection()}
+      </Container>
     </div>
   );
 }
