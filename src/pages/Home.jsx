@@ -484,7 +484,7 @@ function Home() {
     <div className="home-page">
       {/* Main Container for Side-by-Side Layout */}
       <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
-        <Row className="g-0 min-vh-100">
+        <Row className="g-0 align-items-stretch" style={{ minHeight: "30vh" }}>
           {/* Hero Section - Left Side */}
           <Col
             lg={6}
@@ -572,7 +572,14 @@ function Home() {
           >
             <div className="w-100">
               <h2 className="text-center fw-bold mb-4">Who We Are</h2>
-              <Divider className="mb-4" />
+              <div
+                className="mx-auto mb-4"
+                style={{
+                  width: "100px",
+                  height: "2px",
+                  backgroundColor: "#45463bff",
+                }}
+              ></div>
               <p className="text-center mb-5">
                 Offworld Media Africa is a business company specializing in
                 photography, videography, music production, graphic designing
