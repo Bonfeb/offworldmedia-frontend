@@ -651,184 +651,156 @@ function Home() {
           </Container>
         </Box>
 
-
         {/* About Section */}
-        <Box
-          className="about-section"
+        <Container
+          fluid
+          maxWidth={false}
           sx={{
-            flex: 1,
-            height: { xs: "50vh", lg: "100%" },
-            background: "#37474f",
+            width: "100%",
+            height: "100%",
             display: "flex",
             alignItems: "center",
-            color: "white",
-            position: "relative",
-            padding: { xs: "2rem 1rem", md: "3rem 2rem" },
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: "6px",
-              background: "#455a64",
-              display: { lg: "none" },
-            },
+            justifyContent: "center",
           }}
         >
-          <Container
-            maxWidth={false}
+          <Box
+            component={Paper}
+            elevation={0}
             sx={{
+              background: "rgba(26, 49, 75, 0.7)",
+              borderRadius: "15px",
+              padding: { xs: "2rem", md: "2.5rem" },
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              color: "white",
               width: "100%",
               height: "100%",
               display: "flex",
-              alignItems: "center",
+              flexDirection: "column",
               justifyContent: "center",
+              overflow: "auto",
             }}
           >
-            <Box
-              component={Paper}
-              elevation={0}
+            <Typography
+              variant="h2"
+              component="h2"
               sx={{
-                background: "rgba(26, 49, 75, 0.7)",
-                borderRadius: "15px",
-                padding: { xs: "2rem", md: "2.5rem" },
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                fontSize: { xs: "1.8rem", sm: "2rem", md: "2.25rem" },
+                fontWeight: 700,
+                marginBottom: "1.2rem",
                 color: "white",
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                overflow: "auto",
+                textAlign: "center",
               }}
             >
-              <Typography
-                variant="h2"
-                component="h2"
-                sx={{
-                  fontSize: { xs: "1.8rem", sm: "2rem", md: "2.25rem" },
-                  fontWeight: 700,
-                  marginBottom: "1.2rem",
-                  color: "white",
-                  textAlign: "center",
-                }}
-              >
-                Who We Are
-              </Typography>
+              Who We Are
+            </Typography>
 
-              <Typography
-                variant="body1"
-                sx={{
-                  marginBottom: "2rem",
-                  textAlign: "center",
-                  fontSize: { xs: "1rem", md: "1.1rem" },
-                  lineHeight: 1.6,
-                }}
-              >
-                Offworld Media Africa is a business company specializing in
-                photography, videography, music production, graphic designing
-                and digital broadcasting.
-              </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                marginBottom: "2rem",
+                textAlign: "center",
+                fontSize: { xs: "1rem", md: "1.1rem" },
+                lineHeight: 1.6,
+              }}
+            >
+              Offworld Media Africa is a business company specializing in
+              photography, videography, music production, graphic designing and
+              digital broadcasting.
+            </Typography>
 
-              <Grid
-                container
-                spacing={3}
-                sx={{ marginTop: "1rem", flexGrow: 1 }}
-              >
-                <Grid item xs={12} md={6}>
-                  <Box
-                    component={Paper}
-                    elevation={3}
+            <Grid container spacing={3} sx={{ marginTop: "1rem", flexGrow: 1 }}>
+              <Grid item xs={12} md={6}>
+                <Box
+                  component={Paper}
+                  elevation={3}
+                  sx={{
+                    background: "rgba(69, 90, 100, 0.9)",
+                    borderRadius: "10px",
+                    padding: "1.5rem",
+                    height: "100%",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    display: "flex",
+                    flexDirection: "column",
+                    "&:hover": {
+                      transform: "translateY(-5px)",
+                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
+                      background: "rgba(69, 90, 100, 0.9)",
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    component="h3"
                     sx={{
-                      background: "rgba(13, 71, 161, 0.5)",
-                      borderRadius: "10px",
-                      padding: "1.5rem",
-                      height: "100%",
-                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      display: "flex",
-                      flexDirection: "column",
-                      "&:hover": {
-                        transform: "translateY(-5px)",
-                        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
-                        background: "rgba(69, 90, 100, 0.9)",
-                      },
+                      fontSize: { xs: "1.4rem", md: "1.8rem" },
+                      fontWeight: 600,
+                      color: "var(--text-on-dark)",
+                      marginBottom: "1rem",
+                      borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
+                      paddingBottom: "0.5rem",
                     }}
                   >
-                    <Typography
-                      variant="h4"
-                      component="h3"
-                      sx={{
-                        fontSize: { xs: "1.4rem", md: "1.8rem" },
-                        fontWeight: 600,
-                        color: "var(--text-on-dark)",
-                        marginBottom: "1rem",
-                        borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
-                        paddingBottom: "0.5rem",
-                      }}
-                    >
-                      Vision
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ lineHeight: 1.6, flexGrow: 1 }}
-                    >
-                      To be a transformative force in global media, revealing
-                      the essence of life and capturing the heartbeat through
-                      photography, film, music and digital broadcasting.
-                    </Typography>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <Box
-                    component={Paper}
-                    elevation={3}
-                    sx={{
-                      background: "rgba(69, 90, 100, 0.7)",
-                      borderRadius: "8px",
-                      padding: "1.2rem",
-                      height: "100%",
-                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      display: "flex",
-                      flexDirection: "column",
-                      "&:hover": {
-                        transform: "translateY(-5px)",
-                        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
-                        background: "rgba(69, 90, 100, 0.9)",
-                      },
-                    }}
+                    Vision
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.6, flexGrow: 1 }}
                   >
-                    <Typography
-                      variant="h4"
-                      component="h3"
-                      sx={{
-                        fontSize: { xs: "1.2rem", md: "1.4rem" },
-                        fontWeight: 600,
-                        color: "var(--text-on-dark)",
-                        marginBottom: "1rem",
-                        borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
-                        paddingBottom: "0.4rem",
-                      }}
-                    >
-                      Mission
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ lineHeight: 1.6, flexGrow: 1 }}
-                    >
-                      To create powerful visuals and authentic sounds that
-                      inspire, resonate and move both hearts and minds.
-                    </Typography>
-                  </Box>
-                </Grid>
+                    To be a transformative force in global media, revealing the
+                    essence of life and capturing the heartbeat through
+                    photography, film, music and digital broadcasting.
+                  </Typography>
+                </Box>
               </Grid>
-            </Box>
-          </Container>
-        </Box>
+
+              <Grid item xs={12} md={6}>
+                <Box
+                  component={Paper}
+                  elevation={3}
+                  sx={{
+                    background: "rgba(69, 90, 100, 0.7)",
+                    borderRadius: "8px",
+                    padding: "1.2rem",
+                    height: "100%",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    display: "flex",
+                    flexDirection: "column",
+                    "&:hover": {
+                      transform: "translateY(-5px)",
+                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
+                      background: "rgba(69, 90, 100, 0.9)",
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    component="h3"
+                    sx={{
+                      fontSize: { xs: "1.2rem", md: "1.4rem" },
+                      fontWeight: 600,
+                      color: "var(--text-on-dark)",
+                      marginBottom: "1rem",
+                      borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
+                      paddingBottom: "0.4rem",
+                    }}
+                  >
+                    Mission
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.6, flexGrow: 1 }}
+                  >
+                    To create powerful visuals and authentic sounds that
+                    inspire, resonate and move both hearts and minds.
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </Container>
       </Box>
 
       {/* Studio Work Showcase */}
@@ -1241,8 +1213,8 @@ function Home() {
                 </div>
               </motion.div>
             </Col>
-          </Row>re
-
+          </Row>
+          re
           {renderServicesSection()}
         </Container>
       </section>
