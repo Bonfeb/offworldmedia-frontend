@@ -2,10 +2,12 @@
 .home-page {
   overflow-x: hidden;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #2c3e50;
-  background-color: var(
-    --antique-blue-dark
-  ); /* Added background color to entire page */
+}
+
+.home-page .MuiIconButton-root {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 1301 !important;
 }
 
 /* Color Variables */

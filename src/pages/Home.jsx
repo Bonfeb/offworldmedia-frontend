@@ -391,7 +391,9 @@ function Home() {
                                                 paddingRight: "120px", // Space for price badge
                                               }}
                                             >
-                                              {service.category}
+                                              {service.formatCategoryName(
+                                                category
+                                              )}
                                             </Card.Title>
 
                                             <Card.Text
@@ -487,7 +489,11 @@ function Home() {
         <Row className="g-0 align-items-stretch" style={{ height: "60vh" }}>
           {/* Hero Section - Left Side */}
           <Col
+            xl={6}
             lg={6}
+            md={12}
+            sm={12}
+            xs={12}
             className="d-flex align-items-center justify-content-center p-0"
             style={{ height: "100%" }}
           >
@@ -576,7 +582,11 @@ function Home() {
 
           {/* About Section - Right Side */}
           <Col
+            xl={6}
             lg={6}
+            md={12}
+            sm={12}
+            xs={12}
             className="bg-dark text-white d-flex align-items-center justify-content-center p-4 p-lg-5 bg-light"
             style={{ height: "100%" }}
           >
@@ -652,7 +662,14 @@ function Home() {
           ></div>
           <Row>
             {/* Image Carousel */}
-            <Col lg={6} className="mt-2 mb-5 mb-lg-0">
+            <Col
+              xl={6}
+              lg={6}
+              md={12}
+              sm={12}
+              xs={12}
+              className="mt-2 mb-5 mb-lg-0"
+            >
               <div className="rounded overflow-hidden shadow">
                 <Carousel fade indicators>
                   {images.length > 0 ? (
@@ -683,7 +700,7 @@ function Home() {
             </Col>
 
             {/* Video Carousel */}
-            <Col lg={6}>
+            <Col xl={6} lg={6} md={12} sm={12} xs={12}>
               <div className="rounded overflow-hidden shadow">
                 {videos.length > 0 ? (
                   <>

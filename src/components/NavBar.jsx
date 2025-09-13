@@ -243,6 +243,10 @@ function NavBar() {
             backgroundColor: colors.antiqueBlue,
             color: "white",
             width: 250,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center"
           },
         }}
       >
