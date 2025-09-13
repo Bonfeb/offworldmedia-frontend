@@ -483,325 +483,140 @@ function Home() {
   return (
     <div className="home-page">
       {/* Main Container for Side-by-Side Layout */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: {
-            xs: "column",
-            sm: "column",
-            md: "column",
-            lg: "row",
-          },
-          minHeight: "100vh",
-          height: "100vh",
-        }}
-      >
-        {/* Hero Section */}
-        <Box
-          className="hero-section"
-          sx={{
-            flex: { xs: 1, lg: 0.6 },
-            height: { xs: "40vh", lg: "100%" },
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            //backgroundColor: "#2c3e50", // Dark grey-blue background
-            backgroundImage: `url("/OWM Icon.ico")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            textAlign: "center",
-            padding: { xs: "1.5rem 1rem", md: "2rem 1.5rem" },
-            position: "relative",
-            overflow: "hidden",
-          }}
-          id="home"
-        >
-          <Container
-            maxWidth={false}
-            sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+      <Container fluid className="p-0">
+        <Row className="g-0 min-vh-100">
+          {/* Hero Section - Left Side */}
+          <Col
+            lg={6}
+            className="d-flex align-items-center justify-content-center p-0"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+            <div
+              className="hero-section w-100 h-100 d-flex align-items-center justify-content-center"
               style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
+                backgroundImage: 'url("/OWM Icon.ico")',
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                minHeight: "50vh",
               }}
+              id="home"
             >
-              <Typography
-                variant="h2"
-                component="h1"
-                gutterBottom
-                className="hero-title"
-                sx={{
-                  fontWeight: 700,
-                  fontSize: {
-                    xs: "1.8rem",
-                    sm: "2.2rem",
-                    md: "2.8rem",
-                    lg: "2.4rem",
-                  },
-                  marginBottom: { xs: "0.8rem", md: "1.2rem" },
-                }}
-              >
-                Offworld Media
-              </Typography>
-              <Typography
-                variant="h5"
-                component="p"
-                gutterBottom
-                className="hero-subtitle"
-                sx={{
-                  mb: { xs: 1.5, md: 3 },
-                  fontSize: {
-                    xs: "0.9rem",
-                    sm: "1rem",
-                    md: "1.3rem",
-                    lg: "1.1rem",
-                  },
-                  maxWidth: "500px",
-                  margin: "0 auto",
-                  lineHeight: 1.5,
-                  opacity: 0.9,
-                }}
-              >
-                Professional media production services tailored to your needs.
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: { xs: 1, md: 1.5 },
-                  justifyContent: "center",
-                  flexDirection: { xs: "column", sm: "row" },
-                  marginTop: { xs: "0.8rem", md: "1.5rem" },
-                }}
+              <div
+                className="text-center text-white p-3"
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
               >
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
+                  transition={{ duration: 0.8 }}
                 >
-                  <Button
-                    onClick={() => navigate("/services")}
-                    sx={{
-                      backgroundColor: "#424242",
-                      color: "white",
-                      border: "none",
-                      padding: "10px 20px",
-                      borderRadius: "30px",
-                      fontWeight: 600,
-                      textTransform: "uppercase",
-                      letterSpacing: "1px",
-                      fontSize: "0.8rem",
-                      width: { xs: "100%", sm: "auto" },
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#616161",
-                        transform: "translateY(-3px)",
-                        boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
-                      },
-                    }}
-                  >
-                    Our Services
-                  </Button>
+                  <h1 className="hero-title fw-bold mb-3">Offworld Media</h1>
+                  <p className="hero-subtitle mb-4 fs-5">
+                    Professional media production services tailored to your
+                    needs.
+                  </p>
+                  <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                      <Button
+                        onClick={() => navigate("/services")}
+                        className="px-4 py-2 rounded-pill fw-semibold"
+                        style={{
+                          backgroundColor: "#424242",
+                          border: "none",
+                          fontSize: "0.9rem",
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.backgroundColor = "#616161";
+                          e.target.style.transform = "translateY(-3px)";
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.backgroundColor = "#424242";
+                          e.target.style.transform = "translateY(0)";
+                        }}
+                      >
+                        Our Services
+                      </Button>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.4 }}
+                    >
+                      <Button
+                        onClick={() => navigate("/contactus")}
+                        className="px-4 py-2 rounded-pill fw-semibold"
+                        style={{
+                          backgroundColor: "#424242",
+                          border: "none",
+                          fontSize: "0.9rem",
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.backgroundColor = "#616161";
+                          e.target.style.transform = "translateY(-3px)";
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.backgroundColor = "#424242";
+                          e.target.style.transform = "translateY(0)";
+                        }}
+                      >
+                        Contact Us
+                      </Button>
+                    </motion.div>
+                  </div>
                 </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                >
-                  <Button
-                    onClick={() => navigate("/contactus")}
-                    sx={{
-                      backgroundColor: "#424242",
-                      color: "white",
-                      border: "none",
-                      padding: "10px 20px",
-                      borderRadius: "30px",
-                      fontWeight: 600,
-                      textTransform: "uppercase",
-                      letterSpacing: "1px",
-                      fontSize: "0.8rem",
-                      width: { xs: "100%", sm: "auto" },
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "#616161",
-                        transform: "translateY(-3px)",
-                        boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
-                      },
-                    }}
-                  >
-                    Contact Us
-                  </Button>
-                </motion.div>
-              </Box>
-            </motion.div>
-          </Container>
-        </Box>
+              </div>
+            </div>
+          </Col>
 
-        {/* About Section */}
-        <Container
-          fluid
-          maxWidth={false}
-          sx={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Box
-            component={Paper}
-            elevation={0}
-            sx={{
-              background: "rgba(26, 49, 75, 0.7)",
-              borderRadius: "15px",
-              padding: { xs: "2rem", md: "2.5rem" },
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              color: "white",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              overflow: "auto",
-            }}
+          {/* About Section - Right Side */}
+          <Col
+            lg={6}
+            className="d-flex align-items-center justify-content-center p-4 p-lg-5 bg-light"
           >
-            <Typography
-              variant="h2"
-              component="h2"
-              sx={{
-                fontSize: { xs: "1.8rem", sm: "2rem", md: "2.25rem" },
-                fontWeight: 700,
-                marginBottom: "1.2rem",
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              Who We Are
-            </Typography>
+            <div className="w-100">
+              <h2 className="text-center fw-bold mb-4">Who We Are</h2>
+              <p className="text-center mb-5">
+                Offworld Media Africa is a business company specializing in
+                photography, videography, music production, graphic designing
+                and digital broadcasting.
+              </p>
 
-            <Typography
-              variant="body1"
-              sx={{
-                marginBottom: "2rem",
-                textAlign: "center",
-                fontSize: { xs: "1rem", md: "1.1rem" },
-                lineHeight: 1.6,
-              }}
-            >
-              Offworld Media Africa is a business company specializing in
-              photography, videography, music production, graphic designing and
-              digital broadcasting.
-            </Typography>
-
-            <Grid container spacing={3} sx={{ marginTop: "1rem", flexGrow: 1 }}>
-              <Grid item xs={12} md={6}>
-                <Box
-                  component={Paper}
-                  elevation={3}
-                  sx={{
-                    background: "rgba(69, 90, 100, 0.9)",
-                    borderRadius: "10px",
-                    padding: "1.5rem",
-                    height: "100%",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    display: "flex",
-                    flexDirection: "column",
-                    "&:hover": {
-                      transform: "translateY(-5px)",
-                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
-                      background: "rgba(69, 90, 100, 0.9)",
-                    },
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    component="h3"
-                    sx={{
-                      fontSize: { xs: "1.4rem", md: "1.8rem" },
-                      fontWeight: 600,
-                      color: "var(--text-on-dark)",
-                      marginBottom: "1rem",
-                      borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
-                      paddingBottom: "0.5rem",
-                    }}
-                  >
-                    Vision
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ lineHeight: 1.6, flexGrow: 1 }}
-                  >
-                    To be a transformative force in global media, revealing the
-                    essence of life and capturing the heartbeat through
-                    photography, film, music and digital broadcasting.
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Box
-                  component={Paper}
-                  elevation={3}
-                  sx={{
-                    background: "rgba(69, 90, 100, 0.7)",
-                    borderRadius: "8px",
-                    padding: "1.2rem",
-                    height: "100%",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    display: "flex",
-                    flexDirection: "column",
-                    "&:hover": {
-                      transform: "translateY(-5px)",
-                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)",
-                      background: "rgba(69, 90, 100, 0.9)",
-                    },
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    component="h3"
-                    sx={{
-                      fontSize: { xs: "1.2rem", md: "1.4rem" },
-                      fontWeight: 600,
-                      color: "var(--text-on-dark)",
-                      marginBottom: "1rem",
-                      borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
-                      paddingBottom: "0.4rem",
-                    }}
-                  >
-                    Mission
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ lineHeight: 1.6, flexGrow: 1 }}
-                  >
-                    To create powerful visuals and authentic sounds that
-                    inspire, resonate and move both hearts and minds.
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        </Container>
-      </Box>
+              <Row>
+                <Col md={6} className="mb-4 mb-md-0">
+                  <Card className="h-100 border-0 shadow-sm">
+                    <Card.Body className="p-4">
+                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
+                        Vision
+                      </Card.Title>
+                      <Card.Text>
+                        To be a transformative force in global media, revealing
+                        the essence of life and capturing the heartbeat through
+                        photography, film, music and digital broadcasting.
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={6}>
+                  <Card className="h-100 border-0 shadow-sm">
+                    <Card.Body className="p-4">
+                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
+                        Mission
+                      </Card.Title>
+                      <Card.Text>
+                        To create powerful visuals and authentic sounds that
+                        inspire, resonate and move both hearts and minds.
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          </Col>
+        </Row>
+      </Container>
 
       {/* Studio Work Showcase */}
       <Box
