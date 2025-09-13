@@ -481,7 +481,7 @@ function Home() {
   };
 
   return (
-    <div className="home-page">
+    <Container fluid>
       {/* Main Container for Side-by-Side Layout */}
       <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
         <Row className="g-0 align-items-stretch" style={{ height: "60vh" }}>
@@ -639,156 +639,143 @@ function Home() {
       </Container>
 
       {/* Studio Work Showcase */}
-      <div className="bg-dark text-white py-5">
-        <Container fluid className="px-4 px-lg-5">
-          <div
-            className="mx-auto mb-4"
-            style={{
-              width: "50%",
-              height: "2px",
-              backgroundColor: "#45463bff",
-            }}
-          ></div>
-          <h2 className="text-center fw-semibold mb-4">Gallery</h2>
-          <div
-            className="mx-auto mb-4"
-            style={{
-              width: "50%",
-              height: "2px",
-              backgroundColor: "#45463bff",
-            }}
-          ></div>
-          <Row>
-            {/* Image Carousel */}
-            <Col
-              xl={6}
-              lg={6}
-              md={12}
-              sm={12}
-              xs={12}
-              className="mt-2 mb-5 mb-lg-0"
-            >
-              <div className="rounded overflow-hidden shadow">
-                <Carousel fade indicators>
-                  {images.length > 0 ? (
-                    images.map((image, index) => (
-                      <Carousel.Item key={image.id || index}>
-                        <img
-                          className="d-block w-100"
-                          src={image.image || image.url}
-                          alt={`Slide ${index + 1}`}
-                          style={{ height: "400px", objectFit: "cover" }}
-                        />
-                      </Carousel.Item>
-                    ))
-                  ) : (
-                    <Carousel.Item>
-                      <div
-                        className="d-flex align-items-center justify-content-center bg-secondary"
-                        style={{ height: "400px" }}
-                      >
-                        <p className="text-center m-0">
-                          No carousel images available.
-                        </p>
-                      </div>
+      <Container fluid className="bg-dark text-white py-5 px-4 px-lg-5">
+        <div
+          className="mx-auto mb-4"
+          style={{
+            width: "50%",
+            height: "2px",
+            backgroundColor: "#45463bff",
+          }}
+        ></div>
+        <h2 className="text-center fw-semibold mb-4">Gallery</h2>
+        <div
+          className="mx-auto mb-4"
+          style={{
+            width: "50%",
+            height: "2px",
+            backgroundColor: "#45463bff",
+          }}
+        ></div>
+        <Row>
+          {/* Image Carousel */}
+          <Col
+            xl={6}
+            lg={6}
+            md={12}
+            sm={12}
+            xs={12}
+            className="mt-2 mb-5 mb-lg-0"
+          >
+            <div className="rounded overflow-hidden shadow">
+              <Carousel fade indicators>
+                {images.length > 0 ? (
+                  images.map((image, index) => (
+                    <Carousel.Item key={image.id || index}>
+                      <img
+                        className="d-block w-100"
+                        src={image.image || image.url}
+                        alt={`Slide ${index + 1}`}
+                        style={{ height: "400px", objectFit: "cover" }}
+                      />
                     </Carousel.Item>
-                  )}
-                </Carousel>
-              </div>
-            </Col>
-
-            {/* Video Carousel */}
-            <Col xl={6} lg={6} md={12} sm={12} xs={12}>
-              <div className="rounded overflow-hidden shadow">
-                {videos.length > 0 ? (
-                  <>
-                    <div style={{ height: "340px" }}>
-                      <video
-                        className="w-100 h-100"
-                        controls
-                        style={{ objectFit: "cover" }}
-                        key={videos[activeVideoIndex]?.id}
-                      >
-                        <source
-                          src={
-                            videos[activeVideoIndex]?.video ||
-                            videos[activeVideoIndex]?.url
-                          }
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video>
+                  ))
+                ) : (
+                  <Carousel.Item>
+                    <div
+                      className="d-flex align-items-center justify-content-center bg-secondary"
+                      style={{ height: "400px" }}
+                    >
+                      <p className="text-center m-0">
+                        No carousel images available.
+                      </p>
                     </div>
+                  </Carousel.Item>
+                )}
+              </Carousel>
+            </div>
+          </Col>
 
-                    {/* Video Navigation Controls */}
-                    <div className="bg-secondary p-3 d-flex justify-content-between align-items-center">
-                      <div className="d-flex align-items-center gap-2">
-                        <Button
-                          onClick={goToPrevVideo}
-                          size="sm"
-                          variant="dark"
-                        >
-                          ← Prev
-                        </Button>
+          {/* Video Carousel */}
+          <Col xl={6} lg={6} md={12} sm={12} xs={12}>
+            <div className="rounded overflow-hidden shadow">
+              {videos.length > 0 ? (
+                <>
+                  <div style={{ height: "340px" }}>
+                    <video
+                      className="w-100 h-100"
+                      controls
+                      style={{ objectFit: "cover" }}
+                      key={videos[activeVideoIndex]?.id}
+                    >
+                      <source
+                        src={
+                          videos[activeVideoIndex]?.video ||
+                          videos[activeVideoIndex]?.url
+                        }
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
 
-                        <div className="d-flex gap-1">
-                          {videos.map((_, index) => (
-                            <div
-                              key={index}
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                borderRadius: "50%",
-                                backgroundColor:
-                                  index === activeVideoIndex
-                                    ? "#424242"
-                                    : "#ccc",
-                                cursor: "pointer",
-                              }}
-                              onClick={() => {
-                                if (videoTimerRef.current) {
-                                  clearTimeout(videoTimerRef.current);
-                                }
-                                setActiveVideoIndex(index);
-                              }}
-                            />
-                          ))}
-                        </div>
+                  {/* Video Navigation Controls */}
+                  <div className="bg-secondary p-3 d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center gap-2">
+                      <Button onClick={goToPrevVideo} size="sm" variant="dark">
+                        ← Prev
+                      </Button>
 
-                        <Button
-                          onClick={goToNextVideo}
-                          size="sm"
-                          variant="dark"
-                        >
-                          Next →
-                        </Button>
+                      <div className="d-flex gap-1">
+                        {videos.map((_, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor:
+                                index === activeVideoIndex ? "#424242" : "#ccc",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              if (videoTimerRef.current) {
+                                clearTimeout(videoTimerRef.current);
+                              }
+                              setActiveVideoIndex(index);
+                            }}
+                          />
+                        ))}
                       </div>
 
-                      <small>
-                        {videos[activeVideoIndex]?.uploaded_at
-                          ? new Date(
-                              videos[activeVideoIndex]?.uploaded_at
-                            ).toLocaleDateString()
-                          : "Date Not Available"}
-                      </small>
+                      <Button onClick={goToNextVideo} size="sm" variant="dark">
+                        Next →
+                      </Button>
                     </div>
-                  </>
-                ) : (
-                  <div
-                    className="d-flex align-items-center justify-content-center bg-secondary"
-                    style={{ height: "400px" }}
-                  >
-                    <p className="text-center m-0">
-                      No videos available at the moment.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
 
+                    <small>
+                      {videos[activeVideoIndex]?.uploaded_at
+                        ? new Date(
+                            videos[activeVideoIndex]?.uploaded_at
+                          ).toLocaleDateString()
+                        : "Date Not Available"}
+                    </small>
+                  </div>
+                </>
+              ) : (
+                <div
+                  className="d-flex align-items-center justify-content-center bg-secondary"
+                  style={{ height: "400px" }}
+                >
+                  <p className="text-center m-0">
+                    No videos available at the moment.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </Container>
       {/* Services Section - Updated with Categories and Subcategories */}
       <Container fluid className="bg-dark text-white py-5">
         <Row className="justify-content-center mb-5">
@@ -936,7 +923,7 @@ function Home() {
         </Row>
         {renderServicesSection()}
       </Container>
-    </div>
+    </Container>
   );
 }
 

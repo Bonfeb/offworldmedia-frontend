@@ -1,15 +1,3 @@
-/* Base Styles */
-.home-page {
-  overflow-x: hidden;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.home-page .MuiIconButton-root {
-  pointer-events: auto !important;
-  position: relative !important;
-  z-index: 1301 !important;
-}
-
 /* Color Variables */
 :root {
   --primary-blue: #1a73e8;
