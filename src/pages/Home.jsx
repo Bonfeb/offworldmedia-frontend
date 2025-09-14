@@ -601,7 +601,7 @@ function Home() {
                   backgroundColor: "#45463bff",
                 }}
               ></div>
-              <p className="text-center mb-5 text-dark">
+              <p className="text-center mb-5 text-light">
                 Offworld Media Africa is a business company specializing in
                 photography, videography, music production, graphic designing
                 and digital broadcasting.

@@ -13,12 +13,8 @@ import {
   MenuItem,
   Avatar,
   Container,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
 } from "@mui/material";
+import { Offcanvas, Nav } from "react-bootstrap";
 import MenuIcon from "@mui/icons-material/Menu";
 
 function NavBar() {
@@ -27,7 +23,7 @@ function NavBar() {
 
   const [showNavbar, setShowNavbar] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +45,7 @@ function NavBar() {
   };
 
   const handleNavItemClick = (path) => {
-    setDrawerOpen(false);
+    setShowOffcanvas(false);
     setAnchorEl(null);
     navigate(path);
   };
@@ -62,12 +58,14 @@ function NavBar() {
     setAnchorEl(null);
   };
 
-  const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
+  const handleOffcanvasToggle = () => {
+    console.log("Toggling offcanvas, current state:", showOffcanvas);
+    setShowOffcanvas(!showOffcanvas);
   };
 
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
+  const handleOffcanvasClose = () => {
+    console.log("Closing offcanvas");
+    setShowOffcanvas(false);
   };
 
   const colors = {
@@ -85,65 +83,49 @@ function NavBar() {
   ];
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        backgroundColor: colors.antiqueBlue,
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-      }}
-    >
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          {/* Brand */}
-          <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-            <img
-              src={Logo}
-              alt="OffWorldMedia Logo"
-              style={{ height: 40, marginRight: 8 }}
-            />
-            <Typography
-              variant="h6"
-              noWrap
-              component={Link}
-              to="/"
-              sx={{
-                fontWeight: 700,
-                color: "white",
-                textDecoration: "none",
-              }}
-            >
-              OffWorld Media
-            </Typography>
-          </Box>
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          {/* Desktop Nav */}
-          <Box
-            sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}
-          >
-            {menuItems.map((item) => (
-              <Button
-                key={item.text}
+    <>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: colors.antiqueBlue,
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            {/* Brand */}
+            <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+              <img
+                src={Logo}
+                alt="OffWorldMedia Logo"
+                style={{ height: 40, marginRight: 8 }}
+              />
+              <Typography
+                variant="h6"
+                noWrap
                 component={Link}
-                to={item.path}
+                to="/"
                 sx={{
+                  fontWeight: 700,
                   color: "white",
-                  mx: 1,
-                  textTransform: "none",
-                  fontSize: "1rem",
-                  "&:hover": { backgroundColor: colors.shadeBlue },
+                  textDecoration: "none",
                 }}
               >
-                {item.text}
-              </Button>
-            ))}
+                OffWorld Media
+              </Typography>
+            </Box>
 
-            {!isAuthenticated ? (
-              <>
+            <Box sx={{ flexGrow: 1 }} />
+
+            {/* Desktop Nav */}
+            <Box
+              sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}
+            >
+              {menuItems.map((item) => (
                 <Button
+                  key={item.text}
                   component={Link}
-                  to="/register"
+                  to={item.path}
                   sx={{
                     color: "white",
                     mx: 1,
@@ -152,189 +134,309 @@ function NavBar() {
                     "&:hover": { backgroundColor: colors.shadeBlue },
                   }}
                 >
-                  Register
+                  {item.text}
                 </Button>
-                <Button
-                  component={Link}
-                  to="/login"
-                  sx={{
-                    color: "white",
-                    mx: 1,
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    "&:hover": { backgroundColor: colors.shadeBlue },
-                  }}
-                >
-                  Login
-                </Button>
-              </>
-            ) : (
-              <Box sx={{ ml: 2 }}>
-                <IconButton onClick={handleMenuOpen}>
-                  <Avatar
-                    src={userProfilePic}
+              ))}
+
+              {!isAuthenticated ? (
+                <>
+                  <Button
+                    component={Link}
+                    to="/register"
                     sx={{
-                      width: 40,
-                      height: 40,
-                      border: `2px solid ${colors.shadeBlue}`,
-                    }}
-                  />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                  PaperProps={{
-                    sx: { backgroundColor: colors.antiqueBlue, color: "white" },
-                  }}
-                >
-                  <MenuItem
-                    onClick={() => handleNavItemClick("/profile")}
-                    sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
-                  >
-                    My Profile
-                  </MenuItem>
-                  {userGroups && userGroups.includes("admin") ? (
-                    <MenuItem
-                      onClick={() => handleNavItemClick("/admin-dashboard")}
-                      sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
-                    >
-                      Admin Dashboard
-                    </MenuItem>
-                  ) : (
-                    <MenuItem
-                      onClick={() => handleNavItemClick("/userdashboard")}
-                      sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
-                    >
-                      My Dashboard
-                    </MenuItem>
-                  )}
-                  <MenuItem
-                    onClick={handleLogout}
-                    sx={{
-                      color: "#ff4d4f",
+                      color: "white",
+                      mx: 1,
+                      textTransform: "none",
+                      fontSize: "1rem",
                       "&:hover": { backgroundColor: colors.shadeBlue },
                     }}
                   >
-                    Logout
-                  </MenuItem>
-                </Menu>
-              </Box>
-            )}
-          </Box>
+                    Register
+                  </Button>
+                  <Button
+                    component={Link}
+                    to="/login"
+                    sx={{
+                      color: "white",
+                      mx: 1,
+                      textTransform: "none",
+                      fontSize: "1rem",
+                      "&:hover": { backgroundColor: colors.shadeBlue },
+                    }}
+                  >
+                    Login
+                  </Button>
+                </>
+              ) : (
+                <Box sx={{ ml: 2 }}>
+                  <IconButton onClick={handleMenuOpen}>
+                    <Avatar
+                      src={userProfilePic}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        border: `2px solid ${colors.shadeBlue}`,
+                      }}
+                    />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                      sx: {
+                        backgroundColor: colors.antiqueBlue,
+                        color: "white",
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() => handleNavItemClick("/profile")}
+                      sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
+                    >
+                      My Profile
+                    </MenuItem>
+                    {userGroups && userGroups.includes("admin") ? (
+                      <MenuItem
+                        onClick={() => handleNavItemClick("/admin-dashboard")}
+                        sx={{
+                          "&:hover": { backgroundColor: colors.shadeBlue },
+                        }}
+                      >
+                        Admin Dashboard
+                      </MenuItem>
+                    ) : (
+                      <MenuItem
+                        onClick={() => handleNavItemClick("/userdashboard")}
+                        sx={{
+                          "&:hover": { backgroundColor: colors.shadeBlue },
+                        }}
+                      >
+                        My Dashboard
+                      </MenuItem>
+                    )}
+                    <MenuItem
+                      onClick={handleLogout}
+                      sx={{
+                        color: "#ff4d4f",
+                        "&:hover": { backgroundColor: colors.shadeBlue },
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              )}
+            </Box>
 
-          {/* Mobile Menu Icon */}
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            sx={{ display: { xs: "flex", lg: "none" } }}
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
-      </Container>
+            {/* Mobile Menu Icon */}
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              sx={{ display: { xs: "flex", lg: "none" } }}
+              onClick={handleOffcanvasToggle}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+        </Container>
+      </AppBar>
 
-      {/* Mobile Drawer */}
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={handleDrawerClose}
-        PaperProps={{
-          sx: {
-            backgroundColor: colors.antiqueBlue,
-            color: "white",
-            width: 250,
-          },
+      {/* Mobile Offcanvas */}
+      <Offcanvas
+        show={showOffcanvas}
+        onHide={handleOffcanvasClose}
+        placement="end"
+        backdrop={true}
+        style={{
+          backgroundColor: colors.antiqueBlue,
+          color: "white",
         }}
       >
-        <Box sx={{ textAlign: "center", p: 2 }}>
-          <Typography variant="h6">OffWorld Media</Typography>
-        </Box>
-        <Divider sx={{ backgroundColor: "white" }} />
+        <Offcanvas.Header
+          closeButton
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          <Offcanvas.Title style={{ color: "white", fontWeight: "bold" }}>
+            OffWorld Media
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <Nav className="flex-column">
+            {menuItems.map((item) => (
+              <Nav.Link
+                key={item.text}
+                onClick={() => handleNavItemClick(item.path)}
+                style={{
+                  color: "white",
+                  padding: "12px 0",
+                  fontSize: "1.1rem",
+                  borderBottom: "1px solid rgba(255,255,255,0.1)",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = colors.shadeBlue;
+                  e.target.style.paddingLeft = "10px";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "transparent";
+                  e.target.style.paddingLeft = "0px";
+                }}
+              >
+                {item.text}
+              </Nav.Link>
+            ))}
 
-        <List>
-          {menuItems.map((item) => (
-            <ListItem
-              button
-              key={item.text}
-              onClick={() => handleNavItemClick(item.path)}
-              sx={{
-                "&:hover": { backgroundColor: colors.shadeBlue },
+            <div
+              style={{
+                margin: "20px 0",
+                height: "1px",
+                backgroundColor: "rgba(255,255,255,0.2)",
               }}
-            >
-              <ListItemText primary={item.text} />
-            </ListItem>
-          ))}
+            ></div>
 
-          {!isAuthenticated ? (
-            <>
-              <ListItem
-                button
-                onClick={() => handleNavItemClick("/register")}
-                sx={{
-                  "&:hover": { backgroundColor: colors.shadeBlue },
-                }}
-              >
-                <ListItemText primary="Register" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleNavItemClick("/login")}
-                sx={{
-                  "&:hover": { backgroundColor: colors.shadeBlue },
-                }}
-              >
-                <ListItemText primary="Login" />
-              </ListItem>
-            </>
-          ) : (
-            <>
-              <ListItem
-                button
-                onClick={() => handleNavItemClick("/profile")}
-                sx={{
-                  "&:hover": { backgroundColor: colors.shadeBlue },
-                }}
-              >
-                <ListItemText primary="My Profile" />
-              </ListItem>
-              {userGroups && userGroups.includes("admin") ? (
-                <ListItem
-                  button
-                  onClick={() => handleNavItemClick("/admin-dashboard")}
-                  sx={{
-                    "&:hover": { backgroundColor: colors.shadeBlue },
+            {!isAuthenticated ? (
+              <>
+                <Nav.Link
+                  onClick={() => handleNavItemClick("/register")}
+                  style={{
+                    color: "white",
+                    padding: "12px 0",
+                    fontSize: "1.1rem",
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = colors.shadeBlue;
+                    e.target.style.paddingLeft = "10px";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.paddingLeft = "0px";
                   }}
                 >
-                  <ListItemText primary="Admin Dashboard" />
-                </ListItem>
-              ) : (
-                <ListItem
-                  button
-                  onClick={() => handleNavItemClick("/userdashboard")}
-                  sx={{
-                    "&:hover": { backgroundColor: colors.shadeBlue },
+                  Register
+                </Nav.Link>
+                <Nav.Link
+                  onClick={() => handleNavItemClick("/login")}
+                  style={{
+                    color: "white",
+                    padding: "12px 0",
+                    fontSize: "1.1rem",
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = colors.shadeBlue;
+                    e.target.style.paddingLeft = "10px";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.paddingLeft = "0px";
                   }}
                 >
-                  <ListItemText primary="My Dashboard" />
-                </ListItem>
-              )}
-              <ListItem
-                button
-                onClick={handleLogout}
-                sx={{
-                  "&:hover": { backgroundColor: colors.shadeBlue },
-                }}
-              >
-                <ListItemText primary="Logout" sx={{ color: "#ff4d4f" }} />
-              </ListItem>
-            </>
-          )}
-        </List>
-      </Drawer>
-    </AppBar>
+                  Login
+                </Nav.Link>
+              </>
+            ) : (
+              <>
+                <Nav.Link
+                  onClick={() => handleNavItemClick("/profile")}
+                  style={{
+                    color: "white",
+                    padding: "12px 0",
+                    fontSize: "1.1rem",
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = colors.shadeBlue;
+                    e.target.style.paddingLeft = "10px";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.paddingLeft = "0px";
+                  }}
+                >
+                  My Profile
+                </Nav.Link>
+                {userGroups && userGroups.includes("admin") ? (
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/admin-dashboard")}
+                    style={{
+                      color: "white",
+                      padding: "12px 0",
+                      fontSize: "1.1rem",
+                      borderBottom: "1px solid rgba(255,255,255,0.1)",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = colors.shadeBlue;
+                      e.target.style.paddingLeft = "10px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.paddingLeft = "0px";
+                    }}
+                  >
+                    Admin Dashboard
+                  </Nav.Link>
+                ) : (
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/userdashboard")}
+                    style={{
+                      color: "white",
+                      padding: "12px 0",
+                      fontSize: "1.1rem",
+                      borderBottom: "1px solid rgba(255,255,255,0.1)",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = colors.shadeBlue;
+                      e.target.style.paddingLeft = "10px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.paddingLeft = "0px";
+                    }}
+                  >
+                    My Dashboard
+                  </Nav.Link>
+                )}
+                <Nav.Link
+                  onClick={handleLogout}
+                  style={{
+                    color: "#ff4d4f",
+                    padding: "12px 0",
+                    fontSize: "1.1rem",
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = colors.shadeBlue;
+                    e.target.style.paddingLeft = "10px";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.paddingLeft = "0px";
+                  }}
+                >
+                  Logout
+                </Nav.Link>
+              </>
+            )}
+          </Nav>
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
 }
 
