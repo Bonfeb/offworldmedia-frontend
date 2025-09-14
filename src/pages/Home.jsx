@@ -484,7 +484,7 @@ function Home() {
     <Container fluid>
       {/* Main Container for Side-by-Side Layout */}
       <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
-        <Row className="g-0 align-items-stretch" style={{ height: "60vh" }}>
+        <Row className="g-0 align-items-stretch" style={{ minHeight: "60vh" }}>
           {/* Hero Section - Left Side */}
           <Col
             xl={6}
@@ -493,7 +493,7 @@ function Home() {
             sm={12}
             xs={12}
             className="d-flex align-items-center justify-content-center p-0"
-            style={{ height: "100%" }}
+            style={{ minHeight: "60vh" }}
           >
             <div
               className="hero-section w-100 d-flex align-items-center justify-content-center"
@@ -503,7 +503,7 @@ function Home() {
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
-                height: "100%",
+                minHeight: "60vh",
                 width: "100%",
               }}
             >
@@ -585,11 +585,14 @@ function Home() {
             md={12}
             sm={12}
             xs={12}
-            className="d-flex align-items-center justify-content-center p-0"
-            style={{ height: "100%" }}
+            className="d-flex align-items-center justify-content-center p-4"
+            style={{
+              minHeight: "60vh",
+              backgroundColor: "#f8f9fa",
+            }}
           >
             <div className="w-100">
-              <h2 className="text-center fw-bold mb-4">Who We Are</h2>
+              <h2 className="text-center fw-bold mb-4 text-dark">Who We Are</h2>
               <div
                 className="mx-auto mb-4"
                 style={{
@@ -598,7 +601,7 @@ function Home() {
                   backgroundColor: "#45463bff",
                 }}
               ></div>
-              <p className="text-center mb-5">
+              <p className="text-center mb-5 text-dark">
                 Offworld Media Africa is a business company specializing in
                 photography, videography, music production, graphic designing
                 and digital broadcasting.
@@ -776,6 +779,7 @@ function Home() {
           </Col>
         </Row>
       </Container>
+
       {/* Services Section - Updated with Categories and Subcategories */}
       <Container fluid className="bg-dark text-white py-5">
         <Row className="justify-content-center mb-5">
