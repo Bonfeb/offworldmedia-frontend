@@ -263,135 +263,210 @@ function NavBar() {
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Nav className="flex-column">
-            {menuItems.map((item) => (
-              <Nav.Link
-                key={item.text}
-                onClick={() => handleNavItemClick(item.path)}
-                style={{
-                  color: "white",
-                  padding: "12px 0",
-                  fontSize: "1.1rem",
-                  borderBottom: "1px solid rgba(255,255,255,0.1)",
-                  textDecoration: "none",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = colors.shadeBlue;
-                  e.target.style.paddingLeft = "10px";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent";
-                  e.target.style.paddingLeft = "0px";
-                }}
-              >
-                {item.text}
-              </Nav.Link>
+          <Nav className="flex-column justify-content-center">
+            {menuItems.map((item, index) => (
+              <>
+                <Nav.Link
+                  key={item.text}
+                  onClick={() => handleNavItemClick(item.path)}
+                  style={{
+                    color: "white",
+                    padding: "12px 0",
+                    fontSize: "1.1rem",
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = colors.shadeBlue;
+                    e.target.style.paddingLeft = "10px";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.paddingLeft = "0px";
+                  }}
+                >
+                  {item.text}
+                </Nav.Link>
+                <div
+                  className="mx-auto mb-2"
+                  style={{
+                    width: "50%",
+                    height: "2px",
+                    backgroundColor: "#45463bff",
+                  }}
+                ></div>
+              </>
             ))}
-
-            <div
-              style={{
-                margin: "20px 0",
-                height: "1px",
-                backgroundColor: "rgba(255,255,255,0.2)",
-              }}
-            ></div>
 
             {!isAuthenticated ? (
               <>
-                <Nav.Link
-                  onClick={() => handleNavItemClick("/register")}
-                  style={{
-                    color: "white",
-                    padding: "12px 0",
-                    fontSize: "1.1rem",
-                    borderBottom: "1px solid rgba(255,255,255,0.1)",
-                    textDecoration: "none",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = colors.shadeBlue;
-                    e.target.style.paddingLeft = "10px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                    e.target.style.paddingLeft = "0px";
-                  }}
-                >
-                  Register
-                </Nav.Link>
-                <Nav.Link
-                  onClick={() => handleNavItemClick("/login")}
-                  style={{
-                    color: "white",
-                    padding: "12px 0",
-                    fontSize: "1.1rem",
-                    borderBottom: "1px solid rgba(255,255,255,0.1)",
-                    textDecoration: "none",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = colors.shadeBlue;
-                    e.target.style.paddingLeft = "10px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                    e.target.style.paddingLeft = "0px";
-                  }}
-                >
-                  Login
-                </Nav.Link>
+                <>
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/register")}
+                    style={{
+                      color: "white",
+                      padding: "12px 0",
+                      fontSize: "1.1rem",
+                      borderBottom: "1px solid rgba(255,255,255,0.1)",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = colors.shadeBlue;
+                      e.target.style.paddingLeft = "10px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.paddingLeft = "0px";
+                    }}
+                  >
+                    Register
+                  </Nav.Link>
+                  <div
+                    className="mx-auto mb-2"
+                    style={{
+                      width: "50%",
+                      height: "2px",
+                      backgroundColor: "#45463bff",
+                    }}
+                  ></div>
+                </>
+                <>
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/login")}
+                    style={{
+                      color: "white",
+                      padding: "12px 0",
+                      fontSize: "1.1rem",
+                      borderBottom: "1px solid rgba(255,255,255,0.1)",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = colors.shadeBlue;
+                      e.target.style.paddingLeft = "10px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.paddingLeft = "0px";
+                    }}
+                  >
+                    Login
+                  </Nav.Link>
+                  <div
+                    className="mx-auto mb-2"
+                    style={{
+                      width: "50%",
+                      height: "2px",
+                      backgroundColor: "#45463bff",
+                    }}
+                  ></div>
+                </>
               </>
             ) : (
               <>
-                <Nav.Link
-                  onClick={() => handleNavItemClick("/profile")}
-                  style={{
-                    color: "white",
-                    padding: "12px 0",
-                    fontSize: "1.1rem",
-                    borderBottom: "1px solid rgba(255,255,255,0.1)",
-                    textDecoration: "none",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = colors.shadeBlue;
-                    e.target.style.paddingLeft = "10px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                    e.target.style.paddingLeft = "0px";
-                  }}
-                >
-                  My Profile
-                </Nav.Link>
+                <>
+                  <Nav.Link
+                    onClick={() => handleNavItemClick("/profile")}
+                    style={{
+                      color: "white",
+                      padding: "12px 0",
+                      fontSize: "1.1rem",
+                      borderBottom: "1px solid rgba(255,255,255,0.1)",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = colors.shadeBlue;
+                      e.target.style.paddingLeft = "10px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.paddingLeft = "0px";
+                    }}
+                  >
+                    My Profile
+                  </Nav.Link>
+                  <div
+                    className="mx-auto mb-2"
+                    style={{
+                      width: "50%",
+                      height: "2px",
+                      backgroundColor: "#45463bff",
+                    }}
+                  ></div>
+                </>
                 {userGroups && userGroups.includes("admin") ? (
-                  <Nav.Link
-                    onClick={() => handleNavItemClick("/admin-dashboard")}
-                    style={{
-                      color: "white",
-                      padding: "12px 0",
-                      fontSize: "1.1rem",
-                      borderBottom: "1px solid rgba(255,255,255,0.1)",
-                      textDecoration: "none",
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = colors.shadeBlue;
-                      e.target.style.paddingLeft = "10px";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.paddingLeft = "0px";
-                    }}
-                  >
-                    Admin Dashboard
-                  </Nav.Link>
+                  <>
+                    <Nav.Link
+                      onClick={() => handleNavItemClick("/admin-dashboard")}
+                      style={{
+                        color: "white",
+                        padding: "12px 0",
+                        fontSize: "1.1rem",
+                        borderBottom: "1px solid rgba(255,255,255,0.1)",
+                        textDecoration: "none",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = colors.shadeBlue;
+                        e.target.style.paddingLeft = "10px";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.paddingLeft = "0px";
+                      }}
+                    >
+                      Admin Dashboard
+                    </Nav.Link>
+                    <div
+                      className="mx-auto mb-2"
+                      style={{
+                        width: "50%",
+                        height: "2px",
+                        backgroundColor: "#45463bff",
+                      }}
+                    ></div>
+                  </>
                 ) : (
+                  <>
+                    <Nav.Link
+                      onClick={() => handleNavItemClick("/userdashboard")}
+                      style={{
+                        color: "white",
+                        padding: "12px 0",
+                        fontSize: "1.1rem",
+                        borderBottom: "1px solid rgba(255,255,255,0.1)",
+                        textDecoration: "none",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = colors.shadeBlue;
+                        e.target.style.paddingLeft = "10px";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.paddingLeft = "0px";
+                      }}
+                    >
+                      My Dashboard
+                    </Nav.Link>
+                    <div
+                      className="mx-auto mb-2"
+                      style={{
+                        width: "50%",
+                        height: "2px",
+                        backgroundColor: "#45463bff",
+                      }}
+                    ></div>
+                  </>
+                )}
+                <>
                   <Nav.Link
-                    onClick={() => handleNavItemClick("/userdashboard")}
+                    onClick={handleLogout}
                     style={{
-                      color: "white",
+                      color: "#ff4d4f",
                       padding: "12px 0",
                       fontSize: "1.1rem",
                       borderBottom: "1px solid rgba(255,255,255,0.1)",
@@ -407,30 +482,9 @@ function NavBar() {
                       e.target.style.paddingLeft = "0px";
                     }}
                   >
-                    My Dashboard
+                    Logout
                   </Nav.Link>
-                )}
-                <Nav.Link
-                  onClick={handleLogout}
-                  style={{
-                    color: "#ff4d4f",
-                    padding: "12px 0",
-                    fontSize: "1.1rem",
-                    borderBottom: "1px solid rgba(255,255,255,0.1)",
-                    textDecoration: "none",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = colors.shadeBlue;
-                    e.target.style.paddingLeft = "10px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                    e.target.style.paddingLeft = "0px";
-                  }}
-                >
-                  Logout
-                </Nav.Link>
+                </>
               </>
             )}
           </Nav>

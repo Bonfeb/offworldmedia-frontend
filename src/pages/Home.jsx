@@ -588,7 +588,7 @@ function Home() {
             className="d-flex align-items-center justify-content-center p-4"
             style={{
               minHeight: "60vh",
-              backgroundColor: "#747c85ff",
+              backgroundColor: "#444b53ff",
             }}
           >
             <div className="w-100">
@@ -601,7 +601,7 @@ function Home() {
                   backgroundColor: "#45463bff",
                 }}
               ></div>
-              <p className="text-center mb-5 text-light">
+              <p className="text-center mb-5 text-white">
                 Offworld Media Africa is a business company specializing in
                 photography, videography, music production, graphic designing
                 and digital broadcasting.
@@ -609,7 +609,7 @@ function Home() {
 
               <Row>
                 <Col md={6} className="mb-4 mb-md-0">
-                  <Card className="h-100 border-0 shadow-sm">
+                  <Card className="h-100 border-0 shadow-sm bg-dark">
                     <Card.Body className="p-4">
                       <Card.Title className="fw-bold mb-3 border-bottom pb-2">
                         Vision
@@ -623,7 +623,7 @@ function Home() {
                   </Card>
                 </Col>
                 <Col md={6}>
-                  <Card className="h-100 border-0 shadow-sm">
+                  <Card className="h-100 border-0 shadow-sm bg-dark">
                     <Card.Body className="p-4">
                       <Card.Title className="fw-bold mb-3 border-bottom pb-2">
                         Mission
@@ -643,14 +643,6 @@ function Home() {
 
       {/* Studio Work Showcase */}
       <Container fluid className="bg-dark text-white py-5 px-4 px-lg-5">
-        <div
-          className="mx-auto mb-4"
-          style={{
-            width: "50%",
-            height: "2px",
-            backgroundColor: "#45463bff",
-          }}
-        ></div>
         <h2 className="text-center fw-semibold mb-4">Gallery</h2>
         <div
           className="mx-auto mb-4"
