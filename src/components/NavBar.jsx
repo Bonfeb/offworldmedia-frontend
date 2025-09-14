@@ -62,6 +62,14 @@ function NavBar() {
     setAnchorEl(null);
   };
 
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
   const colors = {
     antiqueBlue: "#021d33ff",
     shadeBlue: "#043a66ff",
@@ -126,7 +134,6 @@ function NavBar() {
                   fontSize: "1rem",
                   "&:hover": { backgroundColor: colors.shadeBlue },
                 }}
-                onClick={() => handleNavItemClick(item.path)}
               >
                 {item.text}
               </Button>
@@ -144,7 +151,6 @@ function NavBar() {
                     fontSize: "1rem",
                     "&:hover": { backgroundColor: colors.shadeBlue },
                   }}
-                  onClick={() => handleNavItemClick("/register")}
                 >
                   Register
                 </Button>
@@ -158,7 +164,6 @@ function NavBar() {
                     fontSize: "1rem",
                     "&:hover": { backgroundColor: colors.shadeBlue },
                   }}
-                  onClick={() => handleNavItemClick("/login")}
                 >
                   Login
                 </Button>
@@ -224,9 +229,7 @@ function NavBar() {
             color="inherit"
             aria-label="menu"
             sx={{ display: { xs: "flex", lg: "none" } }}
-            onClick={() => {
-              console.log("Menu Icon clicked");
-              setDrawerOpen(true);}}
+            onClick={handleDrawerToggle}
           >
             <MenuIcon />
           </IconButton>
@@ -237,18 +240,13 @@ function NavBar() {
       <Drawer
         anchor="right"
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={handleDrawerClose}
         PaperProps={{
-          sx: { '& .MuiDrawer-paper': {
+          sx: {
             backgroundColor: colors.antiqueBlue,
             color: "white",
             width: 250,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center"
           },
-        },
         }}
       >
         <Box sx={{ textAlign: "center", p: 2 }}>
@@ -262,6 +260,9 @@ function NavBar() {
               button
               key={item.text}
               onClick={() => handleNavItemClick(item.path)}
+              sx={{
+                "&:hover": { backgroundColor: colors.shadeBlue },
+              }}
             >
               <ListItemText primary={item.text} />
             </ListItem>
@@ -269,22 +270,43 @@ function NavBar() {
 
           {!isAuthenticated ? (
             <>
-              <ListItem button onClick={() => handleNavItemClick("/register")}>
+              <ListItem
+                button
+                onClick={() => handleNavItemClick("/register")}
+                sx={{
+                  "&:hover": { backgroundColor: colors.shadeBlue },
+                }}
+              >
                 <ListItemText primary="Register" />
               </ListItem>
-              <ListItem button onClick={() => handleNavItemClick("/login")}>
+              <ListItem
+                button
+                onClick={() => handleNavItemClick("/login")}
+                sx={{
+                  "&:hover": { backgroundColor: colors.shadeBlue },
+                }}
+              >
                 <ListItemText primary="Login" />
               </ListItem>
             </>
           ) : (
             <>
-              <ListItem button onClick={() => handleNavItemClick("/profile")}>
+              <ListItem
+                button
+                onClick={() => handleNavItemClick("/profile")}
+                sx={{
+                  "&:hover": { backgroundColor: colors.shadeBlue },
+                }}
+              >
                 <ListItemText primary="My Profile" />
               </ListItem>
               {userGroups && userGroups.includes("admin") ? (
                 <ListItem
                   button
                   onClick={() => handleNavItemClick("/admin-dashboard")}
+                  sx={{
+                    "&:hover": { backgroundColor: colors.shadeBlue },
+                  }}
                 >
                   <ListItemText primary="Admin Dashboard" />
                 </ListItem>
@@ -292,11 +314,20 @@ function NavBar() {
                 <ListItem
                   button
                   onClick={() => handleNavItemClick("/userdashboard")}
+                  sx={{
+                    "&:hover": { backgroundColor: colors.shadeBlue },
+                  }}
                 >
                   <ListItemText primary="My Dashboard" />
                 </ListItem>
               )}
-              <ListItem button onClick={handleLogout}>
+              <ListItem
+                button
+                onClick={handleLogout}
+                sx={{
+                  "&:hover": { backgroundColor: colors.shadeBlue },
+                }}
+              >
                 <ListItemText primary="Logout" sx={{ color: "#ff4d4f" }} />
               </ListItem>
             </>

@@ -273,7 +273,7 @@ function Home() {
         )}
 
         {/* Category Tabs */}
-        <div className="service-tabs-container">
+        <Container fluid className="service-tabs-container">
           {Object.keys(groupedServices).length > 0 ? (
             <Tab.Container
               activeKey={activeCategory}
@@ -475,7 +475,7 @@ function Home() {
               )}
             </div>
           )}
-        </div>
+        </Container>
       </>
     );
   };
@@ -588,7 +588,7 @@ function Home() {
             className="d-flex align-items-center justify-content-center p-4"
             style={{
               minHeight: "60vh",
-              backgroundColor: "#f8f9fa",
+              backgroundColor: "#747c85ff",
             }}
           >
             <div className="w-100">
@@ -829,7 +829,7 @@ function Home() {
                   style={{
                     position: "relative",
                     display: "block",
-                    background: "#1B5E20", // Dark green background
+                    background: "#3d553fff", // Dark green background
                     color: "white",
                     textDecoration: "none",
                     padding: "20px",
