@@ -14,7 +14,7 @@ const AllReviews = () => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = API.get("/reviews/");
+      const response = await API.get("/reviews/");
       if (!response.ok) {
         throw new Error("Failed to fetch reviews");
       }
@@ -22,8 +22,8 @@ const AllReviews = () => {
       setReviews(data);
     } catch (err) {
       setError(err.message);
-      // Mock data for demonstration
-      setReviews();
+      // Set to empty array instead of undefined
+      setReviews([]);
     } finally {
       setLoading(false);
     }
@@ -51,6 +51,7 @@ const AllReviews = () => {
   };
 
   const getInitials = (name) => {
+    if (!name) return "UU"; // Default for undefined name
     return name
       .split(" ")
       .map((word) => word.charAt(0))

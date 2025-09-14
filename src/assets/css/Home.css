@@ -10,31 +10,36 @@
   --antique-blue-dark: #232f34;
   --blue-gradient-light: #3681d8;
   --blue-gradient-dark: #1c4587;
-  --text-on-dark: #4b738a; /* Changed to dark blue for better contrast on light backgrounds */
-  --text-on-light: #dce5eb; /* Changed to light blue for better contrast on dark backgrounds */
-  --card-bg: #2c3e50; /* New variable for card backgrounds */
-  --card-hover-bg: #34495e; /* New variable for card hover state */
+  --text-on-dark: #4b738a;
+  --text-on-light: #dce5eb;
+  --card-bg: #2c3e50;
+  --card-hover-bg: #34495e;
 }
 
-/* Hero Section */
+/* FIXED: Hero Section with proper z-index management */
 .hero-section {
   background-image: url("/OWM Icon.ico");
   background-size: cover;
   background-position: center;
   height: 25vh;
+  position: relative;
+  /* FIXED: Ensure hero section doesn't interfere with navbar */
+  z-index: 1;
 }
+
 @media (max-width: 768px) {
   .hero-section {
-    height: 40vh; /* give more height on tablets */
+    height: 40vh;
   }
 }
 
 @media (max-width: 480px) {
   .hero-section {
-    height: 50vh; /* give even more height on small phones */
+    height: 50vh;
   }
 }
 
+/* FIXED: Properly manage pseudo-element z-index */
 .hero-section::after {
   content: "";
   position: absolute;
@@ -42,14 +47,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  /* background: url('/OWM Icon.ico'); */
   background-size: cover;
-  z-index: 0;
+  /* FIXED: Keep pseudo-element behind content but not interfering with navbar */
+  z-index: -1;
 }
 
 .hero-section > * {
   position: relative;
-  z-index: 1;
+  /* FIXED: Content should be above background but below navbar */
+  z-index: 2;
+}
+
+/* FIXED: Ensure navbar has higher z-index than hero section */
+.MuiAppBar-root {
+  z-index: 1300 !important; /* Material-UI standard for AppBar */
+}
+
+/* FIXED: Ensure offcanvas has proper z-index */
+.offcanvas {
+  z-index: 1400 !important; /* Higher than AppBar */
 }
 
 .hero-section Box {
@@ -87,6 +103,9 @@ section {
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
+  /* FIXED: Ensure buttons are clickable */
+  position: relative;
+  z-index: 3;
 }
 
 .hero-buttons .btn:hover {
@@ -109,10 +128,12 @@ section {
     135deg,
     var(--antique-blue-dark) 0%,
     var(--antique-blue) 100%
-  ); /* Changed background */
+  );
   padding: 5rem 0;
   color: var(--text-on-dark);
   position: relative;
+  /* FIXED: Ensure about section doesn't interfere with navbar */
+  z-index: 1;
 }
 
 .about-section::before {
@@ -127,10 +148,11 @@ section {
     var(--primary-blue),
     var(--secondary-blue)
   );
+  z-index: -1;
 }
 
 .about-content {
-  background: rgba(26, 49, 75, 0.7); /* Darker blue with transparency */
+  background: rgba(26, 49, 75, 0.7);
   border-radius: 15px;
   padding: 2.5rem;
   backdrop-filter: blur(10px);
@@ -150,7 +172,7 @@ section {
 
 .vision-box,
 .mission-box {
-  background: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
+  background: rgba(13, 71, 161, 0.5);
   border-radius: 10px;
   padding: 1.5rem;
   height: 100%;
@@ -162,7 +184,7 @@ section {
 .mission-box:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  background: rgba(13, 71, 161, 0.7); /* Darker on hover */
+  background: rgba(13, 71, 161, 0.7);
 }
 
 .box-title {
@@ -180,9 +202,10 @@ section {
     135deg,
     var(--dark-blue) 0%,
     var(--antique-blue) 100%
-  ); /* Changed background */
+  );
   padding: 5rem 0;
   position: relative;
+  z-index: 1;
 }
 
 .showcase-section::after {
@@ -199,6 +222,7 @@ section {
     var(--antique-blue-light),
     var(--antique-blue)
   );
+  z-index: -1;
 }
 
 .carousel-container {
@@ -250,7 +274,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(13, 71, 161, 0.5); /* Dark blue with transparency */
+  background-color: rgba(13, 71, 161, 0.5);
   border-radius: 10px;
   color: white;
 }
@@ -261,9 +285,11 @@ section {
     135deg,
     var(--antique-blue-dark) 0%,
     var(--antique-blue) 100%
-  ); /* Changed background */
+  );
   position: relative;
+  z-index: 1;
 }
+
 .service-section {
   margin-top: 0 !important;
 }
@@ -315,7 +341,7 @@ section {
   padding: 8px 20px;
   border-radius: 20px;
   font-weight: 600;
-  background-color: rgba(59, 88, 133, 0.5); /* Dark blue with transparency */
+  background-color: rgba(59, 88, 133, 0.5);
   color: var(--text-on-dark);
   border: none;
   transition: all 0.3s ease;
@@ -354,7 +380,7 @@ section {
 
 /* Service Cards */
 .service-card {
-  background: var(--card-bg); /* Changed from white to dark blue */
+  background: var(--card-bg);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -368,14 +394,14 @@ section {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
   border-color: rgba(26, 115, 232, 0.4);
-  background: var(--card-hover-bg); /* Slightly lighter blue on hover */
+  background: var(--card-hover-bg);
 }
 
 .price-badge {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #d4af37; /* Gold color */
+  background: #d4af37;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
@@ -388,7 +414,7 @@ section {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: var(--light-blue); /* Changed to light blue */
+  color: var(--light-blue);
   position: relative;
   padding-bottom: 0.5rem;
 }
@@ -404,7 +430,7 @@ section {
 }
 
 .service-card-description {
-  color: var(--text-on-light); /* Changed to light blue */
+  color: var(--text-on-light);
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
   line-height: 1.6;
@@ -417,7 +443,7 @@ section {
   font-weight: 600;
   border: none;
   transition: all 0.3s ease;
-  background-color: var(--primary-blue); /* Changed to match color scheme */
+  background-color: var(--primary-blue);
   color: white;
   border-radius: 5px;
 }
@@ -435,7 +461,7 @@ section {
   transition: all 0.3s ease;
   border-color: var(--primary-blue);
   color: #eef1ee;
-  background-color: rgba(6, 175, 71, 0.5); /* Dark blue with transparency */
+  background-color: rgba(6, 175, 71, 0.5);
 }
 
 .view-all-button:hover {
@@ -453,7 +479,7 @@ section {
 /* No services container */
 .no-services-container {
   padding: 3rem 0;
-  background-color: rgba(13, 71, 161, 0.3); /* Dark blue with transparency */
+  background-color: rgba(13, 71, 161, 0.3);
   border-radius: 10px;
 }
 
@@ -509,6 +535,18 @@ section {
 
 .carousel-indicators .active {
   opacity: 1;
+}
+
+/* FIXED: Ensure main container doesn't interfere with navbar */
+.main-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* FIXED: Ensure payment banner doesn't interfere with navbar */
+.payment-banner {
+  position: relative;
+  z-index: 2;
 }
 
 /* Responsive Adjustments */

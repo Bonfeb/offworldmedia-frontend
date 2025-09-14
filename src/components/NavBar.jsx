@@ -89,6 +89,8 @@ function NavBar() {
         sx={{
           backgroundColor: colors.antiqueBlue,
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          // FIXED: Ensure navbar has highest z-index
+          zIndex: 1300,
         }}
       >
         <Container maxWidth="xl">
@@ -109,6 +111,14 @@ function NavBar() {
                   fontWeight: 700,
                   color: "white",
                   textDecoration: "none",
+                  // FIXED: Ensure clickable text links work
+                  cursor: "pointer",
+                  zIndex: 1301,
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate("/");
                 }}
               >
                 OffWorld Media
@@ -119,18 +129,28 @@ function NavBar() {
 
             {/* Desktop Nav */}
             <Box
-              sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center" }}
+              sx={{
+                display: { xs: "none", lg: "flex" },
+                alignItems: "center",
+                // FIXED: Ensure nav items container has proper z-index
+                zIndex: 1301,
+              }}
             >
               {menuItems.map((item) => (
                 <Button
                   key={item.text}
-                  component={Link}
-                  to={item.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate(item.path);
+                  }}
                   sx={{
                     color: "white",
                     mx: 1,
                     textTransform: "none",
                     fontSize: "1rem",
+                    cursor: "pointer",
+                    zIndex: 1301,
                     "&:hover": { backgroundColor: colors.shadeBlue },
                   }}
                 >
@@ -141,26 +161,36 @@ function NavBar() {
               {!isAuthenticated ? (
                 <>
                   <Button
-                    component={Link}
-                    to="/register"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate("/register");
+                    }}
                     sx={{
                       color: "white",
                       mx: 1,
                       textTransform: "none",
                       fontSize: "1rem",
+                      cursor: "pointer",
+                      zIndex: 1301,
                       "&:hover": { backgroundColor: colors.shadeBlue },
                     }}
                   >
                     Register
                   </Button>
                   <Button
-                    component={Link}
-                    to="/login"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate("/login");
+                    }}
                     sx={{
                       color: "white",
                       mx: 1,
                       textTransform: "none",
                       fontSize: "1rem",
+                      cursor: "pointer",
+                      zIndex: 1301,
                       "&:hover": { backgroundColor: colors.shadeBlue },
                     }}
                   >
@@ -168,8 +198,8 @@ function NavBar() {
                   </Button>
                 </>
               ) : (
-                <Box sx={{ ml: 2 }}>
-                  <IconButton onClick={handleMenuOpen}>
+                <Box sx={{ ml: 2, zIndex: 1301 }}>
+                  <IconButton onClick={handleMenuOpen} sx={{ zIndex: 1301 }}>
                     <Avatar
                       src={userProfilePic}
                       sx={{
@@ -187,12 +217,19 @@ function NavBar() {
                       sx: {
                         backgroundColor: colors.antiqueBlue,
                         color: "white",
+                        // FIXED: Ensure dropdown menu has higher z-index
+                        zIndex: 1302,
                       },
                     }}
+                    // FIXED: Ensure menu has higher z-index
+                    sx={{ zIndex: 1302 }}
                   >
                     <MenuItem
                       onClick={() => handleNavItemClick("/profile")}
-                      sx={{ "&:hover": { backgroundColor: colors.shadeBlue } }}
+                      sx={{
+                        "&:hover": { backgroundColor: colors.shadeBlue },
+                        zIndex: 1302,
+                      }}
                     >
                       My Profile
                     </MenuItem>
@@ -201,6 +238,7 @@ function NavBar() {
                         onClick={() => handleNavItemClick("/admin-dashboard")}
                         sx={{
                           "&:hover": { backgroundColor: colors.shadeBlue },
+                          zIndex: 1302,
                         }}
                       >
                         Admin Dashboard
@@ -210,6 +248,7 @@ function NavBar() {
                         onClick={() => handleNavItemClick("/userdashboard")}
                         sx={{
                           "&:hover": { backgroundColor: colors.shadeBlue },
+                          zIndex: 1302,
                         }}
                       >
                         My Dashboard
@@ -220,6 +259,7 @@ function NavBar() {
                       sx={{
                         color: "#ff4d4f",
                         "&:hover": { backgroundColor: colors.shadeBlue },
+                        zIndex: 1302,
                       }}
                     >
                       Logout
@@ -234,7 +274,10 @@ function NavBar() {
               edge="end"
               color="inherit"
               aria-label="menu"
-              sx={{ display: { xs: "flex", lg: "none" } }}
+              sx={{
+                display: { xs: "flex", lg: "none" },
+                zIndex: 1301,
+              }}
               onClick={handleOffcanvasToggle}
             >
               <MenuIcon />
@@ -252,23 +295,34 @@ function NavBar() {
         style={{
           backgroundColor: colors.antiqueBlue,
           color: "white",
+          // FIXED: Ensure offcanvas has highest z-index
+          zIndex: 1400,
         }}
       >
         <Offcanvas.Header
           closeButton
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}
+          style={{
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            zIndex: 1401,
+          }}
         >
-          <Offcanvas.Title style={{ color: "white", fontWeight: "bold" }}>
+          <Offcanvas.Title
+            className="justify-content-center align-items-center"
+            style={{ color: "white", fontWeight: "bold" }}
+          >
             OffWorld Media
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Nav className="flex-column justify-content-center">
+        <Offcanvas.Body style={{ zIndex: 1401 }}>
+          <Nav className="flex-column justify-content-center align-items-center">
             {menuItems.map((item, index) => (
-              <>
+              <div key={item.text} style={{ width: "100%" }}>
                 <Nav.Link
-                  key={item.text}
-                  onClick={() => handleNavItemClick(item.path)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleNavItemClick(item.path);
+                  }}
                   style={{
                     color: "white",
                     padding: "12px 0",
@@ -276,6 +330,9 @@ function NavBar() {
                     borderBottom: "1px solid rgba(255,255,255,0.1)",
                     textDecoration: "none",
                     cursor: "pointer",
+                    width: "100%",
+                    textAlign: "center",
+                    zIndex: 1401,
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = colors.shadeBlue;
@@ -296,14 +353,18 @@ function NavBar() {
                     backgroundColor: "#45463bff",
                   }}
                 ></div>
-              </>
+              </div>
             ))}
 
             {!isAuthenticated ? (
               <>
-                <>
+                <div style={{ width: "100%" }}>
                   <Nav.Link
-                    onClick={() => handleNavItemClick("/register")}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNavItemClick("/register");
+                    }}
                     style={{
                       color: "white",
                       padding: "12px 0",
@@ -311,6 +372,9 @@ function NavBar() {
                       borderBottom: "1px solid rgba(255,255,255,0.1)",
                       textDecoration: "none",
                       cursor: "pointer",
+                      width: "100%",
+                      textAlign: "center",
+                      zIndex: 1401,
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = colors.shadeBlue;
@@ -331,10 +395,14 @@ function NavBar() {
                       backgroundColor: "#45463bff",
                     }}
                   ></div>
-                </>
-                <>
+                </div>
+                <div style={{ width: "100%" }}>
                   <Nav.Link
-                    onClick={() => handleNavItemClick("/login")}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNavItemClick("/login");
+                    }}
                     style={{
                       color: "white",
                       padding: "12px 0",
@@ -342,6 +410,9 @@ function NavBar() {
                       borderBottom: "1px solid rgba(255,255,255,0.1)",
                       textDecoration: "none",
                       cursor: "pointer",
+                      width: "100%",
+                      textAlign: "center",
+                      zIndex: 1401,
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = colors.shadeBlue;
@@ -362,13 +433,17 @@ function NavBar() {
                       backgroundColor: "#45463bff",
                     }}
                   ></div>
-                </>
+                </div>
               </>
             ) : (
               <>
-                <>
+                <div style={{ width: "100%" }}>
                   <Nav.Link
-                    onClick={() => handleNavItemClick("/profile")}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNavItemClick("/profile");
+                    }}
                     style={{
                       color: "white",
                       padding: "12px 0",
@@ -376,6 +451,9 @@ function NavBar() {
                       borderBottom: "1px solid rgba(255,255,255,0.1)",
                       textDecoration: "none",
                       cursor: "pointer",
+                      width: "100%",
+                      textAlign: "center",
+                      zIndex: 1401,
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = colors.shadeBlue;
@@ -396,11 +474,15 @@ function NavBar() {
                       backgroundColor: "#45463bff",
                     }}
                   ></div>
-                </>
+                </div>
                 {userGroups && userGroups.includes("admin") ? (
-                  <>
+                  <div style={{ width: "100%" }}>
                     <Nav.Link
-                      onClick={() => handleNavItemClick("/admin-dashboard")}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleNavItemClick("/admin-dashboard");
+                      }}
                       style={{
                         color: "white",
                         padding: "12px 0",
@@ -408,6 +490,9 @@ function NavBar() {
                         borderBottom: "1px solid rgba(255,255,255,0.1)",
                         textDecoration: "none",
                         cursor: "pointer",
+                        width: "100%",
+                        textAlign: "center",
+                        zIndex: 1401,
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = colors.shadeBlue;
@@ -428,11 +513,15 @@ function NavBar() {
                         backgroundColor: "#45463bff",
                       }}
                     ></div>
-                  </>
+                  </div>
                 ) : (
-                  <>
+                  <div style={{ width: "100%" }}>
                     <Nav.Link
-                      onClick={() => handleNavItemClick("/userdashboard")}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleNavItemClick("/userdashboard");
+                      }}
                       style={{
                         color: "white",
                         padding: "12px 0",
@@ -440,6 +529,9 @@ function NavBar() {
                         borderBottom: "1px solid rgba(255,255,255,0.1)",
                         textDecoration: "none",
                         cursor: "pointer",
+                        width: "100%",
+                        textAlign: "center",
+                        zIndex: 1401,
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = colors.shadeBlue;
@@ -460,11 +552,15 @@ function NavBar() {
                         backgroundColor: "#45463bff",
                       }}
                     ></div>
-                  </>
+                  </div>
                 )}
-                <>
+                <div style={{ width: "100%" }}>
                   <Nav.Link
-                    onClick={handleLogout}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleLogout();
+                    }}
                     style={{
                       color: "#ff4d4f",
                       padding: "12px 0",
@@ -472,6 +568,9 @@ function NavBar() {
                       borderBottom: "1px solid rgba(255,255,255,0.1)",
                       textDecoration: "none",
                       cursor: "pointer",
+                      width: "100%",
+                      textAlign: "center",
+                      zIndex: 1401,
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = colors.shadeBlue;
@@ -484,7 +583,7 @@ function NavBar() {
                   >
                     Logout
                   </Nav.Link>
-                </>
+                </div>
               </>
             )}
           </Nav>

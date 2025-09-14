@@ -481,7 +481,7 @@ function Home() {
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="main-container">
       {/* Main Container for Side-by-Side Layout */}
       <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
         <Row className="g-0 align-items-stretch" style={{ minHeight: "60vh" }}>
@@ -609,7 +609,7 @@ function Home() {
 
               <Row>
                 <Col md={6} className="mb-4 mb-md-0">
-                  <Card className="h-100 border-0 shadow-sm bg-dark">
+                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
                     <Card.Body className="p-4">
                       <Card.Title className="fw-bold mb-3 border-bottom pb-2">
                         Vision
@@ -623,7 +623,7 @@ function Home() {
                   </Card>
                 </Col>
                 <Col md={6}>
-                  <Card className="h-100 border-0 shadow-sm bg-dark">
+                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
                     <Card.Body className="p-4">
                       <Card.Title className="fw-bold mb-3 border-bottom pb-2">
                         Mission
