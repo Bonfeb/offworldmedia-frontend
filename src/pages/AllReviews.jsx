@@ -15,14 +15,9 @@ const AllReviews = () => {
     try {
       setLoading(true);
       const response = await API.get("/reviews/");
-      if (!response.ok) {
-        throw new Error("Failed to fetch reviews");
-      }
-      const data = await response.json();
-      setReviews(data);
+      setReviews(response.data);
     } catch (err) {
       setError(err.message);
-      // Set to empty array instead of undefined
       setReviews([]);
     } finally {
       setLoading(false);
