@@ -139,11 +139,21 @@ const AllReviews = () => {
   }
 
   return (
-    <div className="bg-dark" style={{ minHeight: "auto" }}>
-      <Container className="py-3">
+    <div style={{ background: "#1a1a1a" }}>
+      <Container className="py-2">
         {/* Enhanced Header */}
-        <Row className="mb-3">
+        <Row className="mb-2">
           <Col className="text-center">
+            <div className="mb-2">
+              <Badge
+                bg="primary"
+                className="rounded-pill px-4 py-2 mb-2"
+                style={{ fontSize: "0.9rem" }}
+              >
+                <i className="bi bi-chat-heart-fill me-2"></i>
+                Customer Reviews
+              </Badge>
+            </div>
             <h1 className="display-5 fw-bold text-white mb-2">
               What Our Clients Say
             </h1>
@@ -153,7 +163,7 @@ const AllReviews = () => {
             >
               Discover the experiences and feedback from our valued customers
             </p>
-            <div className="d-flex justify-content-center align-items-center mt-2">
+            <div className="d-flex justify-content-center align-items-center mt-1">
               <div className="bg-white rounded-pill px-4 py-2 shadow-sm">
                 <span className="text-primary fw-semibold">
                   <i className="bi bi-star-fill text-warning me-2"></i>
