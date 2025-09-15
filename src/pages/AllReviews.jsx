@@ -105,13 +105,6 @@ const AllReviews = () => {
       <Row className="mb-5">
         <Col className="text-center">
           <Typography
-            variant="h2"
-            component="h1"
-            className="fw-bold mb-3 text-dark"
-          >
-            CLIENT REVIEWS
-          </Typography>
-          <Typography
             variant="h6"
             className="text-muted mb-0 mx-auto"
             style={{ maxWidth: "600px" }}
@@ -223,17 +216,6 @@ const AllReviews = () => {
               </Card>
             </Col>
           ))}
-        </Row>
-      )}
-
-      {/* Load More Button */}
-      {reviews.length > 0 && (
-        <Row className="mt-5">
-          <Col className="text-center">
-            <Button variant="primary" size="lg" className="px-5 py-2 rounded-2">
-              Load More Reviews
-            </Button>
-          </Col>
         </Row>
       )}
     </Container>
