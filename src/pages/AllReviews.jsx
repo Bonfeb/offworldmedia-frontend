@@ -1,11 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Star, User, Quote } from "lucide-react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Spinner,
+  Alert,
+  Badge,
+} from "react-bootstrap";
+import { Star, Person, FormatQuote } from "@mui/icons-material";
+import {
+  Avatar,
+  Box,
+  Typography,
+  Rating,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import API from "../api";
 
 const AllReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     fetchReviews();
@@ -33,18 +53,6 @@ const AllReviews = () => {
     });
   };
 
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <Star
-        key={index}
-        size={16}
-        className={`${
-          index < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-400"
-        }`}
-      />
-    ));
-  };
-
   const getInitials = (name) => {
     if (!name) return "UU";
     return name
@@ -57,126 +65,178 @@ const AllReviews = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Loading reviews...</p>
-          </div>
-        </div>
-      </div>
+      <Container className="py-5 min-vh-100 d-flex align-items-center justify-content-center">
+        <Box className="text-center">
+          <Spinner
+            animation="border"
+            role="status"
+            variant="primary"
+            className="mb-3"
+          >
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+          <Typography variant="h6" className="text-muted">
+            Loading reviews...
+          </Typography>
+        </Box>
+      </Container>
     );
   }
 
   if (error && reviews.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="text-red-500 text-lg">
-              Error loading reviews: {error}
-            </p>
-            <button
-              onClick={fetchReviews}
-              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
+      <Container className="py-5 min-vh-100 d-flex align-items-center justify-content-center">
+        <Box className="text-center">
+          <Alert variant="danger" className="mb-4">
+            <Alert.Heading>Error loading reviews</Alert.Heading>
+            <p>{error}</p>
+          </Alert>
+          <Button variant="primary" onClick={fetchReviews}>
+            Retry
+          </Button>
+        </Box>
+      </Container>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
+    <Container className="py-5 min-vh-100">
+      {/* Header */}
+      <Row className="mb-5">
+        <Col className="text-center">
+          <Typography
+            variant="h2"
+            component="h1"
+            className="fw-bold mb-3 text-dark"
+          >
             CLIENT REVIEWS
-          </h1>
-          <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+          </Typography>
+          <Typography
+            variant="h6"
+            className="text-muted mb-0 mx-auto"
+            style={{ maxWidth: "600px" }}
+          >
             See what our clients have to say about our services and experience
-          </p>
-        </div>
+          </Typography>
+        </Col>
+      </Row>
 
-        {/* Reviews Grid */}
-        {reviews.length === 0 ? (
-          <div className="text-center">
-            <p className="text-gray-500 text-lg">No reviews available yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-4">
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto lg:max-w-none"
-              >
-                {/* User Avatar - Centered at top */}
-                <div className="flex justify-center mb-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-gray-600">
+      {/* Reviews Grid */}
+      {reviews.length === 0 ? (
+        <Row>
+          <Col className="text-center">
+            <Typography variant="h5" className="text-muted">
+              No reviews available yet.
+            </Typography>
+          </Col>
+        </Row>
+      ) : (
+        <Row>
+          {reviews.map((review) => (
+            <Col
+              key={review.id}
+              xs={12}
+              sm={12}
+              md={12}
+              lg={4}
+              xl={4}
+              className="mb-4"
+            >
+              <Card className="h-100 shadow-sm border-0 rounded-3 hover-shadow">
+                <Card.Body className="d-flex flex-column p-4">
+                  {/* User Avatar */}
+                  <Box className="d-flex justify-content-center mb-3">
                     {review.user?.profile_pic ? (
-                      <img
+                      <Avatar
                         src={review.user.profile_pic}
                         alt={review.user?.username || "User"}
-                        className="w-full h-full object-cover"
+                        sx={{ width: 80, height: 80 }}
+                        className="border-2 border-primary"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                        <span className="text-white font-semibold text-lg">
-                          {review.user?.username ? (
-                            getInitials(review.user.username)
-                          ) : (
-                            <User size={20} />
-                          )}
-                        </span>
-                      </div>
+                      <Avatar
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          bgcolor: "primary.main",
+                          fontSize: "1.5rem",
+                        }}
+                        className="border-2 border-primary"
+                      >
+                        {review.user?.username ? (
+                          getInitials(review.user.username)
+                        ) : (
+                          <Person fontSize="large" />
+                        )}
+                      </Avatar>
                     )}
-                  </div>
-                </div>
+                  </Box>
 
-                {/* Comment */}
-                <div className="text-center mb-6">
-                  {review.comment ? (
-                    <p className="text-gray-200 text-sm leading-relaxed">
-                      {review.comment}
-                    </p>
-                  ) : (
-                    <p className="text-gray-400 italic text-sm">
-                      No comment provided
-                    </p>
-                  )}
-                </div>
+                  {/* Comment */}
+                  <Box className="text-center mb-3 flex-grow-1">
+                    {review.comment ? (
+                      <>
+                        <FormatQuote className="text-muted mb-2" />
+                        <Typography
+                          variant="body2"
+                          className="fst-italic text-dark"
+                        >
+                          {review.comment}
+                        </Typography>
+                      </>
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        className="text-muted fst-italic"
+                      >
+                        No comment provided
+                      </Typography>
+                    )}
+                  </Box>
 
-                {/* Rating */}
-                <div className="flex justify-center mb-4">
-                  <div className="flex space-x-1">
-                    {renderStars(review.rating)}
-                  </div>
-                </div>
+                  {/* Rating */}
+                  <Box className="d-flex justify-content-center mb-3">
+                    <Rating
+                      value={review.rating}
+                      readOnly
+                      precision={0.5}
+                      size={isMobile ? "small" : "medium"}
+                      emptyIcon={<Star className="text-muted" />}
+                    />
+                  </Box>
 
-                {/* User Name */}
-                <div className="text-center">
-                  <p className="text-white font-medium text-sm">
-                    - {review.user?.username || "Anonymous User"} -
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                  {/* User Name and Date */}
+                  <Box className="text-center">
+                    <Typography
+                      variant="subtitle2"
+                      className="fw-medium text-dark"
+                    >
+                      {review.user?.username || "Anonymous User"}
+                    </Typography>
+                    {review.date && (
+                      <Typography variant="caption" className="text-muted">
+                        {formatDate(review.date)}
+                      </Typography>
+                    )}
+                  </Box>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
 
-        {/* Load More Button */}
-        {reviews.length > 0 && (
-          <div className="text-center mt-12">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md">
+      {/* Load More Button */}
+      {reviews.length > 0 && (
+        <Row className="mt-5">
+          <Col className="text-center">
+            <Button variant="primary" size="lg" className="px-5 py-2 rounded-2">
               Load More Reviews
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+            </Button>
+          </Col>
+        </Row>
+      )}
+    </Container>
   );
 };
 
