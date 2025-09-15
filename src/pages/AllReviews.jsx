@@ -9,23 +9,12 @@ import {
   Alert,
   Badge,
 } from "react-bootstrap";
-import { Star, Person, FormatQuote } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Typography,
-  Rating,
-  useTheme,
-  useMediaQuery,
-} from "@mui/material";
 import API from "../api";
 
 const AllReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     fetchReviews();
@@ -63,22 +52,56 @@ const AllReviews = () => {
       .slice(0, 2);
   };
 
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        stars.push(
+          <i key={i} className="bi bi-star-fill text-warning me-1"></i>
+        );
+      } else if (i === fullStars && hasHalfStar) {
+        stars.push(
+          <i key={i} className="bi bi-star-half text-warning me-1"></i>
+        );
+      } else {
+        stars.push(<i key={i} className="bi bi-star text-muted me-1"></i>);
+      }
+    }
+    return stars;
+  };
+
+  const getRatingColor = (rating) => {
+    if (rating >= 4.5) return "success";
+    if (rating >= 4) return "primary";
+    if (rating >= 3) return "warning";
+    return "danger";
+  };
+
   if (loading) {
     return (
-      <Container className="py-5 min-vh-100 d-flex align-items-center justify-content-center">
-        <Box className="text-center">
+      <Container
+        fluid
+        className="py-5 min-vh-100 d-flex align-items-center justify-content-center"
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
+        }}
+      >
+        <div className="text-center">
           <Spinner
             animation="border"
             role="status"
-            variant="primary"
+            variant="light"
+            style={{ width: "3rem", height: "3rem" }}
             className="mb-3"
           >
             <span className="visually-hidden">Loading...</span>
           </Spinner>
-          <Typography variant="h6" className="text-muted">
-            Loading reviews...
-          </Typography>
-        </Box>
+          <h5 className="fw-light">Loading amazing reviews...</h5>
+        </div>
       </Container>
     );
   }
@@ -86,139 +109,263 @@ const AllReviews = () => {
   if (error && reviews.length === 0) {
     return (
       <Container className="py-5 min-vh-100 d-flex align-items-center justify-content-center">
-        <Box className="text-center">
-          <Alert variant="danger" className="mb-4">
-            <Alert.Heading>Error loading reviews</Alert.Heading>
-            <p>{error}</p>
+        <div className="text-center">
+          <Alert variant="danger" className="shadow-lg border-0 rounded-4">
+            <Alert.Heading className="d-flex align-items-center justify-content-center">
+              <i className="bi bi-exclamation-triangle-fill me-2"></i>
+              Error loading reviews
+            </Alert.Heading>
+            <p className="mb-3">{error}</p>
+            <Button
+              variant="outline-danger"
+              onClick={fetchReviews}
+              className="rounded-pill px-4"
+            >
+              <i className="bi bi-arrow-clockwise me-2"></i>
+              Try Again
+            </Button>
           </Alert>
-          <Button variant="primary" onClick={fetchReviews}>
-            Retry
-          </Button>
-        </Box>
+        </div>
       </Container>
     );
   }
 
   return (
-    <Container className="py-5 min-vh-100">
-      {/* Header */}
-      <Row className="mb-5">
-        <Col className="text-center">
-          <Typography
-            variant="h6"
-            className="text-muted mb-0 mx-auto"
-            style={{ maxWidth: "600px" }}
-          >
-            See what our clients have to say about our services and experience
-          </Typography>
-        </Col>
-      </Row>
-
-      {/* Reviews Grid */}
-      {reviews.length === 0 ? (
-        <Row>
+    <div
+      style={{
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        minHeight: "100vh",
+      }}
+    >
+      <Container className="py-5">
+        {/* Enhanced Header */}
+        <Row className="mb-5">
           <Col className="text-center">
-            <Typography variant="h5" className="text-muted">
-              No reviews available yet.
-            </Typography>
+            <div className="mb-4">
+              <Badge
+                bg="primary"
+                className="rounded-pill px-4 py-2 mb-3"
+                style={{ fontSize: "0.9rem" }}
+              >
+                <i className="bi bi-chat-heart-fill me-2"></i>
+                Customer Reviews
+              </Badge>
+            </div>
+            <h1 className="display-5 fw-bold text-dark mb-3">
+              What Our Clients Say
+            </h1>
+            <p
+              className="lead text-muted mx-auto"
+              style={{ maxWidth: "600px" }}
+            >
+              Discover the experiences and feedback from our valued customers
+            </p>
+            <div className="d-flex justify-content-center align-items-center mt-4">
+              <div className="bg-white rounded-pill px-4 py-2 shadow-sm">
+                <span className="text-primary fw-semibold">
+                  <i className="bi bi-star-fill text-warning me-2"></i>
+                  {reviews.length} Reviews
+                </span>
+              </div>
+            </div>
           </Col>
         </Row>
-      ) : (
-        <Row>
-          {reviews.map((review) => (
-            <Col
-              key={review.id}
-              xs={12}
-              sm={12}
-              md={12}
-              lg={4}
-              xl={4}
-              className="mb-4"
-            >
-              <Card className="h-100 shadow-sm border-0 rounded-3 hover-shadow">
-                <Card.Body className="d-flex flex-column p-4">
-                  {/* User Avatar */}
-                  <Box className="d-flex justify-content-center mb-3">
-                    {review.user?.profile_pic ? (
-                      <Avatar
-                        src={review.user.profile_pic}
-                        alt={review.user?.username || "User"}
-                        sx={{ width: 80, height: 80 }}
-                        className="border-2 border-primary"
-                      />
-                    ) : (
-                      <Avatar
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          bgcolor: "primary.main",
-                          fontSize: "1.5rem",
-                        }}
-                        className="border-2 border-primary"
-                      >
-                        {review.user?.username ? (
-                          getInitials(review.user.username)
-                        ) : (
-                          <Person fontSize="large" />
-                        )}
-                      </Avatar>
-                    )}
-                  </Box>
 
-                  {/* Comment */}
-                  <Box className="text-center mb-3 flex-grow-1">
-                    {review.comment ? (
-                      <>
-                        <FormatQuote className="text-muted mb-2" />
-                        <Typography
-                          variant="body2"
-                          className="fst-italic text-dark"
-                        >
-                          {review.comment}
-                        </Typography>
-                      </>
-                    ) : (
-                      <Typography
-                        variant="body2"
-                        className="text-muted fst-italic"
-                      >
-                        No comment provided
-                      </Typography>
-                    )}
-                  </Box>
-
-                  {/* Rating */}
-                  <Box className="d-flex justify-content-center mb-3">
-                    <Rating
-                      value={review.rating}
-                      readOnly
-                      precision={0.5}
-                      size={isMobile ? "small" : "medium"}
-                      emptyIcon={<Star className="text-muted" />}
-                    />
-                  </Box>
-
-                  {/* User Name and Date */}
-                  <Box className="text-center">
-                    <Typography
-                      variant="subtitle2"
-                      className="fw-medium text-dark"
-                    >
-                      {review.user?.username || "Anonymous User"}
-                    </Typography>
-                    {review.date && (
-                      <Typography variant="caption" className="text-muted">
-                        {formatDate(review.date)}
-                      </Typography>
-                    )}
-                  </Box>
+        {/* Reviews Grid */}
+        {reviews.length === 0 ? (
+          <Row>
+            <Col className="text-center">
+              <Card className="border-0 shadow-lg rounded-4 bg-white">
+                <Card.Body className="py-5">
+                  <i className="bi bi-chat-left-dots display-1 text-muted mb-3"></i>
+                  <h4 className="text-muted">No reviews available yet</h4>
+                  <p className="text-muted">
+                    Be the first to share your experience!
+                  </p>
                 </Card.Body>
               </Card>
             </Col>
-          ))}
-        </Row>
-      )}
-    </Container>
+          </Row>
+        ) : (
+          <Row className="g-4">
+            {reviews.map((review, index) => (
+              <Col
+                key={review.id}
+                xs={12}
+                sm={12}
+                md={6}
+                lg={4}
+                xl={4}
+                style={{
+                  animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
+                }}
+              >
+                <Card
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative"
+                  style={{
+                    transition: "all 0.3s ease",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-8px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 20px 40px rgba(0,0,0,0.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 6px rgba(0,0,0,0.1)";
+                  }}
+                >
+                  {/* Rating Badge */}
+                  <div
+                    className="position-absolute top-0 end-0 m-3"
+                    style={{ zIndex: 1 }}
+                  >
+                    <Badge
+                      bg={getRatingColor(review.rating)}
+                      className="rounded-pill px-3 py-2"
+                      style={{ fontSize: "0.8rem" }}
+                    >
+                      <i className="bi bi-star-fill me-1"></i>
+                      {review.rating}
+                    </Badge>
+                  </div>
+
+                  <Card.Body className="d-flex flex-column p-4">
+                    {/* User Avatar */}
+                    <div className="text-center mb-4">
+                      {review.user?.profile_pic ? (
+                        <img
+                          src={review.user.profile_pic}
+                          alt={review.user?.username || "User"}
+                          className="rounded-circle border border-3 border-primary"
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "cover",
+                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          className="rounded-circle bg-gradient d-flex align-items-center justify-content-center border border-3 border-primary mx-auto"
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            background:
+                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            color: "white",
+                            fontSize: "1.5rem",
+                            fontWeight: "bold",
+                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                          }}
+                        >
+                          {review.user?.username ? (
+                            getInitials(review.user.username)
+                          ) : (
+                            <i className="bi bi-person-fill"></i>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Comment */}
+                    <div className="text-center mb-4 flex-grow-1">
+                      {review.comment ? (
+                        <div className="position-relative">
+                          <i
+                            className="bi bi-quote display-6 text-primary opacity-25 position-absolute"
+                            style={{ top: "-10px", left: "10px" }}
+                          ></i>
+                          <p
+                            className="fst-italic text-dark lh-base px-3"
+                            style={{
+                              fontSize: "1rem",
+                              position: "relative",
+                              zIndex: 1,
+                            }}
+                          >
+                            "{review.comment}"
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-muted fst-italic">
+                          <i className="bi bi-chat-left me-2"></i>
+                          No comment provided
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Rating Stars */}
+                    <div className="text-center mb-3">
+                      <div className="d-flex justify-content-center align-items-center">
+                        {renderStars(review.rating)}
+                        <span className="ms-2 text-muted small">
+                          ({review.rating}/5)
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* User Info */}
+                    <div className="text-center border-top pt-3">
+                      <h6 className="fw-bold text-dark mb-1">
+                        {review.user?.username || "Anonymous User"}
+                      </h6>
+                      {review.date && (
+                        <small className="text-muted d-flex align-items-center justify-content-center">
+                          <i className="bi bi-calendar3 me-2"></i>
+                          {formatDate(review.date)}
+                        </small>
+                      )}
+                    </div>
+                  </Card.Body>
+
+                  {/* Decorative bottom border */}
+                  <div
+                    className="position-absolute bottom-0 start-0 w-100"
+                    style={{
+                      height: "4px",
+                      background: `linear-gradient(90deg, var(--bs-${getRatingColor(
+                        review.rating
+                      )}) 0%, var(--bs-${getRatingColor(review.rating)}) 100%)`,
+                    }}
+                  ></div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+      </Container>
+
+      {/* Add custom CSS styles */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .bg-gradient {
+          background: linear-gradient(
+            135deg,
+            #667eea 0%,
+            #764ba2 100%
+          ) !important;
+        }
+
+        @media (max-width: 768px) {
+          .display-5 {
+            font-size: 2rem !important;
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
