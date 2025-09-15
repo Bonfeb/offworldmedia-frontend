@@ -84,10 +84,11 @@ const AllReviews = () => {
     return (
       <Container
         fluid
-        className="py-5 min-vh-100 d-flex align-items-center justify-content-center"
+        className="py-4 d-flex align-items-center justify-content-center"
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "#1a1a1a",
           color: "white",
+          minHeight: "50vh",
         }}
       >
         <div className="text-center">
@@ -108,59 +109,51 @@ const AllReviews = () => {
 
   if (error && reviews.length === 0) {
     return (
-      <Container className="py-5 min-vh-100 d-flex align-items-center justify-content-center">
-        <div className="text-center">
-          <Alert variant="danger" className="shadow-lg border-0 rounded-4">
-            <Alert.Heading className="d-flex align-items-center justify-content-center">
-              <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              Error loading reviews
-            </Alert.Heading>
-            <p className="mb-3">{error}</p>
-            <Button
-              variant="outline-danger"
-              onClick={fetchReviews}
-              className="rounded-pill px-4"
-            >
-              <i className="bi bi-arrow-clockwise me-2"></i>
-              Try Again
-            </Button>
-          </Alert>
-        </div>
+      <Container
+        className="py-4"
+        style={{ background: "#1a1a1a", minHeight: "50vh" }}
+      >
+        <Row className="justify-content-center align-items-center h-100">
+          <Col md={6}>
+            <Alert variant="danger" className="shadow-lg border-0 rounded-4">
+              <Alert.Heading className="d-flex align-items-center justify-content-center">
+                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                Error loading reviews
+              </Alert.Heading>
+              <p className="mb-3">{error}</p>
+              <div className="text-center">
+                <Button
+                  variant="outline-danger"
+                  onClick={fetchReviews}
+                  className="rounded-pill px-4"
+                >
+                  <i className="bi bi-arrow-clockwise me-2"></i>
+                  Try Again
+                </Button>
+              </div>
+            </Alert>
+          </Col>
+        </Row>
       </Container>
     );
   }
 
   return (
-    <div
-      style={{
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-        minHeight: "100vh",
-      }}
-    >
-      <Container className="py-5">
+    <div className="bg-dark" style={{ minHeight: "auto" }}>
+      <Container className="py-3">
         {/* Enhanced Header */}
-        <Row className="mb-5">
+        <Row className="mb-3">
           <Col className="text-center">
-            <div className="mb-4">
-              <Badge
-                bg="primary"
-                className="rounded-pill px-4 py-2 mb-3"
-                style={{ fontSize: "0.9rem" }}
-              >
-                <i className="bi bi-chat-heart-fill me-2"></i>
-                Customer Reviews
-              </Badge>
-            </div>
-            <h1 className="display-5 fw-bold text-dark mb-3">
+            <h1 className="display-5 fw-bold text-white mb-2">
               What Our Clients Say
             </h1>
             <p
-              className="lead text-muted mx-auto"
+              className="lead text-light mx-auto"
               style={{ maxWidth: "600px" }}
             >
               Discover the experiences and feedback from our valued customers
             </p>
-            <div className="d-flex justify-content-center align-items-center mt-4">
+            <div className="d-flex justify-content-center align-items-center mt-2">
               <div className="bg-white rounded-pill px-4 py-2 shadow-sm">
                 <span className="text-primary fw-semibold">
                   <i className="bi bi-star-fill text-warning me-2"></i>
@@ -175,10 +168,10 @@ const AllReviews = () => {
         {reviews.length === 0 ? (
           <Row>
             <Col className="text-center">
-              <Card className="border-0 shadow-lg rounded-4 bg-white">
-                <Card.Body className="py-5">
+              <Card className="border-0 shadow-lg rounded-4 bg-dark text-light">
+                <Card.Body className="py-4">
                   <i className="bi bi-chat-left-dots display-1 text-muted mb-3"></i>
-                  <h4 className="text-muted">No reviews available yet</h4>
+                  <h4 className="text-light">No reviews available yet</h4>
                   <p className="text-muted">
                     Be the first to share your experience!
                   </p>
@@ -201,7 +194,7 @@ const AllReviews = () => {
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-dark text-light"
                   style={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
@@ -232,9 +225,9 @@ const AllReviews = () => {
                     </Badge>
                   </div>
 
-                  <Card.Body className="d-flex flex-column p-4">
+                  <Card.Body className="d-flex flex-column p-3">
                     {/* User Avatar */}
-                    <div className="text-center mb-4">
+                    <div className="text-center mb-3">
                       {review.user?.profile_pic ? (
                         <img
                           src={review.user.profile_pic}
@@ -270,8 +263,18 @@ const AllReviews = () => {
                       )}
                     </div>
 
+                    {/* Rating Stars */}
+                    <div className="text-center mb-3">
+                      <div className="d-flex justify-content-center align-items-center">
+                        {renderStars(review.rating)}
+                        <span className="ms-2 text-light small">
+                          ({review.rating}/5)
+                        </span>
+                      </div>
+                    </div>
+
                     {/* Comment */}
-                    <div className="text-center mb-4 flex-grow-1">
+                    <div className="text-center mb-3 flex-grow-1">
                       {review.comment ? (
                         <div className="position-relative">
                           <i
@@ -279,9 +282,9 @@ const AllReviews = () => {
                             style={{ top: "-10px", left: "10px" }}
                           ></i>
                           <p
-                            className="fst-italic text-dark lh-base px-3"
+                            className="fst-italic text-light lh-base px-3"
                             style={{
-                              fontSize: "1rem",
+                              fontSize: "0.95rem",
                               position: "relative",
                               zIndex: 1,
                             }}
@@ -297,19 +300,9 @@ const AllReviews = () => {
                       )}
                     </div>
 
-                    {/* Rating Stars */}
-                    <div className="text-center mb-3">
-                      <div className="d-flex justify-content-center align-items-center">
-                        {renderStars(review.rating)}
-                        <span className="ms-2 text-muted small">
-                          ({review.rating}/5)
-                        </span>
-                      </div>
-                    </div>
-
                     {/* User Info */}
-                    <div className="text-center border-top pt-3">
-                      <h6 className="fw-bold text-dark mb-1">
+                    <div className="text-center border-top border-secondary pt-2">
+                      <h6 className="fw-bold text-light mb-1">
                         {review.user?.username || "Anonymous User"}
                       </h6>
                       {review.date && (
