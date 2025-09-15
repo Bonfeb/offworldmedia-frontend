@@ -204,7 +204,7 @@ const AllReviews = () => {
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-light text-dark w-100"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-transparent text-light w-100"
                   style={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
@@ -232,7 +232,7 @@ const AllReviews = () => {
                       style={{ fontSize: "0.8rem" }}
                     >
                       <i className="bi bi-star-fill me-1"></i>
-                      {review.rating}
+                      {review.rating}/5
                     </Badge>
                   </div>
 
@@ -274,10 +274,43 @@ const AllReviews = () => {
                       )}
                     </div>
 
+                    {/* Service Name */}
+                    {review.service && (
+                      <div className="text-center mb-2">
+                        <Badge bg="secondary" className="px-3 py-2">
+                          <i className="bi bi-tag-fill me-2"></i>
+                          {review.service.name}
+                        </Badge>
+                      </div>
+                    )}
+
+                    {/* User Info */}
+                    <div className="text-center mb-3">
+                      <h6 className="fw-bold text-light mb-1">
+                        {review.user?.username || "Anonymous User"}
+                      </h6>
+                      {review.created_at && (
+                        <small className="text-muted d-flex align-items-center justify-content-center">
+                          <i className="bi bi-calendar3 me-2"></i>
+                          {formatDate(review.created_at)}
+                        </small>
+                      )}
+                    </div>
+
                     {/* Rating Stars */}
                     <div className="text-center mb-3">
                       <div className="d-flex justify-content-center align-items-center">
-                        {renderStars(review.rating)}
+                        {[...Array(5)].map((_, i) => (
+                          <i
+                            key={i}
+                            className={`bi ${
+                              i < review.rating
+                                ? "bi-star-fill text-warning"
+                                : "bi-star text-light"
+                            } me-1`}
+                            style={{ fontSize: "1.2rem" }}
+                          ></i>
+                        ))}
                       </div>
                     </div>
 
@@ -305,19 +338,6 @@ const AllReviews = () => {
                           <i className="bi bi-chat-left me-2"></i>
                           No comment provided
                         </p>
-                      )}
-                    </div>
-
-                    {/* User Info */}
-                    <div className="text-center border-top border-secondary pt-2">
-                      <h6 className="fw-bold text-light mb-1">
-                        {review.user?.username || "Anonymous User"}
-                      </h6>
-                      {review.date && (
-                        <small className="text-muted d-flex align-items-center justify-content-center">
-                          <i className="bi bi-calendar3 me-2"></i>
-                          {formatDate(review.date)}
-                        </small>
                       )}
                     </div>
                   </Card.Body>
