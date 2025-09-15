@@ -204,7 +204,7 @@ const AllReviews = () => {
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-transparent text-light w-100"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-light text-dark w-100"
                   style={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
