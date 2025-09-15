@@ -39,7 +39,7 @@ const AllReviews = () => {
         key={index}
         size={16}
         className={`${
-          index < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+          index < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-400"
         }`}
       />
     ));
@@ -55,29 +55,10 @@ const AllReviews = () => {
       .slice(0, 2);
   };
 
-  // Function to format comment into multiple lines (like in the screenshot)
-  const formatComment = (comment) => {
-    if (!comment) return null;
-
-    // Simple approach: split into lines of approximately 4-5 words each
-    const words = comment.split(" ");
-    const lines = [];
-
-    for (let i = 0; i < words.length; i += 4) {
-      lines.push(words.slice(i, i + 4).join(" "));
-    }
-
-    return lines.map((line, index) => (
-      <p key={index} className="text-gray-700 leading-relaxed">
-        {line}
-      </p>
-    ));
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-6">
+      <div className="min-h-screen bg-gray-100 py-12">
+        <div className="container mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="text-gray-600 mt-4">Loading reviews...</p>
@@ -89,8 +70,8 @@ const AllReviews = () => {
 
   if (error && reviews.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-6">
+      <div className="min-h-screen bg-gray-100 py-12">
+        <div className="container mx-auto px-4">
           <div className="text-center">
             <p className="text-red-500 text-lg">
               Error loading reviews: {error}
@@ -108,14 +89,14 @@ const AllReviews = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto px-6">
+    <div className="min-h-screen bg-gray-100 py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
             CLIENT REVIEWS
           </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
             See what our clients have to say about our services and experience
           </p>
         </div>
@@ -126,20 +107,15 @@ const AllReviews = () => {
             <p className="text-gray-500 text-lg">No reviews available yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-4">
             {reviews.map((review) => (
               <div
                 key={review.id}
-                className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300 relative"
+                className="bg-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 max-w-sm mx-auto lg:max-w-none"
               >
-                {/* Quote Icon */}
-                <div className="absolute top-4 right-4 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Quote className="text-blue-600" size={20} />
-                </div>
-
-                {/* User Info */}
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4 overflow-hidden">
+                {/* User Avatar - Centered at top */}
+                <div className="flex justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-gray-600">
                     {review.user?.profile_pic ? (
                       <img
                         src={review.user.profile_pic}
@@ -148,49 +124,43 @@ const AllReviews = () => {
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                        <span className="text-white font-semibold text-sm">
+                        <span className="text-white font-semibold text-lg">
                           {review.user?.username ? (
                             getInitials(review.user.username)
                           ) : (
-                            <User size={16} />
+                            <User size={20} />
                           )}
                         </span>
                       </div>
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">
-                      {review.user?.username || "Anonymous User"}
-                    </h3>
-                    <p className="text-gray-500 text-sm">
-                      {review.service?.username || "Service"} Client
-                    </p>
-                  </div>
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center mb-4">
-                  <div className="flex mr-2">{renderStars(review.rating)}</div>
-                  <span className="text-gray-500 text-sm">
-                    ({review.rating}/5)
-                  </span>
-                </div>
-
-                {/* Comment - Now using actual data from the model */}
-                <div className="mb-6">
+                {/* Comment */}
+                <div className="text-center mb-6">
                   {review.comment ? (
-                    formatComment(review.comment)
+                    <p className="text-gray-200 text-sm leading-relaxed">
+                      {review.comment}
+                    </p>
                   ) : (
-                    <p className="text-gray-500 italic">No comment provided</p>
+                    <p className="text-gray-400 italic text-sm">
+                      No comment provided
+                    </p>
                   )}
                 </div>
 
-                {/* Divider */}
-                <div className="border-t border-gray-200 mb-4"></div>
+                {/* Rating */}
+                <div className="flex justify-center mb-4">
+                  <div className="flex space-x-1">
+                    {renderStars(review.rating)}
+                  </div>
+                </div>
 
-                {/* Date */}
-                <div className="text-gray-500 text-sm text-right">
-                  {formatDate(review.created_at)}
+                {/* User Name */}
+                <div className="text-center">
+                  <p className="text-white font-medium text-sm">
+                    - {review.user?.username || "Anonymous User"} -
+                  </p>
                 </div>
               </div>
             ))}
