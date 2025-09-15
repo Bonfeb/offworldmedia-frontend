@@ -139,7 +139,7 @@ const AllReviews = () => {
   }
 
   return (
-    <Container fluid className="main-container justify-content-center">
+    <Container fluid className="main-container justify-content-center p-0">
       {/* Enhanced Header */}
       <Container
         fluid
@@ -148,9 +148,18 @@ const AllReviews = () => {
         <h1 className="display-5 fw-bold text-white mb-2">
           What Our Clients Say
         </h1>
+        <div
+          className="mx-auto mb-4"
+          style={{
+            width: "50%",
+            height: "2px",
+            backgroundColor: "#45463bff",
+          }}
+        ></div>
         <p className="lead text-light mx-auto" style={{ maxWidth: "600px" }}>
           Discover the experiences and feedback from our valued customers
         </p>
+
         <div className="d-flex justify-content-center align-items-center mt-2">
           <div className="bg-white rounded-pill px-4 py-2 shadow-sm">
             <span className="text-primary fw-semibold">
@@ -164,8 +173,8 @@ const AllReviews = () => {
       {/* Reviews Grid */}
       {reviews.length === 0 ? (
         <Container fluid className="bg-dark text-white py-5 px-4 px-lg-5">
-          <Row>
-            <Col className="text-center">
+          <Row className="justify-content-center">
+            <Col xs={12} md={8} lg={6} className="text-center">
               <Card className="border-0 shadow-lg rounded-4 bg-transparent text-light">
                 <Card.Body className="py-4">
                   <i className="bi bi-chat-left-dots display-1 text-muted mb-3"></i>
@@ -180,24 +189,26 @@ const AllReviews = () => {
         </Container>
       ) : (
         <Container fluid className="bg-dark text-white py-5 px-4 px-lg-5">
-          <Row className="g-4">
+          <Row className="g-4 justify-content-center">
             {reviews.map((review, index) => (
               <Col
                 key={review.id}
                 xs={12}
-                sm={12}
+                sm={10}
                 md={6}
-                lg={3}
+                lg={4}
                 xl={3}
+                className="d-flex justify-content-center"
                 style={{
                   animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-transparent text-light"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-transparent text-light w-100"
                   style={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
+                    maxWidth: "320px",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-8px)";
@@ -267,9 +278,6 @@ const AllReviews = () => {
                     <div className="text-center mb-3">
                       <div className="d-flex justify-content-center align-items-center">
                         {renderStars(review.rating)}
-                        <span className="ms-2 text-light small">
-                          ({review.rating}/5)
-                        </span>
                       </div>
                     </div>
 
