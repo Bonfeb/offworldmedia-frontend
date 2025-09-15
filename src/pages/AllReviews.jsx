@@ -111,7 +111,7 @@ const AllReviews = () => {
             {reviews.map((review) => (
               <div
                 key={review.id}
-                className="bg-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 max-w-sm mx-auto lg:max-w-none"
+                className="bg-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 w-full max-w-sm mx-auto lg:max-w-none"
               >
                 {/* User Avatar - Centered at top */}
                 <div className="flex justify-center mb-4">

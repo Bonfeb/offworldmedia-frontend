@@ -140,8 +140,8 @@ function Reviews({ reviews }) {
                             </Card.Title>
                           </div>
 
-                          <Card.Subtitle className="service-name">
-                            Service: <i>{review.service_details?.name}</i>
+                          <Card.Subtitle className="service-name mt-2">
+                            Service: <i>{review.service_details?.category}</i>
                           </Card.Subtitle>
 
                           <div className="rating-stars mt-2">
