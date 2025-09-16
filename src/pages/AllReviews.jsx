@@ -204,16 +204,19 @@ const AllReviews = () => {
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-transparent text-light w-100"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative text-light"
                   style={{
+                    background: "rgba(255, 255, 255, 0.1)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
                     transition: "all 0.3s ease",
                     cursor: "pointer",
-                    maxWidth: "320px",
+                    maxWidth: "300px",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-8px)";
+                    e.currentTarget.style.transform = "translateY(-4px)";
                     e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(0,0,0,0.1)";
+                      "0 12px 24px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
@@ -221,48 +224,32 @@ const AllReviews = () => {
                       "0 4px 6px rgba(0,0,0,0.1)";
                   }}
                 >
-                  {/* Rating Badge */}
-                  <div
-                    className="position-absolute top-0 end-0 m-3"
-                    style={{ zIndex: 1 }}
-                  >
-                    <Badge
-                      bg={getRatingColor(review.rating)}
-                      className="rounded-pill px-3 py-2"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      <i className="bi bi-star-fill me-1"></i>
-                      {review.rating}/5
-                    </Badge>
-                  </div>
-
-                  <Card.Body className="d-flex flex-column p-3">
+                  <Card.Body className="d-flex flex-column p-4 text-center">
                     {/* User Avatar */}
-                    <div className="text-center mb-3">
+                    <div className="mb-3">
                       {review.user?.profile_pic ? (
                         <img
                           src={review.user.profile_pic}
                           alt={review.user?.username || "User"}
-                          className="rounded-circle border border-3 border-primary"
+                          className="rounded-circle"
                           style={{
-                            width: "80px",
-                            height: "80px",
+                            width: "60px",
+                            height: "60px",
                             objectFit: "cover",
-                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                            border: "2px solid rgba(255, 255, 255, 0.3)",
                           }}
                         />
                       ) : (
                         <div
-                          className="rounded-circle bg-gradient d-flex align-items-center justify-content-center border border-3 border-primary mx-auto"
+                          className="rounded-circle d-flex align-items-center justify-content-center mx-auto"
                           style={{
-                            width: "80px",
-                            height: "80px",
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            width: "60px",
+                            height: "60px",
+                            background: "rgba(255, 255, 255, 0.2)",
+                            border: "2px solid rgba(255, 255, 255, 0.3)",
                             color: "white",
-                            fontSize: "1.5rem",
+                            fontSize: "1.2rem",
                             fontWeight: "bold",
-                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
                           }}
                         >
                           {review.user?.username ? (
@@ -274,84 +261,64 @@ const AllReviews = () => {
                       )}
                     </div>
 
-                    {/* Service Name */}
-                    {review.service && (
-                      <div className="text-center mb-2">
-                        <Badge bg="secondary" className="px-3 py-2">
-                          <i className="bi bi-tag-fill me-2"></i>
-                          {review.service.name}
-                        </Badge>
-                      </div>
-                    )}
-
-                    {/* User Info */}
-                    <div className="text-center mb-3">
-                      <h6 className="fw-bold text-light mb-1">
-                        {review.user?.username || "Anonymous User"}
-                      </h6>
-                      {review.created_at && (
-                        <small className="text-muted d-flex align-items-center justify-content-center">
-                          <i className="bi bi-calendar3 me-2"></i>
-                          {formatDate(review.created_at)}
-                        </small>
+                    {/* Review Text */}
+                    <div className="mb-3 flex-grow-1">
+                      {review.comment ? (
+                        <p
+                          className="text-light mb-0"
+                          style={{
+                            fontSize: "0.9rem",
+                            lineHeight: "1.4",
+                            fontWeight: "300",
+                          }}
+                        >
+                          {review.comment}
+                        </p>
+                      ) : (
+                        <p
+                          className="text-muted fst-italic mb-0"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          No comment provided
+                        </p>
                       )}
                     </div>
 
                     {/* Rating Stars */}
-                    <div className="text-center mb-3">
+                    <div className="mb-2">
                       <div className="d-flex justify-content-center align-items-center">
                         {[...Array(5)].map((_, i) => (
                           <i
                             key={i}
                             className={`bi ${
-                              i < review.rating
-                                ? "bi-star-fill text-warning"
-                                : "bi-star text-light"
+                              i < review.rating ? "bi-star-fill" : "bi-star"
                             } me-1`}
-                            style={{ fontSize: "1.2rem" }}
+                            style={{
+                              fontSize: "1rem",
+                              color:
+                                i < review.rating
+                                  ? "#ffc107"
+                                  : "rgba(255, 255, 255, 0.3)",
+                            }}
                           ></i>
                         ))}
                       </div>
                     </div>
 
-                    {/* Comment */}
-                    <div className="text-center mb-3 flex-grow-1">
-                      {review.comment ? (
-                        <div className="position-relative">
-                          <i
-                            className="bi bi-quote display-6 text-primary opacity-25 position-absolute"
-                            style={{ top: "-10px", left: "10px" }}
-                          ></i>
-                          <p
-                            className="fst-italic text-light lh-base px-3"
-                            style={{
-                              fontSize: "0.95rem",
-                              position: "relative",
-                              zIndex: 1,
-                            }}
-                          >
-                            "{review.comment}"
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-muted fst-italic">
-                          <i className="bi bi-chat-left me-2"></i>
-                          No comment provided
-                        </p>
-                      )}
+                    {/* User Name */}
+                    <div>
+                      <p
+                        className="text-light mb-0"
+                        style={{
+                          fontSize: "0.85rem",
+                          fontWeight: "400",
+                          opacity: "0.8",
+                        }}
+                      >
+                        - {review.user?.username || "Anonymous User"} -
+                      </p>
                     </div>
                   </Card.Body>
-
-                  {/* Decorative bottom border */}
-                  <div
-                    className="position-absolute bottom-0 start-0 w-100"
-                    style={{
-                      height: "4px",
-                      background: `linear-gradient(90deg, var(--bs-${getRatingColor(
-                        review.rating
-                      )}) 0%, var(--bs-${getRatingColor(review.rating)}) 100%)`,
-                    }}
-                  ></div>
                 </Card>
               </Col>
             ))}
