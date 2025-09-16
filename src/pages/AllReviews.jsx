@@ -219,11 +219,12 @@ const AllReviews = () => {
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-info text-light w-100"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative text-light w-100"
                   style={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
                     maxWidth: "320px",
+                    backgroundColor: "#485f6bee",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-8px)";
@@ -295,9 +296,6 @@ const AllReviews = () => {
                     {review.service && (
                       <div className="text-center mb-2">
                         <Badge bg="secondary" className="px-3 py-2">
-                          <LocalOfferIcon
-                            sx={{ fontSize: "1rem", marginRight: "0.5rem" }}
-                          />
                           {review.service.category}
                         </Badge>
                       </div>
@@ -308,14 +306,6 @@ const AllReviews = () => {
                       <h6 className="fw-bold text-light mb-1">
                         {review.user?.username || "Anonymous User"}
                       </h6>
-                      {review.created_at && (
-                        <small className="text-muted d-flex align-items-center justify-content-center">
-                          <CalendarTodayIcon
-                            sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
-                          />
-                          {formatDate(review.created_at)}
-                        </small>
-                      )}
                     </div>
 
                     {/* Rating Stars */}
@@ -379,6 +369,14 @@ const AllReviews = () => {
                         </p>
                       )}
                     </div>
+                    {review.created_at && (
+                      <small className="text-muted d-flex align-items-center justify-content-center">
+                        <CalendarTodayIcon
+                          sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
+                        />
+                        {formatDate(review.created_at)}
+                      </small>
+                    )}
                   </Card.Body>
 
                   {/* Decorative bottom border */}
