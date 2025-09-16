@@ -167,7 +167,7 @@ const AllReviews = () => {
           Discover the experiences and feedback from our valued customers
         </p>
 
-        <div className="d-flex justify-content-center align-items-center mt-2">
+        <div className="d-flex justify-content-center align-items-center mt-2 mb-3">
           <div className="bg-white rounded-pill px-4 py-2 shadow-sm">
             <span className="text-primary fw-semibold">
               <i className="bi bi-star-fill text-warning me-2"></i>
@@ -224,7 +224,7 @@ const AllReviews = () => {
                     transition: "all 0.3s ease",
                     cursor: "pointer",
                     maxWidth: "320px",
-                    backgroundColor: "#485f6bee",
+                    backgroundColor: "#051912",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-8px)";
@@ -301,13 +301,6 @@ const AllReviews = () => {
                       </div>
                     )}
 
-                    {/* User Info */}
-                    <div className="text-center mb-3">
-                      <h6 className="fw-bold text-light mb-1">
-                        {review.user?.username || "Anonymous User"}
-                      </h6>
-                    </div>
-
                     {/* Rating Stars */}
                     <div className="text-center mb-3">
                       <div className="d-flex justify-content-center align-items-center">
@@ -369,6 +362,14 @@ const AllReviews = () => {
                         </p>
                       )}
                     </div>
+
+                    {/* User Info */}
+                    <div className="text-center mb-3">
+                      <h6 className="fw-bold text-light mb-1">
+                        {review.user?.username || "Anonymous User"}
+                      </h6>
+                    </div>
+
                     {review.created_at && (
                       <small className="text-muted d-flex align-items-center justify-content-center">
                         <CalendarTodayIcon
