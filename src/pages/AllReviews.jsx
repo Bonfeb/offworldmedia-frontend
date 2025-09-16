@@ -8,6 +8,7 @@ import {
   Spinner,
   Alert,
   Badge,
+  Carousel,
 } from "react-bootstrap";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
@@ -59,33 +60,190 @@ const AllReviews = () => {
       .slice(0, 2);
   };
 
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < 5; i++) {
-      if (i < fullStars) {
-        stars.push(
-          <i key={i} className="bi bi-star-fill text-warning me-1"></i>
-        );
-      } else if (i === fullStars && hasHalfStar) {
-        stars.push(
-          <i key={i} className="bi bi-star-half text-warning me-1"></i>
-        );
-      } else {
-        stars.push(<i key={i} className="bi bi-star text-muted me-1"></i>);
-      }
-    }
-    return stars;
-  };
-
   const getRatingColor = (rating) => {
     if (rating >= 4.5) return "success";
     if (rating >= 4) return "primary";
     if (rating >= 3) return "warning";
     return "danger";
   };
+
+  // Create carousel groups based on screen size
+  const createCarouselGroups = (reviews, groupSize) => {
+    const groups = [];
+    for (let i = 0; i < reviews.length; i += groupSize) {
+      groups.push(reviews.slice(i, i + groupSize));
+    }
+    return groups;
+  };
+
+  const ReviewCard = ({ review, index }) => (
+    <Card
+      className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative text-light w-100 mx-2"
+      style={{
+        transition: "all 0.3s ease",
+        cursor: "pointer",
+        maxWidth: "320px",
+        backgroundColor: "#051912",
+        animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-8px)";
+        e.currentTarget.style.boxShadow = "0 20px 40px rgba(85, 78, 78, 0.1)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+      }}
+    >
+      {/* Rating Badge */}
+      <div className="position-absolute top-0 end-0 m-3" style={{ zIndex: 1 }}>
+        <Badge
+          bg={getRatingColor(review.rating)}
+          className="rounded-pill px-3 py-2"
+          style={{ fontSize: "0.8rem" }}
+        >
+          <StarIcon sx={{ fontSize: "1rem", marginRight: "0.25rem" }} />
+          {review.rating}/5
+        </Badge>
+      </div>
+
+      <Card.Body className="d-flex flex-column p-3">
+        {/* User Avatar */}
+        <div className="text-center mb-3">
+          {review.user?.profile_pic ? (
+            <img
+              src={review.user.profile_pic}
+              alt={review.user?.username || "User"}
+              className="rounded-circle border border-3 border-primary"
+              style={{
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              }}
+            />
+          ) : (
+            <div
+              className="rounded-circle bg-gradient d-flex align-items-center justify-content-center border border-3 border-primary mx-auto"
+              style={{
+                width: "80px",
+                height: "80px",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                color: "white",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              }}
+            >
+              {review.user?.username ? (
+                getInitials(review.user.username)
+              ) : (
+                <PersonIcon sx={{ fontSize: "1.5rem" }} />
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Service Name */}
+        {review.service && (
+          <div className="text-center mb-2">
+            <Badge bg="secondary" className="px-3 py-2">
+              {review.service.category}
+            </Badge>
+          </div>
+        )}
+
+        {/* Rating Stars */}
+        <div className="text-center mb-3">
+          <div className="d-flex justify-content-center align-items-center">
+            {[...Array(5)].map((_, i) =>
+              i < review.rating ? (
+                <StarIcon
+                  key={i}
+                  sx={{
+                    fontSize: "1.2rem",
+                    color: "#ffc107",
+                    marginRight: "0.25rem",
+                  }}
+                />
+              ) : (
+                <StarBorderIcon
+                  key={i}
+                  sx={{
+                    fontSize: "1.2rem",
+                    color: "rgba(255, 255, 255, 0.6)",
+                    marginRight: "0.25rem",
+                  }}
+                />
+              )
+            )}
+          </div>
+        </div>
+
+        {/* Comment */}
+        <div className="text-center mb-3 flex-grow-1">
+          {review.comment ? (
+            <div className="position-relative">
+              <FormatQuoteIcon
+                sx={{
+                  fontSize: "4rem",
+                  color: "primary.main",
+                  opacity: 0.25,
+                  position: "absolute",
+                  top: "-10px",
+                  left: "10px",
+                }}
+              />
+              <p
+                className="fst-italic text-light lh-base px-3"
+                style={{
+                  fontSize: "0.95rem",
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                "{review.comment}"
+              </p>
+            </div>
+          ) : (
+            <p className="text-muted fst-italic">
+              <ChatBubbleOutlineIcon
+                sx={{ fontSize: "1rem", marginRight: "0.5rem" }}
+              />
+              No comment provided
+            </p>
+          )}
+        </div>
+
+        {/* User Info */}
+        <div className="text-center mb-3">
+          <h6 className="fw-bold text-light mb-1">
+            - {review.user?.username || "Anonymous User"} -
+          </h6>
+        </div>
+
+        {review.created_at && (
+          <small className="text-muted text-blue-500 d-flex align-items-center justify-content-center">
+            <CalendarTodayIcon
+              sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
+            />
+            {formatDate(review.created_at)}
+          </small>
+        )}
+      </Card.Body>
+
+      {/* Decorative bottom border */}
+      <div
+        className="position-absolute bottom-0 start-0 w-100"
+        style={{
+          height: "4px",
+          background: `linear-gradient(90deg, var(--bs-${getRatingColor(
+            review.rating
+          )}) 0%, var(--bs-${getRatingColor(review.rating)}) 100%)`,
+        }}
+      ></div>
+    </Card>
+  );
 
   if (loading) {
     return (
@@ -108,7 +266,7 @@ const AllReviews = () => {
           >
             <span className="visually-hidden">Loading...</span>
           </Spinner>
-          <h5 className="fw-light">Loading amazing reviews...</h5>
+          <h5 className="fw-light">Loading reviews...</h5>
         </div>
       </Container>
     );
@@ -167,28 +325,31 @@ const AllReviews = () => {
           Discover the experiences and feedback from our valued customers
         </p>
 
-        <div className="d-flex justify-content-center align-items-center mt-2 mb-3">
+        <div className="d-flex justify-content-center align-items-center my-4">
           <div className="bg-white rounded-pill px-4 py-2 shadow-sm">
             <span className="text-primary fw-semibold">
-              <i className="bi bi-star-fill text-warning me-2"></i>
+              <StarIcon sx={{ fontSize: "1rem", marginRight: "0.25rem" }} />
               {reviews.length} Reviews
             </span>
           </div>
         </div>
       </Container>
 
-      {/* Reviews Grid */}
+      {/* Reviews Carousel */}
       {reviews.length === 0 ? (
         <Container
           fluid
           className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}
+          style={{ paddingTop: "2rem", paddingBottom: "2rem", margin: 0 }}
         >
           <Row className="justify-content-center">
             <Col xs={12} md={8} lg={6} className="text-center">
               <Card className="border-0 shadow-lg rounded-4 bg-transparent text-light">
                 <Card.Body className="py-4">
-                  <i className="bi bi-chat-left-dots display-1 text-muted mb-3"></i>
+                  <ChatBubbleOutlineIcon
+                    sx={{ fontSize: "4rem" }}
+                    className="text-muted mb-3"
+                  />
                   <h4 className="text-light">No reviews available yet</h4>
                   <p className="text-muted">
                     Be the first to share your experience!
@@ -202,202 +363,90 @@ const AllReviews = () => {
         <Container
           fluid
           className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}
+          style={{ paddingTop: "2rem", paddingBottom: "2rem", margin: 0 }}
         >
-          <Row className="g-4 justify-content-center">
-            {reviews.map((review, index) => (
-              <Col
-                key={review.id}
-                xs={12}
-                sm={10}
-                md={6}
-                lg={4}
-                xl={3}
-                className="d-flex justify-content-center"
-                style={{
-                  animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
-                }}
-              >
-                <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative text-light w-100"
-                  style={{
-                    transition: "all 0.3s ease",
-                    cursor: "pointer",
-                    maxWidth: "320px",
-                    backgroundColor: "#051912",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-8px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(85, 78, 78, 0.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 6px rgba(0,0,0,0.1)";
-                  }}
-                >
-                  {/* Rating Badge */}
-                  <div
-                    className="position-absolute top-0 end-0 m-3"
-                    style={{ zIndex: 1 }}
-                  >
-                    <Badge
-                      bg={getRatingColor(review.rating)}
-                      className="rounded-pill px-3 py-2"
-                      style={{ fontSize: "0.8rem" }}
+          {/* Large screens (lg & xl): 4 cards per slide */}
+          <div className="d-none d-lg-block">
+            <Carousel
+              indicators={true}
+              controls={true}
+              interval={5000}
+              pause="hover"
+              className="reviews-carousel"
+            >
+              {createCarouselGroups(reviews, 4).map((group, groupIndex) => (
+                <Carousel.Item key={`lg-${groupIndex}`}>
+                  <Row className="g-4 justify-content-center">
+                    {group.map((review, index) => (
+                      <Col
+                        key={review.id}
+                        lg={3}
+                        className="d-flex justify-content-center"
+                      >
+                        <ReviewCard review={review} index={index} />
+                      </Col>
+                    ))}
+                  </Row>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </div>
+
+          {/* Medium screens (md): 2 cards per slide */}
+          <div className="d-none d-md-block d-lg-none">
+            <Carousel
+              indicators={true}
+              controls={true}
+              interval={5000}
+              pause="hover"
+              className="reviews-carousel"
+            >
+              {createCarouselGroups(reviews, 2).map((group, groupIndex) => (
+                <Carousel.Item key={`md-${groupIndex}`}>
+                  <Row className="g-4 justify-content-center">
+                    {group.map((review, index) => (
+                      <Col
+                        key={review.id}
+                        md={6}
+                        className="d-flex justify-content-center"
+                      >
+                        <ReviewCard review={review} index={index} />
+                      </Col>
+                    ))}
+                  </Row>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </div>
+
+          {/* Small and extra small screens (sm & xs): 1 card per slide */}
+          <div className="d-block d-md-none">
+            <Carousel
+              indicators={true}
+              controls={true}
+              interval={4000}
+              pause="hover"
+              className="reviews-carousel"
+            >
+              {reviews.map((review, index) => (
+                <Carousel.Item key={`sm-${review.id}`}>
+                  <Row className="justify-content-center">
+                    <Col
+                      xs={12}
+                      sm={10}
+                      className="d-flex justify-content-center"
                     >
-                      <StarIcon
-                        sx={{ fontSize: "1rem", marginRight: "0.25rem" }}
-                      />
-                      {review.rating}/5
-                    </Badge>
-                  </div>
-
-                  <Card.Body className="d-flex flex-column p-3">
-                    {/* User Avatar */}
-                    <div className="text-center mb-3">
-                      {review.user?.profile_pic ? (
-                        <img
-                          src={review.user.profile_pic}
-                          alt={review.user?.username || "User"}
-                          className="rounded-circle border border-3 border-primary"
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            objectFit: "cover",
-                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="rounded-circle bg-gradient d-flex align-items-center justify-content-center border border-3 border-primary mx-auto"
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            color: "white",
-                            fontSize: "1.5rem",
-                            fontWeight: "bold",
-                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                          }}
-                        >
-                          {review.user?.username ? (
-                            getInitials(review.user.username)
-                          ) : (
-                            <PersonIcon sx={{ fontSize: "1.5rem" }} />
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Service Name */}
-                    {review.service && (
-                      <div className="text-center mb-2">
-                        <Badge bg="secondary" className="px-3 py-2">
-                          {review.service.category}
-                        </Badge>
-                      </div>
-                    )}
-
-                    {/* Rating Stars */}
-                    <div className="text-center mb-3">
-                      <div className="d-flex justify-content-center align-items-center">
-                        {[...Array(5)].map((_, i) =>
-                          i < review.rating ? (
-                            <StarIcon
-                              key={i}
-                              sx={{
-                                fontSize: "1.2rem",
-                                color: "#ffc107",
-                                marginRight: "0.25rem",
-                              }}
-                            />
-                          ) : (
-                            <StarBorderIcon
-                              key={i}
-                              sx={{
-                                fontSize: "1.2rem",
-                                color: "rgba(255, 255, 255, 0.6)",
-                                marginRight: "0.25rem",
-                              }}
-                            />
-                          )
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Comment */}
-                    <div className="text-center mb-3 flex-grow-1">
-                      {review.comment ? (
-                        <div className="position-relative">
-                          <FormatQuoteIcon
-                            sx={{
-                              fontSize: "4rem",
-                              color: "primary.main",
-                              opacity: 0.25,
-                              position: "absolute",
-                              top: "-10px",
-                              left: "10px",
-                            }}
-                          />
-                          <p
-                            className="fst-italic text-light lh-base px-3"
-                            style={{
-                              fontSize: "0.95rem",
-                              position: "relative",
-                              zIndex: 1,
-                            }}
-                          >
-                            "{review.comment}"
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-muted fst-italic">
-                          <ChatBubbleOutlineIcon
-                            sx={{ fontSize: "1rem", marginRight: "0.5rem" }}
-                          />
-                          No comment provided
-                        </p>
-                      )}
-                    </div>
-
-                    {/* User Info */}
-                    <div className="text-center mb-3">
-                      <h6 className="fw-bold text-light mb-1">
-                        {review.user?.username || "Anonymous User"}
-                      </h6>
-                    </div>
-
-                    {review.created_at && (
-                      <small className="text-muted d-flex align-items-center justify-content-center">
-                        <CalendarTodayIcon
-                          sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
-                        />
-                        {formatDate(review.created_at)}
-                      </small>
-                    )}
-                  </Card.Body>
-
-                  {/* Decorative bottom border */}
-                  <div
-                    className="position-absolute bottom-0 start-0 w-100"
-                    style={{
-                      height: "4px",
-                      background: `linear-gradient(90deg, var(--bs-${getRatingColor(
-                        review.rating
-                      )}) 0%, var(--bs-${getRatingColor(review.rating)}) 100%)`,
-                    }}
-                  ></div>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+                      <ReviewCard review={review} index={index} />
+                    </Col>
+                  </Row>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </div>
         </Container>
       )}
 
-      {/* Add custom CSS styles */}
+      {/* Custom CSS styles */}
       <style jsx>{`
         @keyframes fadeInUp {
           from {
@@ -409,6 +458,7 @@ const AllReviews = () => {
             transform: translateY(0);
           }
         }
+
         .main-container {
           margin: 0 !important;
           padding: 0 !important;
@@ -432,9 +482,70 @@ const AllReviews = () => {
           ) !important;
         }
 
+        .reviews-carousel .carousel-indicators {
+          bottom: -50px;
+        }
+
+        .reviews-carousel .carousel-indicators button {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background-color: rgba(255, 255, 255, 0.5);
+          border: none;
+          margin: 0 5px;
+        }
+
+        .reviews-carousel .carousel-indicators .active {
+          background-color: #ffc107;
+        }
+
+        .reviews-carousel .carousel-control-prev,
+        .reviews-carousel .carousel-control-next {
+          width: 50px;
+          height: 50px;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          top: 50%;
+          transform: translateY(-50%);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reviews-carousel .carousel-control-prev {
+          left: -25px;
+        }
+
+        .reviews-carousel .carousel-control-next {
+          right: -25px;
+        }
+
+        .reviews-carousel .carousel-control-prev:hover,
+        .reviews-carousel .carousel-control-next:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .reviews-carousel .carousel-control-prev-icon,
+        .reviews-carousel .carousel-control-next-icon {
+          width: 20px;
+          height: 20px;
+        }
+
         @media (max-width: 768px) {
           .display-5 {
             font-size: 2rem !important;
+          }
+
+          .reviews-carousel .carousel-control-prev,
+          .reviews-carousel .carousel-control-next {
+            width: 40px;
+            height: 40px;
+          }
+
+          .reviews-carousel .carousel-control-prev {
+            left: -20px;
+          }
+
+          .reviews-carousel .carousel-control-next {
+            right: -20px;
           }
         }
       `}</style>
