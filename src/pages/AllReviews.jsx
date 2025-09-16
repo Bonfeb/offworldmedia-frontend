@@ -9,6 +9,13 @@ import {
   Alert,
   Badge,
 } from "react-bootstrap";
+import PersonIcon from "@mui/icons-material/Person";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import API from "../api";
 
 const AllReviews = () => {
@@ -175,7 +182,7 @@ const AllReviews = () => {
         <Container
           fluid
           className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: "2rem", paddingBottom: "2rem", margin: 0 }}
+          style={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}
         >
           <Row className="justify-content-center">
             <Col xs={12} md={8} lg={6} className="text-center">
@@ -195,7 +202,7 @@ const AllReviews = () => {
         <Container
           fluid
           className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: "2rem", paddingBottom: "2rem", margin: 0 }}
+          style={{ paddingTop: 0, paddingBottom: 0, margin: 0 }}
         >
           <Row className="g-4 justify-content-center">
             {reviews.map((review, index) => (
@@ -212,7 +219,7 @@ const AllReviews = () => {
                 }}
               >
                 <Card
-                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-transparent text-light w-100"
+                  className="h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative bg-info text-light w-100"
                   style={{
                     transition: "all 0.3s ease",
                     cursor: "pointer",
@@ -221,7 +228,7 @@ const AllReviews = () => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-8px)";
                     e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(0,0,0,0.1)";
+                      "0 20px 40px rgba(85, 78, 78, 0.1)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
@@ -239,7 +246,9 @@ const AllReviews = () => {
                       className="rounded-pill px-3 py-2"
                       style={{ fontSize: "0.8rem" }}
                     >
-                      <i className="bi bi-star-fill me-1"></i>
+                      <StarIcon
+                        sx={{ fontSize: "1rem", marginRight: "0.25rem" }}
+                      />
                       {review.rating}/5
                     </Badge>
                   </div>
@@ -276,7 +285,7 @@ const AllReviews = () => {
                           {review.user?.username ? (
                             getInitials(review.user.username)
                           ) : (
-                            <i className="bi bi-person-fill"></i>
+                            <PersonIcon sx={{ fontSize: "1.5rem" }} />
                           )}
                         </div>
                       )}
@@ -286,8 +295,10 @@ const AllReviews = () => {
                     {review.service && (
                       <div className="text-center mb-2">
                         <Badge bg="secondary" className="px-3 py-2">
-                          <i className="bi bi-tag-fill me-2"></i>
-                          {review.service.name}
+                          <LocalOfferIcon
+                            sx={{ fontSize: "1rem", marginRight: "0.5rem" }}
+                          />
+                          {review.service.category}
                         </Badge>
                       </div>
                     )}
@@ -299,7 +310,9 @@ const AllReviews = () => {
                       </h6>
                       {review.created_at && (
                         <small className="text-muted d-flex align-items-center justify-content-center">
-                          <i className="bi bi-calendar3 me-2"></i>
+                          <CalendarTodayIcon
+                            sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
+                          />
                           {formatDate(review.created_at)}
                         </small>
                       )}
@@ -308,17 +321,27 @@ const AllReviews = () => {
                     {/* Rating Stars */}
                     <div className="text-center mb-3">
                       <div className="d-flex justify-content-center align-items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <i
-                            key={i}
-                            className={`bi ${
-                              i < review.rating
-                                ? "bi-star-fill text-warning"
-                                : "bi-star text-light"
-                            } me-1`}
-                            style={{ fontSize: "1.2rem" }}
-                          ></i>
-                        ))}
+                        {[...Array(5)].map((_, i) =>
+                          i < review.rating ? (
+                            <StarIcon
+                              key={i}
+                              sx={{
+                                fontSize: "1.2rem",
+                                color: "#ffc107",
+                                marginRight: "0.25rem",
+                              }}
+                            />
+                          ) : (
+                            <StarBorderIcon
+                              key={i}
+                              sx={{
+                                fontSize: "1.2rem",
+                                color: "rgba(255, 255, 255, 0.6)",
+                                marginRight: "0.25rem",
+                              }}
+                            />
+                          )
+                        )}
                       </div>
                     </div>
 
@@ -326,10 +349,16 @@ const AllReviews = () => {
                     <div className="text-center mb-3 flex-grow-1">
                       {review.comment ? (
                         <div className="position-relative">
-                          <i
-                            className="bi bi-quote display-6 text-primary opacity-25 position-absolute"
-                            style={{ top: "-10px", left: "10px" }}
-                          ></i>
+                          <FormatQuoteIcon
+                            sx={{
+                              fontSize: "4rem",
+                              color: "primary.main",
+                              opacity: 0.25,
+                              position: "absolute",
+                              top: "-10px",
+                              left: "10px",
+                            }}
+                          />
                           <p
                             className="fst-italic text-light lh-base px-3"
                             style={{
@@ -343,7 +372,9 @@ const AllReviews = () => {
                         </div>
                       ) : (
                         <p className="text-muted fst-italic">
-                          <i className="bi bi-chat-left me-2"></i>
+                          <ChatBubbleOutlineIcon
+                            sx={{ fontSize: "1rem", marginRight: "0.5rem" }}
+                          />
                           No comment provided
                         </p>
                       )}
