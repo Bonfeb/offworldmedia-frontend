@@ -223,7 +223,7 @@ const AllReviews = () => {
         </div>
 
         {review.created_at && (
-          <small className="text-muted d-flex align-items-center justify-content-center" style={{ backgroundColor: "#ccaf09" }}>
+          <small className="text-muted d-flex align-items-center justify-content-center" style={{ color: "#ccaf09" }}>
             <CalendarTodayIcon
               sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
             />
