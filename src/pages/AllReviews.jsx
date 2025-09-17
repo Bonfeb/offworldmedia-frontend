@@ -223,7 +223,7 @@ const AllReviews = () => {
         </div>
 
         {review.created_at && (
-          <small className="text-muted text-blue-500 d-flex align-items-center justify-content-center">
+          <small className="text-muted d-flex align-items-center justify-content-center" style={{ backgroundColor: "#ccaf09" }}>
             <CalendarTodayIcon
               sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
             />
@@ -308,7 +308,7 @@ const AllReviews = () => {
       {/* Enhanced Header */}
       <Container
         fluid
-        className="bg-dark text-white py-5 px-4 px-lg-5 text-center"
+        className="bg-dark text-white px-4 px-lg-5 text-center"
       >
         <h1 className="display-5 fw-bold text-white mb-2">
           What Our Clients Say
