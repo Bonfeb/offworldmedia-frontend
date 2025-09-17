@@ -223,9 +223,16 @@ const AllReviews = () => {
         </div>
 
         {review.created_at && (
-          <small className="text-muted d-flex align-items-center justify-content-center" style={{ color: "#ccaf09" }}>
+          <small
+            className="d-flex align-items-center justify-content-center"
+            style={{ color: "#ccaf09 !important" }}
+          >
             <CalendarTodayIcon
-              sx={{ fontSize: "0.875rem", marginRight: "0.5rem" }}
+              sx={{
+                fontSize: "0.875rem",
+                marginRight: "0.5rem",
+                color: "#ccaf09",
+              }}
             />
             {formatDate(review.created_at)}
           </small>
@@ -309,6 +316,7 @@ const AllReviews = () => {
       <Container
         fluid
         className="bg-dark text-white px-4 px-lg-5 text-center"
+        style={{ paddingBottom: 0 }}
       >
         <h1 className="display-5 fw-bold text-white mb-2">
           What Our Clients Say
@@ -340,7 +348,7 @@ const AllReviews = () => {
         <Container
           fluid
           className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: "2rem", paddingBottom: "2rem", margin: 0 }}
+          style={{ paddingTop: 0, paddingBottom: "2rem", margin: 0 }}
         >
           <Row className="justify-content-center">
             <Col xs={12} md={8} lg={6} className="text-center">
@@ -363,7 +371,7 @@ const AllReviews = () => {
         <Container
           fluid
           className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: "2rem", paddingBottom: "2rem", margin: 0 }}
+          style={{ paddingTop: 0, paddingBottom: "2rem", margin: 0 }}
         >
           {/* Large screens (lg & xl): 4 cards per slide */}
           <div className="d-none d-lg-block">
