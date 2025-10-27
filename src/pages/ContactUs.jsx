@@ -180,7 +180,7 @@ const ContactUs = () => {
                     />
                     <strong>Address:</strong>
                     <span className="text-muted d-block">
-                      Water Grounds, Prison Road,
+                      Water Sport Grounds, Prison Road
                       <br /> Kilifi
                     </span>
                   </ListGroup.Item>

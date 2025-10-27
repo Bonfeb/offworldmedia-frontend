@@ -13,9 +13,13 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Paper, Typography, Box, Grid, Divider } from "@mui/material";
+import { Typography} from "@mui/material";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
+import ContactUs from "./ContactUs";
+import MediaGallery from "./MediaGallery";
+import Service from "./Service";
+import Reviews from "./AllReviews";
 
 function Home() {
   const navigate = useNavigate();
@@ -30,6 +34,10 @@ function Home() {
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+
+  const sharedProps = {
+    navigate, isAuthenticated
+  };
 
   // Timer ref for video carousel
   const videoTimerRef = useRef(null);
@@ -486,164 +494,91 @@ function Home() {
       <Container fluid className="p-0" style={{ backgroundColor: "#252d35ff" }}>
         <Row className="g-0 align-items-stretch" style={{ minHeight: "60vh" }}>
           {/* Hero Section - Left Side */}
-          <Col
-            xl={6}
-            lg={6}
-            md={12}
-            sm={12}
-            xs={12}
-            className="d-flex align-items-center justify-content-center p-0"
-            style={{ minHeight: "60vh" }}
-          >
-            <div
-              className="hero-section w-100 d-flex align-items-center justify-content-center"
-              id="home"
-              style={{
-                backgroundImage: 'url("/OWM Icon.ico")',
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                minHeight: "60vh",
-                width: "100%",
-              }}
-            >
-              <div
-                className="text-center text-white p-3"
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  <h1 className="hero-title fw-bold mb-3">Offworld Media</h1>
-                  <p className="hero-subtitle mb-4 fs-5">
-                    Professional media production services tailored to your
-                    needs.
-                  </p>
-                  <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                      <Button
-                        onClick={() => navigate("/services")}
-                        className="px-4 py-2 rounded-pill fw-semibold"
-                        style={{
-                          backgroundColor: "#424242",
-                          border: "none",
-                          fontSize: "0.9rem",
-                        }}
-                        onMouseOver={(e) => {
-                          e.target.style.backgroundColor = "#616161";
-                          e.target.style.transform = "translateY(-3px)";
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.backgroundColor = "#424242";
-                          e.target.style.transform = "translateY(0)";
-                        }}
-                      >
-                        Our Services
-                      </Button>
-                    </motion.div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: 0.4 }}
-                    >
-                      <Button
-                        onClick={() => navigate("/contactus")}
-                        className="px-4 py-2 rounded-pill fw-semibold"
-                        style={{
-                          backgroundColor: "#424242",
-                          border: "none",
-                          fontSize: "0.9rem",
-                        }}
-                        onMouseOver={(e) => {
-                          e.target.style.backgroundColor = "#616161";
-                          e.target.style.transform = "translateY(-3px)";
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.backgroundColor = "#424242";
-                          e.target.style.transform = "translateY(0)";
-                        }}
-                      >
-                        Contact Us
-                      </Button>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </Col>
-
-          {/* About Section - Right Side */}
-          <Col
-            xl={6}
-            lg={6}
-            md={12}
-            sm={12}
-            xs={12}
-            className="d-flex align-items-center justify-content-center p-4"
+          <div
+            className="hero-section w-100 d-flex align-items-center justify-content-center"
+            id="home"
             style={{
+              backgroundImage: 'url("/OWM Icon.ico")',
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
               minHeight: "60vh",
-              backgroundColor: "#444b53ff",
+              width: "100%",
             }}
           >
-            <div className="w-100">
-              <h2 className="text-center fw-bold mb-4 text-dark">Who We Are</h2>
-              <div
-                className="mx-auto mb-4"
-                style={{
-                  width: "50%",
-                  height: "2px",
-                  backgroundColor: "#45463bff",
-                }}
-              ></div>
-              <p className="text-center mb-5 text-white">
-                Offworld Media is a business company specializing in
-                photography, videography, music production, graphic designing
-                and digital broadcasting.
-              </p>
-
-              <Row>
-                <Col md={6} className="mb-4 mb-md-0">
-                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
-                    <Card.Body className="p-4">
-                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
-                        Vision
-                      </Card.Title>
-                      <Card.Text>
-                        To be a transformative force in global media, revealing
-                        the essence of life and capturing the heartbeat through
-                        photography, film, music and digital broadcasting.
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-                <Col md={6}>
-                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
-                    <Card.Body className="p-4">
-                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
-                        Mission
-                      </Card.Title>
-                      <Card.Text>
-                        To create powerful visuals and authentic sounds that
-                        inspire, resonate and move both hearts and minds.
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+            <div
+              className="text-center text-white p-3"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h1 className="hero-title fw-bold mb-3">Offworld Media</h1>
+                <p className="hero-subtitle mb-4 fs-5">
+                  Professional media production services tailored to your needs.
+                </p>
+                <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                  >
+                    <Button
+                      onClick={() => navigate("/services")}
+                      className="px-4 py-2 rounded-pill fw-semibold"
+                      style={{
+                        backgroundColor: "#424242",
+                        border: "none",
+                        fontSize: "0.9rem",
+                      }}
+                      onMouseOver={(e) => {
+                        e.target.style.backgroundColor = "#616161";
+                        e.target.style.transform = "translateY(-3px)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.backgroundColor = "#424242";
+                        e.target.style.transform = "translateY(0)";
+                      }}
+                    >
+                      Our Services
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                  >
+                    <Button
+                      onClick={() => navigate("/contactus")}
+                      className="px-4 py-2 rounded-pill fw-semibold"
+                      style={{
+                        backgroundColor: "#424242",
+                        border: "none",
+                        fontSize: "0.9rem",
+                      }}
+                      onMouseOver={(e) => {
+                        e.target.style.backgroundColor = "#616161";
+                        e.target.style.transform = "translateY(-3px)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.backgroundColor = "#424242";
+                        e.target.style.transform = "translateY(0)";
+                      }}
+                    >
+                      Contact Us
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.div>
             </div>
-          </Col>
+          </div>
         </Row>
       </Container>
 
       {/* Studio Work Showcase */}
       <Container fluid className="bg-dark text-white py-5 px-4 px-lg-5">
-        <h2 className="text-center fw-semibold mb-4">Gallery</h2>
         <div
           className="mx-auto mb-4"
           style={{
@@ -805,7 +740,24 @@ function Home() {
                 backgroundColor: "#45463bff",
               }}
             ></div>
-            {/* Payment Banner in Hero Section */}
+          </Col>
+        </Row>
+        {renderServicesSection()}
+      </Container>
+
+      {/* Who We Are Section */}
+      <Container fluid className="bg-dark py-5">
+        <Row>
+          <Col
+            xl={6}
+            lg={6}
+            md={12}
+            sm={12}
+            xs={12}
+            className="d-flex align-items-center justify-content-center p-0"
+            style={{ minHeight: "60vh" }}
+          >
+            {/* Payment Banner*/}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -916,9 +868,75 @@ function Home() {
               </div>
             </motion.div>
           </Col>
+
+          {/* Mission & Vision */}
+          <Col
+            xl={6}
+            lg={6}
+            md={12}
+            sm={12}
+            xs={12}
+            className="d-flex align-items-center justify-content-center p-4"
+            style={{
+              minHeight: "60vh",
+              backgroundColor: "#444b53ff",
+            }}
+          >
+            <div className="w-100">
+              <h2 className="text-center fw-bold mb-4 text-dark">Who We Are</h2>
+              <div
+                className="mx-auto mb-4"
+                style={{
+                  width: "50%",
+                  height: "2px",
+                  backgroundColor: "#45463bff",
+                }}
+              ></div>
+              <p className="text-center mb-5 text-white">
+                Offworld Media is a business company specializing in
+                photography, videography, music production, graphic designing
+                and digital broadcasting.
+              </p>
+
+              <Row>
+                <Col md={6} className="mb-4 mb-md-0">
+                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
+                    <Card.Body className="p-4">
+                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
+                        Vision
+                      </Card.Title>
+                      <Card.Text>
+                        To be a transformative force in global media, revealing
+                        the essence of life and capturing the heartbeat through
+                        photography, film, music and digital broadcasting.
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={6}>
+                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
+                    <Card.Body className="p-4">
+                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
+                        Mission
+                      </Card.Title>
+                      <Card.Text>
+                        To create powerful visuals and authentic sounds that
+                        inspire, resonate and move both hearts and minds.
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          </Col>
         </Row>
-        {renderServicesSection()}
       </Container>
+
+      {/* Continuos Scroll Imported Components */}
+      <ContactUs {...sharedProps}/>
+      <MediaGallery {...sharedProps}/>
+      <Service {...sharedProps}/>
+      <Reviews {...sharedProps}/>
     </Container>
   );
 }

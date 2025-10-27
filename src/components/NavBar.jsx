@@ -3,16 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assets/images/Logo.ico";
 import { AuthContext } from "../context/AuthContext";
 import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Button,
   IconButton,
-  Menu,
-  MenuItem,
-  Avatar,
-  Container,
 } from "@mui/material";
 import { Offcanvas, Nav } from "react-bootstrap";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -22,7 +13,6 @@ function NavBar() {
     useContext(AuthContext);
 
   const [showNavbar, setShowNavbar] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const navigate = useNavigate();
@@ -46,25 +36,14 @@ function NavBar() {
 
   const handleNavItemClick = (path) => {
     setShowOffcanvas(false);
-    setAnchorEl(null);
     navigate(path);
   };
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleOffcanvasToggle = () => {
-    console.log("Toggling offcanvas, current state:", showOffcanvas);
     setShowOffcanvas(!showOffcanvas);
   };
 
   const handleOffcanvasClose = () => {
-    console.log("Closing offcanvas");
     setShowOffcanvas(false);
   };
 
@@ -83,209 +62,33 @@ function NavBar() {
 
   return (
     <>
-      <AppBar
-        position="static"
+      {/* Floating Hamburger Menu Button */}
+      <IconButton
+        edge="end"
+        color="inherit"
+        aria-label="menu"
+        onClick={handleOffcanvasToggle}
         sx={{
-          backgroundColor: colors.antiqueBlue,
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          // FIXED: Ensure navbar has highest z-index
+          position: "fixed",
+          top: 20,
+          right: 20,
           zIndex: 1300,
+          backgroundColor: colors.antiqueBlue,
+          color: "white",
+          width: 56,
+          height: 56,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          "&:hover": {
+            backgroundColor: colors.shadeBlue,
+            transform: "scale(1.1)",
+          },
+          transition: "all 0.3s ease",
         }}
       >
-        <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            {/* Brand */}
-            <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-              <img
-                src={Logo}
-                alt="OffWorldMedia Logo"
-                style={{ height: 40, marginRight: 8 }}
-              />
-              <Typography
-                variant="h6"
-                noWrap
-                component={Link}
-                to="/"
-                sx={{
-                  fontWeight: 700,
-                  color: "white",
-                  textDecoration: "none",
-                  // FIXED: Ensure clickable text links work
-                  cursor: "pointer",
-                  zIndex: 1301,
-                }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  navigate("/");
-                }}
-              >
-                Offworld Media
-              </Typography>
-            </Box>
+        <MenuIcon sx={{ fontSize: 28 }} />
+      </IconButton>
 
-            <Box sx={{ flexGrow: 1 }} />
-
-            {/* Desktop Nav */}
-            <Box
-              sx={{
-                display: { xs: "none", lg: "flex" },
-                alignItems: "center",
-                // FIXED: Ensure nav items container has proper z-index
-                zIndex: 1301,
-              }}
-            >
-              {menuItems.map((item) => (
-                <Button
-                  key={item.text}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigate(item.path);
-                  }}
-                  sx={{
-                    color: "white",
-                    mx: 1,
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    cursor: "pointer",
-                    zIndex: 1301,
-                    "&:hover": { backgroundColor: colors.shadeBlue },
-                  }}
-                >
-                  {item.text}
-                </Button>
-              ))}
-
-              {!isAuthenticated ? (
-                <>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      navigate("/register");
-                    }}
-                    sx={{
-                      color: "white",
-                      mx: 1,
-                      textTransform: "none",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                      zIndex: 1301,
-                      "&:hover": { backgroundColor: colors.shadeBlue },
-                    }}
-                  >
-                    Register
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      navigate("/login");
-                    }}
-                    sx={{
-                      color: "white",
-                      mx: 1,
-                      textTransform: "none",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                      zIndex: 1301,
-                      "&:hover": { backgroundColor: colors.shadeBlue },
-                    }}
-                  >
-                    Login
-                  </Button>
-                </>
-              ) : (
-                <Box sx={{ ml: 2, zIndex: 1301 }}>
-                  <IconButton onClick={handleMenuOpen} sx={{ zIndex: 1301 }}>
-                    <Avatar
-                      src={userProfilePic}
-                      sx={{
-                        width: 40,
-                        height: 40,
-                        border: `2px solid ${colors.shadeBlue}`,
-                      }}
-                    />
-                  </IconButton>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    PaperProps={{
-                      sx: {
-                        backgroundColor: colors.antiqueBlue,
-                        color: "white",
-                        // FIXED: Ensure dropdown menu has higher z-index
-                        zIndex: 1302,
-                      },
-                    }}
-                    // FIXED: Ensure menu has higher z-index
-                    sx={{ zIndex: 1302 }}
-                  >
-                    <MenuItem
-                      onClick={() => handleNavItemClick("/profile")}
-                      sx={{
-                        "&:hover": { backgroundColor: colors.shadeBlue },
-                        zIndex: 1302,
-                      }}
-                    >
-                      My Profile
-                    </MenuItem>
-                    {userGroups && userGroups.includes("admin") ? (
-                      <MenuItem
-                        onClick={() => handleNavItemClick("/admin-dashboard")}
-                        sx={{
-                          "&:hover": { backgroundColor: colors.shadeBlue },
-                          zIndex: 1302,
-                        }}
-                      >
-                        Admin Dashboard
-                      </MenuItem>
-                    ) : (
-                      <MenuItem
-                        onClick={() => handleNavItemClick("/userdashboard")}
-                        sx={{
-                          "&:hover": { backgroundColor: colors.shadeBlue },
-                          zIndex: 1302,
-                        }}
-                      >
-                        My Dashboard
-                      </MenuItem>
-                    )}
-                    <MenuItem
-                      onClick={handleLogout}
-                      sx={{
-                        color: "#ff4d4f",
-                        "&:hover": { backgroundColor: colors.shadeBlue },
-                        zIndex: 1302,
-                      }}
-                    >
-                      Logout
-                    </MenuItem>
-                  </Menu>
-                </Box>
-              )}
-            </Box>
-
-            {/* Mobile Menu Icon */}
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label="menu"
-              sx={{
-                display: { xs: "flex", lg: "none" },
-                zIndex: 1301,
-              }}
-              onClick={handleOffcanvasToggle}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-        </Container>
-      </AppBar>
-
-      {/* Mobile Offcanvas */}
+      {/* Mobile Offcanvas Menu */}
       <Offcanvas
         show={showOffcanvas}
         onHide={handleOffcanvasClose}
@@ -294,7 +97,6 @@ function NavBar() {
         style={{
           backgroundColor: colors.antiqueBlue,
           color: "white",
-          // FIXED: Ensure offcanvas has highest z-index
           zIndex: 1400,
         }}
       >
@@ -306,15 +108,20 @@ function NavBar() {
           }}
         >
           <Offcanvas.Title
-            className="justify-content-center align-items-center"
-            style={{ color: "white", fontWeight: "bold" }}
+            className="d-flex justify-content-center align-items-center"
+            style={{ color: "white", fontWeight: "bold", width: "100%" }}
           >
+            <img
+              src={Logo}
+              alt="OffWorldMedia Logo"
+              style={{ height: 40, marginRight: 8 }}
+            />
             OffWorld Media
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body style={{ zIndex: 1401 }}>
           <Nav className="flex-column justify-content-center align-items-center">
-            {menuItems.map((item, index) => (
+            {menuItems.map((item) => (
               <div key={item.text} style={{ width: "100%" }}>
                 <Nav.Link
                   onClick={(e) => {
