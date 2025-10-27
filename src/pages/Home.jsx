@@ -602,7 +602,7 @@ function Home() {
                 }}
               ></div>
               <p className="text-center mb-5 text-white">
-                Offworld Media Africa is a business company specializing in
+                Offworld Media is a business company specializing in
                 photography, videography, music production, graphic designing
                 and digital broadcasting.
               </p>

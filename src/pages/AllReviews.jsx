@@ -223,18 +223,17 @@ const AllReviews = () => {
         </div>
 
         {review.created_at && (
-          <small
-            className="d-flex align-items-center justify-content-center"
-            style={{ color: "#ccaf09 !important" }}
-          >
+          <small className="d-flex align-items-center justify-content-center">
             <CalendarTodayIcon
               sx={{
                 fontSize: "0.875rem",
                 marginRight: "0.5rem",
-                color: "#ccaf09",
+                color: "#5c97b9ff",
               }}
             />
-            {formatDate(review.created_at)}
+            <span style={{ color: "#ccaf09 !important" }}>
+              {formatDate(review.created_at)}
+            </span>
           </small>
         )}
       </Card.Body>
@@ -315,10 +314,10 @@ const AllReviews = () => {
       {/* Enhanced Header */}
       <Container
         fluid
-        className="bg-dark text-white px-4 px-lg-5 text-center"
+        className="bg-dark text-white py-3 px-lg-5 text-center"
         style={{ paddingBottom: 0 }}
       >
-        <h1 className="display-5 fw-bold text-white mb-2">
+        <h1 className="display-5 fw-bold text-white py-3 mx-4">
           What Our Clients Say
         </h1>
         <div
@@ -347,8 +346,7 @@ const AllReviews = () => {
       {reviews.length === 0 ? (
         <Container
           fluid
-          className="bg-dark text-white px-4 px-lg-5"
-          style={{ paddingTop: 0, paddingBottom: "2rem", margin: 0 }}
+          className="bg-dark text-white px-lg-5"
         >
           <Row className="justify-content-center">
             <Col xs={12} md={8} lg={6} className="text-center">

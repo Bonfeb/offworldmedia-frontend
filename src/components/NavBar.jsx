@@ -75,7 +75,6 @@ function NavBar() {
 
   const menuItems = [
     { text: "Home", path: "/" },
-    { text: "Team", path: "/team" },
     { text: "Contact Us", path: "/contactus" },
     { text: "Services", path: "/services" },
     { text: "Gallery", path: "/media-gallery" },
@@ -121,7 +120,7 @@ function NavBar() {
                   navigate("/");
                 }}
               >
-                OffWorld Media
+                Offworld Media
               </Typography>
             </Box>
 

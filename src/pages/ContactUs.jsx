@@ -37,7 +37,7 @@ const ContactUs = () => {
   const [profile, setProfile] = useState(false);
   const [profileFetching, setProfileFetching] = useState(true);
   const [user, setUser] = useState(null);
-  const {isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -62,7 +62,10 @@ const ContactUs = () => {
         }));
         setProfile(true);
       } catch (error) {
-        console.error("Error fetching profile:", error.response?.data || error.message);
+        console.error(
+          "Error fetching profile:",
+          error.response?.data || error.message
+        );
         localStorage.removeItem("access_token");
       } finally {
         setProfileFetching(false);
@@ -93,12 +96,16 @@ const ContactUs = () => {
         withCredentials: true,
       });
 
-      setResponseMessage("Message sent successfully! We'll get back to you soon.");
+      setResponseMessage(
+        "Message sent successfully! We'll get back to you soon."
+      );
       setFormData((prev) => ({
         ...prev,
         subject: "",
         message: "",
-        ...(isAuthenticated ? {} : { first_name: "", last_name: "", email: "" }),
+        ...(isAuthenticated
+          ? {}
+          : { first_name: "", last_name: "", email: "" }),
       }));
     } catch (error) {
       console.error("Error sending message:", error);
@@ -113,7 +120,8 @@ const ContactUs = () => {
       fluid
       className="py-4 py-md-5"
       style={{
-        background: "linear-gradient(to right, rgb(11, 177, 80), rgb(1, 63, 172))",
+        background:
+          "linear-gradient(to right, rgb(11, 177, 80), rgb(1, 63, 172))",
         minHeight: "100vh",
       }}
     >
@@ -128,7 +136,14 @@ const ContactUs = () => {
           <Col xs={12} lg={6}>
             <Card className="shadow h-100">
               <Card.Body className="p-3 p-md-4">
-                <div className="map-container mb-3" style={{ height: "250px", position: "relative", overflow: "hidden" }}>
+                <div
+                  className="map-container mb-3"
+                  style={{
+                    height: "250px",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.844733880548!2d39.85400177568686!3d-3.6229327963511357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x183fdd77b5e306bd%3A0x29d1cd979d54b312!2sWater%20Sports%20Ground!5e0!3m2!1sen!2ske!4v1742594009117!5m2!1sen!2ske"
                     width="100%"
@@ -141,21 +156,32 @@ const ContactUs = () => {
                 </div>
                 <ListGroup variant="flush" className="border-top pt-2">
                   <ListGroup.Item className="px-0 py-2">
-                    <FontAwesomeIcon icon={faEnvelope} className="text-primary fa-fw me-2" />
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="text-primary fa-fw me-2"
+                    />
                     <strong>Email:</strong>{" "}
-                    <span className="text-muted">offworldmedia@africa.com</span>
+                    <span className="text-muted">
+                      offworldmediaafrica@gmail.com
+                    </span>
                   </ListGroup.Item>
                   <ListGroup.Item className="px-0 py-2">
-                    <FontAwesomeIcon icon={faPhone} className="text-primary fa-fw me-2" />
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className="text-primary fa-fw me-2"
+                    />
                     <strong>Phone:</strong>{" "}
-                    <span className="text-muted">+2547-979-8030</span>
+                    <span className="text-muted"> ‪+2547-16-132-272</span>
                   </ListGroup.Item>
                   <ListGroup.Item className="px-0 py-2">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary fa-fw me-2" />
+                    <FontAwesomeIcon
+                      icon={faMapMarkerAlt}
+                      className="text-primary fa-fw me-2"
+                    />
                     <strong>Address:</strong>
                     <span className="text-muted d-block">
-                      500 Office Center Drive, Suite 400,
-                      <br /> Fort Washington, PA 19034
+                      Water Grounds, Prison Road,
+                      <br /> Kilifi
                     </span>
                   </ListGroup.Item>
                 </ListGroup>
@@ -255,7 +281,11 @@ const ContactUs = () => {
                     >
                       {isLoading ? (
                         <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          />
                           Sending...
                         </>
                       ) : (
