@@ -748,14 +748,14 @@ function Home() {
 
       {/* Who We Are Section */}
       <Container fluid className="bg-dark py-5">
-        <Row>
+        <Row className="g-0">
           <Col
             xl={6}
             lg={6}
             md={12}
             sm={12}
             xs={12}
-            className="d-flex align-items-center justify-content-center p-0"
+            className="d-flex align-items-center justify-content-center"
             style={{ minHeight: "60vh" }}
           >
             {/* Payment Banner*/}
@@ -763,164 +763,159 @@ function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              style={{ marginTop: "3rem", width: "100%" }}
+              className="w-100 h-100 d-flex align-items-center justify-content-center p-3"
             >
               <div
-                className="d-flex justify-content-center"
-                style={{ width: "100%" }}
+                style={{
+                  width: "100%",
+                  maxWidth: "500px",
+                  background:
+                    "linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%)",
+                  color: "white",
+                  borderRadius: "12px",
+                  boxShadow: "0 8px 25px rgba(27, 94, 32, 0.3)",
+                  overflow: "hidden",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 30px rgba(46, 125, 50, 0.4)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 25px rgba(27, 94, 32, 0.3)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
+                {/* Card Header */}
                 <div
                   style={{
-                    width: "100%",
-                    maxWidth: "500px",
-                    background:
-                      "linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%)",
-                    color: "white",
-                    borderRadius: "12px",
-                    boxShadow: "0 8px 25px rgba(27, 94, 32, 0.3)",
-                    overflow: "hidden",
-                    transition: "all 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow =
-                      "0 12px 30px rgba(46, 125, 50, 0.4)";
-                    e.currentTarget.style.transform = "translateY(-3px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 25px rgba(27, 94, 32, 0.3)";
-                    e.currentTarget.style.transform = "translateY(0)";
+                    background: "rgba(0, 0, 0, 0.2)",
+                    padding: "20px",
+                    textAlign: "center",
+                    borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
                   }}
                 >
-                  {/* Card Header */}
-                  <div
+                  <h3
                     style={{
-                      background: "rgba(0, 0, 0, 0.2)",
-                      padding: "20px",
-                      textAlign: "center",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                      margin: "0",
+                      fontSize: "clamp(18px, 4vw, 22px)",
+                      fontWeight: "700",
+                      letterSpacing: "0.5px",
                     }}
                   >
-                    <h3
-                      style={{
-                        margin: "0",
-                        fontSize: "clamp(18px, 4vw, 22px)",
-                        fontWeight: "700",
-                        letterSpacing: "0.5px",
-                      }}
-                    >
-                      Lipa na Mpesa
-                    </h3>
-                  </div>
+                    Lipa na Mpesa
+                  </h3>
+                </div>
 
-                  {/* Card Body */}
-                  <div style={{ padding: "25px" }}>
-                    {/* Buy Goods & Services Fieldset */}
-                    <fieldset
+                {/* Card Body */}
+                <div style={{ padding: "20px" }}>
+                  {/* Buy Goods & Services Fieldset */}
+                  <fieldset
+                    style={{
+                      border: "2px solid rgba(255, 255, 255, 0.3)",
+                      borderRadius: "8px",
+                      padding: "12px",
+                      marginBottom: "15px",
+                      background: "rgba(255, 255, 255, 0.1)",
+                    }}
+                  >
+                    <legend
                       style={{
-                        border: "2px solid rgba(255, 255, 255, 0.3)",
-                        borderRadius: "8px",
-                        padding: "15px",
-                        marginBottom: "20px",
-                        background: "rgba(255, 255, 255, 0.1)",
+                        padding: "0 8px",
+                        fontSize: "clamp(14px, 3vw, 16px)",
+                        fontWeight: "600",
+                        color: "white",
                       }}
                     >
-                      <legend
+                      Buy Goods & Services
+                    </legend>
+                    <div style={{ textAlign: "center" }}>
+                      <div
                         style={{
-                          padding: "0 10px",
-                          fontSize: "clamp(14px, 3vw, 16px)",
+                          fontSize: "clamp(15px, 3.5vw, 17px)",
                           fontWeight: "600",
-                          color: "white",
+                          marginBottom: "5px",
                         }}
                       >
-                        Buy Goods & Services
-                      </legend>
-                      <div style={{ textAlign: "center" }}>
-                        <div
-                          style={{
-                            fontSize: "clamp(15px, 3.5vw, 17px)",
-                            fontWeight: "600",
-                            marginBottom: "5px",
-                          }}
-                        >
-                          Till Number:
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "clamp(18px, 4vw, 22px)",
-                            fontWeight: "700",
-                            letterSpacing: "1px",
-                            marginBottom: "15px",
-                          }}
-                        >
-                          4323716
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "clamp(14px, 3vw, 15px)",
-                            fontWeight: "500",
-                            opacity: "0.9",
-                            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-                            paddingTop: "10px",
-                          }}
-                        >
-                          Transaction Name: <strong>Offworld Media</strong>
-                        </div>
+                        Till Number:
                       </div>
-                    </fieldset>
-
-                    {/* Paybill Fieldset */}
-                    <fieldset
-                      style={{
-                        border: "2px solid rgba(255, 255, 255, 0.3)",
-                        borderRadius: "8px",
-                        padding: "15px",
-                        background: "rgba(255, 255, 255, 0.1)",
-                      }}
-                    >
-                      <legend
+                      <div
                         style={{
-                          padding: "0 10px",
-                          fontSize: "clamp(14px, 3vw, 16px)",
-                          fontWeight: "600",
-                          color: "white",
+                          fontSize: "clamp(18px, 4vw, 22px)",
+                          fontWeight: "700",
+                          letterSpacing: "1px",
+                          marginBottom: "12px",
                         }}
                       >
-                        Paybill
-                      </legend>
-                      <div style={{ textAlign: "center" }}>
-                        <div
-                          style={{
-                            fontSize: "clamp(15px, 3.5vw, 17px)",
-                            fontWeight: "600",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          Business Number: 400200
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "clamp(15px, 3.5vw, 17px)",
-                            fontWeight: "600",
-                            marginBottom: "15px",
-                          }}
-                        >
-                          A/C No: 1077483
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "clamp(14px, 3vw, 15px)",
-                            fontWeight: "500",
-                            opacity: "0.9",
-                            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-                            paddingTop: "10px",
-                          }}
-                        >
-                          Transaction Name: <strong>Offworld Media</strong>
-                        </div>
+                        4323716
                       </div>
-                    </fieldset>
-                  </div>
+                      <div
+                        style={{
+                          fontSize: "clamp(14px, 3vw, 15px)",
+                          fontWeight: "500",
+                          opacity: "0.9",
+                          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+                          paddingTop: "8px",
+                        }}
+                      >
+                        Transaction Name: <strong>Offworld Media</strong>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  {/* Paybill Fieldset */}
+                  <fieldset
+                    style={{
+                      border: "2px solid rgba(255, 255, 255, 0.3)",
+                      borderRadius: "8px",
+                      padding: "12px",
+                      background: "rgba(255, 255, 255, 0.1)",
+                    }}
+                  >
+                    <legend
+                      style={{
+                        padding: "0 8px",
+                        fontSize: "clamp(14px, 3vw, 16px)",
+                        fontWeight: "600",
+                        color: "white",
+                      }}
+                    >
+                      Paybill
+                    </legend>
+                    <div style={{ textAlign: "center" }}>
+                      <div
+                        style={{
+                          fontSize: "clamp(15px, 3.5vw, 17px)",
+                          fontWeight: "600",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        Business Number: 400200
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "clamp(15px, 3.5vw, 17px)",
+                          fontWeight: "600",
+                          marginBottom: "12px",
+                        }}
+                      >
+                        A/C No: 1077483
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "clamp(14px, 3vw, 15px)",
+                          fontWeight: "500",
+                          opacity: "0.9",
+                          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+                          paddingTop: "8px",
+                        }}
+                      >
+                        Transaction Name: <strong>Offworld Media</strong>
+                      </div>
+                    </div>
+                  </fieldset>
                 </div>
               </div>
             </motion.div>
@@ -933,57 +928,62 @@ function Home() {
             md={12}
             sm={12}
             xs={12}
-            className="d-flex align-items-center justify-content-center p-4"
+            className="d-flex align-items-center justify-content-center"
             style={{
               minHeight: "60vh",
               backgroundColor: "#444b53ff",
             }}
           >
-            <div className="w-100">
-              <h2 className="text-center fw-bold mb-4 text-dark">Who We Are</h2>
-              <div
-                className="mx-auto mb-4"
-                style={{
-                  width: "50%",
-                  height: "2px",
-                  backgroundColor: "#45463bff",
-                }}
-              ></div>
-              <p className="text-center mb-5 text-white">
-                Offworld Media is a business company specializing in
-                photography, videography, music production, graphic designing
-                and digital broadcasting.
-              </p>
+            <div className="w-100 h-100 d-flex align-items-center justify-content-center p-3">
+              <div className="w-100" style={{ maxWidth: "600px" }}>
+                <h2 className="text-center fw-bold mb-3 text-white">
+                  Who We Are
+                </h2>
+                <div
+                  className="mx-auto mb-3"
+                  style={{
+                    width: "50%",
+                    height: "2px",
+                    backgroundColor: "#ffffff",
+                  }}
+                ></div>
+                <p className="text-center mb-4 text-white">
+                  Offworld Media is a business company specializing in
+                  photography, videography, music production, graphic designing
+                  and digital broadcasting.
+                </p>
 
-              <Row>
-                <Col md={6} className="mb-4 mb-md-0">
-                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
-                    <Card.Body className="p-4">
-                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
-                        Vision
-                      </Card.Title>
-                      <Card.Text>
-                        To be a transformative force in global media, revealing
-                        the essence of life and capturing the heartbeat through
-                        photography, film, music and digital broadcasting.
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-                <Col md={6}>
-                  <Card className="h-100 border-0 shadow-sm bg-dark text-white">
-                    <Card.Body className="p-4">
-                      <Card.Title className="fw-bold mb-3 border-bottom pb-2">
-                        Mission
-                      </Card.Title>
-                      <Card.Text>
-                        To create powerful visuals and authentic sounds that
-                        inspire, resonate and move both hearts and minds.
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
+                <Row className="g-3">
+                  <Col md={6}>
+                    <Card className="h-100 border-0 shadow-sm bg-dark text-white">
+                      <Card.Body className="p-3">
+                        <Card.Title className="fw-bold mb-2 border-bottom pb-2">
+                          Vision
+                        </Card.Title>
+                        <Card.Text className="mb-0">
+                          To be a transformative force in global media,
+                          revealing the essence of life and capturing the
+                          heartbeat through photography, film, music and digital
+                          broadcasting.
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                  <Col md={6}>
+                    <Card className="h-100 border-0 shadow-sm bg-dark text-white">
+                      <Card.Body className="p-3">
+                        <Card.Title className="fw-bold mb-2 border-bottom pb-2">
+                          Mission
+                        </Card.Title>
+                        <Card.Text className="mb-0">
+                          To create powerful visuals and authentic sounds that
+                          inspire, resonate and move both hearts and minds.
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
+              </div>
             </div>
           </Col>
         </Row>
