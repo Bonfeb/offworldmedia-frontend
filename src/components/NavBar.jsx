@@ -32,6 +32,10 @@ function NavBar() {
     navigate("/login");
   };
 
+  const handleBrandClick = () => {
+    navigate("/");
+  };
+
   const handleNavItemClick = (path) => {
     setShowOffcanvas(false);
     navigate(path);
@@ -60,7 +64,7 @@ function NavBar() {
 
   return (
     <>
-    {/* Fixed Header with Brand and Menu */}
+      {/* Fixed Header with Brand and Menu */}
       <div
         style={{
           position: "fixed",
