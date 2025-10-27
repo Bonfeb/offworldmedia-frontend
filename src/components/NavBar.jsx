@@ -2,9 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assets/images/Logo.ico";
 import { AuthContext } from "../context/AuthContext";
-import {
-  IconButton,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Offcanvas, Nav } from "react-bootstrap";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -62,31 +60,88 @@ function NavBar() {
 
   return (
     <>
-      {/* Floating Hamburger Menu Button */}
-      <IconButton
-        edge="end"
-        color="inherit"
-        aria-label="menu"
-        onClick={handleOffcanvasToggle}
-        sx={{
+    {/* Fixed Header with Brand and Menu */}
+      <div
+        style={{
           position: "fixed",
-          top: 20,
-          right: 20,
+          top: 0,
+          left: 0,
+          right: 0,
           zIndex: 1300,
           backgroundColor: colors.antiqueBlue,
-          color: "white",
-          width: 56,
-          height: 56,
-          boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-          "&:hover": {
-            backgroundColor: colors.shadeBlue,
-            transform: "scale(1.1)",
-          },
-          transition: "all 0.3s ease",
+          padding: "10px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
         }}
       >
-        <MenuIcon sx={{ fontSize: 28 }} />
-      </IconButton>
+        {/* Brand Logo and Name */}
+        <div
+          onClick={handleBrandClick}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            padding: "8px 16px",
+            borderRadius: "8px",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = colors.shadeBlue;
+            e.currentTarget.style.transform = "scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          <img
+            src={Logo}
+            alt="OffWorldMedia Logo"
+            style={{
+              height: "40px",
+              marginRight: "12px",
+            }}
+          />
+          <span
+            style={{
+              color: "white",
+              fontSize: "clamp(16px, 4vw, 20px)",
+              fontWeight: "bold",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Offworld Media
+          </span>
+        </div>
+
+        {/* Floating Hamburger Menu Button */}
+        <IconButton
+          edge="end"
+          color="inherit"
+          aria-label="menu"
+          onClick={handleOffcanvasToggle}
+          sx={{
+            position: "fixed",
+            top: 20,
+            right: 20,
+            zIndex: 1300,
+            backgroundColor: colors.antiqueBlue,
+            color: "white",
+            width: 56,
+            height: 56,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            "&:hover": {
+              backgroundColor: colors.shadeBlue,
+              transform: "scale(1.1)",
+            },
+            transition: "all 0.3s ease",
+          }}
+        >
+          <MenuIcon sx={{ fontSize: 28 }} />
+        </IconButton>
+      </div>
 
       {/* Mobile Offcanvas Menu */}
       <Offcanvas
@@ -116,7 +171,7 @@ function NavBar() {
               alt="OffWorldMedia Logo"
               style={{ height: 40, marginRight: 8 }}
             />
-            OffWorld Media
+            Offworld Media
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body style={{ zIndex: 1401 }}>

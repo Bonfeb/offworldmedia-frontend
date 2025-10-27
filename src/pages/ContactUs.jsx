@@ -116,16 +116,7 @@ const ContactUs = () => {
   };
 
   return (
-    <Container
-      fluid
-      className="py-4 py-md-5"
-      style={{
-        background:
-          "linear-gradient(to right, rgb(11, 177, 80), rgb(1, 63, 172))",
-        minHeight: "100vh",
-      }}
-    >
-      <Container>
+      <Container fluid className="bg-dark">
         <h1 className="text-center mb-3 mb-md-4 text-white fs-2 fs-md-1">
           Get in Touch With Us
         </h1>
@@ -311,7 +302,6 @@ const ContactUs = () => {
           </Col>
         </Row>
       </Container>
-    </Container>
   );
 };
 

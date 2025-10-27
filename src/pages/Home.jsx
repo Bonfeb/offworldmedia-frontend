@@ -13,7 +13,7 @@ import {
   Nav,
   Tab,
 } from "react-bootstrap";
-import { Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 import ContactUs from "./ContactUs";
@@ -36,7 +36,8 @@ function Home() {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
 
   const sharedProps = {
-    navigate, isAuthenticated
+    navigate,
+    isAuthenticated,
   };
 
   // Timer ref for video carousel
@@ -768,103 +769,159 @@ function Home() {
                 className="d-flex justify-content-center"
                 style={{ width: "100%" }}
               >
-                <a
-                  href="#payment-info"
+                <div
                   style={{
-                    position: "relative",
-                    display: "block",
-                    background: "#3d553fff", // Dark green background
-                    color: "white",
-                    textDecoration: "none",
-                    padding: "20px",
-                    fontWeight: "bold",
-                    textAlign: "center",
                     width: "100%",
-                    lineHeight: "1.4",
-                    boxShadow: "0 4px 15px rgba(27, 94, 32, 0.3)",
+                    maxWidth: "500px",
+                    background:
+                      "linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%)",
+                    color: "white",
+                    borderRadius: "12px",
+                    boxShadow: "0 8px 25px rgba(27, 94, 32, 0.3)",
+                    overflow: "hidden",
                     transition: "all 0.3s ease",
-                    borderRadius: "0",
-                    boxSizing: "border-box",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#2E7D32"; // Lighter green on hover
                     e.currentTarget.style.boxShadow =
-                      "0 6px 20px rgba(46, 125, 50, 0.4)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    // Update folded edges
-                    const edges =
-                      e.currentTarget.querySelectorAll(".folded-edge");
-                    edges.forEach((edge) => {
-                      edge.style.background = "#1B5E20"; // Dark green edges on hover
-                    });
+                      "0 12px 30px rgba(46, 125, 50, 0.4)";
+                    e.currentTarget.style.transform = "translateY(-3px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "#1B5E20";
                     e.currentTarget.style.boxShadow =
-                      "0 4px 15px rgba(27, 94, 32, 0.3)";
+                      "0 8px 25px rgba(27, 94, 32, 0.3)";
                     e.currentTarget.style.transform = "translateY(0)";
-                    // Revert folded edges
-                    const edges =
-                      e.currentTarget.querySelectorAll(".folded-edge");
-                    edges.forEach((edge) => {
-                      edge.style.background = "#2E7D32"; // Lighter green edges normally
-                    });
                   }}
                 >
-                  <div style={{ position: "relative", zIndex: 1 }}>
-                    <span
+                  {/* Card Header */}
+                  <div
+                    style={{
+                      background: "rgba(0, 0, 0, 0.2)",
+                      padding: "20px",
+                      textAlign: "center",
+                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                    }}
+                  >
+                    <h3
                       style={{
-                        display: "block",
-                        fontSize: "clamp(14px, 3vw, 16px)",
-                        fontWeight: "600",
-                        marginBottom: "5px",
-                      }}
-                    >
-                      Buy Goods & Services
-                    </span>
-                    <span
-                      style={{
-                        display: "block",
-                        fontSize: "clamp(16px, 3.5vw, 18px)",
+                        margin: "0",
+                        fontSize: "clamp(18px, 4vw, 22px)",
                         fontWeight: "700",
+                        letterSpacing: "0.5px",
                       }}
                     >
-                      Till Number: 4323716
-                    </span>
+                      Lipa na Mpesa
+                    </h3>
                   </div>
 
-                  {/* Left folded edge */}
-                  <span
-                    className="folded-edge"
-                    style={{
-                      position: "absolute",
-                      left: "-10px",
-                      top: "0",
-                      bottom: "0",
-                      width: "20px",
-                      background: "#2E7D32", // Lighter green edge
-                      transform: "skewY(-20deg)",
-                      borderRadius: "3px 0 0 3px",
-                      transition: "background 0.3s ease",
-                    }}
-                  />
+                  {/* Card Body */}
+                  <div style={{ padding: "25px" }}>
+                    {/* Buy Goods & Services Fieldset */}
+                    <fieldset
+                      style={{
+                        border: "2px solid rgba(255, 255, 255, 0.3)",
+                        borderRadius: "8px",
+                        padding: "15px",
+                        marginBottom: "20px",
+                        background: "rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
+                      <legend
+                        style={{
+                          padding: "0 10px",
+                          fontSize: "clamp(14px, 3vw, 16px)",
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      >
+                        Buy Goods & Services
+                      </legend>
+                      <div style={{ textAlign: "center" }}>
+                        <div
+                          style={{
+                            fontSize: "clamp(15px, 3.5vw, 17px)",
+                            fontWeight: "600",
+                            marginBottom: "5px",
+                          }}
+                        >
+                          Till Number:
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "clamp(18px, 4vw, 22px)",
+                            fontWeight: "700",
+                            letterSpacing: "1px",
+                            marginBottom: "15px",
+                          }}
+                        >
+                          4323716
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "clamp(14px, 3vw, 15px)",
+                            fontWeight: "500",
+                            opacity: "0.9",
+                            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+                            paddingTop: "10px",
+                          }}
+                        >
+                          Transaction Name: <strong>Offworld Media</strong>
+                        </div>
+                      </div>
+                    </fieldset>
 
-                  {/* Right folded edge */}
-                  <span
-                    className="folded-edge"
-                    style={{
-                      position: "absolute",
-                      right: "-10px",
-                      top: "0",
-                      bottom: "0",
-                      width: "20px",
-                      background: "#2E7D32", // Lighter green edge
-                      transform: "skewY(20deg)",
-                      borderRadius: "0 3px 3px 0",
-                      transition: "background 0.3s ease",
-                    }}
-                  />
-                </a>
+                    {/* Paybill Fieldset */}
+                    <fieldset
+                      style={{
+                        border: "2px solid rgba(255, 255, 255, 0.3)",
+                        borderRadius: "8px",
+                        padding: "15px",
+                        background: "rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
+                      <legend
+                        style={{
+                          padding: "0 10px",
+                          fontSize: "clamp(14px, 3vw, 16px)",
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      >
+                        Paybill
+                      </legend>
+                      <div style={{ textAlign: "center" }}>
+                        <div
+                          style={{
+                            fontSize: "clamp(15px, 3.5vw, 17px)",
+                            fontWeight: "600",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          Business Number: 400200
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "clamp(15px, 3.5vw, 17px)",
+                            fontWeight: "600",
+                            marginBottom: "15px",
+                          }}
+                        >
+                          A/C No: 1077483
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "clamp(14px, 3vw, 15px)",
+                            fontWeight: "500",
+                            opacity: "0.9",
+                            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+                            paddingTop: "10px",
+                          }}
+                        >
+                          Transaction Name: <strong>Offworld Media</strong>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </Col>
@@ -933,10 +990,9 @@ function Home() {
       </Container>
 
       {/* Continuos Scroll Imported Components */}
-      <ContactUs {...sharedProps}/>
-      <MediaGallery {...sharedProps}/>
-      <Service {...sharedProps}/>
-      <Reviews {...sharedProps}/>
+      <ContactUs {...sharedProps} />
+      <Service {...sharedProps} />
+      <Reviews {...sharedProps} />
     </Container>
   );
 }
